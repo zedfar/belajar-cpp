@@ -60,14 +60,82 @@ function isActive(href: string): boolean {
           id="hamburger-btn"
           class="md:hidden p-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           aria-label={t(lang, 'nav.toggleMenu')}
+          aria-expanded="false"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- Hamburger icon -->
+          <svg id="hamburger-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="3" y1="6" x2="21" y2="6"/>
             <line x1="3" y1="12" x2="21" y2="12"/>
             <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+          <!-- X icon (shown when nav open) -->
+          <svg id="close-nav-icon" class="hidden" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
           </svg>
         </button>
       </div>
     </div>
   </div>
+
+  <!-- Mobile nav dropdown (used on non-lesson pages) -->
+  <div
+    id="mobile-nav-dropdown"
+    class="hidden md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950"
+  >
+    <nav class="px-4 py-3 space-y-1">
+      {navLinks.map(link => (
+        <a
+          href={link.href}
+          class:list={[
+            'flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+            isActive(link.href)
+              ? 'bg-primary-50 dark:bg-primary-950 text-primary-600 dark:text-primary-400'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800'
+          ]}
+        >
+          {link.label}
+        </a>
+      ))}
+    </nav>
+  </div>
 </header>
+
+<script is:inline>
+  const hamburgerBtn = document.getElementById('hamburger-btn')
+  const hamburgerIcon = document.getElementById('hamburger-icon')
+  const closeNavIcon = document.getElementById('close-nav-icon')
+  const dropdown = document.getElementById('mobile-nav-dropdown')
+
+  if (hamburgerBtn) {
+    hamburgerBtn.addEventListener('click', () => {
+      // Jika ada lesson sidebar (LessonLayout), biarkan LessonLayout yang handle
+      const lessonSidebar = document.getElementById('mobile-sidebar')
+      if (lessonSidebar) return
+
+      // Kalau tidak ada lesson sidebar, toggle nav dropdown
+      const isOpen = !dropdown.classList.contains('hidden')
+      if (isOpen) {
+        dropdown.classList.add('hidden')
+        hamburgerIcon.classList.remove('hidden')
+        closeNavIcon.classList.add('hidden')
+        hamburgerBtn.setAttribute('aria-expanded', 'false')
+      } else {
+        dropdown.classList.remove('hidden')
+        hamburgerIcon.classList.add('hidden')
+        closeNavIcon.classList.remove('hidden')
+        hamburgerBtn.setAttribute('aria-expanded', 'true')
+      }
+    })
+
+    // Tutup dropdown kalau klik link di dalamnya
+    dropdown?.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        dropdown.classList.add('hidden')
+        hamburgerIcon.classList.remove('hidden')
+        closeNavIcon.classList.add('hidden')
+        hamburgerBtn.setAttribute('aria-expanded', 'false')
+      })
+    })
+  }
+</script>
