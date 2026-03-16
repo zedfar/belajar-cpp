@@ -1,0 +1,356 @@
+---
+title: "Variabel dan Tipe Data"
+unit: 1
+lesson: 3
+description: "Mengenal variabel sebagai penyimpan data dan berbagai tipe data di C++"
+objectives:
+  - "Memahami konsep variabel dan cara mendeklarasikannya"
+  - "Mengenal tipe data dasar: int, double, char, string, bool"
+  - "Bisa menginisialisasi dan menggunakan variabel dalam program"
+estimatedTime: 45
+prerequisites: ["unit-1/02"]
+difficulty: "beginner"
+tags: ["variables", "data-types", "int", "double", "string", "bool", "char"]
+---
+
+# Variabel dan Tipe Data
+
+Sampai sekarang, program kita hanya menampilkan teks yang sudah ditentukan (hardcoded). Tapi program yang berguna perlu bisa **menyimpan** dan **mengolah** data — nama user, skor game, suhu ruangan, dan sebagainya. Untuk itu, kita butuh **variabel**.
+
+## Apa Itu Variabel?
+
+Bayangkan variabel sebagai **kotak penyimpanan dengan label**. Setiap kotak:
+- Punya **nama** (label di luar kotak) — agar kamu tahu kotak mana yang berisi apa
+- Punya **tipe** (ukuran dan bentuk kotak) — menentukan apa yang bisa disimpan di dalamnya
+- Punya **isi** (nilai yang disimpan) — data yang ada di dalam kotak
+
+```
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   umur      │    │   nama      │    │   tinggi    │
+│  ┌───────┐  │    │  ┌───────┐  │    │  ┌───────┐  │
+│  │  17   │  │    │  │"Budi" │  │    │  │ 170.5 │  │
+│  └───────┘  │    │  └───────┘  │    │  └───────┘  │
+│  tipe: int  │    │ tipe:string │    │ tipe:double │
+└─────────────┘    └─────────────┘    └─────────────┘
+```
+
+## Mendeklarasikan Variabel
+
+Untuk membuat variabel di C++, kamu perlu menentukan **tipe data** dan **nama variabel**:
+
+```cpp
+tipe_data nama_variabel;
+```
+
+Contoh:
+
+```cpp
+int umur;           // Membuat kotak bernama "umur" untuk bilangan bulat
+double tinggi;      // Membuat kotak bernama "tinggi" untuk bilangan desimal
+std::string nama;   // Membuat kotak bernama "nama" untuk teks
+```
+
+Ini disebut **deklarasi** — kamu memberitahu compiler: "Saya butuh kotak untuk menyimpan data jenis ini."
+
+## Menginisialisasi Variabel
+
+Setelah membuat kotak, kamu perlu **mengisinya** dengan nilai. Ini disebut **inisialisasi**:
+
+```cpp
+int umur = 17;                    // Deklarasi + inisialisasi sekaligus
+double tinggi = 170.5;
+std::string nama = "Budi";
+```
+
+Kamu juga bisa memisahkan deklarasi dan inisialisasi:
+
+```cpp
+int umur;        // Deklarasi dulu
+umur = 17;       // Baru diisi nanti
+```
+
+Tapi umumnya, lebih baik langsung inisialisasi saat deklarasi untuk menghindari bug.
+
+:::warning
+Menggunakan variabel yang belum diinisialisasi adalah **undefined behavior** — artinya nilainya bisa apa saja (sampah dari memori). Selalu beri nilai awal pada variabel!
+
+```cpp
+int x;                      // Tidak diinisialisasi — BERBAHAYA
+std::cout << x << std::endl; // Bisa menampilkan angka acak!
+```
+:::
+
+## Tipe Data Dasar
+
+C++ punya beberapa tipe data dasar. Berikut yang paling sering dipakai:
+
+### `int` — Bilangan Bulat
+
+Untuk menyimpan angka tanpa desimal: ...-3, -2, -1, 0, 1, 2, 3...
+
+```cpp
+int umur = 17;
+int suhu = -5;
+int skor = 100;
+int populasi = 270000000;  // 270 juta
+```
+
+| Properti | Detail |
+|----------|--------|
+| Ukuran | Biasanya 4 bytes (32 bit) |
+| Range | -2,147,483,648 sampai 2,147,483,647 (kurang lebih -2 miliar sampai +2 miliar) |
+| Contoh | `0`, `42`, `-100`, `2024` |
+
+### `double` — Bilangan Desimal
+
+Untuk menyimpan angka dengan titik desimal:
+
+```cpp
+double tinggi = 170.5;
+double pi = 3.14159;
+double suhu = -12.8;
+double harga = 25000.0;    // Meskipun bulat, pakai .0 jika tipe double
+```
+
+| Properti | Detail |
+|----------|--------|
+| Ukuran | 8 bytes (64 bit) |
+| Presisi | Sekitar 15-16 digit signifikan |
+| Contoh | `3.14`, `-0.5`, `100.0`, `0.001` |
+
+:::note
+Ada juga tipe `float` yang mirip `double` tapi presisinya lebih rendah (sekitar 7 digit). Untuk pemula, gunakan `double` saja — lebih akurat dan lebih umum dipakai.
+:::
+
+### `char` — Karakter Tunggal
+
+Untuk menyimpan **satu** karakter. Nilainya diapit tanda kutip **tunggal** (bukan ganda):
+
+```cpp
+char huruf = 'A';
+char digit = '7';
+char simbol = '@';
+char spasi = ' ';
+```
+
+| Properti | Detail |
+|----------|--------|
+| Ukuran | 1 byte (8 bit) |
+| Range | Karakter ASCII (huruf, angka, simbol) |
+| Contoh | `'a'`, `'Z'`, `'5'`, `'#'`, `' '` |
+
+Penting: `char` pakai tanda kutip **tunggal** (`'A'`), sedangkan `string` pakai tanda kutip **ganda** (`"A"`). Ini berbeda!
+
+### `std::string` — Teks/Kumpulan Karakter
+
+Untuk menyimpan teks yang terdiri dari nol atau lebih karakter:
+
+```cpp
+#include <string>  // Jangan lupa include ini!
+
+std::string nama = "Rina Sari";
+std::string kota = "Jakarta";
+std::string kosong = "";       // String kosong juga valid
+std::string sapaan = "Halo, dunia!";
+```
+
+| Properti | Detail |
+|----------|--------|
+| Ukuran | Dinamis (menyesuaikan panjang teks) |
+| Contoh | `"Hello"`, `"C++"`, `""`, `"Satu dua tiga"` |
+
+:::warning
+`string` butuh `#include <string>` di bagian atas file. Beberapa compiler menyertakannya secara otomatis lewat `<iostream>`, tapi jangan bergantung pada ini — selalu include secara eksplisit untuk keamanan.
+:::
+
+### `bool` — Boolean (True/False)
+
+Untuk menyimpan nilai kebenaran — hanya bisa `true` atau `false`:
+
+```cpp
+bool sudahLulus = true;
+bool hujan = false;
+bool adalahSiswa = true;
+```
+
+| Properti | Detail |
+|----------|--------|
+| Ukuran | 1 byte |
+| Nilai | Hanya `true` (1) atau `false` (0) |
+
+`bool` akan sangat berguna saat kita belajar percabangan (if/else) di Unit 2.
+
+## Tabel Ringkasan Tipe Data
+
+| Tipe | Untuk | Contoh Nilai | Ukuran |
+|------|-------|-------------|--------|
+| `int` | Bilangan bulat | `42`, `-7`, `0` | 4 bytes |
+| `double` | Bilangan desimal | `3.14`, `-0.5` | 8 bytes |
+| `char` | Karakter tunggal | `'A'`, `'9'`, `'@'` | 1 byte |
+| `std::string` | Teks | `"Hello"`, `"C++"` | Dinamis |
+| `bool` | True/false | `true`, `false` | 1 byte |
+
+## Naming Convention (Aturan Penamaan)
+
+Nama variabel di C++ harus mengikuti aturan:
+
+**Aturan wajib:**
+- Hanya boleh huruf, angka, dan underscore (`_`)
+- Tidak boleh dimulai dengan angka
+- Tidak boleh menggunakan kata kunci C++ (`int`, `return`, `if`, dll.)
+- Case-sensitive: `umur`, `Umur`, dan `UMUR` adalah variabel berbeda!
+
+**Konvensi (best practice):**
+- Gunakan nama yang **deskriptif**: `umur` lebih baik daripada `u`
+- Gunakan **camelCase**: `jumlahSiswa`, `nilaiRataRata`
+- Atau **snake_case**: `jumlah_siswa`, `nilai_rata_rata`
+- Pilih satu gaya dan konsisten!
+
+```cpp
+// Bagus - jelas dan deskriptif
+int umurSiswa = 15;
+double nilaiUjian = 87.5;
+std::string namaLengkap = "Ahmad Fauzi";
+
+// Jelek - membingungkan
+int x = 15;          // x itu apa?
+double n = 87.5;     // n singkatan dari?
+std::string s = "Ahmad Fauzi";  // s?
+```
+
+## Mengubah Nilai Variabel
+
+Setelah dideklarasikan, nilai variabel bisa diubah kapan saja (kecuali `const`, yang akan kita bahas nanti):
+
+```cpp
+#include <iostream>
+
+int main() {
+    int skor = 0;
+    std::cout << "Skor awal: " << skor << std::endl;
+
+    skor = 10;  // Mengubah nilai
+    std::cout << "Skor setelah round 1: " << skor << std::endl;
+
+    skor = 25;  // Mengubah lagi
+    std::cout << "Skor setelah round 2: " << skor << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Skor awal: 0
+Skor setelah round 1: 10
+Skor setelah round 2: 25
+```
+
+Perhatikan: saat mengubah nilai, kamu **tidak perlu** menulis tipe data lagi. `skor = 10;` sudah cukup — tidak perlu `int skor = 10;` karena variabelnya sudah dideklarasikan sebelumnya.
+
+## Program Lengkap: Semua Tipe Data
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    // Deklarasi berbagai tipe data
+    std::string nama = "Rina";
+    int umur = 16;
+    double tinggi = 162.5;
+    char golDarah = 'O';
+    bool sudahSMA = true;
+
+    // Menampilkan semua data
+    std::cout << "=== Data Diri ===" << std::endl;
+    std::cout << "Nama      : " << nama << std::endl;
+    std::cout << "Umur      : " << umur << " tahun" << std::endl;
+    std::cout << "Tinggi    : " << tinggi << " cm" << std::endl;
+    std::cout << "Gol. Darah: " << golDarah << std::endl;
+    std::cout << "Sudah SMA : " << sudahSMA << std::endl;  // 1 = true
+
+    return 0;
+}
+```
+
+Output:
+```
+=== Data Diri ===
+Nama      : Rina
+Umur      : 16 tahun
+Tinggi    : 162.5 cm
+Gol. Darah: O
+Sudah SMA : 1
+```
+
+:::note
+Perhatikan `bool` menampilkan `1` (bukan `true`). Secara default, `std::cout` menampilkan boolean sebagai angka — `1` untuk `true`, `0` untuk `false`. Ini normal dan akan kita bahas lebih lanjut nanti.
+:::
+
+## Kesalahan Umum
+
+**1. Tipe data tidak cocok:**
+```cpp
+int umur = 17.5;      // 17.5 dipotong jadi 17 (desimal hilang!)
+```
+
+**2. Mendeklarasikan variabel dua kali:**
+```cpp
+int skor = 10;
+int skor = 20;  // ERROR: sudah ada variabel bernama 'skor'
+```
+
+**3. Pakai variabel sebelum dideklarasikan:**
+```cpp
+std::cout << umur;  // ERROR: 'umur' belum dideklarasikan
+int umur = 17;
+```
+
+**4. Nama variabel dimulai angka:**
+```cpp
+int 2ndPlace = 2;   // ERROR: nama tidak boleh dimulai angka
+int secondPlace = 2; // OK
+```
+
+## Latihan
+
+Buat program yang mendeklarasikan variabel untuk menyimpan data diri, lalu menampilkannya ke layar. Gunakan minimal 5 variabel dengan tipe data berbeda:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    // Deklarasikan variabel berikut dan isi dengan datamu sendiri:
+    // - Nama lengkap (string)
+    // - Umur (int)
+    // - Tinggi badan dalam cm (double)
+    // - Inisial nama depan (char)
+    // - Apakah suka programming (bool)
+
+    // Tampilkan semua data ke layar
+
+    return 0;
+}
+```
+
+Contoh output yang diharapkan:
+```
+Nama     : Ahmad Fauzi
+Umur     : 15 tahun
+Tinggi   : 165.3 cm
+Inisial  : A
+Suka programming: 1
+```
+
+## Ringkasan
+
+- **Variabel** adalah tempat menyimpan data, punya nama, tipe, dan nilai
+- **Deklarasi**: `tipe nama;` — membuat variabel
+- **Inisialisasi**: `tipe nama = nilai;` — membuat dan mengisi variabel
+- **Tipe data dasar**: `int` (bulat), `double` (desimal), `char` (karakter), `std::string` (teks), `bool` (true/false)
+- Nama variabel harus deskriptif dan mengikuti aturan penamaan
+- Selalu inisialisasi variabel saat deklarasi
+
+Di pelajaran berikutnya, kita akan belajar tentang **input dan output** — cara program berkomunikasi dengan pengguna!

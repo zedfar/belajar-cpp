@@ -1,0 +1,425 @@
+---
+title: "Project: Kalkulator Sederhana"
+unit: 1
+lesson: 8
+description: "Membuat kalkulator sederhana yang menggabungkan semua konsep Unit 1"
+objectives:
+  - "Merencanakan program dari awal (planning dan pseudocode)"
+  - "Mengimplementasikan kalkulator dengan input, output, dan operasi aritmatika"
+  - "Menguji program dengan berbagai skenario"
+estimatedTime: 60
+prerequisites: ["unit-1/07"]
+difficulty: "beginner"
+tags: ["project", "calculator", "practice", "integration"]
+---
+
+# Project: Kalkulator Sederhana
+
+Selamat! Kamu sudah mempelajari semua konsep dasar di Unit 1. Sekarang saatnya menggabungkan semuanya dalam satu project nyata — **Kalkulator Sederhana**.
+
+Ini adalah project pertamamu, jadi kita akan melewati setiap tahap secara perlahan: dari perencanaan sampai implementasi dan pengujian. Ini adalah cara programmer profesional bekerja — tidak langsung coding, tapi **planning dulu**.
+
+## Spesifikasi Program
+
+Kalkulator kita harus bisa:
+
+1. Meminta user memasukkan **angka pertama**
+2. Meminta user memasukkan **operator** (+, -, *, /)
+3. Meminta user memasukkan **angka kedua**
+4. Menghitung dan menampilkan **hasil operasi**
+
+Contoh interaksi yang diharapkan:
+```
+=== KALKULATOR SEDERHANA ===
+
+Masukkan angka pertama: 15
+Masukkan operator (+, -, *, /): *
+Masukkan angka kedua: 4
+
+Hasil: 15 * 4 = 60
+```
+
+## Tahap 1: Planning
+
+Sebelum menulis satu baris kode pun, mari pikirkan:
+
+**Data apa yang perlu disimpan?**
+- Angka pertama (desimal — `double`)
+- Angka kedua (desimal — `double`)
+- Operator (satu karakter — `char`)
+- Hasil perhitungan (desimal — `double`)
+
+**Alur program:**
+1. Tampilkan judul kalkulator
+2. Minta input angka pertama
+3. Minta input operator
+4. Minta input angka kedua
+5. Hitung berdasarkan operator yang dipilih
+6. Tampilkan hasil
+
+**Edge case yang perlu dipikirkan:**
+- Bagaimana kalau user membagi dengan 0?
+- Bagaimana kalau user memasukkan operator yang tidak valid?
+
+## Tahap 2: Pseudocode
+
+Pseudocode adalah "kode palsu" — menuliskan logika program dalam bahasa manusia sebelum menulisnya dalam C++. Ini membantu kita berpikir tentang logika tanpa terganggu oleh syntax.
+
+```
+PROGRAM Kalkulator:
+    TAMPILKAN judul "KALKULATOR SEDERHANA"
+
+    MINTA input angka1 (double)
+    MINTA input operasi (char)
+    MINTA input angka2 (double)
+
+    JIKA operasi adalah '+':
+        hasil = angka1 + angka2
+    JIKA operasi adalah '-':
+        hasil = angka1 - angka2
+    JIKA operasi adalah '*':
+        hasil = angka1 * angka2
+    JIKA operasi adalah '/':
+        JIKA angka2 adalah 0:
+            TAMPILKAN "Error: tidak bisa membagi dengan 0!"
+        SELAIN ITU:
+            hasil = angka1 / angka2
+    SELAIN ITU:
+        TAMPILKAN "Operator tidak valid!"
+
+    TAMPILKAN "angka1 operasi angka2 = hasil"
+```
+
+Pseudocode ini belum bisa dijalankan, tapi sudah memberikan gambaran jelas tentang apa yang harus ditulis.
+
+## Tahap 3: Implementasi
+
+Sekarang saatnya menulis kode C++ yang sesungguhnya. Kita akan membangunnya bertahap.
+
+### Versi 1: Kerangka Dasar
+
+Mulai dari kerangka program:
+
+```cpp
+#include <iostream>
+
+int main() {
+    // Variabel
+    double angka1, angka2, hasil;
+    char operasi;
+
+    // Judul
+    std::cout << "=== KALKULATOR SEDERHANA ===" << std::endl;
+    std::cout << std::endl;
+
+    // Input
+    std::cout << "Masukkan angka pertama: ";
+    std::cin >> angka1;
+
+    std::cout << "Masukkan operator (+, -, *, /): ";
+    std::cin >> operasi;
+
+    std::cout << "Masukkan angka kedua: ";
+    std::cin >> angka2;
+
+    // TODO: Hitung hasil
+    // TODO: Tampilkan hasil
+
+    return 0;
+}
+```
+
+Coba jalankan — program sudah bisa menerima input, meskipun belum menghitung apa-apa.
+
+### Versi 2: Tambahkan Perhitungan
+
+Sekarang tambahkan logika perhitungan. Kita akan menggunakan `if` dan `else if` — meskipun kita belum mempelajarinya secara formal (itu di Unit 2), konsepnya cukup intuitif: "jika kondisi ini benar, lakukan ini".
+
+```cpp
+#include <iostream>
+
+int main() {
+    double angka1, angka2, hasil;
+    char operasi;
+    bool valid = true;  // Flag untuk menandai operasi valid atau tidak
+
+    // Judul
+    std::cout << "=== KALKULATOR SEDERHANA ===" << std::endl;
+    std::cout << std::endl;
+
+    // Input
+    std::cout << "Masukkan angka pertama: ";
+    std::cin >> angka1;
+
+    std::cout << "Masukkan operator (+, -, *, /): ";
+    std::cin >> operasi;
+
+    std::cout << "Masukkan angka kedua: ";
+    std::cin >> angka2;
+
+    // Perhitungan
+    if (operasi == '+') {
+        hasil = angka1 + angka2;
+    } else if (operasi == '-') {
+        hasil = angka1 - angka2;
+    } else if (operasi == '*') {
+        hasil = angka1 * angka2;
+    } else if (operasi == '/') {
+        if (angka2 == 0) {
+            std::cout << "\nError: Tidak bisa membagi dengan nol!" << std::endl;
+            valid = false;
+        } else {
+            hasil = angka1 / angka2;
+        }
+    } else {
+        std::cout << "\nError: Operator '" << operasi << "' tidak valid!" << std::endl;
+        std::cout << "Gunakan salah satu: +, -, *, /" << std::endl;
+        valid = false;
+    }
+
+    // Output hasil (hanya jika operasi valid)
+    if (valid) {
+        std::cout << "\nHasil: " << angka1 << " " << operasi << " " << angka2 << " = " << hasil << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Ini adalah versi lengkap kalkulator kita! Mari kita pahami bagian-bagian pentingnya.
+
+## Memahami Kode
+
+### Variabel yang Digunakan
+
+```cpp
+double angka1, angka2, hasil;   // Tiga variabel double dalam satu baris
+char operasi;                    // Operator sebagai karakter
+bool valid = true;               // Flag: apakah operasi berhasil?
+```
+
+Kita menggunakan `double` (bukan `int`) agar kalkulator bisa menangani bilangan desimal. `char` untuk operator karena operator hanya satu karakter (+, -, *, /). `bool valid` sebagai "bendera" yang menandai apakah perhitungan berhasil.
+
+### Percabangan `if/else if/else`
+
+Meskipun kita belum belajar ini secara formal, logikanya sederhana:
+
+```cpp
+if (operasi == '+') {       // Jika operator adalah '+'
+    hasil = angka1 + angka2;
+} else if (operasi == '-') { // Selain itu, jika operator adalah '-'
+    hasil = angka1 - angka2;
+} else {                     // Selain itu semua (operator tidak dikenal)
+    // handle error
+}
+```
+
+Perhatikan: kita membandingkan `char` menggunakan tanda kutip **tunggal** (`'+'`), bukan ganda (`"+"`).
+
+### Penanganan Division by Zero
+
+```cpp
+} else if (operasi == '/') {
+    if (angka2 == 0) {
+        std::cout << "Error: Tidak bisa membagi dengan nol!" << std::endl;
+        valid = false;
+    } else {
+        hasil = angka1 / angka2;
+    }
+}
+```
+
+Pembagian dengan nol adalah undefined — bisa menyebabkan crash atau hasil tak terhingga. Kita menanganinya dengan mengecek `angka2 == 0` sebelum melakukan pembagian.
+
+## Tahap 4: Testing
+
+Program yang baik harus diuji dengan berbagai skenario. Coba jalankan dengan input berikut:
+
+**Test 1: Penjumlahan biasa**
+```
+Angka pertama: 10
+Operator: +
+Angka kedua: 5
+Expected: 10 + 5 = 15
+```
+
+**Test 2: Pembagian desimal**
+```
+Angka pertama: 7
+Operator: /
+Angka kedua: 2
+Expected: 7 / 2 = 3.5
+```
+
+**Test 3: Division by zero**
+```
+Angka pertama: 10
+Operator: /
+Angka kedua: 0
+Expected: Error message
+```
+
+**Test 4: Operator invalid**
+```
+Angka pertama: 5
+Operator: ^
+Angka kedua: 3
+Expected: Error message
+```
+
+**Test 5: Angka negatif**
+```
+Angka pertama: -8
+Operator: *
+Angka kedua: 3
+Expected: -8 * 3 = -24
+```
+
+:::tip
+Testing itu penting! Setiap programmer profesional menguji programnya dengan berbagai skenario — termasuk skenario "aneh" seperti angka negatif, nol, dan input tidak valid. Biasakan menguji programmu sebelum menganggapnya selesai.
+:::
+
+## Kode Solusi Lengkap (Final Version)
+
+Berikut kode lengkap yang sudah rapi dengan komentar:
+
+```cpp
+#include <iostream>
+
+int main() {
+    // === Variabel ===
+    double angka1, angka2;  // Input dari user
+    double hasil = 0;        // Hasil perhitungan
+    char operasi;             // Operator (+, -, *, /)
+    bool valid = true;        // Apakah operasi valid?
+
+    // === Header ===
+    std::cout << "=============================" << std::endl;
+    std::cout << "   KALKULATOR SEDERHANA C++  " << std::endl;
+    std::cout << "=============================" << std::endl;
+    std::cout << std::endl;
+
+    // === Input ===
+    std::cout << "Masukkan angka pertama : ";
+    std::cin >> angka1;
+
+    std::cout << "Masukkan operator (+, -, *, /): ";
+    std::cin >> operasi;
+
+    std::cout << "Masukkan angka kedua   : ";
+    std::cin >> angka2;
+
+    // === Perhitungan ===
+    if (operasi == '+') {
+        hasil = angka1 + angka2;
+    } else if (operasi == '-') {
+        hasil = angka1 - angka2;
+    } else if (operasi == '*') {
+        hasil = angka1 * angka2;
+    } else if (operasi == '/') {
+        if (angka2 == 0) {
+            std::cout << "\n[ERROR] Tidak bisa membagi dengan nol!" << std::endl;
+            valid = false;
+        } else {
+            hasil = angka1 / angka2;
+        }
+    } else {
+        std::cout << "\n[ERROR] Operator '" << operasi << "' tidak dikenali." << std::endl;
+        std::cout << "Operator yang tersedia: +, -, *, /" << std::endl;
+        valid = false;
+    }
+
+    // === Output ===
+    if (valid) {
+        std::cout << std::endl;
+        std::cout << "-----------------------------" << std::endl;
+        std::cout << "  " << angka1 << " " << operasi << " " << angka2 << " = " << hasil << std::endl;
+        std::cout << "-----------------------------" << std::endl;
+    }
+
+    std::cout << "\nTerima kasih telah menggunakan kalkulator!" << std::endl;
+
+    return 0;
+}
+```
+
+Contoh interaksi lengkap:
+```
+=============================
+   KALKULATOR SEDERHANA C++
+=============================
+
+Masukkan angka pertama : 12.5
+Masukkan operator (+, -, *, /): *
+Masukkan angka kedua   : 4
+
+-----------------------------
+  12.5 * 4 = 50
+-----------------------------
+
+Terima kasih telah menggunakan kalkulator!
+```
+
+## Challenge Bonus
+
+Sudah selesai? Coba tantangan tambahan ini untuk menguji kemampuanmu:
+
+**Challenge 1: Operator Modulo**
+
+Tambahkan dukungan untuk operator `%` (modulo). Ingat bahwa modulo hanya bekerja dengan integer, jadi kamu perlu mengkonversi `double` ke `int`:
+
+```cpp
+} else if (operasi == '%') {
+    if (angka2 == 0) {
+        std::cout << "Error: Tidak bisa modulo dengan nol!" << std::endl;
+        valid = false;
+    } else {
+        hasil = (int)angka1 % (int)angka2;
+    }
+}
+```
+
+**Challenge 2: Menampilkan Informasi Tambahan**
+
+Sebelum menampilkan hasil, tampilkan juga informasi tambahan:
+- Tipe operasi (Penjumlahan/Pengurangan/Perkalian/Pembagian)
+- Apakah hasilnya positif, negatif, atau nol
+
+**Challenge 3: Multiple Calculations**
+
+Bungkus seluruh program dalam loop (kita akan belajar loop di Unit 3, tapi kalau penasaran, coba gunakan `while(true)` dan `break`).
+
+## Refleksi: Apa yang Sudah Dipelajari
+
+Dalam project ini, kamu menggunakan **hampir semua konsep** dari Unit 1:
+
+| Konsep | Dipakai Untuk |
+|--------|---------------|
+| `#include <iostream>` | Input/output |
+| `int main()` | Entry point program |
+| `std::cout <<` | Menampilkan teks dan hasil |
+| `std::cin >>` | Menerima input user |
+| Variabel (`double`, `char`, `bool`) | Menyimpan data |
+| Operator aritmatika (`+`, `-`, `*`, `/`) | Perhitungan |
+| Komentar (`//`) | Dokumentasi kode |
+| `const` (bisa ditambahkan) | Untuk nilai yang tidak berubah |
+
+## Penutup Unit 1
+
+Selamat! Kamu sudah menyelesaikan **Unit 1: Dasar-Dasar C++**! Mari recap apa yang sudah kamu kuasai:
+
+- Menulis dan menjalankan program C++ dari nol
+- Memahami struktur program: `#include`, `main()`, `return`
+- Menulis komentar untuk mendokumentasikan kode
+- Menggunakan variabel dan berbagai tipe data
+- Menerima input dari user dan menampilkan output
+- Melakukan operasi aritmatika
+- Memanipulasi string dasar
+- Menggunakan konstanta (`const`) dan `auto`
+- Membangun program yang utuh dari planning sampai testing
+
+Ini adalah fondasi yang kuat. Setiap konsep yang kamu pelajari di sini akan dipakai terus-menerus di unit-unit berikutnya.
+
+Di **Unit 2**, kamu akan belajar tentang **percabangan** (`if/else`, `switch`) dan **logika boolean** — cara membuat program yang bisa "mengambil keputusan". Kalkulator kita tadi sebenarnya sudah mengintip sedikit ke Unit 2 dengan menggunakan `if/else` — jadi kamu sudah punya gambaran!
+
+Terus semangat belajar, dan jangan lupa: setiap programmer hebat pernah ada di titik ini. Kamu sudah memulai perjalananmu!

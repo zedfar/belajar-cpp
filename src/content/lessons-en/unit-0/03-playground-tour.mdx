@@ -1,0 +1,166 @@
+---
+title: "Playground Tour"
+unit: 0
+lesson: 3
+description: "Get to know the coding playground features on this website"
+objectives:
+  - "Identify the different parts of the playground interface"
+  - "Write and run code in the playground"
+  - "Understand how to read output and error messages"
+estimatedTime: 10
+prerequisites: ["unit-0/02"]
+translationStatus: "complete"
+difficulty: "beginner"
+tags: ["playground", "tutorial", "getting-started"]
+---
+
+# Playground Tour
+
+Welcome to the playground! This is where you'll spend a lot of time experimenting with C++ code. Let's get to know each part so you feel comfortable and confident when coding.
+
+## Parts of the Playground
+
+The playground consists of several main areas:
+
+### 1. Code Editor (Main Area)
+
+This is the largest area in the playground — where you write your C++ code. The editor comes with:
+
+- **Syntax highlighting** — code is automatically color-coded for readability. Keywords (like `int`, `return`) have a different color from strings (text in quotation marks) and numbers.
+- **Line numbers** — on the left side, every line is numbered. This is incredibly useful when the compiler says "error on line 5" — you know exactly where to look.
+- **Auto-indentation** — when you press Enter after `{`, the editor automatically adds indentation (spaces at the beginning of the line) to keep your code tidy.
+
+### 2. Run Button
+
+The most important button! It's usually green or blue with a play icon (triangle). When you click it:
+
+1. Your code is sent to the compiler
+2. The compiler translates the code into a program
+3. The program runs
+4. The result appears in the output area
+
+:::tip
+If there's a keyboard shortcut (usually **Ctrl+Enter** or **Cmd+Enter** on Mac), use it for speed. Programmers love shortcuts!
+:::
+
+### 3. Output Area
+
+Below or beside the editor, there's an area that displays program results. Here you'll see:
+
+- **Normal output** — text produced by the program (from `std::cout`)
+- **Error messages** — error notifications if something in your code is wrong
+- **Input prompts** — if the program asks for user input (from `std::cin`)
+
+### 4. Reset Button
+
+This button restores the editor to the default or empty code. Useful when you want to start fresh.
+
+:::warning
+The Reset button will erase all the code you've written! If your code is important, copy-paste it somewhere safe before pressing Reset.
+:::
+
+## Try It Yourself!
+
+Now it's time to try. Type the following code in the playground editor (or if there's default code, clear it first and replace with this):
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Hello! I'm learning C++!" << std::endl;
+    std::cout << "This is the second line." << std::endl;
+    std::cout << "And this is the third!" << std::endl;
+    return 0;
+}
+```
+
+Click the **Run** button and look at the output area. You should see:
+
+```
+Hello! I'm learning C++!
+This is the second line.
+And this is the third!
+```
+
+Three lines of text appear in order. Each `std::cout` statement produces one line of output.
+
+## Understanding Errors
+
+Now, let's make a mistake on purpose. Change the code to this (notice — the semicolon on line 4 is removed):
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Hello!" << std::endl
+    return 0;
+}
+```
+
+Click **Run** and look at the output area. You'll see an error message like:
+
+```
+error: expected ';' before 'return'
+```
+
+The compiler is telling you that it expected a `;` (semicolon) before the word `return`. That's because we removed the semicolon at the end of line 4.
+
+:::note
+Don't be afraid of errors! Every programmer — even those with years of experience — encounters errors daily. An error doesn't mean you failed; it means the compiler is **helping you** find mistakes. Read the message carefully, fix the issue, and try again.
+:::
+
+**Tips for reading errors:**
+
+1. **Check the line number** — errors usually mention which line the problem is on
+2. **Read the message** — messages are usually quite clear (expected `;` = "I was expecting a semicolon here")
+3. **Fix the FIRST error first** — sometimes one mistake can cause a cascade of multiple errors. Fix the first one, then compile again
+
+## Tips for Using the Playground
+
+Some tips to make your coding experience smoother:
+
+**1. Save important code**
+
+The playground may not save your code permanently. If you write something you want to keep, copy-paste it to a text file on your computer.
+
+**2. Experimenting is great!**
+
+The playground is a safe place to experiment. Try changing code, see what happens. Nothing can break — at worst you'll get an error, and that's easy to fix.
+
+**3. Type it yourself, don't copy-paste**
+
+When learning, try to **retype** example code rather than copy-pasting. Typing it yourself helps your brain process and remember syntax better. This is scientifically proven!
+
+**4. Try variations**
+
+After running a given example, try making variations:
+- Change the text being printed
+- Add new lines
+- Try deleting something and see what error you get
+
+## Exercise
+
+Before moving on to Unit 1, try running this code in the playground:
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "My name is: [write your name here]" << std::endl;
+    std::cout << "I'm starting to learn C++ today!" << std::endl;
+    std::cout << "My goal: [write your goal]" << std::endl;
+    return 0;
+}
+```
+
+Replace the text inside the quotation marks with your own information. Click Run and see the result. Congratulations — you're all set to start learning C++ in Unit 1!
+
+## Summary
+
+- The playground has a **code editor**, **Run button**, **output area**, and **Reset button**
+- Click Run to compile and run your code
+- Errors are normal — read the message and fix the issue
+- Type example code yourself for better learning
+- Experiment freely in the playground — it's safe and risk-free
+
+You're all set! In Unit 1, we'll start learning C++ from the ground up — beginning with the legendary "Hello, World!" program.

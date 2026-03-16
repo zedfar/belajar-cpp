@@ -1,0 +1,89 @@
+---
+import { t } from '@/lib/i18n'
+import type { Language } from '@/types/lesson'
+
+interface Props {
+  lang: Language
+  currentPath: string
+}
+const { lang, currentPath } = Astro.props
+
+const items = [
+  {
+    href: `/${lang}`,
+    label: t(lang, 'nav.home'),
+    icon: 'home',
+  },
+  {
+    href: `/${lang}/curriculum`,
+    label: t(lang, 'nav.curriculum'),
+    icon: 'book',
+  },
+  {
+    href: `/${lang}/playground`,
+    label: t(lang, 'nav.playground'),
+    icon: 'code',
+  },
+  {
+    href: `/${lang}/progress`,
+    label: lang === 'id' ? 'Progress' : 'Progress',
+    icon: 'chart',
+  },
+]
+
+function isActive(href: string): boolean {
+  if (href === `/${lang}`) return currentPath === href || currentPath === `/${lang}/`
+  return currentPath.startsWith(href)
+}
+---
+<nav class="fixed bottom-0 left-0 right-0 md:hidden bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 z-30 safe-area-bottom" aria-label="Mobile navigation">
+  <div class="flex items-center justify-around h-16 px-2">
+    {items.map(item => (
+      <a
+        href={item.href}
+        class:list={[
+          'flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg text-xs transition-colors min-w-[4rem]',
+          isActive(item.href)
+            ? 'text-primary-600 dark:text-primary-400'
+            : 'text-slate-500 dark:text-slate-400'
+        ]}
+      >
+        {item.icon === 'home' && (
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+        )}
+        {item.icon === 'book' && (
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+          </svg>
+        )}
+        {item.icon === 'code' && (
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="16 18 22 12 16 6"/>
+            <polyline points="8 6 2 12 8 18"/>
+          </svg>
+        )}
+        {item.icon === 'chart' && (
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"/>
+            <line x1="12" y1="20" x2="12" y2="4"/>
+            <line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
+        )}
+        <span>{item.label}</span>
+        {isActive(item.href) && (
+          <span class="absolute -top-0.5 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-primary-600 dark:bg-primary-400 rounded-full"></span>
+        )}
+      </a>
+    ))}
+  </div>
+</nav>
+
+<style>
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+</style>

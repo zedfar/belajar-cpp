@@ -1,0 +1,26 @@
+---
+type InfoBoxType = 'tip' | 'warning' | 'note' | 'error' | 'fun'
+interface Props {
+  type?: InfoBoxType
+  title?: string
+  lang?: 'id' | 'en'
+}
+const { type = 'note', title, lang = 'id' } = Astro.props
+
+const config = {
+  tip: { icon: '💡', border: 'border-blue-500', bg: 'bg-blue-50 dark:bg-blue-950/30', text: 'text-blue-900 dark:text-blue-100', label: lang === 'id' ? 'Tips' : 'Tip' },
+  warning: { icon: '⚠️', border: 'border-amber-500', bg: 'bg-amber-50 dark:bg-amber-950/30', text: 'text-amber-900 dark:text-amber-100', label: lang === 'id' ? 'Perhatian' : 'Warning' },
+  note: { icon: '📝', border: 'border-slate-400', bg: 'bg-slate-50 dark:bg-slate-900', text: 'text-slate-800 dark:text-slate-200', label: lang === 'id' ? 'Catatan' : 'Note' },
+  error: { icon: '🚫', border: 'border-red-500', bg: 'bg-red-50 dark:bg-red-950/30', text: 'text-red-900 dark:text-red-100', label: lang === 'id' ? 'Error' : 'Error' },
+  fun: { icon: '🌟', border: 'border-violet-500', bg: 'bg-violet-50 dark:bg-violet-950/30', text: 'text-violet-900 dark:text-violet-100', label: lang === 'id' ? 'Fun Fact' : 'Fun Fact' },
+}
+---
+<div class={`border-l-4 ${config[type].border} ${config[type].bg} p-4 my-4 rounded-r-lg`}>
+  <div class={`font-semibold ${config[type].text} flex items-center gap-2 mb-1`}>
+    <span>{config[type].icon}</span>
+    <span>{title || config[type].label}</span>
+  </div>
+  <div class={`${config[type].text} text-sm`}>
+    <slot />
+  </div>
+</div>

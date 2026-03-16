@@ -1,0 +1,27 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@layer base {
+  :root {
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Menlo', monospace;
+  }
+
+  body {
+    @apply bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100;
+    font-family: var(--font-sans);
+  }
+
+  code, pre {
+    font-family: var(--font-mono);
+  }
+}
+
+/* Prose overrides for lesson content */
+.prose pre {
+  @apply !bg-[#1E1E1E] !text-slate-200;
+}
+
+.prose code {
+  @apply !bg-slate-100 dark:!bg-slate-800 !text-slate-800 dark:!text-slate-200;
+}

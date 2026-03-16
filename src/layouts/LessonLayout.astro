@@ -1,0 +1,80 @@
+---
+import BaseLayout from './BaseLayout.astro'
+import Header from '@/components/layout/Header.astro'
+import Sidebar from '@/components/layout/Sidebar.astro'
+import MobileNav from '@/components/layout/MobileNav.astro'
+import Footer from '@/components/layout/Footer.astro'
+
+interface Props {
+  title: string
+  description?: string
+  lang: 'id' | 'en'
+  currentLessonSlug?: string
+  unitSlug?: string
+}
+const { title, description, lang, currentLessonSlug, unitSlug } = Astro.props
+const currentPath = Astro.url.pathname
+---
+<BaseLayout title={title} description={description} lang={lang}>
+  <div class="flex flex-col min-h-screen">
+    <!-- Mobile top bar -->
+    <Header lang={lang} currentPath={currentPath} />
+
+    <div class="flex flex-1">
+      <!-- Desktop sidebar -->
+      <aside class="hidden md:block w-72 lg:w-80 flex-shrink-0 border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 overflow-y-auto sticky top-16 h-[calc(100vh-4rem)]">
+        <Sidebar lang={lang} currentSlug={currentLessonSlug} />
+      </aside>
+
+      <!-- Main lesson content -->
+      <main class="flex-1 min-w-0 px-4 sm:px-6 lg:px-8 py-6 pb-24 md:pb-8">
+        <div class="max-w-3xl mx-auto">
+          <slot />
+        </div>
+      </main>
+    </div>
+
+    <Footer lang={lang} />
+
+    <!-- Mobile bottom nav -->
+    <MobileNav lang={lang} currentPath={currentPath} />
+  </div>
+
+  <!-- Mobile sidebar overlay -->
+  <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden" aria-hidden="true"></div>
+  <aside id="mobile-sidebar" class="fixed top-0 left-0 bottom-0 w-80 max-w-[85vw] bg-white dark:bg-slate-950 z-50 transform -translate-x-full transition-transform duration-300 md:hidden overflow-y-auto">
+    <div class="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800">
+      <span class="font-semibold text-lg">Menu</span>
+      <button id="close-sidebar-btn" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" aria-label="Close menu">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <Sidebar lang={lang} currentSlug={currentLessonSlug} />
+  </aside>
+
+  <script is:inline>
+    // Mobile sidebar toggle
+    const overlay = document.getElementById('sidebar-overlay')
+    const mobileSidebar = document.getElementById('mobile-sidebar')
+    const closeBtn = document.getElementById('close-sidebar-btn')
+    const openBtn = document.getElementById('hamburger-btn')
+
+    function openSidebar() {
+      mobileSidebar?.classList.remove('-translate-x-full')
+      overlay?.classList.remove('hidden')
+      document.body.style.overflow = 'hidden'
+    }
+    function closeSidebar() {
+      mobileSidebar?.classList.add('-translate-x-full')
+      overlay?.classList.add('hidden')
+      document.body.style.overflow = ''
+    }
+
+    openBtn?.addEventListener('click', openSidebar)
+    closeBtn?.addEventListener('click', closeSidebar)
+    overlay?.addEventListener('click', closeSidebar)
+  </script>
+</BaseLayout>

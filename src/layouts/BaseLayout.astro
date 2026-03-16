@@ -1,0 +1,61 @@
+---
+import '../styles/global.css'
+
+interface Props {
+  title: string
+  description?: string
+  lang: 'id' | 'en'
+  ogImage?: string
+}
+const { title, description, lang, ogImage } = Astro.props
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://belajar-cpp.vercel.app'
+const fullTitle = `${title} | Belajar C++`
+const desc = description || (lang === 'id'
+  ? 'Website pembelajaran C++ untuk siswa SMP dan SMA Indonesia.'
+  : 'C++ learning platform for Indonesian students.')
+const ogImg = ogImage || `${siteUrl}/og-default.png`
+---
+<!doctype html>
+<html lang={lang} class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={desc} />
+
+    <!-- OG Meta -->
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={desc} />
+    <meta property="og:image" content={ogImg} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={siteUrl + Astro.url.pathname} />
+    <meta property="og:locale" content={lang === 'id' ? 'id_ID' : 'en_US'} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={desc} />
+    <meta name="twitter:image" content={ogImg} />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Dark mode script — runs before body render to avoid FOUC -->
+    <script is:inline>
+      (function() {
+        const theme = localStorage.getItem('belajar-cpp-theme') ||
+          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        if (theme === 'dark') document.documentElement.classList.add('dark')
+      })()
+    </script>
+
+  </head>
+  <body class="bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors min-h-screen">
+    <slot />
+  </body>
+</html>

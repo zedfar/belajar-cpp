@@ -1,0 +1,94 @@
+---
+import { Code } from 'astro:components'
+
+interface Props {
+  code: string
+  lang?: string
+  filename?: string
+  showLineNumbers?: boolean
+  highlightLines?: number[]
+  caption?: string
+}
+const { code, lang = 'cpp', filename, showLineNumbers = true, caption } = Astro.props
+---
+<div class="my-4 rounded-lg overflow-hidden border border-slate-700 bg-[#282c34]">
+  {filename && (
+    <div class="flex items-center gap-2 px-4 py-2 bg-[#21252b] border-b border-slate-700 text-xs text-slate-400">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+      </svg>
+      <span>{filename}</span>
+    </div>
+  )}
+
+  <div class="relative group">
+    <div class:list={['overflow-x-auto text-sm', showLineNumbers && 'code-with-line-numbers']}>
+      <Code code={code.trim()} lang={lang as any} theme="one-dark-pro" />
+    </div>
+
+    <!-- Copy button -->
+    <button
+      class="copy-btn absolute top-2 right-2 px-2 py-1 rounded text-xs bg-slate-700 hover:bg-slate-600 text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity focus:opacity-100"
+      data-code={code.trim()}
+      aria-label="Copy code"
+    >
+      Copy
+    </button>
+  </div>
+
+  {caption && (
+    <div class="px-4 py-2 bg-[#21252b] border-t border-slate-700 text-xs text-slate-400 italic">
+      {caption}
+    </div>
+  )}
+</div>
+
+<style>
+  .code-with-line-numbers :global(pre) {
+    counter-reset: line;
+  }
+  .code-with-line-numbers :global(pre .line::before) {
+    counter-increment: line;
+    content: counter(line);
+    display: inline-block;
+    width: 2em;
+    margin-right: 1em;
+    text-align: right;
+    color: #636d83;
+    user-select: none;
+  }
+  :global(.astro-code) {
+    padding: 1rem;
+    margin: 0;
+    background: transparent !important;
+  }
+</style>
+
+<script is:inline>
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const code = btn.getAttribute('data-code') || ''
+      try {
+        await navigator.clipboard.writeText(code)
+        const original = btn.textContent
+        btn.textContent = 'Copied!'
+        btn.classList.add('bg-emerald-600')
+        setTimeout(() => {
+          btn.textContent = original
+          btn.classList.remove('bg-emerald-600')
+        }, 2000)
+      } catch {
+        // fallback
+        const textarea = document.createElement('textarea')
+        textarea.value = code
+        document.body.appendChild(textarea)
+        textarea.select()
+        document.execCommand('copy')
+        document.body.removeChild(textarea)
+        btn.textContent = 'Copied!'
+        setTimeout(() => { btn.textContent = 'Copy' }, 2000)
+      }
+    })
+  })
+</script>

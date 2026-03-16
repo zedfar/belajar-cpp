@@ -1,0 +1,175 @@
+---
+import { CURRICULUM_ID } from '@/lib/curriculum'
+import type { Language } from '@/types/lesson'
+
+interface Props {
+  lang: Language
+  currentSlug?: string
+}
+const { lang, currentSlug } = Astro.props
+
+// Determine which unit the current lesson belongs to
+const currentUnitSlug = currentSlug ? currentSlug.split('/')[0] : null
+---
+<nav class="p-4 space-y-2" aria-label="Curriculum navigation">
+  {CURRICULUM_ID.map((unit) => {
+    const isCurrentUnit = currentUnitSlug === unit.slug
+    const unitTitle = unit.title[lang]
+    const unitId = `sidebar-unit-${unit.slug}`
+
+    return (
+      <div class="space-y-0.5">
+        {/* Unit header */}
+        <button
+          data-unit-toggle={unit.slug}
+          class:list={[
+            'w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-semibold transition-colors text-left',
+            isCurrentUnit
+              ? 'bg-primary-50 dark:bg-primary-950 text-primary-700 dark:text-primary-300'
+              : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+          ]}
+          aria-expanded={isCurrentUnit ? 'true' : 'false'}
+          aria-controls={unitId}
+        >
+          <span class="flex items-center gap-2">
+            <span class="text-xs text-slate-400 dark:text-slate-500 font-mono">U{unit.id}</span>
+            <span class="truncate">{unitTitle}</span>
+          </span>
+          <svg
+            class:list={[
+              'w-4 h-4 flex-shrink-0 transition-transform',
+              isCurrentUnit ? 'rotate-180' : ''
+            ]}
+            data-chevron={unit.slug}
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+
+        {/* Unit progress bar (mini) */}
+        <div class="mx-3 h-1 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden" data-unit-progress={unit.slug}>
+          <div class="h-full bg-emerald-500 rounded-full transition-all duration-300" style="width: 0%" data-unit-progress-bar={unit.slug}></div>
+        </div>
+
+        {/* Lesson list */}
+        <div
+          id={unitId}
+          class:list={[
+            'overflow-hidden transition-all duration-200',
+            isCurrentUnit ? 'max-h-[2000px]' : 'max-h-0'
+          ]}
+          data-unit-content={unit.slug}
+        >
+          <ul class="mt-1 space-y-0.5 pl-2">
+            {unit.lessons.map((lesson) => {
+              const isCurrentLesson = currentSlug === lesson.slug
+              const lessonParts = lesson.slug.split('/')
+              const lessonUrl = `/${lang}/learn/${lessonParts[0]}/${lessonParts[1]}`
+              const lessonTitle = lesson.title[lang]
+
+              return (
+                <li>
+                  <a
+                    href={unit.isAvailable ? lessonUrl : undefined}
+                    class:list={[
+                      'flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-colors group',
+                      isCurrentLesson
+                        ? 'bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 font-medium'
+                        : unit.isAvailable
+                          ? 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800'
+                          : 'text-slate-400 dark:text-slate-600 cursor-not-allowed'
+                    ]}
+                    data-lesson-slug={lesson.slug}
+                  >
+                    {/* Status indicator */}
+                    <span class="flex-shrink-0 w-4 text-center" data-lesson-status={lesson.slug}>
+                      {!unit.isAvailable ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block text-slate-400 dark:text-slate-600">
+                          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
+                      ) : isCurrentLesson ? (
+                        <span class="text-primary-500">&#9684;</span>
+                      ) : (
+                        <span class="text-slate-300 dark:text-slate-600" data-lesson-dot={lesson.slug}>&#9675;</span>
+                      )}
+                    </span>
+                    <span class="truncate">{lessonTitle}</span>
+                    {lesson.isProject && (
+                      <span class="ml-auto text-[10px] px-1.5 py-0.5 rounded bg-accent-100 dark:bg-accent-900/40 text-accent-700 dark:text-accent-300 font-medium flex-shrink-0">
+                        Project
+                      </span>
+                    )}
+                  </a>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
+      </div>
+    )
+  })}
+</nav>
+
+<script is:inline>
+  // Unit expand/collapse toggle
+  document.querySelectorAll('[data-unit-toggle]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const slug = btn.getAttribute('data-unit-toggle')
+      const content = document.querySelector(`[data-unit-content="${slug}"]`)
+      const chevron = document.querySelector(`[data-chevron="${slug}"]`)
+      if (!content) return
+
+      const isOpen = content.classList.contains('max-h-[2000px]')
+      if (isOpen) {
+        content.classList.remove('max-h-[2000px]')
+        content.classList.add('max-h-0')
+        chevron?.classList.remove('rotate-180')
+        btn.setAttribute('aria-expanded', 'false')
+      } else {
+        content.classList.remove('max-h-0')
+        content.classList.add('max-h-[2000px]')
+        chevron?.classList.add('rotate-180')
+        btn.setAttribute('aria-expanded', 'true')
+      }
+    })
+  })
+
+  // Update lesson status dots from localStorage progress
+  try {
+    const raw = localStorage.getItem('belajar-cpp-progress')
+    if (raw) {
+      const progress = JSON.parse(raw)
+      const completed = progress.completedLessons || []
+      completed.forEach(slug => {
+        const dot = document.querySelector(`[data-lesson-dot="${slug}"]`)
+        if (dot) {
+          dot.innerHTML = '&#9679;'
+          dot.classList.remove('text-slate-300', 'dark:text-slate-600')
+          dot.classList.add('text-emerald-500')
+        }
+      })
+
+      // Update unit progress bars
+      document.querySelectorAll('[data-unit-progress]').forEach(el => {
+        const unitSlug = el.getAttribute('data-unit-progress')
+        const bar = document.querySelector(`[data-unit-progress-bar="${unitSlug}"]`)
+        if (!bar || !unitSlug) return
+        const lessons = el.closest('.space-y-0\\.5')?.querySelectorAll('[data-lesson-slug]') || []
+        const total = lessons.length
+        const done = Array.from(lessons).filter(l =>
+          completed.includes(l.getAttribute('data-lesson-slug'))
+        ).length
+        const pct = total > 0 ? Math.round((done / total) * 100) : 0
+        bar.style.width = pct + '%'
+      })
+    }
+  } catch {}
+</script>

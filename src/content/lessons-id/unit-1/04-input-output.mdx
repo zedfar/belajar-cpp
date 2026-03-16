@@ -1,0 +1,362 @@
+---
+title: "Input dan Output"
+unit: 1
+lesson: 4
+description: "Belajar menerima input dari user dan menampilkan output dengan cout dan cin"
+objectives:
+  - "Menggunakan std::cout untuk output dan std::cin untuk input"
+  - "Memahami operator << (insertion) dan >> (extraction)"
+  - "Mengetahui perbedaan std::endl dan \\n"
+estimatedTime: 30
+prerequisites: ["unit-1/03"]
+difficulty: "beginner"
+tags: ["input", "output", "cout", "cin", "endl", "io"]
+---
+
+# Input dan Output
+
+Sampai sekarang, program kita berjalan sendiri — menampilkan teks yang sudah kita tentukan. Tapi program yang benar-benar berguna bisa **berinteraksi** dengan pengguna. Program bertanya, pengguna menjawab, lalu program merespons berdasarkan jawaban itu.
+
+Di pelajaran ini, kita akan belajar dua alat utama komunikasi program C++: `std::cout` untuk **output** (menampilkan) dan `std::cin` untuk **input** (menerima).
+
+## Mendalami `std::cout` (Output)
+
+Kita sudah kenal `std::cout` dari pelajaran-pelajaran sebelumnya. Sekarang mari kita pahami lebih dalam.
+
+`std::cout` adalah **character output stream** — aliran data yang mengalir dari program ke layar. Bayangkan seperti selang air: kamu "mendorong" data melalui selang, dan data itu muncul di ujung yang lain (layar).
+
+### Operator `<<` — "Kirim Ke"
+
+Operator `<<` disebut **insertion operator**. Cara membacanya: "kirim ke". Data di sebelah kanan "dikirim ke" `cout` di sebelah kiri.
+
+```cpp
+std::cout << "Hello";     // "Kirim 'Hello' ke layar"
+std::cout << 42;          // "Kirim angka 42 ke layar"
+std::cout << 3.14;        // "Kirim 3.14 ke layar"
+```
+
+Kamu bisa **merangkai** beberapa data dalam satu statement:
+
+```cpp
+std::cout << "Umur saya " << 17 << " tahun" << std::endl;
+```
+
+Ini dibaca: kirim "Umur saya " ke layar, lalu kirim 17, lalu kirim " tahun", lalu kirim endl (baris baru).
+
+Output:
+```
+Umur saya 17 tahun
+```
+
+### Menampilkan Variabel
+
+`std::cout` bisa menampilkan nilai variabel langsung:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string nama = "Dian";
+    int umur = 16;
+    double tinggi = 158.5;
+
+    std::cout << "Nama: " << nama << std::endl;
+    std::cout << "Umur: " << umur << " tahun" << std::endl;
+    std::cout << "Tinggi: " << tinggi << " cm" << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Nama: Dian
+Umur: 16 tahun
+Tinggi: 158.5 cm
+```
+
+## `std::endl` vs `"\n"`
+
+Kedua cara ini membuat baris baru, tapi ada perbedaan penting:
+
+### `std::endl`
+
+```cpp
+std::cout << "Baris satu" << std::endl;
+std::cout << "Baris dua" << std::endl;
+```
+
+`std::endl` melakukan **dua hal**:
+1. Menambah karakter baris baru
+2. Mem-**flush** buffer (memaksa semua data segera ditampilkan di layar)
+
+### `"\n"` atau `'\n'`
+
+```cpp
+std::cout << "Baris satu\n";
+std::cout << "Baris dua\n";
+```
+
+`\n` **hanya** menambah karakter baris baru, tanpa flush buffer. Ini sedikit lebih cepat dari `std::endl`.
+
+:::tip
+**Kapan pakai yang mana?**
+- `"\n"` — untuk kebanyakan kasus, lebih cepat
+- `std::endl` — saat kamu butuh output langsung muncul (misalnya sebelum program meminta input, atau saat debugging)
+
+Untuk pelajaran-pelajaran ini, keduanya boleh dipakai. Perbedaan performanya hanya terasa di program yang menulis output sangat banyak.
+:::
+
+### Perbandingan
+
+```cpp
+#include <iostream>
+
+int main() {
+    // Menggunakan endl
+    std::cout << "Satu" << std::endl;
+    std::cout << "Dua" << std::endl;
+
+    // Menggunakan \n
+    std::cout << "Tiga\n";
+    std::cout << "Empat\n";
+
+    // Campuran juga bisa
+    std::cout << "Lima" << "\n";
+
+    return 0;
+}
+```
+
+Output (identik untuk kedua cara):
+```
+Satu
+Dua
+Tiga
+Empat
+Lima
+```
+
+## `std::cin` — Menerima Input
+
+Sekarang bagian yang seru: membuat program yang bisa **menerima input** dari pengguna!
+
+`std::cin` adalah **character input stream** — aliran data dari keyboard ke program. Kalau `cout` adalah megaphone (bicara ke luar), `cin` adalah microphone (mendengarkan dari luar).
+
+### Operator `>>` — "Ambil Dari"
+
+Operator `>>` disebut **extraction operator**. Cara membacanya: "ambil dari". Data diambil dari `cin` (keyboard) dan disimpan ke variabel di sebelah kanan.
+
+```cpp
+int umur;
+std::cin >> umur;    // "Ambil input dari keyboard, simpan ke variabel 'umur'"
+```
+
+Perhatikan arah panahnya:
+- `cout <<` — panah menuju `cout` (kirim data KE layar)
+- `cin >>` — panah menjauh dari `cin` (ambil data DARI keyboard)
+
+### Contoh: Program Sapaan
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string nama;
+
+    std::cout << "Siapa namamu? ";
+    std::cin >> nama;
+
+    std::cout << "Halo, " << nama << "! Selamat belajar C++!" << std::endl;
+
+    return 0;
+}
+```
+
+Saat dijalankan:
+```
+Siapa namamu? Budi
+Halo, Budi! Selamat belajar C++!
+```
+
+Program berhenti sejenak di baris `std::cin >> nama;` — menunggu user mengetik sesuatu dan menekan Enter. Setelah itu, program melanjutkan ke baris berikutnya.
+
+### Input Beberapa Nilai
+
+Kamu bisa meminta beberapa input satu per satu:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string nama;
+    int umur;
+
+    std::cout << "Masukkan nama: ";
+    std::cin >> nama;
+
+    std::cout << "Masukkan umur: ";
+    std::cin >> umur;
+
+    std::cout << "\nHasil:" << std::endl;
+    std::cout << "Nama: " << nama << std::endl;
+    std::cout << "Umur: " << umur << " tahun" << std::endl;
+
+    return 0;
+}
+```
+
+Atau merangkai beberapa `>>` dalam satu baris:
+
+```cpp
+int a, b;
+std::cout << "Masukkan dua angka: ";
+std::cin >> a >> b;  // User ketik: 5 10 (dipisah spasi)
+```
+
+Saat user mengetik `5 10` dan menekan Enter, `a` akan berisi `5` dan `b` akan berisi `10`. `cin` menggunakan spasi/enter sebagai pemisah antar input.
+
+### `getline()` — Input Teks dengan Spasi
+
+Ada satu masalah dengan `cin >>`: dia berhenti membaca saat bertemu **spasi**. Jadi kalau user mengetik "Budi Santoso", `cin >>` hanya mengambil "Budi".
+
+Untuk membaca seluruh baris (termasuk spasi), gunakan `std::getline()`:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string namaLengkap;
+
+    std::cout << "Masukkan nama lengkap: ";
+    std::getline(std::cin, namaLengkap);
+
+    std::cout << "Halo, " << namaLengkap << "!" << std::endl;
+
+    return 0;
+}
+```
+
+```
+Masukkan nama lengkap: Budi Santoso
+Halo, Budi Santoso!
+```
+
+`getline()` membaca seluruh baris sampai user menekan Enter, termasuk spasi di tengah.
+
+:::warning
+**Hati-hati mencampur `cin >>` dan `getline()`!** Setelah `cin >>`, ada karakter newline (`\n`) yang tertinggal di buffer. `getline()` akan membaca newline itu dan langsung selesai (menghasilkan string kosong). Solusinya: tambahkan `std::cin.ignore()` sebelum `getline()`.
+
+```cpp
+int umur;
+std::cin >> umur;
+std::cin.ignore();  // Buang newline yang tersisa
+
+std::string nama;
+std::getline(std::cin, nama);  // Sekarang bisa membaca dengan benar
+```
+:::
+
+## Contoh Program Lengkap: Biodata
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    // Variabel untuk menyimpan data
+    std::string nama;
+    int umur;
+    double tinggi;
+    std::string kota;
+
+    // Minta input dari user
+    std::cout << "=== Program Biodata ===" << std::endl;
+    std::cout << std::endl;
+
+    std::cout << "Nama lengkap: ";
+    std::getline(std::cin, nama);
+
+    std::cout << "Umur: ";
+    std::cin >> umur;
+
+    std::cout << "Tinggi badan (cm): ";
+    std::cin >> tinggi;
+
+    std::cin.ignore();  // Bersihkan buffer sebelum getline
+
+    std::cout << "Kota asal: ";
+    std::getline(std::cin, kota);
+
+    // Tampilkan hasil
+    std::cout << "\n=== Biodata Kamu ===" << std::endl;
+    std::cout << "Nama   : " << nama << std::endl;
+    std::cout << "Umur   : " << umur << " tahun" << std::endl;
+    std::cout << "Tinggi : " << tinggi << " cm" << std::endl;
+    std::cout << "Kota   : " << kota << std::endl;
+    std::cout << "=====================" << std::endl;
+
+    return 0;
+}
+```
+
+Contoh interaksi:
+```
+=== Program Biodata ===
+
+Nama lengkap: Rina Sari
+Umur: 16
+Tinggi badan (cm): 162.5
+Kota asal: Bandung
+
+=== Biodata Kamu ===
+Nama   : Rina Sari
+Umur   : 16 tahun
+Tinggi : 162.5 cm
+Kota   : Bandung
+=====================
+```
+
+## Ringkasan Operator I/O
+
+| Operator | Nama | Arah | Contoh |
+|----------|------|------|--------|
+| `<<` | Insertion | Program → Layar | `cout << "Hello"` |
+| `>>` | Extraction | Keyboard → Program | `cin >> umur` |
+
+Cara mengingat arahnya:
+- `<<` panah menuju `cout` (output, keluar)
+- `>>` panah menuju variabel (input, masuk)
+
+## Latihan
+
+**Latihan 1:** Buat program yang meminta input 2 angka bulat dari user, lalu menampilkan kedua angka tersebut.
+
+Contoh interaksi:
+```
+Masukkan angka pertama: 7
+Masukkan angka kedua: 13
+Angka pertama: 7
+Angka kedua: 13
+```
+
+**Latihan 2:** Buat program "Tanya Jawab" yang menanyakan 3 pertanyaan berikut dan menampilkan rangkumannya:
+- Makanan favorit (string dengan getline)
+- Berapa kali makan per hari (int)
+- Apakah suka masak (ketik 1 untuk ya, 0 untuk tidak)
+
+## Ringkasan
+
+- `std::cout <<` menampilkan output ke layar
+- `std::cin >>` menerima input dari keyboard
+- `<<` dibaca "kirim ke", `>>` dibaca "ambil dari"
+- `std::endl` membuat baris baru dan flush buffer
+- `"\n"` membuat baris baru tanpa flush (lebih cepat)
+- `std::getline()` untuk membaca teks lengkap termasuk spasi
+- Hati-hati mencampur `cin >>` dan `getline()` — gunakan `cin.ignore()`
+
+Di pelajaran berikutnya, kita akan belajar tentang **operasi aritmatika** — cara membuat program yang bisa menghitung!

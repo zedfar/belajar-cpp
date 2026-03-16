@@ -1,0 +1,33 @@
+---
+import { t } from '@/lib/i18n'
+import type { Language } from '@/types/lesson'
+
+interface Props {
+  headings: { depth: number; slug: string; text: string }[]
+  lang?: Language
+}
+const { headings, lang = 'id' } = Astro.props
+
+// Only show if there are at least 2 headings
+const filteredHeadings = headings.filter(h => h.depth >= 2 && h.depth <= 3)
+const shouldShow = filteredHeadings.length >= 2
+---
+{shouldShow && (
+  <nav class="p-4 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800" aria-label={t(lang, 'lesson.tableOfContents')}>
+    <h2 class="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">
+      {t(lang, 'lesson.tableOfContents')}
+    </h2>
+    <ul class="space-y-1.5 text-sm">
+      {filteredHeadings.map(heading => (
+        <li class:list={[heading.depth === 3 ? 'ml-4' : '']}>
+          <a
+            href={`#${heading.slug}`}
+            class="text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors block py-0.5 leading-snug"
+          >
+            {heading.text}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+)}

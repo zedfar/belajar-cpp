@@ -1,0 +1,209 @@
+---
+title: "Setup Lingkungan Belajar"
+unit: 0
+lesson: 2
+description: "Cara menyiapkan lingkungan untuk menulis dan menjalankan program C++"
+objectives:
+  - "Memahami pilihan lingkungan pengembangan untuk C++"
+  - "Bisa menjalankan program C++ pertama"
+  - "Mengenal workflow menulis → compile → run"
+estimatedTime: 30
+prerequisites: ["unit-0/01"]
+difficulty: "beginner"
+tags: ["setup", "compiler", "ide", "playground"]
+---
+
+# Setup Lingkungan Belajar
+
+Sebelum mulai menulis kode C++, kita perlu menyiapkan "dapur" kita dulu. Seorang koki butuh kompor, wajan, dan pisau — seorang programmer butuh **text editor** dan **compiler**.
+
+Kabar baiknya: kamu punya beberapa pilihan, dari yang paling mudah sampai yang paling lengkap. Mari kita bahas satu per satu.
+
+## Pilihan 1: Playground di Website Ini (Recommended!)
+
+:::note
+Untuk pemula, kami sangat merekomendasikan menggunakan playground yang ada di website ini. Tidak perlu install apa pun — langsung bisa coding di browser!
+:::
+
+Playground adalah editor kode yang tertanam langsung di website ini. Kamu bisa menulis kode C++, menjalankannya, dan melihat hasilnya — semua dalam satu halaman, tanpa perlu install software apa pun.
+
+**Kenapa playground direkomendasikan untuk pemula?**
+
+- **Zero setup** — tidak perlu download atau install apa pun
+- **Langsung jalan** — buka browser, tulis kode, klik Run
+- **Aman** — kode berjalan di environment terisolasi, tidak akan merusak komputermu
+- **Sudah dioptimasi** — syntax highlighting, error messages yang jelas
+- **Bisa di HP** — belajar dari mana saja, bahkan dari handphone
+
+Kamu akan belajar cara menggunakan playground secara detail di pelajaran berikutnya. Untuk sekarang, coba jalankan program pertamamu:
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Halo, dunia!" << std::endl;
+    return 0;
+}
+```
+
+Kalau kamu melihat tulisan `Halo, dunia!` di area output — selamat! Kamu baru saja menjalankan program C++ pertamamu!
+
+Belum paham kodenya? Tidak apa-apa! Kita akan membedah setiap baris di Unit 1. Yang penting sekarang adalah **kamu bisa menjalankannya**.
+
+## Pilihan 2: Install di Komputer (Windows)
+
+Kalau kamu ingin setup yang lebih "serius" di komputermu sendiri, kamu bisa install compiler C++ secara lokal. Ini memberikan kontrol penuh dan bisa dipakai tanpa internet.
+
+### Opsi A: MSYS2 + MinGW (Recommended untuk Windows)
+
+MSYS2 adalah lingkungan yang menyediakan compiler GCC/G++ untuk Windows.
+
+**Langkah-langkah:**
+
+1. **Download MSYS2** dari [msys2.org](https://www.msys2.org/)
+2. **Install** — jalankan installer, ikuti petunjuknya (gunakan lokasi default `C:\msys2`)
+3. **Buka MSYS2 terminal** yang baru terinstall
+4. **Update package manager:**
+   ```bash
+   pacman -Syu
+   ```
+   (Kalau diminta menutup terminal, tutup dan buka lagi, lalu jalankan sekali lagi)
+5. **Install compiler C++:**
+   ```bash
+   pacman -S mingw-w64-ucrt-x86_64-gcc
+   ```
+6. **Tambahkan ke PATH:**
+   - Buka Windows Settings → System → About → Advanced system settings
+   - Klik "Environment Variables"
+   - Di "System variables", cari `Path`, klik Edit
+   - Tambahkan: `C:\msys2\ucrt64\bin`
+   - Klik OK di semua dialog
+7. **Verifikasi instalasi** — buka Command Prompt baru dan ketik:
+   ```bash
+   g++ --version
+   ```
+   Kalau muncul info versi GCC, instalasi berhasil!
+
+### Opsi B: Visual Studio Community (Alternatif Windows)
+
+Microsoft Visual Studio Community adalah IDE lengkap yang sudah include compiler C++ (MSVC).
+
+1. Download dari [visualstudio.microsoft.com](https://visualstudio.microsoft.com/vs/community/)
+2. Saat install, centang **"Desktop development with C++"**
+3. Tunggu download selesai (bisa 5-10 GB)
+4. Buka Visual Studio, buat project baru → Console App (C++)
+
+:::warning
+Visual Studio Community ukurannya besar (5-10 GB). Kalau koneksi internet terbatas, gunakan MSYS2 atau playground website.
+:::
+
+### Cara Compile dan Run di Terminal
+
+Setelah install compiler, berikut cara menjalankan program C++ dari terminal:
+
+1. **Buat file** bernama `hello.cpp` menggunakan text editor apa saja (Notepad, VS Code, dll):
+   ```cpp
+   #include <iostream>
+
+   int main() {
+       std::cout << "Halo dari komputerku!" << std::endl;
+       return 0;
+   }
+   ```
+
+2. **Buka terminal** (Command Prompt / PowerShell) dan navigasi ke folder tempat file tersimpan:
+   ```bash
+   cd C:\Users\NamaKamu\Documents
+   ```
+
+3. **Compile:**
+   ```bash
+   g++ hello.cpp -o hello
+   ```
+   Perintah ini menerjemahkan `hello.cpp` menjadi program `hello.exe`.
+
+4. **Run:**
+   ```bash
+   hello
+   ```
+   atau
+   ```bash
+   ./hello
+   ```
+
+Kalau semua berjalan lancar, kamu akan melihat:
+```
+Halo dari komputerku!
+```
+
+### Text Editor yang Direkomendasikan
+
+Kalau kamu coding di komputer lokal, gunakan text editor yang punya **syntax highlighting** (pewarnaan kode) agar lebih mudah dibaca:
+
+- **Visual Studio Code (VS Code)** — gratis, ringan, extension C++ bagus. Download di [code.visualstudio.com](https://code.visualstudio.com). Install extension "C/C++" dari Microsoft.
+- **Notepad++** — sangat ringan, cocok untuk komputer spek rendah
+- **Sublime Text** — cepat dan elegan
+
+:::tip
+Kalau pakai VS Code, install extension **"Code Runner"** agar bisa menjalankan program C++ langsung dari editor dengan menekan tombol play.
+:::
+
+## Pilihan 3: Online Compiler
+
+Kalau kamu tidak bisa install software tapi ingin alternatif selain playground website ini, ada beberapa online compiler:
+
+### OnlineGDB
+- Buka [onlinegdb.com](https://www.onlinegdb.com/)
+- Pilih bahasa **C++** di dropdown kanan atas
+- Tulis kode di editor
+- Klik **Run**
+
+### Compiler Explorer (Godbolt)
+- Buka [godbolt.org](https://godbolt.org/)
+- Lebih advanced — bisa melihat assembly output
+- Bagus untuk belajar bagaimana compiler bekerja
+
+### Replit
+- Buka [replit.com](https://replit.com/)
+- Buat akun (gratis)
+- Buat Repl baru dengan template C++
+- Full IDE di browser
+
+## Perbandingan Pilihan
+
+| Aspek | Playground Website | Install Lokal | Online Compiler |
+|-------|-------------------|---------------|-----------------|
+| Perlu install? | Tidak | Ya | Tidak |
+| Perlu internet? | Ya | Tidak | Ya |
+| Kecepatan setup | Instan | 15-30 menit | 1-2 menit |
+| Fitur lengkap? | Cukup untuk belajar | Sangat lengkap | Cukup |
+| File management | Otomatis | Manual | Akun diperlukan |
+| Cocok untuk | Pemula, mobile | Serius, offline | Backup |
+
+## Workflow Programming
+
+Apapun pilihan lingkunganmu, workflow dasar programming selalu sama:
+
+```
+Tulis Kode  →  Compile  →  Ada Error?  →  Ya → Perbaiki → Compile lagi
+                              ↓
+                            Tidak
+                              ↓
+                           Jalankan  →  Output sesuai?  →  Tidak → Perbaiki kode
+                                            ↓
+                                           Ya
+                                            ↓
+                                         Selesai! 🎉
+```
+
+Jangan khawatir kalau sering menemui error — itu **sangat normal**. Bahkan programmer berpengalaman pun menghabiskan banyak waktu untuk debugging (mencari dan memperbaiki error). Kuncinya: **baca pesan error baik-baik**, biasanya compiler memberitahu di baris berapa masalahnya.
+
+## Ringkasan
+
+- **Playground website** adalah pilihan tercepat untuk mulai belajar
+- **Install lokal** (MSYS2/MinGW) cocok kalau kamu ingin setup yang lebih serius
+- **Online compiler** bisa jadi backup kalau pilihan lain tidak tersedia
+- Workflow programming: tulis → compile → debug → jalankan → ulangi
+- Error itu normal dan merupakan bagian dari proses belajar
+
+Di pelajaran berikutnya, kita akan tour playground website ini agar kamu tahu semua fiturnya dan siap mulai coding!

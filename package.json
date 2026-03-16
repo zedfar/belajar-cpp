@@ -1,0 +1,43 @@
+{
+  "name": "belajar-cpp",
+  "type": "module",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "latest",
+    "@astrojs/react": "latest",
+    "@astrojs/sitemap": "latest",
+    "@astrojs/vercel": "^10.0.0",
+    "@codemirror/basic-setup": "latest",
+    "@codemirror/lang-cpp": "latest",
+    "@codemirror/state": "latest",
+    "@codemirror/theme-one-dark": "latest",
+    "@codemirror/view": "latest",
+    "astro": "latest",
+    "clsx": "latest",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "tailwind-merge": "latest"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.19",
+    "@tailwindcss/vite": "latest",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "@vitest/ui": "latest",
+    "prettier": "latest",
+    "prettier-plugin-astro": "latest",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.5.0",
+    "vitest": "latest"
+  },
+  "volta": {
+    "node": "22.22.1"
+  }
+}

@@ -1,0 +1,60 @@
+---
+import { CURRICULUM_ID, getNextLesson, getPrevLesson, getLessonUrl } from '@/lib/curriculum'
+import type { Language } from '@/types/lesson'
+
+interface Props {
+  currentSlug: string
+  lang: Language
+}
+const { currentSlug, lang } = Astro.props
+const next = getNextLesson(currentSlug)
+const prev = getPrevLesson(currentSlug)
+
+// Get titles for prev/next
+function getLessonTitle(slug: string): string {
+  for (const unit of CURRICULUM_ID) {
+    const lesson = unit.lessons.find(l => l.slug === slug)
+    if (lesson) return lesson.title[lang]
+  }
+  return slug
+}
+---
+<nav class="flex justify-between items-center mt-12 pt-8 border-t border-slate-200 dark:border-slate-700">
+  {prev ? (
+    <a
+      href={getLessonUrl(lang, prev.slug)}
+      class="group flex items-center gap-2 px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-primary-300 dark:hover:border-primary-700 hover:bg-primary-50 dark:hover:bg-primary-950/30 transition-colors max-w-[45%]"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 text-slate-400 group-hover:text-primary-500">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+      <div class="min-w-0">
+        <div class="text-xs text-slate-400 dark:text-slate-500">
+          {lang === 'id' ? 'Sebelumnya' : 'Previous'}
+        </div>
+        <div class="text-sm font-medium text-slate-700 dark:text-slate-300 truncate group-hover:text-primary-600 dark:group-hover:text-primary-400">
+          {getLessonTitle(prev.slug)}
+        </div>
+      </div>
+    </a>
+  ) : <div />}
+
+  {next ? (
+    <a
+      href={getLessonUrl(lang, next.slug)}
+      class="group flex items-center gap-2 px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-primary-300 dark:hover:border-primary-700 hover:bg-primary-50 dark:hover:bg-primary-950/30 transition-colors max-w-[45%] ml-auto text-right"
+    >
+      <div class="min-w-0">
+        <div class="text-xs text-slate-400 dark:text-slate-500">
+          {lang === 'id' ? 'Selanjutnya' : 'Next'}
+        </div>
+        <div class="text-sm font-medium text-slate-700 dark:text-slate-300 truncate group-hover:text-primary-600 dark:group-hover:text-primary-400">
+          {getLessonTitle(next.slug)}
+        </div>
+      </div>
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 text-slate-400 group-hover:text-primary-500">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </a>
+  ) : <div />}
+</nav>

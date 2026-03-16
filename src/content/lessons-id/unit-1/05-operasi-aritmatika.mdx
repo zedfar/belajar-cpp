@@ -1,0 +1,373 @@
+---
+title: "Operasi Aritmatika"
+unit: 1
+lesson: 5
+description: "Belajar operasi matematika dasar dan aturan prioritas operator di C++"
+objectives:
+  - "Menggunakan operator aritmatika: +, -, *, /, %"
+  - "Memahami integer division dan modulo"
+  - "Mengenal operator precedence"
+estimatedTime: 30
+prerequisites: ["unit-1/04"]
+difficulty: "beginner"
+tags: ["arithmetic", "operators", "math", "modulo", "precedence"]
+---
+
+# Operasi Aritmatika
+
+Komputer pada dasarnya adalah mesin hitung yang sangat cepat — kata "computer" sendiri berasal dari "to compute" (menghitung). Jadi wajar kalau C++ punya kemampuan matematika yang kuat. Di pelajaran ini, kita akan belajar operator aritmatika dasar yang akan kamu pakai di hampir setiap program.
+
+## Operator Aritmatika Dasar
+
+C++ menyediakan lima operator aritmatika dasar:
+
+| Operator | Nama | Contoh | Hasil |
+|----------|------|--------|-------|
+| `+` | Penjumlahan | `5 + 3` | `8` |
+| `-` | Pengurangan | `10 - 4` | `6` |
+| `*` | Perkalian | `6 * 7` | `42` |
+| `/` | Pembagian | `15 / 3` | `5` |
+| `%` | Modulo (sisa bagi) | `17 % 5` | `2` |
+
+Mari kita bahas masing-masing dengan contoh kode yang bisa kamu jalankan.
+
+### Penjumlahan (`+`) dan Pengurangan (`-`)
+
+```cpp
+#include <iostream>
+
+int main() {
+    int a = 15;
+    int b = 7;
+
+    int jumlah = a + b;
+    int selisih = a - b;
+
+    std::cout << a << " + " << b << " = " << jumlah << std::endl;
+    std::cout << a << " - " << b << " = " << selisih << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+15 + 7 = 22
+15 - 7 = 8
+```
+
+Tidak ada kejutan di sini — sama persis seperti matematika yang kamu kenal.
+
+### Perkalian (`*`)
+
+Di matematika kita pakai `x` atau `.` untuk perkalian. Di C++ (dan hampir semua bahasa pemrograman), kita pakai **asterisk** (`*`):
+
+```cpp
+#include <iostream>
+
+int main() {
+    int panjang = 8;
+    int lebar = 5;
+    int luas = panjang * lebar;
+
+    std::cout << "Luas persegi panjang: " << luas << " cm2" << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Luas persegi panjang: 40 cm2
+```
+
+### Pembagian (`/`)
+
+Di sinilah mulai menarik. Pembagian di C++ punya **perilaku berbeda** tergantung tipe datanya:
+
+```cpp
+#include <iostream>
+
+int main() {
+    // Pembagian integer (bilangan bulat)
+    int a = 7;
+    int b = 2;
+    std::cout << "7 / 2 = " << a / b << std::endl;
+
+    // Pembagian double (bilangan desimal)
+    double c = 7.0;
+    double d = 2.0;
+    std::cout << "7.0 / 2.0 = " << c / d << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+7 / 2 = 3
+7.0 / 2.0 = 3.5
+```
+
+Tunggu — `7 / 2 = 3`? Bukan 3.5?
+
+:::warning
+**Integer Division Trap!** Saat kedua operand bertipe `int`, C++ melakukan **integer division** — hasilnya dipotong (bukan dibulatkan), bagian desimal dibuang. `7 / 2` menghasilkan `3`, bukan `3.5`. Ini adalah salah satu "jebakan" paling umum untuk pemula C++!
+:::
+
+**Cara mendapatkan hasil desimal:**
+
+```cpp
+// Opsi 1: Gunakan tipe double
+double hasil1 = 7.0 / 2.0;    // 3.5
+
+// Opsi 2: Casting salah satu operand ke double
+int x = 7, y = 2;
+double hasil2 = (double)x / y;  // 3.5
+
+// Opsi 3: Minimal satu operand harus double
+double hasil3 = 7.0 / 2;       // 3.5
+double hasil4 = 7 / 2.0;       // 3.5
+```
+
+Selama **minimal satu** dari dua angka bertipe `double`, hasilnya akan berupa `double` juga.
+
+### Modulo (`%`) — Sisa Pembagian
+
+Operator modulo mengembalikan **sisa** dari pembagian. Ini mungkin terdengar asing, tapi sebenarnya sangat sering dipakai di programming.
+
+Bayangkan begini: kamu punya 17 kue dan ingin membaginya rata ke 5 orang.
+- Setiap orang dapat: `17 / 5 = 3` kue (integer division)
+- Sisa kue: `17 % 5 = 2` kue
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "17 % 5 = " << 17 % 5 << std::endl;  // 2
+    std::cout << "10 % 3 = " << 10 % 3 << std::endl;  // 1
+    std::cout << "20 % 4 = " << 20 % 4 << std::endl;  // 0 (habis dibagi)
+    std::cout << "7 % 10 = " << 7 % 10 << std::endl;  // 7
+
+    return 0;
+}
+```
+
+Output:
+```
+17 % 5 = 2
+10 % 3 = 1
+20 % 4 = 0
+7 % 10 = 7
+```
+
+**Kegunaan modulo yang sering ditemui:**
+
+1. **Cek ganjil/genap:** `angka % 2` — kalau hasilnya 0, genap; kalau 1, ganjil
+2. **Cek kelipatan:** `angka % 3 == 0` — true kalau angka kelipatan 3
+3. **Membatasi range:** `angka % 12` — hasilnya selalu 0-11 (berguna untuk jam)
+4. **Mengambil digit terakhir:** `angka % 10` — memberikan digit satuan
+
+```cpp
+#include <iostream>
+
+int main() {
+    int angka = 17;
+
+    if (angka % 2 == 0) {
+        std::cout << angka << " adalah genap" << std::endl;
+    } else {
+        std::cout << angka << " adalah ganjil" << std::endl;
+    }
+
+    std::cout << "Digit terakhir dari " << angka << " adalah " << angka % 10 << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+17 adalah ganjil
+Digit terakhir dari 17 adalah 7
+```
+
+:::note
+Operator `%` hanya bisa dipakai dengan **integer** (`int`). Kamu tidak bisa melakukan `7.5 % 2` — itu akan menghasilkan error.
+:::
+
+## Operator Precedence (Prioritas Operator)
+
+Sama seperti matematika, C++ punya aturan urutan operasi. Perkalian dan pembagian dikerjakan **sebelum** penjumlahan dan pengurangan:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int hasil1 = 2 + 3 * 4;     // 2 + 12 = 14 (bukan 20!)
+    int hasil2 = (2 + 3) * 4;   // 5 * 4 = 20 (pakai kurung)
+
+    std::cout << "2 + 3 * 4 = " << hasil1 << std::endl;
+    std::cout << "(2 + 3) * 4 = " << hasil2 << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+2 + 3 * 4 = 14
+(2 + 3) * 4 = 20
+```
+
+### Tabel Prioritas (Simplified)
+
+| Prioritas | Operator | Contoh |
+|-----------|----------|--------|
+| 1 (tertinggi) | `()` (kurung) | `(2 + 3)` |
+| 2 | `*`, `/`, `%` | `4 * 5`, `10 / 2`, `7 % 3` |
+| 3 (terendah) | `+`, `-` | `3 + 4`, `8 - 2` |
+
+Operator dengan prioritas sama dikerjakan **dari kiri ke kanan**:
+
+```cpp
+int hasil = 20 / 4 * 2;  // (20 / 4) * 2 = 5 * 2 = 10
+```
+
+:::tip
+**Tips praktis:** Kalau kamu ragu tentang urutan operasi, **pakai kurung**. Kurung membuat kode lebih jelas dan mencegah bug. Tidak ada yang salah dengan menulis `(a * b) + c` meskipun hasilnya sama tanpa kurung — kejelasan lebih penting dari keringkasan.
+:::
+
+## Operasi dengan Variabel
+
+Tentu saja, operator aritmatika bisa digunakan dengan variabel, bukan hanya angka literal:
+
+```cpp
+#include <iostream>
+
+int main() {
+    double harga = 25000;
+    int jumlah = 3;
+    double diskon = 0.1;  // 10%
+
+    double subtotal = harga * jumlah;
+    double potongan = subtotal * diskon;
+    double total = subtotal - potongan;
+
+    std::cout << "Harga satuan : Rp " << harga << std::endl;
+    std::cout << "Jumlah       : " << jumlah << std::endl;
+    std::cout << "Subtotal     : Rp " << subtotal << std::endl;
+    std::cout << "Diskon (10%) : Rp " << potongan << std::endl;
+    std::cout << "Total bayar  : Rp " << total << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Harga satuan : Rp 25000
+Jumlah       : 3
+Subtotal     : Rp 75000
+Diskon (10%) : Rp 7500
+Total bayar  : Rp 67500
+```
+
+## Operator Assignment Gabungan
+
+C++ punya shortcut untuk operasi yang umum — mengubah nilai variabel berdasarkan nilai lamanya:
+
+```cpp
+int skor = 100;
+
+skor = skor + 10;   // Cara panjang
+skor += 10;          // Cara pendek (sama hasilnya)
+
+skor = skor - 5;     // Cara panjang
+skor -= 5;           // Cara pendek
+```
+
+| Operator | Artinya | Contoh | Sama dengan |
+|----------|---------|--------|------------|
+| `+=` | Tambah dan simpan | `x += 5` | `x = x + 5` |
+| `-=` | Kurang dan simpan | `x -= 3` | `x = x - 3` |
+| `*=` | Kali dan simpan | `x *= 2` | `x = x * 2` |
+| `/=` | Bagi dan simpan | `x /= 4` | `x = x / 4` |
+| `%=` | Modulo dan simpan | `x %= 3` | `x = x % 3` |
+
+Dan ada dua operator spesial yang sangat sering dipakai:
+
+```cpp
+int counter = 0;
+
+counter++;    // Increment: counter = counter + 1 (sekarang 1)
+counter++;    // Increment lagi (sekarang 2)
+counter--;    // Decrement: counter = counter - 1 (sekarang 1)
+```
+
+`++` (increment) dan `--` (decrement) menambah atau mengurangi variabel sebesar 1. Ngomong-ngomong, inilah asal nama **C++** — "C yang ditambah 1".
+
+## Program Lengkap: Kalkulator Rumus Matematika
+
+```cpp
+#include <iostream>
+
+int main() {
+    // Hitung luas dan keliling lingkaran
+    double pi = 3.14159;
+    double jariJari;
+
+    std::cout << "Masukkan jari-jari lingkaran: ";
+    std::cin >> jariJari;
+
+    double luas = pi * jariJari * jariJari;
+    double keliling = 2 * pi * jariJari;
+
+    std::cout << "\nHasil:" << std::endl;
+    std::cout << "Jari-jari : " << jariJari << std::endl;
+    std::cout << "Luas      : " << luas << std::endl;
+    std::cout << "Keliling  : " << keliling << std::endl;
+
+    return 0;
+}
+```
+
+Contoh interaksi:
+```
+Masukkan jari-jari lingkaran: 7
+
+Hasil:
+Jari-jari : 7
+Luas      : 153.938
+Keliling  : 43.9823
+```
+
+## Latihan
+
+**Latihan:** Buat program yang menerima input panjang dan lebar persegi panjang, lalu menghitung dan menampilkan **luas** dan **keliling**-nya.
+
+Rumus:
+- Luas = panjang x lebar
+- Keliling = 2 x (panjang + lebar)
+
+Contoh interaksi yang diharapkan:
+```
+Masukkan panjang: 10
+Masukkan lebar: 5
+
+Luas persegi panjang: 50
+Keliling persegi panjang: 30
+```
+
+**Bonus challenge:** Ubah programmu agar juga menghitung panjang diagonal. Rumus: diagonal = akar dari (panjang^2 + lebar^2). Hint: gunakan `#include <cmath>` dan fungsi `sqrt()`.
+
+## Ringkasan
+
+- Operator aritmatika: `+`, `-`, `*`, `/`, `%`
+- **Integer division** memotong desimal: `7 / 2 = 3`
+- **Modulo** (`%`) mengembalikan sisa pembagian: `17 % 5 = 2`
+- Prioritas: kurung > perkalian/pembagian/modulo > penjumlahan/pengurangan
+- Operator gabungan: `+=`, `-=`, `*=`, `/=`, `%=`
+- Increment (`++`) dan decrement (`--`) menambah/kurang 1
+
+Di pelajaran berikutnya, kita akan belajar tentang **string** secara lebih mendalam — bukan hanya menampilkannya, tapi juga memanipulasinya!

@@ -1,0 +1,237 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro'
+import { t } from '@/lib/i18n'
+import type { Language } from '@/types/lesson'
+
+export function getStaticPaths() {
+  return [{ params: { lang: 'id' } }, { params: { lang: 'en' } }]
+}
+
+const { lang } = Astro.params as { lang: Language }
+
+const defaultCode = t(lang, 'playground.defaultCode')
+
+const snippets = [
+  { label: 'Hello World', code: '#include <iostream>\n\nint main() {\n    std::cout << "Hello, World!" << std::endl;\n    return 0;\n}' },
+  { label: 'Input/Output', code: '#include <iostream>\nusing namespace std;\n\nint main() {\n    string nama;\n    cout << "Siapa namamu? ";\n    cin >> nama;\n    cout << "Halo, " << nama << "!" << endl;\n    return 0;\n}' },
+  { label: 'For Loop', code: '#include <iostream>\nusing namespace std;\n\nint main() {\n    for (int i = 1; i <= 10; i++) {\n        cout << i << " ";\n    }\n    cout << endl;\n    return 0;\n}' },
+  { label: 'Array', code: '#include <iostream>\nusing namespace std;\n\nint main() {\n    int angka[] = {5, 3, 8, 1, 9};\n    int n = sizeof(angka) / sizeof(angka[0]);\n    \n    for (int i = 0; i < n; i++) {\n        cout << angka[i] << " ";\n    }\n    cout << endl;\n    return 0;\n}' },
+]
+---
+<PageLayout title={t(lang, 'playground.title')} description={t(lang, 'playground.description')} lang={lang}>
+  <div class="max-w-6xl mx-auto">
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-slate-900 dark:text-white mb-2">
+        {t(lang, 'playground.title')}
+      </h1>
+      <p class="text-slate-600 dark:text-slate-400">
+        {t(lang, 'playground.description')}
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <!-- Main editor area -->
+      <div class="lg:col-span-3">
+        <!-- Code editor -->
+        <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-[#282c34] overflow-hidden">
+          <div class="flex items-center justify-between px-4 py-2 bg-[#21252b] border-b border-slate-700">
+            <span class="text-sm text-slate-400 font-mono">main.cpp</span>
+            <div class="flex items-center gap-2">
+              <button
+                id="reset-btn"
+                class="px-3 py-1 rounded text-xs bg-slate-700 hover:bg-slate-600 text-slate-300 transition-colors"
+              >
+                {t(lang, 'code.reset')}
+              </button>
+              <button
+                id="run-btn"
+                class="px-4 py-1.5 rounded text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-medium transition-colors flex items-center gap-1.5"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+                {t(lang, 'code.run')}
+              </button>
+            </div>
+          </div>
+          <textarea
+            id="code-editor"
+            class="w-full h-80 p-4 bg-transparent text-slate-100 font-mono text-sm resize-none focus:outline-none"
+            spellcheck="false"
+          >{defaultCode}</textarea>
+        </div>
+
+        <!-- Stdin input -->
+        <div class="mt-4 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+          <div class="px-4 py-2 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+            <span class="text-xs font-medium text-slate-500 dark:text-slate-400">
+              Input (stdin)
+            </span>
+          </div>
+          <textarea
+            id="stdin-input"
+            class="w-full h-20 p-4 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-mono text-sm resize-none focus:outline-none"
+            placeholder={lang === 'id' ? 'Masukkan input di sini (opsional)...' : 'Enter input here (optional)...'}
+            spellcheck="false"
+          ></textarea>
+        </div>
+
+        <!-- Output -->
+        <div class="mt-4 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+          <div class="px-4 py-2 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+            <span class="text-xs font-medium text-slate-500 dark:text-slate-400">
+              {t(lang, 'code.output')}
+            </span>
+            <span id="exec-time" class="text-xs text-slate-400 ml-3 hidden"></span>
+          </div>
+          <pre
+            id="output-area"
+            class="p-4 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-mono text-sm min-h-[80px] whitespace-pre-wrap"
+          ><span class="text-slate-400 italic">{lang === 'id' ? 'Output akan muncul di sini...' : 'Output will appear here...'}</span></pre>
+        </div>
+      </div>
+
+      <!-- Sidebar: tips & snippets -->
+      <div class="lg:col-span-1 space-y-6">
+        <!-- Snippets -->
+        <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4">
+          <h3 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
+            {lang === 'id' ? 'Contoh Kode' : 'Code Snippets'}
+          </h3>
+          <div class="space-y-2">
+            {snippets.map(snippet => (
+              <button
+                class="snippet-btn w-full text-left px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
+                data-snippet={snippet.code}
+              >
+                {snippet.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <!-- Tips -->
+        <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4">
+          <h3 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
+            {lang === 'id' ? 'Tips' : 'Tips'}
+          </h3>
+          <ul class="space-y-2 text-xs text-slate-500 dark:text-slate-400">
+            <li>{t(lang, 'playground.tips')}</li>
+            <li>{lang === 'id' ? 'Ctrl+Enter untuk jalankan kode' : 'Ctrl+Enter to run code'}</li>
+            <li>{lang === 'id' ? 'Gunakan std::endl atau \\n untuk baris baru' : 'Use std::endl or \\n for new lines'}</li>
+          </ul>
+        </div>
+
+        <!-- Link to curriculum -->
+        <a
+          href={`/${lang}/curriculum`}
+          class="block text-center px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-primary-300 dark:hover:border-primary-600 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+        >
+          {lang === 'id' ? 'Lihat Kurikulum' : 'View Curriculum'}
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block ml-1">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline define:vars={{ lang }}>
+    const editor = document.getElementById('code-editor')
+    const stdinInput = document.getElementById('stdin-input')
+    const runBtn = document.getElementById('run-btn')
+    const resetBtn = document.getElementById('reset-btn')
+    const outputArea = document.getElementById('output-area')
+    const execTime = document.getElementById('exec-time')
+
+    const defaultCode = editor?.value || ''
+
+    // Run code
+    async function runCode() {
+      if (!editor || !outputArea || !runBtn) return
+      const code = editor.value
+      const stdin = stdinInput?.value || ''
+
+      runBtn.disabled = true
+      runBtn.textContent = lang === 'id' ? 'Menjalankan...' : 'Running...'
+      outputArea.textContent = lang === 'id' ? 'Mengompilasi dan menjalankan...' : 'Compiling and running...'
+      outputArea.className = 'p-4 bg-white dark:bg-slate-950 text-slate-500 font-mono text-sm min-h-[80px] whitespace-pre-wrap italic'
+
+      try {
+        const res = await fetch('/api/run-code', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code, stdin }),
+        })
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({ error: 'Server error' }))
+          throw new Error(err.error || `HTTP ${res.status}`)
+        }
+
+        const result = await res.json()
+        const statusId = result.status?.id
+
+        if (statusId === 3) {
+          // Accepted
+          outputArea.textContent = result.stdout || (lang === 'id' ? '(Tidak ada output)' : '(No output)')
+          outputArea.className = 'p-4 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-mono text-sm min-h-[80px] whitespace-pre-wrap'
+        } else if (statusId === 6) {
+          // Compilation error
+          outputArea.textContent = (lang === 'id' ? 'Error Kompilasi:\n' : 'Compilation Error:\n') + (result.compile_output || '')
+          outputArea.className = 'p-4 bg-white dark:bg-slate-950 text-red-600 dark:text-red-400 font-mono text-sm min-h-[80px] whitespace-pre-wrap'
+        } else {
+          // Runtime error or other
+          outputArea.textContent = (result.stderr || result.compile_output || result.status?.description || 'Error')
+          outputArea.className = 'p-4 bg-white dark:bg-slate-950 text-red-600 dark:text-red-400 font-mono text-sm min-h-[80px] whitespace-pre-wrap'
+        }
+
+        if (result.time && execTime) {
+          execTime.textContent = `${(parseFloat(result.time) * 1000).toFixed(0)}ms`
+          execTime.classList.remove('hidden')
+        }
+      } catch (err) {
+        outputArea.textContent = (lang === 'id' ? 'Error: ' : 'Error: ') + err.message
+        outputArea.className = 'p-4 bg-white dark:bg-slate-950 text-red-600 dark:text-red-400 font-mono text-sm min-h-[80px] whitespace-pre-wrap'
+      } finally {
+        runBtn.disabled = false
+        runBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> ' + (lang === 'id' ? 'Jalankan' : 'Run')
+      }
+    }
+
+    runBtn?.addEventListener('click', runCode)
+
+    // Ctrl+Enter shortcut
+    editor?.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault()
+        runCode()
+      }
+      // Tab support
+      if (e.key === 'Tab') {
+        e.preventDefault()
+        const start = editor.selectionStart
+        const end = editor.selectionEnd
+        editor.value = editor.value.substring(0, start) + '    ' + editor.value.substring(end)
+        editor.selectionStart = editor.selectionEnd = start + 4
+      }
+    })
+
+    // Reset
+    resetBtn?.addEventListener('click', () => {
+      if (editor) editor.value = defaultCode
+      if (outputArea) {
+        outputArea.innerHTML = '<span class="text-slate-400 italic">' + (lang === 'id' ? 'Output akan muncul di sini...' : 'Output will appear here...') + '</span>'
+        outputArea.className = 'p-4 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-mono text-sm min-h-[80px] whitespace-pre-wrap'
+      }
+      if (execTime) execTime.classList.add('hidden')
+    })
+
+    // Snippet buttons
+    document.querySelectorAll('.snippet-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (editor) editor.value = btn.getAttribute('data-snippet') || ''
+      })
+    })
+  </script>
+</PageLayout>

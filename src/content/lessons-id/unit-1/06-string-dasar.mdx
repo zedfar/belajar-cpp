@@ -1,0 +1,365 @@
+---
+title: "String Dasar"
+unit: 1
+lesson: 6
+description: "Mengenal std::string, concatenation, dan operasi string dasar"
+objectives:
+  - "Menggunakan std::string untuk menyimpan dan memanipulasi teks"
+  - "Menggabungkan string dengan concatenation"
+  - "Menggunakan fungsi dasar string: length(), substr(), dan perbandingan"
+estimatedTime: 30
+prerequisites: ["unit-1/05"]
+difficulty: "beginner"
+tags: ["string", "concatenation", "length", "substr", "text"]
+---
+
+# String Dasar
+
+Kita sudah menggunakan string sejak pelajaran Hello World — setiap kali menulis `"Hello, World!"`, itu adalah string. Tapi string di C++ bisa lebih dari sekadar teks statis. Kamu bisa menggabungkan, memotong, mengukur, dan membandingkan string. Di pelajaran ini, kita akan menguasai dasar-dasar manipulasi string.
+
+## Apa Itu String?
+
+Bayangkan string sebagai **kalung manik-manik**. Setiap manik adalah satu **karakter** — huruf, angka, simbol, atau spasi. Kamu bisa menghitung berapa maniknya, menambah manik baru, mengambil manik tertentu, atau memotong sebagian kalung.
+
+```
+String "Hello"  →  ['H'] ['e'] ['l'] ['l'] ['o']
+                     0     1     2     3     4     ← posisi (index)
+```
+
+Setiap karakter punya **posisi** (index) yang dimulai dari **0** — bukan 1. Ini adalah konvensi umum di hampir semua bahasa pemrograman.
+
+## Mendeklarasikan String
+
+```cpp
+#include <iostream>
+#include <string>    // Jangan lupa include ini!
+
+int main() {
+    std::string sapaan = "Halo, dunia!";
+    std::string namaDepan = "Budi";
+    std::string namaBelakang = "Santoso";
+    std::string kosong = "";     // String kosong — valid!
+
+    std::cout << sapaan << std::endl;
+
+    return 0;
+}
+```
+
+:::warning
+Selalu sertakan `#include <string>` di bagian atas file saat menggunakan `std::string`. Meskipun beberapa compiler menyertakannya otomatis lewat `<iostream>`, jangan bergantung pada perilaku ini — lebih baik aman.
+:::
+
+## Concatenation (Penggabungan)
+
+Kamu bisa menggabungkan dua string menggunakan operator `+`:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string namaDepan = "Budi";
+    std::string namaBelakang = "Santoso";
+
+    std::string namaLengkap = namaDepan + " " + namaBelakang;
+
+    std::cout << "Nama lengkap: " << namaLengkap << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Nama lengkap: Budi Santoso
+```
+
+Perhatikan: kita menambahkan `" "` (string berisi spasi) di antara nama depan dan belakang. Tanpa itu, hasilnya akan `"BudiSantoso"` — menempel tanpa spasi.
+
+### Concatenation dengan `+=`
+
+Kamu juga bisa menambahkan teks ke string yang sudah ada:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string pesan = "Halo";
+    std::cout << "Sebelum: " << pesan << std::endl;
+
+    pesan += ", ";
+    pesan += "apa kabar";
+    pesan += "?";
+    std::cout << "Sesudah: " << pesan << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Sebelum: Halo
+Sesudah: Halo, apa kabar?
+```
+
+:::note
+Operator `+` untuk string **hanya bisa** menggabungkan string dengan string. Kamu tidak bisa langsung menggabungkan string dengan angka. Untuk mengonversi angka ke string, gunakan `std::to_string()`:
+
+```cpp
+std::string teks = "Umur saya " + std::to_string(17) + " tahun";
+```
+:::
+
+## Mengukur Panjang String
+
+Untuk mengetahui berapa karakter dalam sebuah string, gunakan `.length()` atau `.size()` — keduanya menghasilkan hal yang sama:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string kata = "Programming";
+
+    std::cout << "Kata: " << kata << std::endl;
+    std::cout << "Panjang (length): " << kata.length() << std::endl;
+    std::cout << "Panjang (size): " << kata.size() << std::endl;
+
+    std::string kosong = "";
+    std::cout << "Panjang string kosong: " << kosong.length() << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Kata: Programming
+Panjang (length): 11
+Panjang (size): 11
+Panjang string kosong: 0
+```
+
+`length()` dan `size()` menghitung **semua karakter**, termasuk spasi:
+
+```cpp
+std::string kalimat = "Hello World";
+std::cout << kalimat.length() << std::endl;  // 11 (termasuk spasi)
+```
+
+## Mengakses Karakter Individual
+
+Kamu bisa mengakses karakter tertentu menggunakan **index** dalam tanda kurung siku `[]`:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string kata = "Hello";
+
+    std::cout << "Karakter ke-0: " << kata[0] << std::endl;  // H
+    std::cout << "Karakter ke-1: " << kata[1] << std::endl;  // e
+    std::cout << "Karakter ke-4: " << kata[4] << std::endl;  // o
+
+    return 0;
+}
+```
+
+Output:
+```
+Karakter ke-0: H
+Karakter ke-1: e
+Karakter ke-4: o
+```
+
+:::tip
+Ingat bahwa index dimulai dari **0**, bukan 1. Karakter pertama ada di posisi 0, karakter kedua di posisi 1, dan seterusnya. Karakter terakhir ada di posisi `length() - 1`. Konsep zero-indexing ini akan kita bahas lebih mendalam di Unit 5 saat belajar array.
+:::
+
+## Mengambil Potongan String dengan `substr()`
+
+`substr()` (substring) mengambil sebagian teks dari string. Formatnya:
+
+```
+string.substr(posisi_awal, jumlah_karakter)
+```
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string kalimat = "Belajar C++ itu seru!";
+
+    std::string bagian1 = kalimat.substr(0, 7);     // "Belajar"
+    std::string bagian2 = kalimat.substr(8, 3);     // "C++"
+    std::string bagian3 = kalimat.substr(16);        // "seru!" (sampai akhir)
+
+    std::cout << "Bagian 1: " << bagian1 << std::endl;
+    std::cout << "Bagian 2: " << bagian2 << std::endl;
+    std::cout << "Bagian 3: " << bagian3 << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Bagian 1: Belajar
+Bagian 2: C++
+Bagian 3: seru!
+```
+
+Kalau kamu tidak memberikan parameter kedua (jumlah karakter), `substr()` mengambil semua karakter dari posisi awal sampai akhir string.
+
+## Membandingkan String
+
+String bisa dibandingkan menggunakan operator perbandingan:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string a = "hello";
+    std::string b = "hello";
+    std::string c = "Hello";
+
+    if (a == b) {
+        std::cout << "a dan b sama" << std::endl;
+    }
+
+    if (a != c) {
+        std::cout << "a dan c berbeda" << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+a dan b sama
+a dan c berbeda
+```
+
+Perbandingan string bersifat **case-sensitive** — `"hello"` dan `"Hello"` adalah dua string yang **berbeda** karena huruf besar dan kecil dibedakan.
+
+Kamu juga bisa membandingkan string secara leksikografis (urutan kamus) menggunakan `<`, `>`, `<=`, `>=`:
+
+```cpp
+std::string apel = "apel";
+std::string pisang = "pisang";
+
+if (apel < pisang) {
+    std::cout << "apel datang sebelum pisang di kamus" << std::endl;
+}
+```
+
+## Mencari Teks dalam String
+
+`find()` mencari posisi kemunculan pertama dari sebuah teks di dalam string:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string kalimat = "Saya suka belajar C++";
+
+    int posisi = kalimat.find("belajar");
+
+    if (posisi != std::string::npos) {
+        std::cout << "'belajar' ditemukan di posisi " << posisi << std::endl;
+    } else {
+        std::cout << "Tidak ditemukan" << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+'belajar' ditemukan di posisi 10
+```
+
+`std::string::npos` adalah nilai khusus yang berarti "tidak ditemukan". Kalau `find()` mengembalikan `npos`, artinya teks yang dicari tidak ada di dalam string.
+
+## Program Lengkap: Generator Username
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string namaDepan;
+    std::string namaBelakang;
+    int tahunLahir;
+
+    std::cout << "=== Generator Username ===" << std::endl;
+
+    std::cout << "Nama depan: ";
+    std::cin >> namaDepan;
+
+    std::cout << "Nama belakang: ";
+    std::cin >> namaBelakang;
+
+    std::cout << "Tahun lahir: ";
+    std::cin >> tahunLahir;
+
+    // Buat username: 3 huruf pertama nama depan + nama belakang + 2 digit terakhir tahun
+    std::string username = namaDepan.substr(0, 3) + namaBelakang + std::to_string(tahunLahir % 100);
+
+    std::cout << "\nUsername kamu: " << username << std::endl;
+    std::cout << "Panjang username: " << username.length() << " karakter" << std::endl;
+
+    return 0;
+}
+```
+
+Contoh interaksi:
+```
+=== Generator Username ===
+Nama depan: Rina
+Nama belakang: Sari
+Tahun lahir: 2009
+
+Username kamu: RinSari09
+Panjang username: 9 karakter
+```
+
+## Latihan
+
+Buat program yang:
+1. Meminta input nama depan dan nama belakang (masing-masing satu kata)
+2. Menggabungkan keduanya menjadi nama lengkap
+3. Menampilkan nama lengkap, jumlah karakter total, dan inisial (huruf pertama nama depan + huruf pertama nama belakang)
+
+Contoh interaksi:
+```
+Nama depan: Ahmad
+Nama belakang: Fauzi
+
+Nama lengkap: Ahmad Fauzi
+Jumlah karakter: 11
+Inisial: AF
+```
+
+Hint: gunakan `[0]` untuk mengambil karakter pertama, dan `length()` untuk menghitung panjang.
+
+## Ringkasan
+
+- `std::string` menyimpan teks, butuh `#include <string>`
+- **Concatenation** (`+`, `+=`): menggabungkan string
+- `.length()` / `.size()`: menghitung jumlah karakter
+- `[index]`: mengakses karakter di posisi tertentu (dimulai dari 0)
+- `.substr(pos, len)`: mengambil potongan string
+- `==`, `!=`, `<`, `>`: membandingkan string (case-sensitive)
+- `.find(teks)`: mencari posisi teks dalam string
+- `std::to_string(angka)`: mengubah angka menjadi string
+
+Di pelajaran berikutnya, kita akan belajar tentang **konstanta dan keyword `auto`** — cara membuat variabel yang tidak bisa diubah dan membiarkan compiler menebak tipe data.

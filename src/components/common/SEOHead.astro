@@ -1,0 +1,55 @@
+---
+interface Props {
+  title: string
+  description: string
+  lang: string
+  url: string
+  ogImage?: string
+}
+const { title, description, lang, url, ogImage } = Astro.props
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://belajar-cpp.vercel.app'
+const canonicalUrl = new URL(url, siteUrl).href
+const image = ogImage || `${siteUrl}/og-default.png`
+---
+<!-- Canonical -->
+<link rel="canonical" href={canonicalUrl} />
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={image} />
+
+<!-- Sitemap -->
+<link rel="sitemap" href="/sitemap-index.xml" />
+
+<!-- Alternate languages -->
+{lang === 'id' ? (
+  <link rel="alternate" hreflang="en" href={canonicalUrl.replace('/id/', '/en/')} />
+) : (
+  <link rel="alternate" hreflang="id" href={canonicalUrl.replace('/en/', '/id/')} />
+)}
+<link rel="alternate" hreflang="x-default" href={canonicalUrl.replace(/\/(id|en)\//, '/id/')} />
+
+<!-- JSON-LD Structured Data -->
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Course",
+  "name": title,
+  "description": description,
+  "provider": {
+    "@type": "Organization",
+    "name": "Belajar C++",
+    "sameAs": siteUrl,
+  },
+  "inLanguage": lang === 'id' ? 'id-ID' : 'en-US',
+  "isAccessibleForFree": true,
+  "url": canonicalUrl,
+  "image": image,
+  "educationalLevel": "Beginner",
+  "teaches": "C++ Programming",
+  "audience": {
+    "@type": "EducationalAudience",
+    "educationalRole": "student",
+  },
+})} />

@@ -1,0 +1,165 @@
+---
+title: "Tour Playground"
+unit: 0
+lesson: 3
+description: "Mengenal fitur-fitur playground coding di website ini"
+objectives:
+  - "Mengenal bagian-bagian antarmuka playground"
+  - "Bisa menulis dan menjalankan kode di playground"
+  - "Memahami cara membaca output dan error"
+estimatedTime: 10
+prerequisites: ["unit-0/02"]
+difficulty: "beginner"
+tags: ["playground", "tutorial", "getting-started"]
+---
+
+# Tour Playground
+
+Selamat datang di playground! Di sini kamu akan menghabiskan banyak waktu untuk bereksperimen dengan kode C++. Mari kita kenali setiap bagiannya agar kamu nyaman dan percaya diri saat coding.
+
+## Bagian-Bagian Playground
+
+Playground terdiri dari beberapa area utama:
+
+### 1. Editor Kode (Area Utama)
+
+Ini adalah area paling besar di playground — tempat kamu menulis kode C++. Editor ini dilengkapi dengan:
+
+- **Syntax highlighting** — kode diwarnai otomatis agar mudah dibaca. Kata kunci (seperti `int`, `return`) punya warna berbeda dari string (teks dalam tanda kutip) dan angka.
+- **Nomor baris** — di sisi kiri, ada nomor untuk setiap baris. Ini sangat berguna saat compiler bilang "error di baris 5" — kamu langsung tahu harus lihat ke mana.
+- **Auto-indentation** — saat kamu menekan Enter setelah `{`, editor otomatis menambahkan indentasi (spasi di awal baris) agar kode rapi.
+
+### 2. Tombol Run
+
+Tombol yang paling penting! Biasanya berwarna hijau atau biru dengan ikon play (segitiga). Saat kamu klik:
+
+1. Kode dikirim ke compiler
+2. Compiler menerjemahkan kode menjadi program
+3. Program dijalankan
+4. Hasil muncul di area output
+
+:::tip
+Kalau ada shortcut keyboard (biasanya **Ctrl+Enter** atau **Cmd+Enter** di Mac), gunakan itu agar lebih cepat. Programmer suka shortcut!
+:::
+
+### 3. Area Output
+
+Di bawah atau di samping editor, ada area yang menampilkan hasil program. Di sini kamu akan melihat:
+
+- **Output normal** — teks yang dihasilkan program (dari `std::cout`)
+- **Error messages** — pesan kesalahan kalau kode ada yang salah
+- **Input prompt** — kalau program meminta input dari user (dari `std::cin`)
+
+### 4. Tombol Reset
+
+Tombol ini mengembalikan editor ke kode default atau kosong. Berguna kalau kamu ingin mulai dari awal.
+
+:::warning
+Tombol Reset akan menghapus semua kode yang kamu tulis! Kalau kodenya penting, copy-paste dulu ke tempat lain sebelum menekan Reset.
+:::
+
+## Coba Sendiri!
+
+Sekarang saatnya mencoba. Ketik kode berikut di editor playground (atau kalau sudah terisi kode default, hapus dulu dan ganti dengan ini):
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Halo! Saya sedang belajar C++!" << std::endl;
+    std::cout << "Ini baris kedua." << std::endl;
+    std::cout << "Dan ini baris ketiga!" << std::endl;
+    return 0;
+}
+```
+
+Klik tombol **Run** dan perhatikan area output. Kamu seharusnya melihat:
+
+```
+Halo! Saya sedang belajar C++!
+Ini baris kedua.
+Dan ini baris ketiga!
+```
+
+Tiga baris teks muncul secara berurutan. Setiap perintah `std::cout` menghasilkan satu baris output.
+
+## Memahami Error
+
+Sekarang, coba buat kesalahan dengan sengaja. Ubah kode menjadi seperti ini (perhatikan — tanda titik koma di baris 4 dihapus):
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Halo!" << std::endl
+    return 0;
+}
+```
+
+Klik **Run** dan perhatikan area output. Kamu akan melihat pesan error seperti:
+
+```
+error: expected ';' before 'return'
+```
+
+Compiler memberitahu bahwa dia mengharapkan tanda `;` (titik koma) sebelum kata `return`. Ini karena kita menghapus titik koma di akhir baris 4.
+
+:::note
+Jangan takut dengan error! Setiap programmer — bahkan yang sudah pengalaman bertahun-tahun — menemui error setiap hari. Error bukan berarti kamu gagal, error berarti compiler sedang **membantumu** menemukan kesalahan. Baca pesannya baik-baik, perbaiki, dan coba lagi.
+:::
+
+**Tips membaca error:**
+
+1. **Lihat nomor baris** — error biasanya menyebut di baris berapa masalahnya
+2. **Baca pesan** — meskipun dalam bahasa Inggris, pesannya biasanya cukup jelas (expected `;` = "mengharapkan titik koma")
+3. **Perbaiki dari error PERTAMA** — kadang satu kesalahan bisa menyebabkan banyak error berantai. Perbaiki yang pertama dulu, lalu compile lagi
+
+## Tips Menggunakan Playground
+
+Beberapa tips agar pengalaman codingmu lebih lancar:
+
+**1. Simpan kode penting**
+
+Playground mungkin tidak menyimpan kode secara permanen. Kalau kamu menulis sesuatu yang ingin disimpan, copy-paste ke file teks di komputermu.
+
+**2. Eksperimen itu bagus!**
+
+Playground adalah tempat yang aman untuk bereksperimen. Coba ubah-ubah kode, lihat apa yang terjadi. Tidak ada yang bisa rusak — paling jelek kamu dapat error, dan itu mudah diperbaiki.
+
+**3. Ketik sendiri, jangan copy-paste**
+
+Saat belajar, sebisa mungkin **ketik ulang** kode contoh, jangan copy-paste. Mengetik sendiri membantu otakmu memproses dan mengingat syntax lebih baik. Ini terbukti secara ilmiah!
+
+**4. Coba variasi**
+
+Setelah menjalankan contoh yang diberikan, coba buat variasi:
+- Ubah teks yang di-print
+- Tambah baris baru
+- Coba hapus sesuatu dan lihat errornya
+
+## Latihan
+
+Sebelum lanjut ke Unit 1, coba jalankan kode berikut di playground:
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Nama saya: [tulis namamu di sini]" << std::endl;
+    std::cout << "Saya mulai belajar C++ hari ini!" << std::endl;
+    std::cout << "Target saya: [tulis targetmu]" << std::endl;
+    return 0;
+}
+```
+
+Ganti teks di dalam tanda kutip dengan informasi tentang dirimu. Klik Run dan lihat hasilnya. Selamat — kamu sudah siap untuk mulai belajar C++ di Unit 1!
+
+## Ringkasan
+
+- Playground punya **editor kode**, **tombol Run**, **area output**, dan **tombol Reset**
+- Klik Run untuk compile dan jalankan kode
+- Error itu normal — baca pesannya dan perbaiki
+- Ketik sendiri kode contoh untuk belajar lebih efektif
+- Eksperimen bebas di playground — aman dan tidak ada risiko
+
+Sekarang kamu sudah siap! Di Unit 1, kita akan mulai belajar C++ dari dasar — dimulai dengan program "Hello, World!" yang legendaris.

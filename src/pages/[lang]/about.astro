@@ -1,0 +1,130 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro'
+import { t } from '@/lib/i18n'
+import type { Language } from '@/types/lesson'
+
+export function getStaticPaths() {
+  return [{ params: { lang: 'id' } }, { params: { lang: 'en' } }]
+}
+
+const { lang } = Astro.params as { lang: Language }
+---
+<PageLayout title={t(lang, 'about.title')} description={t(lang, 'about.description')} lang={lang}>
+  <div class="max-w-3xl mx-auto">
+    <h1 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-6">
+      {t(lang, 'about.title')}
+    </h1>
+
+    <div class="prose prose-slate dark:prose-invert max-w-none">
+      <!-- Platform description -->
+      <section class="mb-12">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-4">
+          {lang === 'id' ? 'Apa itu Belajar C++?' : 'What is Learn C++?'}
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+          {lang === 'id'
+            ? 'Belajar C++ adalah platform pembelajaran interaktif yang dirancang khusus untuk siswa SMP dan SMA Indonesia. Platform ini menyediakan materi C++ dari dasar hingga mahir, dengan penjelasan dalam Bahasa Indonesia yang mudah dipahami.'
+            : 'Learn C++ is an interactive learning platform designed specifically for Indonesian middle and high school students. It provides C++ materials from beginner to advanced levels, with explanations in easy-to-understand Bahasa Indonesia.'}
+        </p>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+          {lang === 'id'
+            ? 'Semua konten gratis dan tidak memerlukan akun. Kamu bisa langsung mulai belajar dan menjalankan kode C++ di browser tanpa perlu menginstall apapun.'
+            : 'All content is free and requires no account. You can start learning right away and run C++ code in your browser without installing anything.'}
+        </p>
+      </section>
+
+      <!-- Features -->
+      <section class="mb-12">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-4">
+          {lang === 'id' ? 'Fitur Utama' : 'Key Features'}
+        </h2>
+        <ul class="space-y-3">
+          {[
+            lang === 'id'
+              ? ['Editor kode interaktif', 'Tulis dan jalankan kode C++ langsung di browser']
+              : ['Interactive code editor', 'Write and run C++ code directly in your browser'],
+            lang === 'id'
+              ? ['Kurikulum terstruktur', '7 unit dari dasar hingga struct dan file I/O']
+              : ['Structured curriculum', '7 units from basics to structs and file I/O'],
+            lang === 'id'
+              ? ['Progress tracking', 'Pantau kemajuan belajarmu di setiap unit']
+              : ['Progress tracking', 'Track your learning progress across units'],
+            lang === 'id'
+              ? ['Bilingual', 'Tersedia dalam Bahasa Indonesia dan English']
+              : ['Bilingual', 'Available in Bahasa Indonesia and English'],
+            lang === 'id'
+              ? ['Project-based', 'Setiap unit diakhiri dengan project nyata']
+              : ['Project-based', 'Each unit ends with a real project'],
+          ].map(([title, desc]) => (
+            <li class="flex items-start gap-3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 mt-0.5 text-emerald-500">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              <div>
+                <span class="font-medium text-slate-900 dark:text-white">{title}</span>
+                <span class="text-slate-500 dark:text-slate-400"> — {desc}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Tech Stack -->
+      <section class="mb-12">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-4">
+          {lang === 'id' ? 'Teknologi' : 'Tech Stack'}
+        </h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+          {[
+            { name: 'Astro', desc: 'Static site generator' },
+            { name: 'React', desc: 'Interactive components' },
+            { name: 'TypeScript', desc: 'Type safety' },
+            { name: 'Tailwind CSS', desc: 'Styling' },
+            { name: 'Judge0', desc: 'Code execution API' },
+            { name: 'Shiki', desc: 'Syntax highlighting' },
+          ].map(tech => (
+            <div class="p-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+              <div class="font-medium text-sm text-slate-900 dark:text-white">{tech.name}</div>
+              <div class="text-xs text-slate-500 dark:text-slate-400">{tech.desc}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- Open Source -->
+      <section class="mb-12">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-4">
+          Open Source
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+          {lang === 'id'
+            ? 'Platform ini bersifat open source. Kamu bisa melihat kode sumbernya, melaporkan bug, atau berkontribusi di GitHub.'
+            : 'This platform is open source. You can view the source code, report bugs, or contribute on GitHub.'}
+        </p>
+        <a
+          href="https://github.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium text-slate-700 dark:text-slate-300 transition-colors"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+          </svg>
+          {lang === 'id' ? 'Lihat di GitHub' : 'View on GitHub'}
+        </a>
+      </section>
+
+      <!-- Contact -->
+      <section>
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-4">
+          {lang === 'id' ? 'Kontak & Feedback' : 'Contact & Feedback'}
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+          {lang === 'id'
+            ? 'Punya saran, pertanyaan, atau menemukan bug? Silakan buat issue di GitHub atau kirim email.'
+            : 'Have suggestions, questions, or found a bug? Feel free to create an issue on GitHub or send an email.'}
+        </p>
+      </section>
+    </div>
+  </div>
+</PageLayout>

@@ -1,0 +1,270 @@
+---
+title: "Konstanta dan Auto"
+unit: 1
+lesson: 7
+description: "Mengenal const, constexpr, dan keyword auto untuk deklarasi variabel"
+objectives:
+  - "Memahami kapan dan mengapa menggunakan const"
+  - "Mengenal constexpr untuk nilai yang diketahui saat compile"
+  - "Menggunakan auto untuk membiarkan compiler menentukan tipe"
+estimatedTime: 20
+prerequisites: ["unit-1/06"]
+difficulty: "beginner"
+tags: ["const", "constexpr", "auto", "constants", "type-inference"]
+---
+
+# Konstanta dan Auto
+
+Di pelajaran sebelumnya, kita belajar bahwa variabel bisa diubah nilainya kapan saja. Tapi bagaimana kalau ada nilai yang **tidak seharusnya** berubah? Nilai Pi selalu 3.14159..., jumlah hari dalam seminggu selalu 7, dan kecepatan cahaya tidak pernah berubah. Untuk kasus seperti ini, C++ menyediakan **konstanta**.
+
+Dan di sisi lain, kadang kita merasa repot menulis tipe data yang panjang. C++ modern punya keyword `auto` yang membuat hidup lebih mudah.
+
+## `const` — Nilai yang Tidak Bisa Diubah
+
+Tambahkan kata kunci `const` sebelum tipe data untuk membuat variabel yang **tidak bisa diubah** setelah diinisialisasi:
+
+```cpp
+#include <iostream>
+
+int main() {
+    const double PI = 3.14159265;
+    const int HARI_DALAM_SEMINGGU = 7;
+    const std::string NAMA_SEKOLAH = "SMA Negeri 1";
+
+    std::cout << "PI = " << PI << std::endl;
+    std::cout << "Hari dalam seminggu: " << HARI_DALAM_SEMINGGU << std::endl;
+    std::cout << "Sekolah: " << NAMA_SEKOLAH << std::endl;
+
+    return 0;
+}
+```
+
+Bayangkan `const` seperti **label permanen yang dicetak** — sekali ditulis, tidak bisa dihapus atau diubah. Bandingkan dengan variabel biasa yang seperti **label stiker** — bisa dilepas dan diganti kapan saja.
+
+### Apa yang Terjadi Kalau Coba Mengubah `const`?
+
+```cpp
+const double PI = 3.14159;
+PI = 3.14;  // ERROR! Assignment of read-only variable 'PI'
+```
+
+Compiler akan menolak kode ini dan memberikan error. Ini adalah fitur keamanan — melindungi nilai yang tidak seharusnya berubah dari perubahan tidak sengaja.
+
+### Naming Convention untuk Konstanta
+
+Perhatikan pada contoh di atas, nama konstanta ditulis dengan **HURUF KAPITAL SEMUA** dan **underscore** sebagai pemisah kata (`HARI_DALAM_SEMINGGU`). Ini adalah konvensi umum agar pembaca kode langsung tahu bahwa itu konstanta, bukan variabel biasa.
+
+```cpp
+// Konstanta - HURUF KAPITAL
+const double KECEPATAN_CAHAYA = 299792458.0;  // m/s
+const int MAX_SKOR = 100;
+const double GRAVITASI = 9.8;  // m/s^2
+
+// Variabel biasa - camelCase atau snake_case
+double kecepatan = 0.0;
+int skor = 0;
+```
+
+## Kapan Pakai `const`?
+
+Gunakan `const` ketika:
+
+1. **Nilai matematika/fisika:** PI, gravitasi, kecepatan cahaya
+2. **Batas/limit:** skor maksimal, panjang maksimal nama, jumlah percobaan
+3. **Konfigurasi tetap:** nama aplikasi, versi, URL
+4. **Nilai yang dihitung sekali lalu tidak berubah:**
+
+```cpp
+#include <iostream>
+
+int main() {
+    double jariJari;
+    std::cout << "Masukkan jari-jari: ";
+    std::cin >> jariJari;
+
+    const double PI = 3.14159265;
+    const double luas = PI * jariJari * jariJari;  // Dihitung sekali, tidak akan berubah
+
+    std::cout << "Luas lingkaran: " << luas << std::endl;
+
+    return 0;
+}
+```
+
+:::tip
+**Aturan praktis:** Kalau sebuah variabel tidak perlu diubah setelah diberi nilai, tambahkan `const`. Ini membuat kode lebih aman (mencegah bug) dan lebih mudah dipahami (pembaca tahu nilai ini tetap).
+:::
+
+## `constexpr` — Dihitung Saat Compile
+
+`constexpr` mirip `const`, tapi lebih ketat: nilainya harus sudah **diketahui saat compile** (sebelum program dijalankan).
+
+```cpp
+constexpr double PI = 3.14159265;          // OK - nilai sudah diketahui
+constexpr int MAX_LEVEL = 50;              // OK
+constexpr int LUAS = 10 * 20;             // OK - bisa dihitung saat compile
+```
+
+Perbedaan dengan `const`:
+
+```cpp
+int radius;
+std::cin >> radius;
+
+const double luas = 3.14 * radius * radius;      // OK - const bisa dari input
+// constexpr double luas = 3.14 * radius * radius; // ERROR - constexpr butuh nilai compile-time
+```
+
+`const` bisa diisi dari input user (runtime), tapi `constexpr` harus bisa dihitung tanpa menjalankan program.
+
+**Kapan pakai `constexpr`?**
+
+Untuk nilai yang benar-benar konstan dan diketahui sejak awal — konstanta matematika, ukuran array tetap, konfigurasi yang tidak pernah berubah.
+
+:::note
+Untuk pemula, gunakan `const` saja dulu. `constexpr` akan lebih berguna saat kamu mulai menulis kode yang lebih advanced. Yang penting sekarang: pahami konsep bahwa ada nilai yang tidak boleh berubah.
+:::
+
+## `auto` — Biarkan Compiler Menebak Tipe
+
+C++11 memperkenalkan keyword `auto` yang memungkinkan compiler **menentukan tipe data secara otomatis** berdasarkan nilai yang diberikan:
+
+```cpp
+auto umur = 17;           // Compiler tahu ini int
+auto tinggi = 170.5;      // Compiler tahu ini double
+auto nama = std::string("Budi");  // Compiler tahu ini string
+auto aktif = true;        // Compiler tahu ini bool
+```
+
+Compiler melihat nilai di sisi kanan `=` dan otomatis menentukan tipe yang tepat.
+
+### Kapan `auto` Berguna?
+
+**1. Tipe data yang panjang:**
+
+Saat tipe data sudah jelas dari konteks dan menulisnya secara eksplisit hanya menambah "noise":
+
+```cpp
+// Tanpa auto - tipe data panjang dan repetitif
+std::string::size_type panjang = kata.length();
+
+// Dengan auto - lebih ringkas
+auto panjang = kata.length();
+```
+
+**2. Saat tipe sudah jelas dari nilai:**
+
+```cpp
+auto pi = 3.14159;     // Jelas double
+auto jumlah = 42;      // Jelas int
+```
+
+### Kapan TIDAK Pakai `auto`?
+
+**1. Saat tipe tidak jelas:**
+
+```cpp
+auto x = 5;      // int? short? long? — tidak jelas untuk pembaca
+int umur = 5;    // Jauh lebih jelas: ini adalah umur, bertipe integer
+```
+
+**2. Saat kamu ingin tipe tertentu:**
+
+```cpp
+auto harga = 100;       // Ini jadi int, padahal mungkin kamu mau double
+double harga = 100.0;   // Eksplisit: ini harga dalam desimal
+```
+
+**3. Deklarasi tanpa inisialisasi:**
+
+```cpp
+auto x;    // ERROR! Compiler tidak tahu tipe apa karena tidak ada nilai
+int x;     // OK (meskipun sebaiknya diinisialisasi)
+```
+
+:::tip
+**Aturan untuk pemula:** Tulis tipe data secara eksplisit saat belajar. Ini membantu kamu memahami tipe data dengan lebih baik. Gunakan `auto` secara bertahap saat kamu sudah nyaman dan tipe datanya sudah jelas dari konteks.
+:::
+
+## Menggabungkan `const` dan `auto`
+
+Kamu bisa menggabungkan keduanya:
+
+```cpp
+const auto PI = 3.14159;       // const double, tipe otomatis
+const auto MAX_NAMA = 50;     // const int, tipe otomatis
+```
+
+## Program Lengkap: Konversi Suhu
+
+```cpp
+#include <iostream>
+
+int main() {
+    // Konstanta untuk formula konversi
+    const double FAKTOR_KONVERSI = 9.0 / 5.0;
+    const int OFFSET_FAHRENHEIT = 32;
+
+    // Input dari user
+    double celsius;
+    std::cout << "Masukkan suhu dalam Celsius: ";
+    std::cin >> celsius;
+
+    // Hitung konversi (hasilnya const karena tidak akan berubah)
+    const double fahrenheit = (celsius * FAKTOR_KONVERSI) + OFFSET_FAHRENHEIT;
+    const double kelvin = celsius + 273.15;
+
+    // Tampilkan hasil
+    std::cout << "\nHasil Konversi:" << std::endl;
+    std::cout << celsius << " °C = " << fahrenheit << " °F" << std::endl;
+    std::cout << celsius << " °C = " << kelvin << " K" << std::endl;
+
+    return 0;
+}
+```
+
+Contoh interaksi:
+```
+Masukkan suhu dalam Celsius: 100
+
+Hasil Konversi:
+100 °C = 212 °F
+100 °C = 373.15 K
+```
+
+Perhatikan bagaimana `FAKTOR_KONVERSI` dan `OFFSET_FAHRENHEIT` dibuat sebagai konstanta karena nilainya tetap, sedangkan `celsius` adalah variabel biasa karena nilainya dari input user. `fahrenheit` dan `kelvin` juga dibuat `const` karena setelah dihitung, tidak akan diubah lagi.
+
+## Latihan
+
+Buat program yang menghitung luas dan keliling lingkaran. Gunakan `const` untuk PI dan variabel hasil yang tidak berubah:
+
+```cpp
+#include <iostream>
+
+int main() {
+    // Deklarasikan PI sebagai konstanta
+    // Minta input jari-jari dari user
+    // Hitung luas (PI * r * r) dan keliling (2 * PI * r)
+    // Tampilkan hasil
+
+    return 0;
+}
+```
+
+**Challenge tambahan:** Identifikasi variabel mana saja di program-program pelajaran sebelumnya yang seharusnya `const` (misalnya PI yang pernah kita tulis sebagai variabel biasa), lalu ubah menjadi `const`.
+
+## Ringkasan
+
+| Keyword | Artinya | Contoh |
+|---------|---------|--------|
+| `const` | Nilai tidak bisa diubah setelah inisialisasi | `const double PI = 3.14;` |
+| `constexpr` | Nilai harus diketahui saat compile | `constexpr int MAX = 100;` |
+| `auto` | Compiler menentukan tipe otomatis | `auto x = 42;` |
+
+- **`const`** melindungi nilai dari perubahan tidak sengaja
+- **`constexpr`** untuk konstanta yang benar-benar compile-time
+- **`auto`** mengurangi penulisan tipe yang panjang/jelas
+- Nama konstanta umumnya ditulis **HURUF_KAPITAL**
+- Untuk pemula: gunakan `const` secara liberal, `auto` secara konservatif
+
+Di pelajaran berikutnya — pelajaran terakhir Unit 1 — kita akan membuat **Project Kalkulator Sederhana** yang menggabungkan semua yang sudah dipelajari!

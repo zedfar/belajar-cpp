@@ -1,0 +1,119 @@
+---
+title: "Apa Itu Programming?"
+unit: 0
+lesson: 1
+description: "Mengenal dunia programming, apa itu compiler, dan kenapa C++ layak dipelajari"
+objectives:
+  - "Memahami apa itu programming dan cara kerja dasarnya"
+  - "Mengenal apa itu compiler dan perannya"
+  - "Mengetahui alasan belajar C++"
+estimatedTime: 20
+prerequisites: []
+difficulty: "beginner"
+tags: ["intro", "programming", "compiler", "c++"]
+---
+
+# Apa Itu Programming?
+
+Pernahkah kamu bertanya-tanya bagaimana sebuah game tahu kapan karaktermu melompat? Atau bagaimana Instagram bisa menampilkan foto temanmu di timeline? Semua itu terjadi karena seseorang menulis **program** — serangkaian instruksi yang memberitahu komputer apa yang harus dilakukan.
+
+## Programming = Memberi Instruksi
+
+Bayangkan kamu ingin mengajari seseorang membuat nasi goreng. Kamu akan menulis langkah-langkahnya:
+
+1. Panaskan minyak di wajan
+2. Masukkan bawang putih, tumis sampai harum
+3. Masukkan nasi, aduk rata
+4. Tambahkan kecap dan garam
+5. Aduk sampai merata, angkat
+
+Nah, **programming** itu persis seperti itu — tapi instruksinya ditulis untuk **komputer**, bukan untuk manusia. Bedanya, komputer itu sangat literal. Kalau kamu bilang "aduk", komputer tidak tahu artinya kecuali kamu jelaskan secara detail apa itu "aduk" — berapa kali, ke arah mana, seberapa cepat.
+
+Programming adalah proses menulis instruksi-instruksi ini dalam bahasa yang bisa dipahami komputer. Instruksi-instruksi ini disebut **code** atau **kode program**, dan orang yang menulisnya disebut **programmer** atau **developer**.
+
+## Bahasa Programming
+
+Komputer sebenarnya hanya mengerti satu bahasa: **binary** — deretan angka 0 dan 1. Menulis program dalam binary itu menyiksa (bayangkan menulis esai pakai kode morse!), jadi manusia menciptakan **bahasa pemrograman** yang lebih mudah dipahami.
+
+Ada banyak bahasa pemrograman di dunia:
+
+- **Python** — populer untuk data science dan AI
+- **JavaScript** — bahasa utama untuk website
+- **Java** — banyak dipakai di aplikasi Android dan enterprise
+- **C++** — yang akan kita pelajari! Dipakai untuk game, sistem operasi, dan competitive programming
+
+Setiap bahasa punya kelebihan masing-masing. Tidak ada bahasa yang "terbaik" — yang ada adalah bahasa yang paling **cocok** untuk tugas tertentu.
+
+## Apa Itu Compiler?
+
+Tadi kita bilang komputer hanya mengerti binary (0 dan 1). Tapi kode C++ yang kita tulis pakai huruf dan kata-kata bahasa Inggris. Jadi bagaimana komputer bisa memahaminya?
+
+Di sinilah **compiler** berperan. Compiler adalah program yang **menerjemahkan** kode yang kita tulis (disebut *source code*) menjadi bahasa mesin (binary) yang bisa dijalankan komputer.
+
+Analoginya begini: bayangkan kamu menulis surat dalam bahasa Indonesia, tapi penerimanya hanya mengerti bahasa Jepang. Kamu butuh **penerjemah** yang mengubah suratmu ke bahasa Jepang. Compiler adalah penerjemah itu — dia membaca kode C++ kamu dan mengubahnya menjadi instruksi yang dimengerti prosesor komputer.
+
+Proses kerjanya:
+
+```
+Source Code (.cpp)  →  Compiler  →  Program (.exe)  →  Komputer menjalankan
+     (kamu tulis)      (menerjemahkan)  (hasil terjemahan)   (output di layar)
+```
+
+Salah satu hal keren tentang compiler: dia juga akan memberitahu kamu kalau ada **kesalahan** (error) dalam kode. Jadi compiler itu bukan hanya penerjemah, tapi juga "pemeriksa ejaan" untuk kode programmu.
+
+## Kenapa Belajar C++?
+
+Dari sekian banyak bahasa pemrograman, kenapa kita pilih C++? Beberapa alasan:
+
+**1. C++ itu cepat — sangat cepat**
+
+C++ adalah salah satu bahasa tercepat yang ada. Game AAA seperti Unreal Engine ditulis dalam C++. Sistem operasi seperti Windows dan Linux juga menggunakan C/C++. Ketika performa itu penting, C++ sering jadi pilihan utama.
+
+**2. C++ mengajarkan fondasi yang kuat**
+
+Belajar C++ itu seperti belajar manual transmission sebelum otomatis. Kamu akan memahami bagaimana komputer bekerja di level yang lebih dalam — memori, prosesor, tipe data. Pengetahuan ini akan membuatmu lebih jago di bahasa pemrograman **apa pun** nantinya.
+
+**3. Competitive programming**
+
+Kalau kamu tertarik ikut olimpiade komputer (OSN), ICPC, atau competitive programming di Codeforces/AtCoder, C++ adalah bahasa yang paling umum dipakai peserta. Kecepatannya yang tinggi dan standard library yang lengkap membuatnya ideal untuk menyelesaikan soal-soal algoritma.
+
+**4. Karir yang luas**
+
+C++ developer dibutuhkan di industri game, robotics, embedded systems, fintech (trading systems), dan banyak lagi. Skillnya transferable ke bahasa lain karena fondasinya kuat.
+
+:::tip
+C++ dipakai di game engine (Unreal Engine), sistem operasi (Windows, Linux), browser (Chrome, Firefox), dan kompetisi programming di seluruh dunia!
+:::
+
+## Sekilas Tentang Sejarah C++
+
+C++ diciptakan oleh **Bjarne Stroustrup** pada tahun 1979 di Bell Labs. Awalnya bernama "C with Classes" karena merupakan pengembangan dari bahasa C yang sudah ada. Nama "C++" sendiri adalah lelucon programmer — dalam C, `++` artinya "tambah 1", jadi C++ artinya "C yang ditambah 1" alias versi lebih baik dari C.
+
+Sejak awal, C++ dirancang untuk memberikan kekuatan penuh kepada programmer atas hardware komputer, sambil tetap menyediakan fitur-fitur abstraksi tingkat tinggi. Sampai sekarang, C++ terus berkembang — versi terbaru (C++23) masih aktif menambah fitur modern.
+
+## Apa yang Akan Kita Pelajari?
+
+Dalam kursus ini, kamu akan belajar:
+
+- Menulis program C++ dari nol
+- Variabel, tipe data, dan operasi dasar
+- Percabangan (if/else) dan perulangan (loop)
+- Fungsi — cara memecah program jadi bagian-bagian kecil
+- Array dan string — menyimpan banyak data
+- Dan masih banyak lagi!
+
+Setiap unit diakhiri dengan **project** yang mengaplikasikan semua yang sudah dipelajari. Jadi kamu bukan hanya membaca teori, tapi benar-benar membuat program yang berjalan.
+
+:::note
+Kamu tidak perlu jago matematika untuk belajar programming. Yang kamu butuhkan adalah **rasa penasaran** dan **kesabaran**. Setiap programmer handal pernah bingung dan frustasi saat awal belajar — itu normal!
+:::
+
+## Ringkasan
+
+- **Programming** adalah proses menulis instruksi untuk komputer
+- **Bahasa pemrograman** membuat instruksi lebih mudah ditulis manusia
+- **Compiler** menerjemahkan source code menjadi bahasa mesin
+- **C++** adalah bahasa yang cepat, powerful, dan melatih fondasi kuat
+- Kamu tidak perlu background khusus untuk mulai — cukup rasa ingin tahu!
+
+Di pelajaran berikutnya, kita akan setup lingkungan belajar kita — mempersiapkan semua yang dibutuhkan agar kamu bisa mulai menulis dan menjalankan kode C++ pertamamu.

@@ -1,0 +1,50 @@
+---
+interface Props {
+  value: number       // 0-100
+  label?: string
+  size?: 'sm' | 'md' | 'lg'
+  color?: 'primary' | 'success' | 'accent'
+  showPercent?: boolean
+}
+
+const {
+  value = 0,
+  label,
+  size = 'md',
+  color = 'success',
+  showPercent = false,
+} = Astro.props
+
+const clampedValue = Math.max(0, Math.min(100, value))
+
+const heightClass = {
+  sm: 'h-1',
+  md: 'h-2',
+  lg: 'h-3',
+}[size]
+
+const barColorClass = {
+  primary: 'bg-primary-500',
+  success: 'bg-emerald-500',
+  accent: 'bg-accent-500',
+}[color]
+---
+<div class="w-full">
+  {(label || showPercent) && (
+    <div class="flex items-center justify-between mb-1 text-sm">
+      {label && <span class="text-slate-600 dark:text-slate-400">{label}</span>}
+      {showPercent && <span class="text-slate-500 dark:text-slate-400 font-mono text-xs">{clampedValue}%</span>}
+    </div>
+  )}
+  <div class:list={['w-full bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden', heightClass]}>
+    <div
+      class:list={['h-full rounded-full transition-all duration-500 ease-out', barColorClass]}
+      style={`width: ${clampedValue}%`}
+      role="progressbar"
+      aria-valuenow={clampedValue}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-label={label || `${clampedValue}% progress`}
+    />
+  </div>
+</div>

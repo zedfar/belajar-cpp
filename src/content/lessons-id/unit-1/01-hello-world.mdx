@@ -1,0 +1,239 @@
+---
+title: "Hello, World!"
+unit: 1
+lesson: 1
+description: "Menulis program C++ pertamamu dan memahami setiap barisnya"
+objectives:
+  - "Menulis dan menjalankan program Hello World"
+  - "Memahami fungsi #include, main(), cout, dan return"
+  - "Mengenal konsep namespace std"
+estimatedTime: 30
+prerequisites: ["unit-0/03"]
+difficulty: "beginner"
+tags: ["hello-world", "iostream", "cout", "main", "basics"]
+---
+
+# Hello, World!
+
+Ada tradisi di dunia programming: program pertama yang kamu tulis dalam bahasa baru haruslah program yang menampilkan "Hello, World!" di layar. Tradisi ini dimulai dari buku legenda "The C Programming Language" tahun 1978. Sekarang giliranmu melanjutkan tradisi ini!
+
+## Program Pertamamu
+
+Berikut program Hello World dalam C++:
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Hello, World!" << std::endl;
+    return 0;
+}
+```
+
+Ketik kode ini di playground, lalu klik **Run**. Kamu akan melihat:
+
+```
+Hello, World!
+```
+
+Selamat! Kamu baru saja menulis program C++ pertamamu! Mungkin terlihat sederhana, tapi ada banyak hal yang terjadi di balik layar. Mari kita bedah **setiap baris**.
+
+## Membedah Setiap Baris
+
+### Baris 1: `#include <iostream>`
+
+```cpp
+#include <iostream>
+```
+
+Baris ini adalah **preprocessor directive** — instruksi untuk compiler agar "menyertakan" file header bernama `iostream`. File ini berisi definisi untuk `cout` (output ke layar) dan `cin` (input dari keyboard).
+
+Bayangkan begini: kamu mau memasak, tapi pisaumu ada di laci. `#include` itu seperti membuka laci dan mengeluarkan alat yang dibutuhkan. Tanpa `#include <iostream>`, kamu tidak bisa menggunakan `cout` untuk menampilkan teks.
+
+**Fakta penting:**
+- `#include` selalu dimulai dengan tanda pagar `#`
+- `<iostream>` artinya "input/output stream" — stream data masuk/keluar
+- Nama file header diapit tanda `<` dan `>` (bukan tanda kutip)
+- Baris ini **tidak** diakhiri titik koma (`;`)
+
+### Baris 3: `int main() {`
+
+```cpp
+int main() {
+```
+
+Ini adalah **fungsi main** — pintu masuk program. Setiap program C++ **harus** punya fungsi `main()`. Ketika kamu menjalankan program, komputer akan mencari fungsi ini dan mulai mengeksekusi kode di dalamnya.
+
+Bayangkan programmu adalah sebuah gedung. `main()` adalah pintu depan — tidak peduli seberapa besar gedungnya, semua orang masuk lewat pintu depan. Begitu juga program: tidak peduli seberapa kompleks kodenya, eksekusi selalu dimulai dari `main()`.
+
+Mari pecah bagian-bagiannya:
+- `int` — tipe data yang dikembalikan fungsi (integer/bilangan bulat). `main()` mengembalikan angka ke sistem operasi (0 artinya sukses)
+- `main` — nama fungsi. Nama ini **wajib** `main`, tidak bisa diganti
+- `()` — tanda kurung untuk parameter (kosong artinya tidak menerima parameter)
+- `{` — kurung kurawal pembuka, menandai awal *body* fungsi
+
+### Baris 4: `std::cout << "Hello, World!" << std::endl;`
+
+```cpp
+    std::cout << "Hello, World!" << std::endl;
+```
+
+Ini adalah baris yang melakukan aksi sebenarnya — menampilkan teks ke layar. Cukup banyak yang terjadi di sini, jadi mari pecah satu per satu:
+
+**`std::cout`** — ini adalah objek "output stream". Bayangkan `cout` seperti **megaphone** — apa pun yang kamu "kirim" ke megaphone, akan terdengar (dalam hal ini, muncul di layar). `cout` singkatan dari "**c**haracter **out**put".
+
+**`<<`** — ini adalah **insertion operator** atau operator "kirim ke". Bayangkan seperti panah: kamu mengirim sesuatu KE `cout`. Arah panahnya `<<` menunjuk ke kiri, ke arah `cout`.
+
+**`"Hello, World!"`** — ini adalah **string literal** — teks yang diapit tanda kutip ganda. Apa pun yang ada di dalam tanda kutip akan ditampilkan persis seperti yang kamu tulis.
+
+**`<< std::endl`** — `endl` singkatan dari "**end** **l**ine". Ini menambahkan baris baru setelah teks, seperti menekan Enter. Tanpa `endl`, teks berikutnya akan muncul di baris yang sama.
+
+**`;`** — titik koma di akhir baris. Di C++, **setiap statement harus diakhiri titik koma**. Ini seperti titik di akhir kalimat bahasa Indonesia — memberitahu compiler bahwa instruksi ini sudah selesai.
+
+:::note
+**Tentang `std::`** — `std` adalah singkatan dari "standard". `std::cout` artinya "cout yang ada di standard library". Prefiks `std::` ini disebut **namespace** — cara C++ mengelompokkan nama-nama agar tidak bentrok. Untuk sekarang, cukup ingat: setiap kali pakai `cout`, `cin`, `endl`, dan `string`, tulis `std::` di depannya.
+:::
+
+### Baris 5: `return 0;`
+
+```cpp
+    return 0;
+}
+```
+
+`return 0;` memberitahu sistem operasi bahwa program berjalan **sukses**. Angka 0 adalah konvensi universal untuk "semua baik-baik saja". Kalau program mengembalikan angka selain 0, artinya ada kesalahan.
+
+Bayangkan kamu disuruh belanja oleh orang tua. Setelah selesai, kamu bilang "Sudah, semua beres!" — itu sama dengan `return 0`. Kalau kamu bilang "Ada masalah, tokonya tutup" — itu seperti `return 1`.
+
+**`}`** — kurung kurawal penutup, menandai akhir body fungsi `main()`.
+
+## Visualisasi Lengkap
+
+```cpp
+#include <iostream>     // 1. Ambil alat yang dibutuhkan (cout, endl)
+
+int main() {            // 2. Pintu masuk program
+    std::cout << "Hello, World!" << std::endl;  // 3. Tampilkan teks ke layar
+    return 0;           // 4. Lapor ke OS: "Sukses!"
+}                       // 5. Akhir program
+```
+
+## Variasi Hello World
+
+Sekarang coba beberapa variasi untuk memantapkan pemahamanmu.
+
+**Menampilkan beberapa baris:**
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Hello, World!" << std::endl;
+    std::cout << "Nama saya Budi." << std::endl;
+    std::cout << "Saya sedang belajar C++!" << std::endl;
+    return 0;
+}
+```
+
+Output:
+```
+Hello, World!
+Nama saya Budi.
+Saya sedang belajar C++!
+```
+
+**Menggabungkan teks dalam satu `cout`:**
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Hello" << " " << "World!" << std::endl;
+    return 0;
+}
+```
+
+Kamu bisa menggunakan `<<` berulang kali untuk mengirim beberapa bagian teks ke `cout` dalam satu statement.
+
+**Tanpa `std::endl` (menggunakan `\n`):**
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Baris pertama\n";
+    std::cout << "Baris kedua\n";
+    return 0;
+}
+```
+
+`\n` adalah **escape character** untuk baris baru. Fungsinya mirip `std::endl`, tapi lebih ringkas. Kita akan bahas perbedaannya lebih detail di pelajaran tentang input/output.
+
+## Kesalahan Umum
+
+Saat menulis program pertama, ada beberapa kesalahan yang sering terjadi:
+
+**1. Lupa titik koma:**
+```cpp
+std::cout << "Hello" << std::endl  // ERROR: missing ';'
+```
+
+**2. Salah tulis `cout`:**
+```cpp
+std::cot << "Hello" << std::endl;  // ERROR: 'cot' bukan 'cout'
+```
+
+**3. Lupa `#include <iostream>`:**
+```cpp
+int main() {
+    std::cout << "Hello" << std::endl;  // ERROR: cout tidak dikenal
+    return 0;
+}
+```
+
+**4. Pakai tanda kutip tunggal untuk string:**
+```cpp
+std::cout << 'Hello' << std::endl;  // ERROR: tanda kutip tunggal hanya untuk SATU karakter
+```
+
+:::tip
+Kalau menemui error, jangan panik. Baca pesan errornya — biasanya compiler menunjukkan baris yang bermasalah. Bandingkan kode kamu dengan contoh yang benar, cari perbedaannya.
+:::
+
+## Latihan
+
+**Latihan 1:** Ubah program Hello World agar menampilkan namamu sendiri. Contoh output yang diharapkan:
+
+```
+Hello, namamu!
+Selamat datang di dunia C++!
+```
+
+**Latihan 2:** Buat program yang menampilkan kartu perkenalan seperti ini:
+
+```
+========================
+   KARTU PERKENALAN
+========================
+Nama  : [namamu]
+Umur  : [umurmu]
+Hobi  : [hobimu]
+========================
+```
+
+Gunakan `std::cout` untuk setiap baris dan bereksperimenlah dengan simbol-simbol seperti `=`, `-`, `|` untuk membuat border.
+
+## Ringkasan
+
+| Elemen | Fungsi |
+|--------|--------|
+| `#include <iostream>` | Menyertakan library input/output |
+| `int main()` | Fungsi utama, pintu masuk program |
+| `std::cout` | Objek untuk menampilkan output ke layar |
+| `<<` | Operator "kirim ke" |
+| `std::endl` | Pindah ke baris baru |
+| `return 0` | Memberitahu OS program sukses |
+| `;` | Penanda akhir statement |
+| `{ }` | Menandai awal dan akhir blok kode |
+
+Kamu sudah berhasil menulis dan memahami program C++ pertamamu! Di pelajaran berikutnya, kita akan belajar tentang **komentar** — cara menambahkan catatan di dalam kode — dan memahami **struktur program C++** secara lebih mendalam.

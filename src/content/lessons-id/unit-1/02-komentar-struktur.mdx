@@ -1,0 +1,298 @@
+---
+title: "Komentar dan Struktur Program"
+unit: 1
+lesson: 2
+description: "Belajar menulis komentar dan memahami struktur program C++"
+objectives:
+  - "Menulis komentar single-line dan multi-line"
+  - "Memahami kapan dan mengapa komentar dibutuhkan"
+  - "Mengenal struktur umum program C++"
+estimatedTime: 20
+prerequisites: ["unit-1/01"]
+difficulty: "beginner"
+tags: ["comments", "structure", "basics"]
+---
+
+# Komentar dan Struktur Program
+
+Bayangkan kamu menulis resep masakan yang sangat rumit. Sebulan kemudian, kamu buka lagi resep itu dan... bingung sendiri. "Kenapa aku pakai gula merah, bukan gula putih?" Kalau saja kamu tulis catatan kecil di samping resep, pasti lebih mudah dipahami.
+
+Dalam programming, "catatan kecil" itu disebut **komentar** (comments). Dan memahami bagaimana **struktur** program disusun akan membuatmu lebih cepat dalam membaca dan menulis kode.
+
+## Komentar Single-Line
+
+Komentar single-line dimulai dengan dua garis miring (`//`). Semua teks setelah `//` sampai akhir baris **diabaikan oleh compiler** — artinya komentar tidak memengaruhi jalannya program sama sekali.
+
+```cpp
+#include <iostream>
+
+int main() {
+    // Ini adalah komentar - compiler mengabaikan baris ini
+    std::cout << "Hello!" << std::endl;  // Komentar juga bisa di akhir baris kode
+
+    // Menampilkan pesan kedua
+    std::cout << "Selamat belajar C++!" << std::endl;
+
+    return 0;  // Mengembalikan 0 = program sukses
+}
+```
+
+Output:
+```
+Hello!
+Selamat belajar C++!
+```
+
+Perhatikan: semua teks setelah `//` tidak muncul di output. Compiler benar-benar mengabaikannya.
+
+:::note
+Komentar tidak dieksekusi oleh compiler. Komentar murni untuk manusia yang membaca kode — entah itu dirimu sendiri di masa depan, atau programmer lain yang bekerja di kode yang sama.
+:::
+
+## Komentar Multi-Line
+
+Untuk komentar yang panjang atau spanning beberapa baris, gunakan `/*` untuk memulai dan `*/` untuk mengakhiri:
+
+```cpp
+#include <iostream>
+
+/*
+   Program ini menampilkan informasi tentang pelajaran C++.
+   Dibuat sebagai latihan untuk memahami komentar
+   dan struktur dasar program.
+*/
+
+int main() {
+    std::cout << "Belajar komentar C++!" << std::endl;
+    return 0;
+}
+```
+
+Semua teks antara `/*` dan `*/` diabaikan, tidak peduli berapa baris pun.
+
+**Kapan pakai yang mana?**
+
+| Tipe | Syntax | Cocok untuk |
+|------|--------|-------------|
+| Single-line | `// ...` | Catatan pendek, penjelasan satu baris |
+| Multi-line | `/* ... */` | Penjelasan panjang, dokumentasi, menonaktifkan blok kode |
+
+## Kenapa Komentar Penting?
+
+Kamu mungkin berpikir: "Kalau komentar diabaikan compiler, ngapain capek-capek nulis?" Alasan utamanya:
+
+### 1. Dokumentasi — Menjelaskan "Mengapa"
+
+Kode yang baik menjelaskan **apa** yang dilakukan (lewat nama variabel/fungsi yang jelas). Komentar menjelaskan **mengapa** kode itu ditulis dengan cara tertentu.
+
+```cpp
+// Menggunakan integer karena umur tidak pernah desimal
+int umur = 17;
+
+// Ditambah 1 karena array dimulai dari index 0
+int posisi = index + 1;
+```
+
+### 2. Debugging — Menonaktifkan Kode Sementara
+
+Saat mencari bug (kesalahan), kamu bisa "menonaktifkan" baris kode dengan menjadikannya komentar — tanpa menghapusnya:
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Langkah 1" << std::endl;
+    // std::cout << "Langkah 2 - sementara dinonaktifkan" << std::endl;
+    std::cout << "Langkah 3" << std::endl;
+    return 0;
+}
+```
+
+Output hanya menampilkan "Langkah 1" dan "Langkah 3". Baris "Langkah 2" dinonaktifkan tanpa dihapus, jadi bisa diaktifkan lagi kapan saja.
+
+Ini disebut **commenting out** — teknik yang sangat sering dipakai programmer untuk debugging.
+
+### 3. Kolaborasi — Membantu Tim
+
+Kalau kamu bekerja dalam tim (atau bahkan membaca kode sendiri setelah beberapa minggu), komentar membantu memahami kode lebih cepat. Kode tanpa komentar seperti buku tanpa judul bab — secara teknis bisa dibaca, tapi butuh effort lebih.
+
+:::tip
+**Aturan praktis:** Tulis komentar saat kamu merasa perlu menjelaskan *mengapa* sesuatu dilakukan, bukan *apa* yang dilakukan. Kode yang baik sudah menjelaskan "apa" — komentar menjelaskan "mengapa".
+:::
+
+## Struktur Program C++
+
+Sekarang kita sudah mengenal komentar, mari lihat gambaran besar bagaimana program C++ disusun. Setiap program C++ umumnya mengikuti struktur ini:
+
+```cpp
+// === BAGIAN 1: Preprocessor Directives ===
+#include <iostream>       // Library untuk input/output
+#include <string>         // Library untuk tipe string
+
+// === BAGIAN 2: Fungsi Main ===
+int main() {
+    // === BAGIAN 3: Body Program ===
+
+    // Deklarasi variabel
+    std::string nama = "Budi";
+    int umur = 16;
+
+    // Logika program
+    std::cout << "Nama: " << nama << std::endl;
+    std::cout << "Umur: " << umur << std::endl;
+
+    // Akhir program
+    return 0;
+}
+```
+
+### Bagian 1: Preprocessor Directives
+
+Baris yang dimulai dengan `#` adalah instruksi untuk **preprocessor** — tahap sebelum compilation. `#include` memberitahu compiler untuk menyertakan file header yang berisi definisi fungsi/objek yang kita butuhkan.
+
+```cpp
+#include <iostream>    // Untuk cout, cin, endl
+#include <string>      // Untuk tipe data string
+#include <cmath>       // Untuk fungsi matematika (sqrt, pow, dll)
+```
+
+Preprocessor directives selalu diletakkan di **paling atas** file.
+
+### Bagian 2: Fungsi `main()`
+
+Setiap program C++ harus punya tepat **satu** fungsi `main()`. Ini adalah titik awal eksekusi — komputer mulai dari sini.
+
+```cpp
+int main() {
+    // kode program di sini
+    return 0;
+}
+```
+
+### Bagian 3: Body Program
+
+Di dalam `main()`, kamu menulis instruksi-instruksi yang ingin dijalankan. Instruksi dieksekusi **dari atas ke bawah**, satu per satu, secara berurutan.
+
+```cpp
+int main() {
+    // Instruksi 1 dijalankan pertama
+    std::cout << "Satu" << std::endl;
+
+    // Instruksi 2 dijalankan kedua
+    std::cout << "Dua" << std::endl;
+
+    // Instruksi 3 dijalankan ketiga
+    std::cout << "Tiga" << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Satu
+Dua
+Tiga
+```
+
+Urutan itu penting! Kalau kamu pindahkan baris "Tiga" ke atas, maka "Tiga" akan muncul pertama di output.
+
+## Whitespace dan Indentasi
+
+C++ tidak peduli dengan **whitespace** (spasi, tab, baris kosong). Program berikut akan menghasilkan output yang sama persis:
+
+```cpp
+#include <iostream>
+int main(){std::cout<<"Hello!"<<std::endl;return 0;}
+```
+
+Tapi program itu **sangat sulit dibaca** untuk manusia. Karena itu, kita menggunakan **indentasi** (biasanya 4 spasi atau 1 tab) untuk membuat kode lebih rapi dan mudah dibaca:
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Hello!" << std::endl;
+    return 0;
+}
+```
+
+Kedua program di atas identik dari perspektif compiler, tapi versi kedua **jauh** lebih mudah dibaca. Indentasi menunjukkan secara visual bahwa kode di dalam `{}` adalah bagian dari fungsi `main()`.
+
+:::warning
+Meskipun compiler tidak peduli dengan indentasi, **programmer peduli**. Kode tanpa indentasi yang rapi dianggap kebiasaan buruk. Biasakan menulis kode yang rapi sejak awal!
+:::
+
+## Contoh Lengkap: Program dengan Komentar yang Baik
+
+```cpp
+// Program: Kartu Identitas Digital
+// Deskripsi: Menampilkan informasi identitas ke layar
+// Penulis: Siswa C++ Pemula
+
+#include <iostream>
+#include <string>
+
+int main() {
+    // Data identitas
+    std::string nama = "Rina Sari";
+    int umur = 15;
+    std::string sekolah = "SMA Negeri 1";
+    std::string hobi = "Membaca dan coding";
+
+    // Menampilkan kartu identitas
+    std::cout << "================================" << std::endl;
+    std::cout << "     KARTU IDENTITAS DIGITAL    " << std::endl;
+    std::cout << "================================" << std::endl;
+    std::cout << "Nama    : " << nama << std::endl;
+    std::cout << "Umur    : " << umur << " tahun" << std::endl;
+    std::cout << "Sekolah : " << sekolah << std::endl;
+    std::cout << "Hobi    : " << hobi << std::endl;
+    std::cout << "================================" << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+================================
+     KARTU IDENTITAS DIGITAL
+================================
+Nama    : Rina Sari
+Umur    : 15 tahun
+Sekolah : SMA Negeri 1
+Hobi    : Membaca dan coding
+================================
+```
+
+Perhatikan bagaimana komentar memberikan konteks tanpa berlebihan — cukup jelas tentang apa yang dilakukan setiap bagian kode.
+
+## Latihan
+
+**Latihan 1:** Ambil program Hello World dari pelajaran sebelumnya dan tambahkan komentar yang menjelaskan setiap baris:
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Hello, World!" << std::endl;
+    return 0;
+}
+```
+
+Tambahkan komentar di atas atau di samping setiap baris. Pastikan komentar menjelaskan **fungsi** baris tersebut, bukan mengulang kodenya.
+
+**Latihan 2:** Buat program yang menampilkan puisi atau lirik lagu favoritmu (minimal 4 baris). Gunakan komentar multi-line di awal untuk menjelaskan apa yang ditampilkan program.
+
+## Ringkasan
+
+- Komentar single-line dimulai dengan `//`
+- Komentar multi-line diapit `/*` dan `*/`
+- Komentar **diabaikan** compiler — hanya untuk manusia
+- Komentar berguna untuk: dokumentasi, debugging, dan kolaborasi
+- Struktur program C++: preprocessor directives → `main()` → body
+- Instruksi dieksekusi **dari atas ke bawah**
+- Indentasi membuat kode lebih mudah dibaca
+
+Di pelajaran berikutnya, kita akan belajar tentang **variabel dan tipe data** — cara menyimpan informasi dalam program!

@@ -1,0 +1,145 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro'
+import { t } from '@/lib/i18n'
+import { CURRICULUM_ID, getTotalLessons } from '@/lib/curriculum'
+import type { Language } from '@/types/lesson'
+
+export function getStaticPaths() {
+  return [{ params: { lang: 'id' } }, { params: { lang: 'en' } }]
+}
+
+const { lang } = Astro.params as { lang: Language }
+const totalLessons = getTotalLessons()
+const totalUnits = CURRICULUM_ID.length
+const firstLessonUrl = `/${lang}/learn/unit-0/01-apa-itu-programming`
+
+const features = [
+  {
+    icon: '⚡',
+    title: t(lang, 'home.features.interactive.title'),
+    description: t(lang, 'home.features.interactive.description'),
+  },
+  {
+    icon: '🇮🇩',
+    title: t(lang, 'home.features.bilingual.title'),
+    description: t(lang, 'home.features.bilingual.description'),
+  },
+  {
+    icon: '📈',
+    title: t(lang, 'home.features.progressive.title'),
+    description: t(lang, 'home.features.progressive.description'),
+  },
+  {
+    icon: '🆓',
+    title: t(lang, 'home.features.free.title'),
+    description: t(lang, 'home.features.free.description'),
+  },
+]
+---
+<PageLayout title={t(lang, 'home.hero.title')} description={t(lang, 'meta.siteDescription')} lang={lang}>
+  <!-- Hero Section -->
+  <section class="py-16 md:py-24 text-center">
+    <div class="max-w-3xl mx-auto">
+      <h1 class="text-4xl md:text-6xl font-bold text-slate-900 dark:text-white mb-4">
+        {t(lang, 'home.hero.title')}
+      </h1>
+      <p class="text-xl md:text-2xl text-primary-600 dark:text-primary-400 font-medium mb-4">
+        {t(lang, 'home.hero.subtitle')}
+      </p>
+      <p class="text-lg text-slate-600 dark:text-slate-400 mb-8 max-w-2xl mx-auto">
+        {t(lang, 'home.hero.description')}
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href={firstLessonUrl}
+          class="inline-flex items-center justify-center px-8 py-3 rounded-lg bg-primary-600 hover:bg-primary-700 text-white font-semibold text-lg transition-colors shadow-lg shadow-primary-600/25"
+        >
+          {t(lang, 'home.hero.cta')}
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </a>
+        <a
+          href={`/${lang}/curriculum`}
+          class="inline-flex items-center justify-center px-8 py-3 rounded-lg border-2 border-slate-300 dark:border-slate-600 hover:border-primary-400 dark:hover:border-primary-500 text-slate-700 dark:text-slate-300 font-semibold text-lg transition-colors"
+        >
+          {t(lang, 'home.hero.ctaSecondary')}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="py-16 border-t border-slate-200 dark:border-slate-800">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      {features.map(feature => (
+        <div class="text-center p-6 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800">
+          <div class="text-4xl mb-4">{feature.icon}</div>
+          <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-2">{feature.title}</h3>
+          <p class="text-sm text-slate-600 dark:text-slate-400">{feature.description}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Curriculum Preview -->
+  <section class="py-16 border-t border-slate-200 dark:border-slate-800">
+    <h2 class="text-2xl md:text-3xl font-bold text-center text-slate-900 dark:text-white mb-12">
+      {lang === 'id' ? 'Mulai Perjalananmu' : 'Start Your Journey'}
+    </h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+      {CURRICULUM_ID.filter(u => u.isAvailable).slice(0, 4).map(unit => (
+        <a
+          href={`/${lang}/learn/${unit.slug}`}
+          class="block p-6 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-primary-300 dark:hover:border-primary-700 hover:shadow-lg transition-all bg-white dark:bg-slate-900"
+        >
+          <div class="flex items-center gap-3 mb-3">
+            <span class="text-xs font-mono px-2 py-1 rounded bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300">
+              Unit {unit.id}
+            </span>
+            <span class="text-xs text-slate-400">{unit.lessons.length} {lang === 'id' ? 'pelajaran' : 'lessons'}</span>
+          </div>
+          <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-2">{unit.title[lang]}</h3>
+          <p class="text-sm text-slate-600 dark:text-slate-400">{unit.description[lang]}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="py-16 border-t border-slate-200 dark:border-slate-800">
+    <div class="flex flex-wrap justify-center gap-12 md:gap-20">
+      <div class="text-center">
+        <div class="text-4xl font-bold text-primary-600 dark:text-primary-400">{totalUnits}</div>
+        <div class="text-sm text-slate-500 dark:text-slate-400 mt-1">{lang === 'id' ? 'unit' : 'units'}</div>
+      </div>
+      <div class="text-center">
+        <div class="text-4xl font-bold text-primary-600 dark:text-primary-400">{totalLessons}+</div>
+        <div class="text-sm text-slate-500 dark:text-slate-400 mt-1">{lang === 'id' ? 'pelajaran' : 'lessons'}</div>
+      </div>
+      <div class="text-center">
+        <div class="text-4xl font-bold text-primary-600 dark:text-primary-400">100%</div>
+        <div class="text-sm text-slate-500 dark:text-slate-400 mt-1">{lang === 'id' ? 'gratis' : 'free'}</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bottom CTA -->
+  <section class="py-16 border-t border-slate-200 dark:border-slate-800 text-center">
+    <h2 class="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-4">
+      {lang === 'id' ? 'Siap mulai?' : 'Ready to start?'}
+    </h2>
+    <p class="text-slate-600 dark:text-slate-400 mb-8">
+      {lang === 'id' ? 'Tidak perlu install apapun. Langsung mulai di browser.' : 'No installation needed. Start right in your browser.'}
+    </p>
+    <a
+      href={firstLessonUrl}
+      class="inline-flex items-center justify-center px-8 py-3 rounded-lg bg-primary-600 hover:bg-primary-700 text-white font-semibold text-lg transition-colors shadow-lg shadow-primary-600/25"
+    >
+      {t(lang, 'home.hero.cta')}
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </a>
+  </section>
+</PageLayout>

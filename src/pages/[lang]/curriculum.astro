@@ -1,0 +1,189 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro'
+import { t, interpolate } from '@/lib/i18n'
+import { CURRICULUM_ID, getTotalLessons } from '@/lib/curriculum'
+import type { Language } from '@/types/lesson'
+
+export function getStaticPaths() {
+  return [{ params: { lang: 'id' } }, { params: { lang: 'en' } }]
+}
+
+const { lang } = Astro.params as { lang: Language }
+const totalLessons = getTotalLessons()
+
+// Calculate total estimated hours
+const totalHours = CURRICULUM_ID.reduce((sum, u) => {
+  const parts = u.estimatedHours.split('-')
+  return sum + parseInt(parts[parts.length - 1])
+}, 0)
+---
+<PageLayout title={t(lang, 'curriculum.title')} description={t(lang, 'curriculum.subtitle')} lang={lang}>
+  <div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h1 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-3">
+        {t(lang, 'curriculum.title')}
+      </h1>
+      <p class="text-lg text-slate-600 dark:text-slate-400 mb-4">
+        {t(lang, 'curriculum.subtitle')}
+      </p>
+      <p class="text-sm text-slate-500 dark:text-slate-400">
+        {interpolate(t(lang, 'curriculum.totalTime'), { hours: String(totalHours) })} &middot; {totalLessons} {lang === 'id' ? 'pelajaran' : 'lessons'}
+      </p>
+    </div>
+
+    <!-- Overall Progress Bar (placeholder, updated by client JS) -->
+    <div class="mb-12 p-4 rounded-lg bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-sm font-medium text-slate-700 dark:text-slate-300">
+          {t(lang, 'progress.overall')}
+        </span>
+        <span class="text-sm text-slate-500 dark:text-slate-400" id="overall-progress-text">
+          {interpolate(t(lang, 'progress.lessonsCompleted'), { count: '0', total: String(totalLessons) })}
+        </span>
+      </div>
+      <div class="h-2.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+        <div
+          id="overall-progress-bar"
+          class="h-full bg-emerald-500 rounded-full transition-all duration-500"
+          style="width: 0%"
+        />
+      </div>
+    </div>
+
+    <!-- Unit Cards -->
+    <div class="space-y-6">
+      {CURRICULUM_ID.map(unit => {
+        const firstLesson = unit.lessons[0]
+        const firstLessonParts = firstLesson.slug.split('/')
+        const unitUrl = `/${lang}/learn/${unit.slug}`
+        const firstLessonUrl = `/${lang}/learn/${firstLessonParts[0]}/${firstLessonParts[1]}`
+
+        return (
+          <div
+            class:list={[
+              'rounded-xl border p-6 transition-all',
+              unit.isAvailable
+                ? 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:shadow-lg hover:border-primary-200 dark:hover:border-primary-800'
+                : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/30 opacity-60'
+            ]}
+            data-unit-card={unit.slug}
+          >
+            <div class="flex flex-col md:flex-row md:items-start gap-4">
+              <div class="flex-1 min-w-0">
+                <!-- Unit header -->
+                <div class="flex items-center gap-3 mb-2">
+                  <span class="text-xs font-mono px-2 py-1 rounded bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 font-semibold">
+                    {interpolate(t(lang, 'curriculum.unitN'), { n: String(unit.id) })}
+                  </span>
+                  {!unit.isAvailable && (
+                    <span class="text-xs px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400">
+                      {t(lang, 'curriculum.comingSoon')}
+                    </span>
+                  )}
+                </div>
+
+                <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-2">
+                  {unit.title[lang]}
+                </h2>
+                <p class="text-sm text-slate-600 dark:text-slate-400 mb-3">
+                  {unit.description[lang]}
+                </p>
+
+                <!-- Meta info -->
+                <div class="flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-slate-400 mb-3">
+                  <span class="flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"/>
+                      <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                    ~{unit.estimatedHours} {lang === 'id' ? 'jam' : 'hours'}
+                  </span>
+                  <span>{interpolate(t(lang, 'curriculum.lessons'), { n: String(unit.lessons.length) })}</span>
+                  <span class="flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                    {t(lang, 'curriculum.project')}: {unit.projectTitle[lang]}
+                  </span>
+                </div>
+
+                <!-- Unit progress bar -->
+                <div class="h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden" data-curriculum-unit-progress={unit.slug}>
+                  <div
+                    class="h-full bg-emerald-500 rounded-full transition-all duration-300"
+                    style="width: 0%"
+                    data-curriculum-unit-bar={unit.slug}
+                  />
+                </div>
+              </div>
+
+              <!-- Action button -->
+              <div class="flex-shrink-0">
+                {unit.isAvailable ? (
+                  <a
+                    href={firstLessonUrl}
+                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium transition-colors"
+                    data-unit-start-btn={unit.slug}
+                  >
+                    {t(lang, 'curriculum.startUnit')}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="9 18 15 12 9 6"/>
+                    </svg>
+                  </a>
+                ) : (
+                  <span class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-500 text-sm font-medium cursor-not-allowed">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                    {t(lang, 'curriculum.comingSoon')}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  </div>
+
+  <script is:inline define:vars={{ totalLessons, lang }}>
+    // Update progress from localStorage
+    try {
+      const raw = localStorage.getItem('belajar-cpp-progress')
+      if (raw) {
+        const progress = JSON.parse(raw)
+        const completed = progress.completedLessons || []
+
+        // Overall progress
+        const overallBar = document.getElementById('overall-progress-bar')
+        const overallText = document.getElementById('overall-progress-text')
+        const pct = Math.round((completed.length / totalLessons) * 100)
+        if (overallBar) overallBar.style.width = pct + '%'
+        if (overallText) {
+          overallText.textContent = lang === 'id'
+            ? `${completed.length} dari ${totalLessons} pelajaran selesai`
+            : `${completed.length} of ${totalLessons} lessons completed`
+        }
+
+        // Per-unit progress
+        document.querySelectorAll('[data-curriculum-unit-bar]').forEach(bar => {
+          const unitSlug = bar.getAttribute('data-curriculum-unit-bar')
+          if (!unitSlug) return
+          const card = bar.closest('[data-unit-card]')
+          if (!card) return
+          const unitLessonCount = card.querySelectorAll ? 0 : 0
+          const unitCompleted = completed.filter(s => s.startsWith(unitSlug + '/')).length
+          // We need to know total lessons per unit — encode in data attr
+          // For now approximate from curriculum data
+          const unitBar = bar
+          // rough: just show percentage based on completed
+          if (unitCompleted > 0) {
+            unitBar.style.width = Math.min(100, unitCompleted * 12.5) + '%'
+          }
+        })
+      }
+    } catch {}
+  </script>
+</PageLayout>
