@@ -1,0 +1,485 @@
+---
+title: "If-Else"
+unit: 2
+lesson: 2
+description: "Membuat program yang bisa mengambil keputusan menggunakan if, else, dan else if"
+objectives:
+  - "Memahami konsep percabangan (decision making) dalam programming"
+  - "Menulis statement if, if-else, dan if-else if-else"
+  - "Menggunakan operator perbandingan di dalam kondisi if"
+  - "Menghindari kesalahan umum saat menulis percabangan"
+estimatedTime: 40
+prerequisites: ["unit-2/01-operator-perbandingan"]
+difficulty: "beginner"
+tags: ["if", "else", "else-if", "percabangan", "decision-making", "conditional"]
+---
+
+# If-Else
+
+Sampai sekarang, semua program yang kita tulis berjalan **lurus** dari atas ke bawah — setiap baris dieksekusi satu per satu tanpa terkecuali. Tapi program yang berguna perlu bisa **mengambil keputusan**. "Kalau nilai di atas 75, tampilkan Lulus. Kalau tidak, tampilkan Tidak Lulus." Nah, di sinilah `if` dan `else` berperan!
+
+## Analogi: Robot Pembuat Keputusan
+
+Bayangkan kamu punya robot yang mau berangkat sekolah. Sebelum keluar rumah, robot ini mengecek cuaca:
+
+```
+Apakah hujan?
+├── YA  → Bawa payung
+└── TIDAK → Tidak perlu payung
+```
+
+Itulah esensi `if-else` — robot (program) mengecek **kondisi**, lalu memilih **aksi** yang sesuai. Sama seperti kamu setiap pagi: kalau hujan, bawa payung. Kalau tidak, ya langsung berangkat saja!
+
+## Statement `if` Dasar
+
+Sintaks paling sederhana:
+
+```cpp
+if (kondisi) {
+    // kode yang dijalankan kalau kondisi true
+}
+```
+
+**Alurnya:**
+1. Cek kondisi di dalam tanda kurung `()`
+2. Kalau `true` — jalankan kode di dalam kurung kurawal `{}`
+3. Kalau `false` — lewati blok kode tersebut, lanjut ke baris berikutnya
+
+```cpp
+#include <iostream>
+
+int main() {
+    int suhu = 38;
+
+    if (suhu > 37) {
+        std::cout << "Kamu sedang demam! Istirahat ya." << std::endl;
+    }
+
+    std::cout << "Program selesai." << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Kamu sedang demam! Istirahat ya.
+Program selesai.
+```
+
+Kalau kamu ganti `suhu` jadi `36`, output-nya hanya:
+```
+Program selesai.
+```
+
+Pesan "Kamu sedang demam!" dilewati karena kondisi `36 > 37` bernilai `false`.
+
+## Statement `if-else`
+
+Seringkali kamu butuh dua jalur: satu kalau kondisi benar, satu lagi kalau salah.
+
+```cpp
+if (kondisi) {
+    // kode kalau true
+} else {
+    // kode kalau false
+}
+```
+
+**Visualisasi alur:**
+
+```
+         ┌──────────┐
+         │  kondisi  │
+         └─────┬─────┘
+          true/   \false
+              /     \
+     ┌───────┐     ┌───────┐
+     │ Blok  │     │ Blok  │
+     │  if   │     │ else  │
+     └───┬───┘     └───┬───┘
+         └──────┬──────┘
+                │
+         (lanjut program)
+```
+
+### Contoh: Cek Lulus atau Tidak
+
+```cpp
+#include <iostream>
+
+int main() {
+    int nilai = 80;
+    int kkm = 75;
+
+    if (nilai >= kkm) {
+        std::cout << "Selamat, kamu LULUS!" << std::endl;
+    } else {
+        std::cout << "Maaf, kamu belum lulus. Tetap semangat!" << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+Selamat, kamu LULUS!
+```
+
+### Contoh: Bilangan Positif atau Negatif
+
+```cpp
+#include <iostream>
+
+int main() {
+    int angka = -5;
+
+    if (angka >= 0) {
+        std::cout << angka << " adalah bilangan positif (atau nol)." << std::endl;
+    } else {
+        std::cout << angka << " adalah bilangan negatif." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+-5 adalah bilangan negatif.
+```
+
+### Contoh: Genap atau Ganjil
+
+```cpp
+#include <iostream>
+
+int main() {
+    int angka = 7;
+
+    if (angka % 2 == 0) {
+        std::cout << angka << " adalah bilangan genap." << std::endl;
+    } else {
+        std::cout << angka << " adalah bilangan ganjil." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+7 adalah bilangan ganjil.
+```
+
+:::tip
+Operator `%` (modulo) menghitung **sisa bagi**. Kalau `angka % 2 == 0`, artinya angka itu habis dibagi 2, alias **genap**. Ini trik yang sangat sering dipakai!
+:::
+
+## Statement `if-else if-else`
+
+Kadang pilihan bukan cuma dua. Misalnya, kamu mau mengecek apakah bilangan positif, negatif, atau nol — itu ada tiga kemungkinan. Gunakan `else if` untuk menambah kondisi:
+
+```cpp
+if (kondisi1) {
+    // kode kalau kondisi1 true
+} else if (kondisi2) {
+    // kode kalau kondisi1 false DAN kondisi2 true
+} else if (kondisi3) {
+    // kode kalau kondisi1 & kondisi2 false DAN kondisi3 true
+} else {
+    // kode kalau SEMUA kondisi di atas false
+}
+```
+
+:::note
+Kondisi dicek **dari atas ke bawah**. Begitu satu kondisi bernilai `true`, blok kodenya dijalankan dan sisanya **dilewati semua**. Jadi urutan kondisi itu penting!
+:::
+
+### Contoh: Positif, Negatif, atau Nol
+
+```cpp
+#include <iostream>
+
+int main() {
+    int angka = 0;
+
+    if (angka > 0) {
+        std::cout << angka << " adalah bilangan positif." << std::endl;
+    } else if (angka < 0) {
+        std::cout << angka << " adalah bilangan negatif." << std::endl;
+    } else {
+        std::cout << "Angka tersebut adalah nol." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+Angka tersebut adalah nol.
+```
+
+### Contoh: Konversi Nilai ke Grade
+
+Ini contoh yang sering dijumpai di sekolah! Mengubah nilai angka menjadi huruf:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int nilai = 82;
+
+    std::cout << "Nilai: " << nilai << std::endl;
+
+    if (nilai >= 90) {
+        std::cout << "Grade: A (Sangat Baik)" << std::endl;
+    } else if (nilai >= 80) {
+        std::cout << "Grade: B (Baik)" << std::endl;
+    } else if (nilai >= 70) {
+        std::cout << "Grade: C (Cukup)" << std::endl;
+    } else if (nilai >= 60) {
+        std::cout << "Grade: D (Kurang)" << std::endl;
+    } else {
+        std::cout << "Grade: E (Sangat Kurang)" << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+Nilai: 82
+Grade: B (Baik)
+```
+
+Perhatikan: nilai 82 memang `>= 70` dan `>= 60` juga, tapi karena kondisi dicek dari atas dan `82 >= 80` adalah kondisi pertama yang `true`, maka yang dijalankan adalah blok "Grade: B". Sisanya dilewati.
+
+### Contoh: Cek Umur untuk Kategori
+
+```cpp
+#include <iostream>
+
+int main() {
+    int umur = 15;
+
+    std::cout << "Umur: " << umur << " tahun" << std::endl;
+
+    if (umur < 5) {
+        std::cout << "Kategori: Balita" << std::endl;
+    } else if (umur < 13) {
+        std::cout << "Kategori: Anak-anak" << std::endl;
+    } else if (umur < 18) {
+        std::cout << "Kategori: Remaja" << std::endl;
+    } else if (umur < 60) {
+        std::cout << "Kategori: Dewasa" << std::endl;
+    } else {
+        std::cout << "Kategori: Lansia" << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+Umur: 15 tahun
+Kategori: Remaja
+```
+
+## Nested If (If Bersarang)
+
+Kamu juga bisa menaruh `if` di dalam `if`. Ini disebut **nested if**:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int nilai = 85;
+    bool sudahKumpulTugas = true;
+
+    if (nilai >= 75) {
+        if (sudahKumpulTugas) {
+            std::cout << "Lulus dengan nilai baik!" << std::endl;
+        } else {
+            std::cout << "Nilai cukup, tapi tugas belum dikumpulkan." << std::endl;
+        }
+    } else {
+        std::cout << "Nilai di bawah KKM." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+Lulus dengan nilai baik!
+```
+
+:::tip
+Nested if memang berguna, tapi jangan terlalu dalam (lebih dari 2-3 level). Kalau terlalu banyak, kode jadi sulit dibaca. Di pelajaran berikutnya, kamu akan belajar **operator logika** (`&&`, `||`) yang bisa menggabungkan beberapa kondisi tanpa nesting.
+:::
+
+## Contoh Fun: Robot Pergi Sekolah
+
+```cpp
+#include <iostream>
+
+int main() {
+    bool hujan = true;
+    bool adaUjian = true;
+    int jamSekarang = 6;
+
+    std::cout << "=== Robot Pergi Sekolah ===" << std::endl;
+    std::cout << "Hujan: " << hujan << std::endl;
+    std::cout << "Ada ujian: " << adaUjian << std::endl;
+    std::cout << "Jam sekarang: " << jamSekarang << std::endl;
+    std::cout << std::endl;
+
+    // Cek apakah sudah waktunya berangkat
+    if (jamSekarang < 6) {
+        std::cout << "Masih terlalu pagi. Tidur lagi aja." << std::endl;
+    } else if (jamSekarang > 7) {
+        std::cout << "Waduh, sudah telat! Cepat berangkat!" << std::endl;
+    } else {
+        std::cout << "Waktunya berangkat sekolah." << std::endl;
+
+        // Cek cuaca
+        if (hujan) {
+            std::cout << "Bawa payung ya!" << std::endl;
+        } else {
+            std::cout << "Cuaca cerah, nggak perlu payung." << std::endl;
+        }
+
+        // Cek ujian
+        if (adaUjian) {
+            std::cout << "Jangan lupa bawa alat tulis dan belajar lagi di jalan!" << std::endl;
+        }
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+=== Robot Pergi Sekolah ===
+Hujan: 1
+Ada ujian: 1
+Jam sekarang: 6
+
+Waktunya berangkat sekolah.
+Bawa payung ya!
+Jangan lupa bawa alat tulis dan belajar lagi di jalan!
+```
+
+## Kesalahan Umum
+
+### 1. Lupa kurung kurawal `{}`
+
+Kalau kamu tidak pakai `{}`, hanya **satu baris** setelah `if` yang termasuk blok kondisi:
+
+```cpp
+int nilai = 50;
+
+// BERBAHAYA — tanpa kurung kurawal
+if (nilai >= 75)
+    std::cout << "Lulus!" << std::endl;
+    std::cout << "Selamat ya!" << std::endl;  // Baris ini SELALU dijalankan!
+```
+
+Baris "Selamat ya!" akan **selalu** muncul, meskipun nilai kurang dari 75, karena hanya baris pertama yang masuk ke dalam `if`. Solusinya: selalu pakai `{}`.
+
+```cpp
+// BENAR — pakai kurung kurawal
+if (nilai >= 75) {
+    std::cout << "Lulus!" << std::endl;
+    std::cout << "Selamat ya!" << std::endl;
+}
+```
+
+:::warning
+**Selalu pakai kurung kurawal `{}`**, meskipun blok kode hanya satu baris. Ini mencegah bug yang sangat sulit ditemukan!
+:::
+
+### 2. Pakai `=` alih-alih `==` di kondisi
+
+```cpp
+int x = 5;
+
+// SALAH — ini MENGUBAH x jadi 10, bukan membandingkan!
+if (x = 10) {
+    std::cout << "x adalah 10" << std::endl;
+}
+
+// BENAR — ini MEMBANDINGKAN x dengan 10
+if (x == 10) {
+    std::cout << "x adalah 10" << std::endl;
+}
+```
+
+### 3. Titik koma setelah `if`
+
+```cpp
+// SALAH — titik koma membuat if "kosong"
+if (nilai >= 75); {
+    std::cout << "Lulus!" << std::endl;  // Selalu dijalankan!
+}
+
+// BENAR — tanpa titik koma setelah kondisi
+if (nilai >= 75) {
+    std::cout << "Lulus!" << std::endl;
+}
+```
+
+### 4. Kondisi yang selalu true atau selalu false
+
+```cpp
+int umur = 20;
+
+// Ini selalu true karena umur sudah diset 20
+if (umur == 20) {
+    std::cout << "Umur 20" << std::endl;
+}
+
+// Kalau mau mengecek input dari user, nanti kita pakai cin (di Unit 1)
+```
+
+## Latihan
+
+**Latihan 1:** Buat program yang menyimpan suhu air dalam variabel `double`. Lalu tampilkan:
+- Jika suhu `<= 0`: "Air membeku (es)"
+- Jika suhu `>= 100`: "Air mendidih (uap)"
+- Selain itu: "Air dalam keadaan cair"
+
+**Latihan 2:** Buat program konversi nilai yang lebih detail. Simpan nilai (0-100) ke variabel `int`, lalu tampilkan:
+- 90-100: "A (Istimewa)"
+- 80-89: "B (Sangat Baik)"
+- 70-79: "C (Baik)"
+- 60-69: "D (Cukup)"
+- 0-59: "E (Perlu Perbaikan)"
+
+**Latihan 3:** Buat program yang mengecek apakah sebuah tahun adalah **tahun kabisat**. Aturannya: tahun habis dibagi 4 adalah tahun kabisat, KECUALI yang habis dibagi 100 (bukan kabisat), KECUALI yang habis dibagi 400 (kabisat lagi). Contoh: 2024 kabisat, 1900 bukan, 2000 kabisat.
+
+:::tip
+Untuk Latihan 3, coba pikirkan urutan pengecekan yang tepat. Mulai dari kondisi yang paling spesifik (habis dibagi 400) ke yang paling umum.
+:::
+
+## Ringkasan
+
+| Konsep | Penjelasan |
+|--------|------------|
+| `if` | Menjalankan blok kode jika kondisi `true` |
+| `if-else` | Dua jalur: satu untuk `true`, satu untuk `false` |
+| `else if` | Menambahkan kondisi tambahan di antara `if` dan `else` |
+| Nested if | `if` di dalam `if` — untuk pengecekan bertingkat |
+| `{ }` | Kurung kurawal menandai blok kode — **selalu gunakan** |
+| Urutan kondisi | Dicek dari atas ke bawah, berhenti di kondisi pertama yang `true` |
+| `=` vs `==` | Jangan tertukar! `=` assignment, `==` perbandingan |
+| Titik koma | **Jangan** taruh `;` setelah `if (kondisi)` |
+
+Sekarang programmu bisa membuat keputusan! Tapi bagaimana kalau kamu butuh mengecek **beberapa kondisi sekaligus**? Misalnya, "Jika umur di atas 17 DAN punya SIM"? Di pelajaran berikutnya, kita akan belajar **operator logika** untuk menggabungkan kondisi-kondisi.

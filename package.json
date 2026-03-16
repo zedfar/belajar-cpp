@@ -23,6 +23,7 @@
     "clsx": "latest",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
+    "remark-directive": "^3.0.1",
     "tailwind-merge": "latest"
   },
   "devDependencies": {

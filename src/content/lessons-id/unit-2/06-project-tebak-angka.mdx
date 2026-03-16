@@ -1,0 +1,643 @@
+---
+title: "Project: Game Tebak Angka"
+unit: 2
+lesson: 6
+description: "Membuat game tebak angka yang seru menggunakan semua konsep percabangan dari Unit 2"
+objectives:
+  - "Menggabungkan if-else, switch-case, dan ternary operator dalam satu program"
+  - "Membangun program secara bertahap (step by step)"
+  - "Membuat program yang interaktif dan menyenangkan"
+estimatedTime: 60
+prerequisites: ["unit-2/05-ternary-operator"]
+difficulty: "beginner"
+isProject: true
+tags: ["project", "game", "tebak-angka", "percabangan", "interactive"]
+---
+
+# Project: Game Tebak Angka
+
+Selamat! Kamu sudah belajar semua konsep percabangan di Unit 2. Sekarang waktunya menggabungkan semuanya dalam sebuah project yang seru — **Game Tebak Angka**!
+
+Konsepnya sederhana: komputer punya angka rahasia, dan kamu harus menebaknya. Komputer akan memberikan petunjuk apakah tebakanmu terlalu besar atau terlalu kecil. Mirip seperti main "tebak-tebakan" sama teman di sekolah!
+
+:::note
+Di project ini kita belum menggunakan **loop** (perulangan), jadi pemain hanya mendapat beberapa kesempatan menebak yang kita tulis manual. Nanti di Unit 3 (Perulangan), kita akan upgrade game ini jadi lebih keren dengan loop!
+:::
+
+## Tahap 1: Versi Paling Sederhana
+
+Kita mulai dari yang paling basic dulu — komputer punya angka tetap, pemain menebak satu kali.
+
+```cpp
+#include <iostream>
+
+int main() {
+    int angka_rahasia = 7;
+    int tebakan;
+
+    std::cout << "==========================" << std::endl;
+    std::cout << "   GAME TEBAK ANGKA" << std::endl;
+    std::cout << "==========================" << std::endl;
+    std::cout << std::endl;
+
+    std::cout << "Saya memikirkan angka antara 1-10." << std::endl;
+    std::cout << "Coba tebak: ";
+    std::cin >> tebakan;
+
+    if (tebakan == angka_rahasia) {
+        std::cout << "BENAR! Kamu hebat!" << std::endl;
+    } else {
+        std::cout << "Salah! Angka yang benar adalah " << angka_rahasia << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Ini sudah bisa dimainkan, tapi kurang seru karena:
+1. Angkanya selalu sama (7)
+2. Cuma satu kesempatan
+3. Tidak ada petunjuk
+
+Mari kita tingkatkan step by step!
+
+## Tahap 2: Tambahkan Petunjuk
+
+Sekarang kita kasih petunjuk apakah tebakan pemain **terlalu besar** atau **terlalu kecil**. Di sinilah kita pakai **if-else if**.
+
+```cpp
+#include <iostream>
+
+int main() {
+    int angka_rahasia = 7;
+    int tebakan;
+
+    std::cout << "==========================" << std::endl;
+    std::cout << "   GAME TEBAK ANGKA" << std::endl;
+    std::cout << "==========================" << std::endl;
+    std::cout << std::endl;
+
+    std::cout << "Saya memikirkan angka antara 1-10." << std::endl;
+    std::cout << "Coba tebak: ";
+    std::cin >> tebakan;
+
+    if (tebakan == angka_rahasia) {
+        std::cout << "BENAR! Kamu hebat!" << std::endl;
+    } else if (tebakan < angka_rahasia) {
+        std::cout << "Terlalu kecil! Coba angka yang lebih besar." << std::endl;
+    } else {
+        std::cout << "Terlalu besar! Coba angka yang lebih kecil." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Sekarang pemain tahu arah tebakannya salah ke mana. Tapi masih cuma satu kesempatan... Mari tambah lebih banyak!
+
+## Tahap 3: Tiga Kesempatan Menebak
+
+Karena kita belum belajar loop, kita tulis tebakan beberapa kali secara manual. Tidak elegan, tapi ini cara yang valid untuk sekarang!
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    int angka_rahasia = 7;
+    int tebakan;
+    bool sudah_benar = false;
+
+    std::cout << "==========================" << std::endl;
+    std::cout << "   GAME TEBAK ANGKA" << std::endl;
+    std::cout << "==========================" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Saya memikirkan angka antara 1-10." << std::endl;
+    std::cout << "Kamu punya 3 kesempatan!" << std::endl;
+    std::cout << std::endl;
+
+    // Tebakan 1
+    std::cout << "Tebakan ke-1: ";
+    std::cin >> tebakan;
+
+    if (tebakan == angka_rahasia) {
+        std::cout << "BENAR di tebakan pertama! Luar biasa!" << std::endl;
+        sudah_benar = true;
+    } else if (tebakan < angka_rahasia) {
+        std::cout << "Terlalu kecil!" << std::endl;
+    } else {
+        std::cout << "Terlalu besar!" << std::endl;
+    }
+
+    // Tebakan 2 (hanya jika belum benar)
+    if (!sudah_benar) {
+        std::cout << "Tebakan ke-2: ";
+        std::cin >> tebakan;
+
+        if (tebakan == angka_rahasia) {
+            std::cout << "BENAR di tebakan kedua! Hebat!" << std::endl;
+            sudah_benar = true;
+        } else if (tebakan < angka_rahasia) {
+            std::cout << "Masih terlalu kecil!" << std::endl;
+        } else {
+            std::cout << "Masih terlalu besar!" << std::endl;
+        }
+    }
+
+    // Tebakan 3 (hanya jika belum benar)
+    if (!sudah_benar) {
+        std::cout << "Tebakan ke-3 (terakhir!): ";
+        std::cin >> tebakan;
+
+        if (tebakan == angka_rahasia) {
+            std::cout << "BENAR di tebakan terakhir! Hampir saja!" << std::endl;
+            sudah_benar = true;
+        } else {
+            std::cout << "Sayang sekali! Angka yang benar adalah "
+                      << angka_rahasia << std::endl;
+        }
+    }
+
+    // Pesan penutup
+    std::string pesan = sudah_benar ? "Selamat, kamu menang!" : "Coba lagi ya!";
+    std::cout << std::endl;
+    std::cout << pesan << std::endl;
+
+    return 0;
+}
+```
+
+Lihat? Kita pakai **ternary operator** di bagian pesan penutup! Dan variabel `bool sudah_benar` membantu kita melacak apakah pemain sudah menebak dengan benar.
+
+:::tip
+Perhatikan pola `if (!sudah_benar)` sebelum tebakan 2 dan 3. Ini memastikan kalau pemain sudah benar, dia tidak diminta menebak lagi. Tanda `!` artinya "bukan" atau "NOT" — jadi `!sudah_benar` artinya "belum benar".
+:::
+
+## Tahap 4: Angka Acak
+
+Supaya game tidak membosankan (angka selalu 7), kita pakai angka acak! C++ punya cara untuk menghasilkan angka random.
+
+```cpp
+#include <iostream>
+#include <cstdlib>  // untuk rand() dan srand()
+#include <ctime>    // untuk time()
+
+int main() {
+    // Inisialisasi random seed berdasarkan waktu
+    std::srand(std::time(0));
+
+    // Menghasilkan angka acak 1-10
+    int angka_rahasia = std::rand() % 10 + 1;
+
+    std::cout << "Angka rahasia sudah dipilih secara acak (1-10)!" << std::endl;
+    // ... sisa kode sama seperti sebelumnya
+
+    return 0;
+}
+```
+
+:::note
+`std::srand(std::time(0))` mengatur "benih" (seed) untuk angka random berdasarkan waktu saat ini. Tanpa baris ini, `std::rand()` akan menghasilkan angka yang sama setiap kali program dijalankan.
+
+`std::rand() % 10 + 1` menghasilkan angka 1-10. Cara kerjanya: `rand() % 10` menghasilkan 0-9, lalu `+ 1` menggesernya menjadi 1-10.
+:::
+
+## Tahap 5: Menu Utama dengan Switch-Case
+
+Sekarang kita tambahkan menu agar pemain bisa memilih tingkat kesulitan. Di sinilah **switch-case** berperan!
+
+```cpp
+#include <iostream>
+#include <string>
+#include <cstdlib>
+#include <ctime>
+
+int main() {
+    std::srand(std::time(0));
+
+    int pilihan_menu;
+    int batas_atas;
+    int jumlah_kesempatan;
+
+    std::cout << "==============================" << std::endl;
+    std::cout << "     GAME TEBAK ANGKA" << std::endl;
+    std::cout << "==============================" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Pilih tingkat kesulitan:" << std::endl;
+    std::cout << "1. Mudah    (angka 1-10,  3 kesempatan)" << std::endl;
+    std::cout << "2. Sedang   (angka 1-50,  5 kesempatan)" << std::endl;
+    std::cout << "3. Sulit    (angka 1-100, 5 kesempatan)" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Pilihan (1/2/3): ";
+    std::cin >> pilihan_menu;
+    std::cout << std::endl;
+
+    switch (pilihan_menu) {
+        case 1:
+            batas_atas = 10;
+            jumlah_kesempatan = 3;
+            std::cout << "Mode: MUDAH" << std::endl;
+            break;
+        case 2:
+            batas_atas = 50;
+            jumlah_kesempatan = 5;
+            std::cout << "Mode: SEDANG" << std::endl;
+            break;
+        case 3:
+            batas_atas = 100;
+            jumlah_kesempatan = 5;
+            std::cout << "Mode: SULIT" << std::endl;
+            break;
+        default:
+            std::cout << "Pilihan tidak valid. Menggunakan mode Mudah." << std::endl;
+            batas_atas = 10;
+            jumlah_kesempatan = 3;
+            break;
+    }
+
+    int angka_rahasia = std::rand() % batas_atas + 1;
+
+    std::cout << "Saya memikirkan angka antara 1-" << batas_atas << "." << std::endl;
+    std::cout << "Kamu punya " << jumlah_kesempatan << " kesempatan!" << std::endl;
+    std::cout << std::endl;
+
+    // ... bagian tebakan akan kita gabungkan di versi final
+
+    return 0;
+}
+```
+
+Switch-case membuat menu terlihat rapi dan mudah ditambah pilihan baru.
+
+## Tahap 6: Validasi Input
+
+Sebelum kita gabungkan semuanya, ada satu hal penting — **validasi input**. Bagaimana kalau pemain memasukkan angka di luar rentang?
+
+```cpp
+// Setelah pemain menebak
+std::cin >> tebakan;
+
+if (tebakan < 1 || tebakan > batas_atas) {
+    std::cout << "Hei, angkanya harus antara 1-" << batas_atas << "!" << std::endl;
+    std::cout << "Kesempatan ini tidak dihitung, coba lagi." << std::endl;
+    // Di versi dengan loop nanti, kita bisa minta input ulang
+    // Untuk sekarang, kita lanjutkan saja
+}
+```
+
+## Versi Final: Game Tebak Angka Lengkap!
+
+Ini dia versi lengkap yang menggabungkan semua konsep. Baca pelan-pelan dan perhatikan komentar-komentarnya.
+
+```cpp
+#include <iostream>
+#include <string>
+#include <cstdlib>
+#include <ctime>
+
+int main() {
+    // === SETUP ===
+    std::srand(std::time(0));
+
+    // === HEADER ===
+    std::cout << "======================================" << std::endl;
+    std::cout << "       GAME TEBAK ANGKA v1.0" << std::endl;
+    std::cout << "======================================" << std::endl;
+    std::cout << "  Selamat datang, Penebak Handal!" << std::endl;
+    std::cout << "======================================" << std::endl;
+    std::cout << std::endl;
+
+    // === MENU TINGKAT KESULITAN (switch-case) ===
+    int pilihan_menu;
+    int batas_atas;
+    std::string nama_mode;
+
+    std::cout << "Pilih tingkat kesulitan:" << std::endl;
+    std::cout << "  1. Mudah    (angka 1-10)" << std::endl;
+    std::cout << "  2. Sedang   (angka 1-50)" << std::endl;
+    std::cout << "  3. Sulit    (angka 1-100)" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Pilihan (1/2/3): ";
+    std::cin >> pilihan_menu;
+    std::cout << std::endl;
+
+    switch (pilihan_menu) {
+        case 1:
+            batas_atas = 10;
+            nama_mode = "MUDAH";
+            break;
+        case 2:
+            batas_atas = 50;
+            nama_mode = "SEDANG";
+            break;
+        case 3:
+            batas_atas = 100;
+            nama_mode = "SULIT";
+            break;
+        default:
+            batas_atas = 10;
+            nama_mode = "MUDAH";
+            std::cout << "Pilihan tidak valid. Menggunakan mode Mudah." << std::endl;
+            break;
+    }
+
+    // Generate angka rahasia
+    int angka_rahasia = std::rand() % batas_atas + 1;
+
+    std::cout << "--------------------------------------" << std::endl;
+    std::cout << "Mode: " << nama_mode << std::endl;
+    std::cout << "Tebak angka antara 1 sampai " << batas_atas << "." << std::endl;
+    std::cout << "Kamu punya 5 kesempatan. Semoga beruntung!" << std::endl;
+    std::cout << "--------------------------------------" << std::endl;
+    std::cout << std::endl;
+
+    // === VARIABEL GAME ===
+    int tebakan;
+    bool menang = false;
+    int tebakan_benar_di = 0;  // menyimpan di tebakan ke berapa pemain benar
+
+    // === TEBAKAN KE-1 ===
+    std::cout << "[Kesempatan 1/5] Tebakan kamu: ";
+    std::cin >> tebakan;
+
+    if (tebakan < 1 || tebakan > batas_atas) {
+        std::cout << "  Angka di luar rentang 1-" << batas_atas << "!" << std::endl;
+    } else if (tebakan == angka_rahasia) {
+        menang = true;
+        tebakan_benar_di = 1;
+    } else if (tebakan < angka_rahasia) {
+        std::cout << "  Terlalu KECIL! Coba lebih besar." << std::endl;
+    } else {
+        std::cout << "  Terlalu BESAR! Coba lebih kecil." << std::endl;
+    }
+
+    // === TEBAKAN KE-2 ===
+    if (!menang) {
+        std::cout << "[Kesempatan 2/5] Tebakan kamu: ";
+        std::cin >> tebakan;
+
+        if (tebakan < 1 || tebakan > batas_atas) {
+            std::cout << "  Angka di luar rentang!" << std::endl;
+        } else if (tebakan == angka_rahasia) {
+            menang = true;
+            tebakan_benar_di = 2;
+        } else if (tebakan < angka_rahasia) {
+            std::cout << "  Terlalu KECIL!" << std::endl;
+        } else {
+            std::cout << "  Terlalu BESAR!" << std::endl;
+        }
+    }
+
+    // === TEBAKAN KE-3 ===
+    if (!menang) {
+        std::cout << "[Kesempatan 3/5] Tebakan kamu: ";
+        std::cin >> tebakan;
+
+        if (tebakan < 1 || tebakan > batas_atas) {
+            std::cout << "  Angka di luar rentang!" << std::endl;
+        } else if (tebakan == angka_rahasia) {
+            menang = true;
+            tebakan_benar_di = 3;
+        } else if (tebakan < angka_rahasia) {
+            std::cout << "  Terlalu KECIL!" << std::endl;
+        } else {
+            std::cout << "  Terlalu BESAR!" << std::endl;
+        }
+    }
+
+    // === TEBAKAN KE-4 ===
+    if (!menang) {
+        std::cout << "[Kesempatan 4/5] Tebakan kamu: ";
+        std::cin >> tebakan;
+
+        if (tebakan < 1 || tebakan > batas_atas) {
+            std::cout << "  Angka di luar rentang!" << std::endl;
+        } else if (tebakan == angka_rahasia) {
+            menang = true;
+            tebakan_benar_di = 4;
+        } else if (tebakan < angka_rahasia) {
+            std::cout << "  Terlalu KECIL! Tinggal 1 kesempatan!" << std::endl;
+        } else {
+            std::cout << "  Terlalu BESAR! Tinggal 1 kesempatan!" << std::endl;
+        }
+    }
+
+    // === TEBAKAN KE-5 (TERAKHIR) ===
+    if (!menang) {
+        std::cout << "[Kesempatan 5/5 - TERAKHIR!] Tebakan kamu: ";
+        std::cin >> tebakan;
+
+        if (tebakan == angka_rahasia) {
+            menang = true;
+            tebakan_benar_di = 5;
+        }
+    }
+
+    // === HASIL AKHIR ===
+    std::cout << std::endl;
+    std::cout << "======================================" << std::endl;
+
+    if (menang) {
+        std::cout << "  SELAMAT! KAMU MENANG!" << std::endl;
+        std::cout << "  Angka rahasia: " << angka_rahasia << std::endl;
+        std::cout << "  Ditebak dalam " << tebakan_benar_di << " percobaan." << std::endl;
+        std::cout << std::endl;
+
+        // Rating berdasarkan jumlah tebakan (ternary + if-else)
+        std::string rating;
+        if (tebakan_benar_di == 1) {
+            rating = "LUAR BIASA! Kamu peramal!";
+        } else if (tebakan_benar_di <= 3) {
+            rating = "HEBAT! Kamu penebak ulung!";
+        } else {
+            rating = "Bagus! Kamu berhasil!";
+        }
+        std::cout << "  Rating: " << rating << std::endl;
+
+        // Bintang berdasarkan performa (ternary operator)
+        std::string bintang = (tebakan_benar_di <= 2) ? "***** (5 bintang)"
+                            : (tebakan_benar_di <= 4) ? "***   (3 bintang)"
+                            : "*     (1 bintang)";
+        std::cout << "  Skor: " << bintang << std::endl;
+
+    } else {
+        std::cout << "  GAME OVER!" << std::endl;
+        std::cout << "  Angka rahasia adalah: " << angka_rahasia << std::endl;
+        std::cout << "  Jangan menyerah, coba lagi!" << std::endl;
+    }
+
+    std::cout << "======================================" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Terima kasih sudah bermain!" << std::endl;
+
+    return 0;
+}
+```
+
+## Penjelasan Kode
+
+Mari kita bahas bagian-bagian penting dari game ini.
+
+### 1. Angka Acak
+
+```cpp
+std::srand(std::time(0));
+int angka_rahasia = std::rand() % batas_atas + 1;
+```
+
+- `std::srand(std::time(0))` — mengatur seed random berdasarkan waktu. Ini membuat angka berbeda setiap kali main.
+- `std::rand() % batas_atas` — menghasilkan angka 0 sampai `batas_atas - 1`.
+- `+ 1` — menggeser rentang menjadi 1 sampai `batas_atas`.
+
+### 2. Switch-Case untuk Menu
+
+```cpp
+switch (pilihan_menu) {
+    case 1:
+        batas_atas = 10;
+        nama_mode = "MUDAH";
+        break;
+    // ...
+}
+```
+
+Switch-case digunakan untuk memproses pilihan menu. Setiap tingkat kesulitan mengatur `batas_atas` yang berbeda. Ini jauh lebih rapi daripada if-else untuk menu pilihan.
+
+### 3. Variabel `bool` untuk Melacak Status
+
+```cpp
+bool menang = false;
+```
+
+Variabel `bool` digunakan untuk melacak apakah pemain sudah menebak dengan benar. Setiap blok tebakan dicek dengan `if (!menang)` — artinya "jika belum menang, minta tebakan lagi".
+
+### 4. If-Else untuk Petunjuk
+
+```cpp
+if (tebakan == angka_rahasia) {
+    menang = true;
+} else if (tebakan < angka_rahasia) {
+    std::cout << "Terlalu KECIL!" << std::endl;
+} else {
+    std::cout << "Terlalu BESAR!" << std::endl;
+}
+```
+
+If-else if memberikan petunjuk arah yang tepat kepada pemain. Ini adalah operator perbandingan (`==`, `<`, `>`) yang sudah dipelajari di awal unit.
+
+### 5. Ternary untuk Rating
+
+```cpp
+std::string bintang = (tebakan_benar_di <= 2) ? "***** (5 bintang)"
+                    : (tebakan_benar_di <= 4) ? "***   (3 bintang)"
+                    : "*     (1 bintang)";
+```
+
+Di sini kita pakai nested ternary untuk contoh. Di kode asli, ini masih cukup readable karena polanya jelas. Tapi kalau kamu merasa lebih nyaman, boleh juga pakai if-else.
+
+### 6. Validasi Input
+
+```cpp
+if (tebakan < 1 || tebakan > batas_atas) {
+    std::cout << "Angka di luar rentang!" << std::endl;
+}
+```
+
+Kita mengecek apakah input pemain valid sebelum memproses tebakan. Ini praktik yang baik — selalu validasi input dari user!
+
+## Contoh Sesi Bermain
+
+```
+======================================
+       GAME TEBAK ANGKA v1.0
+======================================
+  Selamat datang, Penebak Handal!
+======================================
+
+Pilih tingkat kesulitan:
+  1. Mudah    (angka 1-10)
+  2. Sedang   (angka 1-50)
+  3. Sulit    (angka 1-100)
+
+Pilihan (1/2/3): 1
+
+--------------------------------------
+Mode: MUDAH
+Tebak angka antara 1 sampai 10.
+Kamu punya 5 kesempatan. Semoga beruntung!
+--------------------------------------
+
+[Kesempatan 1/5] Tebakan kamu: 5
+  Terlalu KECIL! Coba lebih besar.
+[Kesempatan 2/5] Tebakan kamu: 8
+  Terlalu BESAR! Coba lebih kecil.
+[Kesempatan 3/5] Tebakan kamu: 7
+
+======================================
+  SELAMAT! KAMU MENANG!
+  Angka rahasia: 7
+  Ditebak dalam 3 percobaan.
+
+  Rating: HEBAT! Kamu penebak ulung!
+  Skor: ***   (3 bintang)
+======================================
+
+Terima kasih sudah bermain!
+```
+
+## Konsep Unit 2 yang Digunakan
+
+Perhatikan bagaimana semua konsep yang kita pelajari di Unit 2 bergabung dalam satu program:
+
+| Konsep | Digunakan untuk |
+|--------|----------------|
+| Operator perbandingan (`==`, `<`, `>`) | Membandingkan tebakan dengan angka rahasia |
+| If-else if | Memberikan petunjuk (terlalu besar/kecil/benar) |
+| Operator logika (`\|\|`, `!`) | Validasi input dan cek status menang |
+| Switch-case | Menu pilihan tingkat kesulitan |
+| Ternary operator | Menentukan rating dan bintang |
+| Variabel `bool` | Melacak apakah pemain sudah menang |
+
+## Tantangan Ekstra
+
+Sudah selesai dan mau lebih menantang? Coba tantangan-tantangan ini:
+
+**Tantangan 1: Sistem Skor**
+Tambahkan sistem poin! Misalnya: tebakan pertama benar = 100 poin, kedua = 80 poin, dan seterusnya. Tampilkan skor di akhir game.
+
+**Tantangan 2: Petunjuk Tambahan**
+Setelah tebakan kedua yang salah, berikan petunjuk ekstra. Misalnya: "Angka rahasia adalah bilangan ganjil" atau "Angka rahasia lebih besar dari 5". Pakai operator modulo (`%`) dan if-else untuk ini.
+
+**Tantangan 3: Dua Pemain**
+Ubah game menjadi mode 2 pemain. Pemain 1 memasukkan angka rahasia (tanpa dilihat pemain 2), lalu pemain 2 menebak. Kamu bisa "membersihkan" layar dengan mencetak banyak baris kosong sebelum pemain 2 menebak.
+
+**Tantangan 4: Tampilan Lebih Keren**
+Buat tampilan ASCII art yang lebih menarik. Misalnya, gambar emoji sederhana dari karakter teks saat menang atau kalah:
+
+```
+   \(^o^)/    Kamu Menang!
+```
+
+```
+   (T_T)      Game Over...
+```
+
+**Tantangan 5: Statistik Permainan**
+Tambahkan statistik di akhir: berapa kali tebakan terlalu besar, berapa kali terlalu kecil, dan selisih rata-rata antara tebakan dan angka rahasia.
+
+:::tip
+Jangan merasa harus menyelesaikan semua tantangan. Pilih satu atau dua yang paling menarik buat kamu. Yang penting, kamu bereksperimen dan bersenang-senang sambil belajar!
+:::
+
+## Latihan
+
+**Latihan 1:** Ketik ulang versi final game di atas dari awal (jangan copy-paste!). Mengetik ulang kode membantu otakmu memahami setiap baris lebih dalam. Pastikan game berjalan dengan benar.
+
+**Latihan 2:** Modifikasi game agar rentang angka dan jumlah kesempatan berbeda untuk setiap tingkat kesulitan:
+- Mudah: 1-10, 5 kesempatan
+- Sedang: 1-50, 7 kesempatan
+- Sulit: 1-100, 10 kesempatan
+
+**Latihan 3:** Tambahkan fitur baru ke game: setelah game selesai (menang atau kalah), tampilkan pesan yang berbeda berdasarkan mode kesulitan. Misalnya, kalau menang di mode Sulit, pesannya lebih "wow" daripada menang di mode Mudah.
+
+Selamat! Kamu sudah menyelesaikan **Unit 2: Percabangan**! Kamu sekarang bisa membuat program yang "berpikir" dan mengambil keputusan. Di unit berikutnya, kita akan belajar tentang **perulangan (loop)** — dan game tebak angka ini akan menjadi jauh lebih keren!

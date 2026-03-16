@@ -1,0 +1,360 @@
+---
+title: "Function Overloading"
+unit: 4
+lesson: 6
+description: "Membuat beberapa fungsi dengan nama sama tapi parameter berbeda — fitur powerful C++ yang membuat kode lebih bersih"
+objectives:
+  - "Memahami konsep function overloading"
+  - "Membuat fungsi dengan nama sama tapi parameter berbeda"
+  - "Memahami bagaimana compiler memilih versi fungsi yang tepat"
+  - "Mengetahui aturan overloading yang valid"
+estimatedTime: 25
+prerequisites: ["unit-4/05-pass-by-reference"]
+difficulty: "beginner"
+tags: ["overloading", "fungsi", "polimorfisme", "parameter"]
+---
+
+# Function Overloading
+
+Bayangkan kamu di kantin sekolah. Kamu bilang "Beli minum." Kalau kamu cuma bawa uang Rp 3.000, kamu dikasih teh. Kalau bawa Rp 10.000, kamu dikasih jus. Kalau bilang "Beli minum dingin", kamu dikasih es. **Satu perintah ("beli minum"), tapi hasilnya berbeda tergantung situasinya.**
+
+Di C++, ini namanya **function overloading** — kamu bisa bikin beberapa fungsi dengan **nama yang sama**, tapi **parameter yang berbeda**. Compiler secara otomatis memilih versi yang tepat berdasarkan argumen yang kamu berikan.
+
+## Contoh Pertama: Fungsi Hitung Luas
+
+Luas persegi, persegi panjang, dan lingkaran punya rumus berbeda. Tanpa overloading, kamu harus bikin nama fungsi yang berbeda:
+
+```cpp
+// Tanpa overloading — nama berbeda-beda
+double luasPersegi(int sisi);
+double luasPersegiPanjang(int panjang, int lebar);
+double luasLingkaran(double radius);
+```
+
+Dengan overloading, cukup satu nama:
+
+```cpp
+// Dengan overloading — satu nama, parameter berbeda
+double luas(int sisi);                   // 1 parameter int = persegi
+double luas(int panjang, int lebar);     // 2 parameter int = persegi panjang
+double luas(double radius);              // 1 parameter double = lingkaran
+```
+
+Ini kode lengkapnya:
+
+```cpp
+#include <iostream>
+
+// Luas persegi (1 parameter int)
+double luas(int sisi) {
+    std::cout << "Menghitung luas persegi..." << std::endl;
+    return sisi * sisi;
+}
+
+// Luas persegi panjang (2 parameter int)
+double luas(int panjang, int lebar) {
+    std::cout << "Menghitung luas persegi panjang..." << std::endl;
+    return panjang * lebar;
+}
+
+// Luas lingkaran (1 parameter double)
+double luas(double radius) {
+    std::cout << "Menghitung luas lingkaran..." << std::endl;
+    return 3.14159 * radius * radius;
+}
+
+int main() {
+    std::cout << "Persegi (5): " << luas(5) << std::endl;
+    std::cout << "Persegi panjang (4, 6): " << luas(4, 6) << std::endl;
+    std::cout << "Lingkaran (3.0): " << luas(3.0) << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Menghitung luas persegi...
+Persegi (5): 25
+Menghitung luas persegi panjang...
+Persegi panjang (4, 6): 24
+Menghitung luas lingkaran...
+Lingkaran (3.0): 28.2743
+```
+
+Compiler melihat argumen yang kamu berikan dan otomatis memilih versi fungsi yang cocok. Keren, kan?
+
+## Bagaimana Compiler Memilih?
+
+Proses ini disebut **overload resolution**. Compiler melihat:
+
+1. **Jumlah argumen** — `luas(5)` punya 1 argumen, `luas(4, 6)` punya 2
+2. **Tipe argumen** — `luas(5)` mengirim `int`, `luas(3.0)` mengirim `double`
+
+Berdasarkan dua hal itu, compiler memilih versi yang paling cocok.
+
+```cpp
+luas(5);       // 1 argumen int    -> luas(int sisi)
+luas(4, 6);    // 2 argumen int    -> luas(int panjang, int lebar)
+luas(3.0);     // 1 argumen double -> luas(double radius)
+```
+
+:::note
+Ini terjadi saat **compile time** (sebelum program jalan), bukan saat program berjalan. Jadi tidak ada pengaruh ke kecepatan program.
+:::
+
+## Contoh: Fungsi Cetak
+
+Overloading sangat berguna untuk fungsi yang menampilkan berbagai tipe data:
+
+```cpp
+#include <iostream>
+#include <string>
+
+void cetak(int angka) {
+    std::cout << "Bilangan bulat: " << angka << std::endl;
+}
+
+void cetak(double angka) {
+    std::cout << "Bilangan desimal: " << angka << std::endl;
+}
+
+void cetak(const std::string& teks) {
+    std::cout << "Teks: " << teks << std::endl;
+}
+
+void cetak(bool nilai) {
+    std::cout << "Boolean: " << (nilai ? "true" : "false") << std::endl;
+}
+
+int main() {
+    cetak(42);
+    cetak(3.14);
+    cetak(std::string("Halo C++!"));
+    cetak(true);
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Bilangan bulat: 42
+Bilangan desimal: 3.14
+Teks: Halo C++!
+Boolean: true
+```
+
+Satu nama fungsi `cetak`, tapi bisa menangani berbagai tipe data. Kode jadi lebih bersih dan mudah diingat!
+
+## Ternyata kamu Sudah Pakai Overloading!
+
+Tahu tidak? `std::cout` sebenarnya menggunakan overloading! Operator `<<` di `std::cout` punya banyak versi:
+
+```cpp
+std::cout << 42;           // versi untuk int
+std::cout << 3.14;         // versi untuk double
+std::cout << "halo";       // versi untuk string
+std::cout << true;         // versi untuk bool
+```
+
+Itulah kenapa `std::cout` bisa mencetak berbagai tipe data tanpa kamu harus bilang "ini int" atau "ini string". Compiler sudah tahu versi mana yang harus dipanggil!
+
+:::tip
+Banyak fitur di C++ Standard Library menggunakan overloading. Jadi konsep ini bukan hanya teori — kamu akan terus bertemu dengannya!
+:::
+
+## Aturan Overloading
+
+Ada beberapa aturan penting yang harus kamu tahu:
+
+### 1. Harus Berbeda Parameter
+
+Fungsi overloaded harus berbeda di **jumlah parameter** atau **tipe parameter**:
+
+```cpp
+// VALID: berbeda jumlah parameter
+void sapa();
+void sapa(std::string nama);
+void sapa(std::string nama, int umur);
+
+// VALID: berbeda tipe parameter
+void proses(int data);
+void proses(double data);
+void proses(std::string data);
+```
+
+### 2. Return Type Saja TIDAK Cukup
+
+Ini kesalahan yang sering terjadi:
+
+```cpp
+// TIDAK VALID! Hanya beda return type
+int hitung(int x);
+double hitung(int x);  // ERROR: sama-sama terima 1 int
+```
+
+Kenapa? Karena saat kamu panggil `hitung(5)`, compiler tidak bisa tahu kamu mau versi yang return `int` atau `double`. Ambiguitas!
+
+### 3. Hati-hati dengan Konversi Otomatis
+
+C++ kadang melakukan konversi tipe otomatis, dan ini bisa bikin bingung:
+
+```cpp
+void proses(int x) {
+    std::cout << "Versi int: " << x << std::endl;
+}
+
+void proses(double x) {
+    std::cout << "Versi double: " << x << std::endl;
+}
+
+int main() {
+    proses(5);      // jelas: int -> versi int
+    proses(5.0);    // jelas: double -> versi double
+    proses(5.5f);   // float -> dikonversi ke double -> versi double
+
+    return 0;
+}
+```
+
+:::warning
+Kalau compiler bingung (ambiguous), dia akan memberikan error. Ini sebenarnya hal baik — lebih baik error saat compile daripada bug saat program jalan!
+:::
+
+## Contoh Praktis: Fungsi Sapa
+
+```cpp
+#include <iostream>
+#include <string>
+
+// Versi 1: tanpa parameter
+void sapa() {
+    std::cout << "Halo, Dunia!" << std::endl;
+}
+
+// Versi 2: dengan nama
+void sapa(const std::string& nama) {
+    std::cout << "Halo, " << nama << "!" << std::endl;
+}
+
+// Versi 3: dengan nama dan umur
+void sapa(const std::string& nama, int umur) {
+    std::cout << "Halo, " << nama << "! Umur kamu " << umur << " tahun." << std::endl;
+}
+
+// Versi 4: dengan nama dan kelas
+void sapa(const std::string& nama, const std::string& kelas) {
+    std::cout << "Halo, " << nama << " dari kelas " << kelas << "!" << std::endl;
+}
+
+int main() {
+    sapa();
+    sapa("Budi");
+    sapa("Ani", 15);
+    sapa("Citra", "9A");
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Halo, Dunia!
+Halo, Budi!
+Halo, Ani! Umur kamu 15 tahun.
+Halo, Citra dari kelas 9A!
+```
+
+## Overloading vs Nama Berbeda: Mana yang Lebih Baik?
+
+| Aspek | Overloading | Nama Berbeda |
+|-------|------------|--------------|
+| Kemudahan ingat | Satu nama untuk operasi serupa | Harus ingat banyak nama |
+| Kejelasan | Kadang kurang jelas versi mana yang dipanggil | Selalu jelas dari nama fungsinya |
+| Kapan pakai | Fungsi melakukan hal yang **sama** dengan tipe/jumlah data berbeda | Fungsi melakukan hal yang **berbeda** |
+
+**Gunakan overloading** kalau fungsi-fungsi itu memang melakukan operasi yang **secara konsep sama** — seperti menghitung luas (tapi beda bentuk) atau mencetak data (tapi beda tipe).
+
+**Jangan gunakan overloading** kalau fungsi-fungsinya melakukan hal yang berbeda. Misalnya, jangan bikin `proses(int)` untuk menghitung dan `proses(string)` untuk menampilkan — itu membingungkan!
+
+## Contoh Lengkap: Kalkulator Bangun Datar
+
+```cpp
+#include <iostream>
+
+// === KELILING ===
+double keliling(int sisi) {
+    return 4.0 * sisi;  // persegi
+}
+
+double keliling(int panjang, int lebar) {
+    return 2.0 * (panjang + lebar);  // persegi panjang
+}
+
+double keliling(double radius) {
+    return 2.0 * 3.14159 * radius;  // lingkaran
+}
+
+// === LUAS ===
+double luas(int sisi) {
+    return sisi * sisi;  // persegi
+}
+
+double luas(int panjang, int lebar) {
+    return panjang * lebar;  // persegi panjang
+}
+
+double luas(double radius) {
+    return 3.14159 * radius * radius;  // lingkaran
+}
+
+int main() {
+    std::cout << "=== KALKULATOR BANGUN DATAR ===" << std::endl;
+    std::cout << std::endl;
+
+    // Persegi sisi 5
+    std::cout << "Persegi (sisi = 5):" << std::endl;
+    std::cout << "  Keliling: " << keliling(5) << std::endl;
+    std::cout << "  Luas: " << luas(5) << std::endl;
+    std::cout << std::endl;
+
+    // Persegi panjang 4 x 7
+    std::cout << "Persegi Panjang (4 x 7):" << std::endl;
+    std::cout << "  Keliling: " << keliling(4, 7) << std::endl;
+    std::cout << "  Luas: " << luas(4, 7) << std::endl;
+    std::cout << std::endl;
+
+    // Lingkaran radius 3.5
+    std::cout << "Lingkaran (radius = 3.5):" << std::endl;
+    std::cout << "  Keliling: " << keliling(3.5) << std::endl;
+    std::cout << "  Luas: " << luas(3.5) << std::endl;
+
+    return 0;
+}
+```
+
+## Latihan
+
+**Latihan 1:** Buat fungsi `nilai_maksimum` yang di-overload untuk menerima 2 int, 3 int, dan 2 double. Masing-masing mengembalikan nilai terbesar.
+
+**Latihan 2:** Buat fungsi `tampilkan` yang di-overload:
+- `tampilkan(int angka)` — cetak angka
+- `tampilkan(int angka, int kali)` — cetak angka sebanyak `kali` kali
+- `tampilkan(const std::string& teks, char pembatas)` — cetak teks dengan pembatas di kiri dan kanan (misal `*Halo*`)
+
+**Latihan 3:** Buat fungsi `konversi` yang di-overload:
+- `konversi(double celsius)` — return Fahrenheit
+- `konversi(double nilai, const std::string& dari)` — bisa konversi dari "km" ke meter, atau "kg" ke gram
+
+**Latihan 4:** Jelaskan kenapa kode ini ERROR:
+
+```cpp
+int bagi(int a, int b);
+double bagi(int a, int b);
+```
+
+Sekarang kamu tahu cara bikin banyak fungsi dengan nama sama! Di lesson berikutnya, kita akan belajar tentang **scope dan lifetime** — di mana variabel "hidup" dan kapan mereka "mati".

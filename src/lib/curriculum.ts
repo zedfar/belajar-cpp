@@ -74,7 +74,7 @@ export const CURRICULUM_ID: UnitMetadata[] = [
     },
     estimatedHours: '8-10',
     projectTitle: { id: 'Pola Bintang Generator', en: 'Star Pattern Generator' },
-    isAvailable: false,
+    isAvailable: true,
     lessons: [
       { slug: 'unit-3/01-while-loop', title: { id: 'While Loop', en: 'While Loop' }, estimatedTime: 40, isProject: false },
       { slug: 'unit-3/02-for-loop', title: { id: 'For Loop', en: 'For Loop' }, estimatedTime: 40, isProject: false },
@@ -95,7 +95,7 @@ export const CURRICULUM_ID: UnitMetadata[] = [
     },
     estimatedHours: '8-10',
     projectTitle: { id: 'Batu Gunting Kertas', en: 'Rock Paper Scissors' },
-    isAvailable: false,
+    isAvailable: true,
     lessons: [
       { slug: 'unit-4/01-apa-itu-fungsi', title: { id: 'Apa itu Fungsi?', en: 'What is a Function?' }, estimatedTime: 30, isProject: false },
       { slug: 'unit-4/02-membuat-fungsi', title: { id: 'Membuat Fungsi', en: 'Creating Functions' }, estimatedTime: 40, isProject: false },

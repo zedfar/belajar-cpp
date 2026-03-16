@@ -1,0 +1,473 @@
+---
+title: "Scope & Lifetime"
+unit: 4
+lesson: 7
+description: "Memahami di mana variabel terlihat (scope) dan kapan variabel hidup atau mati (lifetime)"
+objectives:
+  - "Memahami konsep scope (cakupan) variabel"
+  - "Membedakan local, block, dan global scope"
+  - "Memahami lifetime variabel di stack memory"
+  - "Menggunakan static local variable"
+  - "Menghindari name shadowing dan global variable"
+estimatedTime: 30
+prerequisites: ["unit-4/06-overloading"]
+difficulty: "beginner"
+tags: ["scope", "lifetime", "variabel-lokal", "variabel-global", "static", "shadowing"]
+---
+
+# Scope & Lifetime
+
+Pernah main petak umpet? Kalau kamu sembunyi di balik tembok, orang di sisi lain tembok tidak bisa melihatmu. Tapi kalau kamu berdiri di tengah lapangan, semua orang bisa melihatmu.
+
+Variabel di C++ juga begitu! Setiap variabel punya **scope** (cakupan) — yaitu area di kode tempat variabel itu bisa "dilihat" dan digunakan. Dan setiap variabel punya **lifetime** (masa hidup) — yaitu kapan variabel itu dibuat dan kapan dihancurkan.
+
+Memahami scope dan lifetime sangat penting supaya kamu tidak mengalami bug yang membingungkan!
+
+## Local Scope: Variabel di Dalam Fungsi
+
+Variabel yang dideklarasikan di dalam fungsi disebut **local variable**. Variabel ini hanya bisa diakses di dalam fungsi tempat dia dideklarasikan:
+
+```cpp
+#include <iostream>
+
+void fungsiA() {
+    int x = 10;
+    std::cout << "fungsiA: x = " << x << std::endl;
+}
+
+void fungsiB() {
+    // std::cout << x;  // ERROR! x tidak dikenal di sini
+    int y = 20;
+    std::cout << "fungsiB: y = " << y << std::endl;
+}
+
+int main() {
+    fungsiA();
+    fungsiB();
+
+    // std::cout << x;  // ERROR! x tidak dikenal di main
+    // std::cout << y;  // ERROR! y juga tidak dikenal di main
+
+    return 0;
+}
+```
+
+Variabel `x` hanya "terlihat" di dalam `fungsiA()`, dan `y` hanya terlihat di dalam `fungsiB()`. Ini seperti catatan di buku masing-masing — kamu tidak bisa baca catatan di buku orang lain!
+
+## Block Scope: Variabel di Dalam `{}`
+
+Scope sebenarnya ditentukan oleh tanda kurung kurawal `{}`. Setiap blok `{}` membuat scope baru — termasuk blok `if`, `for`, `while`:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int angka = 10;
+
+    if (angka > 5) {
+        int bonus = 100;  // bonus hanya ada di dalam if ini
+        std::cout << "Angka: " << angka << std::endl;   // OK
+        std::cout << "Bonus: " << bonus << std::endl;   // OK
+    }
+
+    // std::cout << bonus;  // ERROR! bonus sudah "mati" di sini
+
+    for (int i = 0; i < 3; i++) {
+        int temp = i * 10;  // temp hanya ada di dalam for ini
+        std::cout << "temp = " << temp << std::endl;
+    }
+
+    // std::cout << i;     // ERROR! i tidak dikenal di luar for
+    // std::cout << temp;  // ERROR! temp juga tidak
+
+    return 0;
+}
+```
+
+:::tip
+Variabel `i` yang dideklarasikan di dalam `for (int i = 0; ...)` hanya hidup di dalam loop tersebut. Begitu loop selesai, `i` sudah tidak ada. Ini sebetulnya fitur yang bagus — kamu bisa pakai nama `i` lagi di loop lain tanpa konflik!
+:::
+
+## Contoh: Scope Bertingkat
+
+Scope bisa bertingkat (nested). Scope dalam bisa mengakses variabel di scope luar, tapi tidak sebaliknya:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int a = 1;  // scope: seluruh main
+
+    {
+        int b = 2;  // scope: blok ini saja
+        std::cout << "a = " << a << std::endl;  // OK, a terlihat
+        std::cout << "b = " << b << std::endl;  // OK, b terlihat
+
+        {
+            int c = 3;  // scope: blok terdalam ini saja
+            std::cout << "a = " << a << std::endl;  // OK
+            std::cout << "b = " << b << std::endl;  // OK
+            std::cout << "c = " << c << std::endl;  // OK
+        }
+
+        // std::cout << c;  // ERROR! c sudah tidak ada
+    }
+
+    // std::cout << b;  // ERROR! b sudah tidak ada
+    std::cout << "a = " << a << std::endl;  // OK, a masih ada
+
+    return 0;
+}
+```
+
+Bayangkan seperti ruangan di dalam ruangan. Dari ruangan dalam, kamu bisa lihat ke luar. Tapi dari luar, kamu tidak bisa lihat ke dalam.
+
+## Global Variable: Terlihat di Mana-mana
+
+Variabel yang dideklarasikan **di luar semua fungsi** disebut **global variable**:
+
+```cpp
+#include <iostream>
+
+int skor = 0;  // global variable
+
+void tambahSkor(int poin) {
+    skor += poin;  // bisa akses skor dari sini
+}
+
+void tampilkanSkor() {
+    std::cout << "Skor: " << skor << std::endl;  // bisa akses juga
+}
+
+int main() {
+    tambahSkor(10);
+    tambahSkor(25);
+    tampilkanSkor();  // Output: Skor: 35
+
+    return 0;
+}
+```
+
+Kelihatannya mudah dan praktis, kan? Tapi...
+
+:::warning
+**Global variable itu BERBAHAYA!** Kenapa?
+
+1. **Siapa saja bisa mengubahnya** — kalau ada bug, kamu harus cek SEMUA fungsi untuk cari mana yang mengubah nilainya
+2. **Sulit dilacak** — di program besar dengan ratusan fungsi, mustahil tahu kapan dan di mana global variable diubah
+3. **Nama bentrok** — kalau ada variabel lokal dengan nama sama, terjadi name shadowing (lihat di bawah)
+4. **Kode sulit di-reuse** — fungsi yang bergantung pada global variable tidak bisa dipindahkan ke program lain dengan mudah
+
+**Best practice: HINDARI global variable!** Gunakan parameter dan return value sebagai gantinya.
+:::
+
+Versi yang lebih baik tanpa global variable:
+
+```cpp
+#include <iostream>
+
+void tambahSkor(int& skor, int poin) {
+    skor += poin;
+}
+
+void tampilkanSkor(int skor) {
+    std::cout << "Skor: " << skor << std::endl;
+}
+
+int main() {
+    int skor = 0;  // local variable di main
+
+    tambahSkor(skor, 10);
+    tambahSkor(skor, 25);
+    tampilkanSkor(skor);  // Output: Skor: 35
+
+    return 0;
+}
+```
+
+Dengan pass by reference, kita tetap bisa mengubah `skor` dari fungsi lain, tapi sekarang **jelas** bahwa `skor` dikirim sebagai parameter. Lebih mudah dilacak!
+
+## Name Shadowing: Nama yang "Menutupi"
+
+Apa yang terjadi kalau variabel lokal punya nama sama dengan variabel di scope luar?
+
+```cpp
+#include <iostream>
+
+int x = 100;  // global
+
+void contohShadowing() {
+    int x = 50;  // local — "menutupi" global x
+
+    std::cout << "x lokal: " << x << std::endl;  // 50, bukan 100!
+
+    {
+        int x = 25;  // blok scope — menutupi local x
+        std::cout << "x blok: " << x << std::endl;  // 25
+    }
+
+    std::cout << "x lokal lagi: " << x << std::endl;  // 50
+}
+
+int main() {
+    contohShadowing();
+    std::cout << "x global: " << x << std::endl;  // 100
+
+    return 0;
+}
+```
+
+Output:
+
+```
+x lokal: 50
+x blok: 25
+x lokal lagi: 50
+x global: 100
+```
+
+Variabel yang lebih "dekat" selalu menang. Ini disebut **name shadowing** atau **variable shadowing**.
+
+:::warning
+Name shadowing sering menyebabkan bug yang membingungkan. Kamu pikir sedang mengubah variabel yang satu, padahal yang berubah variabel yang lain! **Hindari** menggunakan nama yang sama untuk variabel di scope berbeda.
+:::
+
+## Lifetime: Kapan Variabel Lahir dan Mati
+
+Setiap variabel punya **lifetime** — periode di mana variabel itu ada di memori:
+
+```cpp
+#include <iostream>
+
+void contohLifetime() {
+    // int a LAHIR di sini
+    int a = 10;
+    std::cout << "a lahir: " << a << std::endl;
+
+    {
+        // int b LAHIR di sini
+        int b = 20;
+        std::cout << "b lahir: " << b << std::endl;
+        // int b MATI di akhir blok ini
+    }
+
+    std::cout << "b sudah mati, a masih hidup: " << a << std::endl;
+    // int a MATI di akhir fungsi ini
+}
+```
+
+Variabel lokal disimpan di **stack memory**. Setiap kali masuk blok baru, variabel dibuat di atas stack. Setiap kali keluar blok, variabel dihancurkan dari stack. Ini terjadi secara otomatis — kamu tidak perlu menghapus variabel secara manual.
+
+## Static Local Variable: Bertahan Antar Pemanggilan
+
+Ada satu jenis variabel lokal yang spesial — **static local variable**. Variabel ini tetap ada di memori meskipun fungsi sudah selesai:
+
+```cpp
+#include <iostream>
+
+void hitungPanggilan() {
+    static int counter = 0;  // hanya diinisialisasi SEKALI
+    counter++;
+    std::cout << "Fungsi ini dipanggil " << counter << " kali" << std::endl;
+}
+
+int main() {
+    hitungPanggilan();  // Fungsi ini dipanggil 1 kali
+    hitungPanggilan();  // Fungsi ini dipanggil 2 kali
+    hitungPanggilan();  // Fungsi ini dipanggil 3 kali
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Fungsi ini dipanggil 1 kali
+Fungsi ini dipanggil 2 kali
+Fungsi ini dipanggil 3 kali
+```
+
+Tanpa `static`, `counter` akan selalu dimulai dari 0 setiap kali fungsi dipanggil. Dengan `static`, nilainya **bertahan** dari satu pemanggilan ke pemanggilan berikutnya.
+
+:::note
+`static int counter = 0;` hanya dieksekusi **satu kali** — saat fungsi dipanggil pertama kali. Pemanggilan selanjutnya melewati baris ini dan langsung menggunakan nilai terakhir `counter`.
+:::
+
+## Contoh Praktis: Generator ID Unik
+
+```cpp
+#include <iostream>
+#include <string>
+
+int generateID() {
+    static int id_terakhir = 1000;
+    id_terakhir++;
+    return id_terakhir;
+}
+
+void daftarSiswa(const std::string& nama) {
+    int id = generateID();
+    std::cout << "Siswa terdaftar: " << nama
+              << " (ID: " << id << ")" << std::endl;
+}
+
+int main() {
+    daftarSiswa("Budi");    // ID: 1001
+    daftarSiswa("Ani");     // ID: 1002
+    daftarSiswa("Citra");   // ID: 1003
+    daftarSiswa("Deni");    // ID: 1004
+
+    return 0;
+}
+```
+
+Setiap siswa mendapat ID unik karena `id_terakhir` bertahan antar pemanggilan berkat `static`.
+
+## Best Practice: Minimalisir Scope
+
+Prinsip penting dalam pemrograman: **deklarasikan variabel sedekat mungkin dengan penggunaannya** dan dalam scope **sekecil mungkin**.
+
+```cpp
+// KURANG BAIK: variabel dideklarasikan terlalu awal
+int main() {
+    int x;
+    int y;
+    int hasil;
+
+    // ... 50 baris kode lain ...
+
+    x = 10;
+    y = 20;
+    hasil = x + y;
+}
+
+// LEBIH BAIK: variabel dideklarasikan dekat penggunaannya
+int main() {
+    // ... 50 baris kode lain ...
+
+    int x = 10;
+    int y = 20;
+    int hasil = x + y;
+}
+```
+
+Kenapa ini penting?
+
+1. **Mudah dibaca** — kamu langsung tahu untuk apa variabel itu
+2. **Lebih aman** — variabel tidak bisa diakses (dan diubah secara tidak sengaja) di tempat yang tidak seharusnya
+3. **Compiler bisa optimasi** — compiler lebih mudah mengoptimalkan kode kalau scope variabel kecil
+
+## Rangkuman Scope & Lifetime
+
+| Jenis | Scope | Lifetime | Contoh |
+|-------|-------|----------|--------|
+| Local variable | Di dalam fungsi/blok | Dari deklarasi sampai akhir blok | `int x = 5;` di dalam fungsi |
+| Block variable | Di dalam `{}` | Dari deklarasi sampai `}` | `int i` di dalam `for` |
+| Global variable | Seluruh program | Selama program berjalan | `int skor = 0;` di luar fungsi |
+| Static local | Di dalam fungsi | Selama program berjalan | `static int counter = 0;` |
+
+## Contoh Lengkap: Permainan Kuis Mini
+
+```cpp
+#include <iostream>
+#include <string>
+
+// Fungsi dengan static variable untuk menghitung skor
+void cekJawaban(const std::string& jawaban_siswa,
+                const std::string& jawaban_benar,
+                int& skor) {
+    static int nomor_soal = 0;
+    nomor_soal++;
+
+    std::cout << "Soal " << nomor_soal << ": ";
+
+    if (jawaban_siswa == jawaban_benar) {
+        skor += 10;
+        std::cout << "BENAR! (+10 poin)" << std::endl;
+    } else {
+        std::cout << "Salah. Jawaban: " << jawaban_benar << std::endl;
+    }
+}
+
+void tampilkanHasil(int skor, int total_soal) {
+    std::cout << std::endl;
+    std::cout << "========================" << std::endl;
+    std::cout << "Skor akhir: " << skor << "/" << (total_soal * 10) << std::endl;
+
+    // Variabel grade hanya dibutuhkan di sini
+    std::string grade;
+    if (skor >= 80) {
+        grade = "Luar biasa!";
+    } else if (skor >= 60) {
+        grade = "Bagus!";
+    } else {
+        grade = "Ayo belajar lagi!";
+    }
+
+    std::cout << "Penilaian: " << grade << std::endl;
+    std::cout << "========================" << std::endl;
+}
+
+int main() {
+    int skor = 0;  // skor lokal di main, bukan global!
+
+    std::cout << "=== KUIS C++ ===" << std::endl;
+    std::cout << std::endl;
+
+    // Setiap pemanggilan, nomor_soal di cekJawaban bertambah (static)
+    cekJawaban("cout", "cout", skor);
+    cekJawaban("int", "int", skor);
+    cekJawaban("==", "==", skor);
+    cekJawaban("for", "while", skor);
+    cekJawaban("void", "void", skor);
+
+    tampilkanHasil(skor, 5);
+
+    return 0;
+}
+```
+
+## Latihan
+
+**Latihan 1:** Apa output dari kode ini? Jawab tanpa menjalankan program, lalu verifikasi:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int x = 1;
+    {
+        int x = 2;
+        {
+            int x = 3;
+            std::cout << x << std::endl;
+        }
+        std::cout << x << std::endl;
+    }
+    std::cout << x << std::endl;
+    return 0;
+}
+```
+
+**Latihan 2:** Buat fungsi `void cetakPesan()` yang menggunakan `static` variable untuk mencetak pesan berbeda setiap kali dipanggil: "Pertama", "Kedua", "Ketiga", dan setelahnya selalu "Lanjutan".
+
+**Latihan 3:** Ubah kode berikut agar TIDAK menggunakan global variable (pakai parameter dan return value):
+
+```cpp
+int total = 0;
+int jumlah_data = 0;
+
+void tambahData(int nilai) {
+    total += nilai;
+    jumlah_data++;
+}
+
+double rataRata() {
+    return (double)total / jumlah_data;
+}
+```
+
+**Latihan 4:** Buat fungsi `int generateNomorUrut()` yang setiap dipanggil mengembalikan nomor urut berikutnya (1, 2, 3, ...). Gunakan `static` variable.
+
+Bagus! Kamu sudah memahami scope dan lifetime. Sekarang saatnya menggabungkan SEMUA yang sudah dipelajari di Unit 4 dalam sebuah project seru — **Game Batu Gunting Kertas**!

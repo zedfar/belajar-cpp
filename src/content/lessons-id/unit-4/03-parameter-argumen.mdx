@@ -1,0 +1,498 @@
+---
+title: "Parameter & Argumen"
+unit: 4
+lesson: 3
+description: "Memahami perbedaan parameter dan argumen, multiple parameters, default values, dan passing by value"
+objectives:
+  - "Membedakan parameter (di definisi) dan argumen (saat pemanggilan)"
+  - "Menggunakan multiple parameters dengan tipe berbeda"
+  - "Menggunakan default parameter values"
+  - "Memahami konsep passing by value"
+  - "Menghindari kesalahan umum terkait parameter"
+estimatedTime: 35
+prerequisites: ["unit-4/02-membuat-fungsi"]
+difficulty: "beginner"
+tags: ["parameter", "argumen", "argument", "default-parameter", "pass-by-value", "overloading"]
+---
+
+# Parameter & Argumen
+
+Kalau fungsi itu seperti resep masakan, maka **parameter** adalah **daftar bahan** yang dibutuhkan, dan **argumen** adalah **bahan sesungguhnya** yang kamu berikan saat memasak. Yuk, kita pelajari lebih dalam!
+
+## Parameter vs Argumen — Apa Bedanya?
+
+Banyak orang (bahkan programmer profesional!) sering menyamakan keduanya. Tapi secara teknis, mereka berbeda:
+
+```cpp
+#include <iostream>
+
+//              parameter (di definisi)
+//              vvvvvvvvvvvvvvvv
+void sapa(std::string nama) {
+    std::cout << "Halo, " << nama << "!" << std::endl;
+}
+
+int main() {
+    //      argumen (saat pemanggilan)
+    //      vvvvvvv
+    sapa("Andi");
+    sapa("Budi");
+
+    return 0;
+}
+```
+
+Output:
+```
+Halo, Andi!
+Halo, Budi!
+```
+
+| Istilah | Kapan | Contoh |
+|---------|-------|--------|
+| **Parameter** | Saat **membuat** fungsi (di definisi/prototype) | `std::string nama` |
+| **Argumen** | Saat **memanggil** fungsi | `"Andi"`, `"Budi"` |
+
+:::tip
+Cara gampang mengingatnya: **Parameter** itu di **Pembuatan** fungsi. **Argumen** itu di **Aksi** pemanggilan. Sama-sama huruf P dan A!
+:::
+
+## Multiple Parameters
+
+Fungsi bisa menerima **lebih dari satu** parameter. Pisahkan dengan koma:
+
+```cpp
+#include <iostream>
+
+int hitungLuasPersegiPanjang(int panjang, int lebar) {
+    return panjang * lebar;
+}
+
+double hitungVolume(double panjang, double lebar, double tinggi) {
+    return panjang * lebar * tinggi;
+}
+
+int main() {
+    int luas = hitungLuasPersegiPanjang(10, 5);
+    std::cout << "Luas persegi panjang: " << luas << std::endl;
+
+    double volume = hitungVolume(3.0, 4.0, 5.0);
+    std::cout << "Volume balok: " << volume << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Luas persegi panjang: 50
+Volume balok: 60
+```
+
+### Parameter dengan Tipe Berbeda
+
+Parameter tidak harus bertipe sama:
+
+```cpp
+#include <iostream>
+#include <string>
+
+void cetakInfoSiswa(std::string nama, int umur, double nilaiRataRata) {
+    std::cout << "Nama: " << nama << std::endl;
+    std::cout << "Umur: " << umur << " tahun" << std::endl;
+    std::cout << "Nilai rata-rata: " << nilaiRataRata << std::endl;
+    std::cout << "---" << std::endl;
+}
+
+int main() {
+    cetakInfoSiswa("Andi", 15, 87.5);
+    cetakInfoSiswa("Budi", 14, 92.3);
+    cetakInfoSiswa("Citra", 16, 78.0);
+
+    return 0;
+}
+```
+
+Output:
+```
+Nama: Andi
+Umur: 15 tahun
+Nilai rata-rata: 87.5
+---
+Nama: Budi
+Umur: 14 tahun
+Nilai rata-rata: 92.3
+---
+Nama: Citra
+Umur: 16 tahun
+Nilai rata-rata: 78
+---
+```
+
+:::warning
+**Urutan argumen harus sesuai dengan urutan parameter!** Kalau parameter pertama `std::string` dan kedua `int`, maka argumen pertama harus string dan kedua harus int. Salah urutan = salah hasil atau error!
+:::
+
+## Contoh: Kalkulator BMI
+
+```cpp
+#include <iostream>
+#include <string>
+
+double hitungBMI(double beratKg, double tinggiCm);
+std::string kategoriBMI(double bmi);
+void cetakHasilBMI(std::string nama, double berat, double tinggi);
+
+int main() {
+    cetakHasilBMI("Andi", 65.0, 170.0);
+    cetakHasilBMI("Budi", 90.0, 165.0);
+    cetakHasilBMI("Citra", 45.0, 155.0);
+
+    return 0;
+}
+
+double hitungBMI(double beratKg, double tinggiCm) {
+    double tinggiM = tinggiCm / 100.0;
+    return beratKg / (tinggiM * tinggiM);
+}
+
+std::string kategoriBMI(double bmi) {
+    if (bmi < 18.5) {
+        return "Kurus";
+    } else if (bmi < 25.0) {
+        return "Normal";
+    } else if (bmi < 30.0) {
+        return "Gemuk";
+    } else {
+        return "Obesitas";
+    }
+}
+
+void cetakHasilBMI(std::string nama, double berat, double tinggi) {
+    double bmi = hitungBMI(berat, tinggi);
+    std::cout << nama << ": BMI = " << bmi
+              << " (" << kategoriBMI(bmi) << ")" << std::endl;
+}
+```
+
+Output:
+```
+Andi: BMI = 22.4913 (Normal)
+Budi: BMI = 33.0579 (Obesitas)
+Citra: BMI = 18.7285 (Normal)
+```
+
+## Default Parameter Values
+
+Kadang kamu ingin parameter punya **nilai bawaan** (default) yang dipakai kalau pemanggil tidak memberikan argumen. C++ mendukung ini!
+
+```cpp
+#include <iostream>
+#include <string>
+
+void sapa(std::string nama = "Teman") {
+    std::cout << "Halo, " << nama << "! Selamat datang!" << std::endl;
+}
+
+int main() {
+    sapa("Andi");    // Pakai argumen "Andi"
+    sapa("Budi");    // Pakai argumen "Budi"
+    sapa();          // Pakai default "Teman"
+
+    return 0;
+}
+```
+
+Output:
+```
+Halo, Andi! Selamat datang!
+Halo, Budi! Selamat datang!
+Halo, Teman! Selamat datang!
+```
+
+### Beberapa Default Parameter
+
+Kalau ada beberapa parameter dengan default, **default harus dari kanan ke kiri**:
+
+```cpp
+#include <iostream>
+#include <string>
+
+void cetakPesan(std::string pesan, int ulang = 1, std::string akhiran = "!") {
+    for (int i = 0; i < ulang; i++) {
+        std::cout << pesan << akhiran << std::endl;
+    }
+}
+
+int main() {
+    cetakPesan("Halo");              // ulang=1, akhiran="!"
+    cetakPesan("Semangat", 3);       // akhiran="!"
+    cetakPesan("Yes", 2, "!!!");     // semua diisi
+
+    return 0;
+}
+```
+
+Output:
+```
+Halo!
+Semangat!
+Semangat!
+Semangat!
+Yes!!!
+Yes!!!
+```
+
+:::note
+**Aturan penting:** Default parameter harus dimulai dari parameter **paling kanan**. Kamu tidak bisa memberi default ke parameter tengah tanpa memberi default ke parameter setelahnya.
+:::
+
+```cpp
+// SALAH — default di tengah tanpa default di kanan
+// void fungsi(int a, int b = 5, int c) { }
+
+// BENAR — default dari kanan
+void fungsi(int a, int b = 5, int c = 10) { }
+```
+
+### Contoh: Hitung Diskon
+
+```cpp
+#include <iostream>
+
+double hitungHarga(double harga, double diskonPersen = 0, double pajak = 10.0) {
+    double potongan = harga * diskonPersen / 100.0;
+    double setelahDiskon = harga - potongan;
+    double totalPajak = setelahDiskon * pajak / 100.0;
+    return setelahDiskon + totalPajak;
+}
+
+int main() {
+    // Tanpa diskon, pajak default 10%
+    std::cout << "Harga Rp 100.000 (tanpa diskon): Rp "
+              << hitungHarga(100000) << std::endl;
+
+    // Diskon 20%, pajak default 10%
+    std::cout << "Harga Rp 100.000 (diskon 20%): Rp "
+              << hitungHarga(100000, 20) << std::endl;
+
+    // Diskon 20%, pajak 5%
+    std::cout << "Harga Rp 100.000 (diskon 20%, pajak 5%): Rp "
+              << hitungHarga(100000, 20, 5) << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Harga Rp 100.000 (tanpa diskon): Rp 110000
+Harga Rp 100.000 (diskon 20%): Rp 88000
+Harga Rp 100.000 (diskon 20%, pajak 5%): Rp 84000
+```
+
+## Passing by Value — Copy Dibuat!
+
+Ini konsep yang sangat penting: ketika kamu memberikan argumen ke fungsi, C++ membuat **salinan (copy)** dari nilai tersebut. Artinya, perubahan di dalam fungsi **tidak memengaruhi** variabel asli!
+
+```cpp
+#include <iostream>
+
+void cobaUbah(int angka) {
+    std::cout << "Di dalam fungsi (sebelum): " << angka << std::endl;
+    angka = 999;  // Mengubah SALINAN, bukan yang asli!
+    std::cout << "Di dalam fungsi (sesudah): " << angka << std::endl;
+}
+
+int main() {
+    int x = 42;
+    std::cout << "Sebelum panggil fungsi: " << x << std::endl;
+
+    cobaUbah(x);
+
+    std::cout << "Sesudah panggil fungsi: " << x << std::endl;
+    // x masih 42! Tidak berubah!
+
+    return 0;
+}
+```
+
+Output:
+```
+Sebelum panggil fungsi: 42
+Di dalam fungsi (sebelum): 42
+Di dalam fungsi (sesudah): 999
+Sesudah panggil fungsi: 42
+```
+
+Perhatikan: meskipun `angka` diubah jadi 999 di dalam fungsi, `x` di `main` tetap 42! Ini karena `angka` hanyalah **salinan** dari `x`.
+
+:::tip
+Bayangkan seperti ini: kamu fotokopi ulangan temanmu, lalu mencoret-coret di **fotokopian**. Ulangan asli temanmu tetap bersih!
+:::
+
+### Visualisasi Pass by Value
+
+```
+main():
+  x = 42    ─── copy ──→  cobaUbah():
+  x = 42                    angka = 42
+  (tidak berubah)           angka = 999
+                             (hanya salinan yang berubah)
+```
+
+## Overloading Preview
+
+C++ punya fitur keren: kamu bisa membuat **beberapa fungsi dengan nama sama** tapi **parameter berbeda**. Ini disebut **function overloading**:
+
+```cpp
+#include <iostream>
+
+// Versi 1: luas persegi (1 parameter)
+int hitungLuas(int sisi) {
+    return sisi * sisi;
+}
+
+// Versi 2: luas persegi panjang (2 parameter)
+int hitungLuas(int panjang, int lebar) {
+    return panjang * lebar;
+}
+
+// Versi 3: luas lingkaran (1 parameter double)
+double hitungLuas(double jariJari) {
+    return 3.14159 * jariJari * jariJari;
+}
+
+int main() {
+    std::cout << "Luas persegi (5): " << hitungLuas(5) << std::endl;
+    std::cout << "Luas persegi panjang (4, 6): " << hitungLuas(4, 6) << std::endl;
+    std::cout << "Luas lingkaran (7.0): " << hitungLuas(7.0) << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Luas persegi (5): 25
+Luas persegi panjang (4, 6): 24
+Luas lingkaran (7.0): 153.938
+```
+
+Compiler tahu versi mana yang dipanggil berdasarkan **jumlah dan tipe argumen** yang diberikan. Kita akan bahas lebih dalam di pelajaran selanjutnya!
+
+## Kesalahan Umum
+
+### 1. Salah urutan argumen
+
+```cpp
+void cetakInfo(std::string nama, int umur) {
+    std::cout << nama << " berumur " << umur << " tahun" << std::endl;
+}
+
+int main() {
+    // SALAH — urutan terbalik! Compiler mungkin error atau hasil aneh
+    // cetakInfo(15, "Andi");
+
+    // BENAR
+    cetakInfo("Andi", 15);
+
+    return 0;
+}
+```
+
+### 2. Jumlah argumen tidak sesuai
+
+```cpp
+int tambah(int a, int b) {
+    return a + b;
+}
+
+int main() {
+    // SALAH — terlalu banyak argumen
+    // int hasil = tambah(1, 2, 3);
+
+    // SALAH — terlalu sedikit argumen
+    // int hasil = tambah(1);
+
+    // BENAR
+    int hasil = tambah(1, 2);
+
+    return 0;
+}
+```
+
+### 3. Lupa bahwa pass by value membuat copy
+
+```cpp
+void tambahSatu(int angka) {
+    angka = angka + 1;
+    // Ini hanya mengubah SALINAN!
+}
+
+int main() {
+    int x = 5;
+    tambahSatu(x);
+    // x masih 5, bukan 6!
+
+    // Solusi: gunakan return value
+    // int tambahSatu(int angka) { return angka + 1; }
+    // x = tambahSatu(x);
+
+    return 0;
+}
+```
+
+### 4. Default parameter di tempat yang salah
+
+```cpp
+// SALAH — default di kiri tanpa default di kanan
+// void fungsi(int a = 5, int b) { }
+
+// BENAR
+void fungsi(int a, int b = 5) { }
+```
+
+:::warning
+Kalau kamu pakai prototype dan definisi terpisah, **default value hanya ditulis di prototype**, bukan di definisi!
+```cpp
+// Prototype — default value di sini
+void sapa(std::string nama = "Teman");
+
+// Definisi — TANPA default value
+void sapa(std::string nama) {
+    std::cout << "Halo, " << nama << "!" << std::endl;
+}
+```
+:::
+
+## Latihan
+
+**Latihan 1:** Buat fungsi `double hitungDiskon(double harga, double persen = 10)` yang mengembalikan harga setelah diskon. Panggil dengan:
+- `hitungDiskon(50000)` — diskon default 10%
+- `hitungDiskon(50000, 25)` — diskon 25%
+- `hitungDiskon(200000, 50)` — diskon 50%
+
+**Latihan 2:** Buat program dengan fungsi-fungsi berikut:
+- `double hitungLuasSegitiga(double alas, double tinggi)`
+- `double hitungLuasTrapesium(double sisiAtas, double sisiBawah, double tinggi)`
+- `void cetakBangunDatar(std::string nama, double luas)`
+
+Panggil masing-masing fungsi dan tampilkan hasilnya dengan format yang rapi.
+
+**Latihan 3:** Buat fungsi `void cetakTabel(int mulai, int selesai, int kelipatan = 1)` yang mencetak bilangan dari `mulai` sampai `selesai` dengan jarak `kelipatan`. Contoh:
+- `cetakTabel(1, 10)` mencetak: 1 2 3 4 5 6 7 8 9 10
+- `cetakTabel(0, 20, 5)` mencetak: 0 5 10 15 20
+
+## Ringkasan
+
+| Konsep | Penjelasan |
+|--------|------------|
+| **Parameter** | Variabel di **definisi** fungsi — "placeholder" untuk bahan |
+| **Argumen** | Nilai aktual yang diberikan saat **memanggil** fungsi |
+| **Multiple parameters** | Pisahkan dengan koma, urutan dan tipe harus sesuai |
+| **Default parameter** | Nilai bawaan kalau argumen tidak diberikan, harus dari kanan |
+| **Pass by value** | C++ membuat salinan — perubahan di fungsi tidak memengaruhi aslinya |
+| **Function overloading** | Beberapa fungsi nama sama, parameter berbeda |
+
+Sekarang kamu sudah paham cara memberi "bahan" ke fungsi. Tapi bagaimana cara fungsi "mengirim balik" hasilnya? Di pelajaran berikutnya, kita akan mendalami **return values** — cara fungsi mengembalikan nilai ke pemanggilnya!

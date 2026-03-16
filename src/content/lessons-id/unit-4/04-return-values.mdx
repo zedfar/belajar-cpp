@@ -1,0 +1,619 @@
+---
+title: "Return Values"
+unit: 4
+lesson: 4
+description: "Mendalami cara fungsi mengembalikan nilai — return statement, multiple return, fungsi predikat, dan preview rekursi"
+objectives:
+  - "Memahami cara kerja return statement secara mendalam"
+  - "Menggunakan return value dalam variabel, ekspresi, dan output"
+  - "Membuat fungsi predikat (return bool) untuk pengecekan kondisi"
+  - "Menerapkan early return untuk kode yang lebih bersih"
+  - "Mengenal konsep rekursi secara singkat"
+estimatedTime: 35
+prerequisites: ["unit-4/03-parameter-argumen"]
+difficulty: "beginner"
+tags: ["return", "return-value", "predikat", "early-return", "rekursi", "recursion"]
+---
+
+# Return Values
+
+Kamu sudah bisa membuat fungsi dan memberinya parameter. Sekarang saatnya mendalami bagian yang sama pentingnya: **return values** — cara fungsi mengirim balik hasilnya ke pemanggil. Bayangkan kamu menyuruh temanmu menghitung sesuatu: kamu butuh dia **menjawab** hasilnya, bukan cuma diam saja!
+
+## Cara Kerja `return`
+
+Statement `return` melakukan dua hal sekaligus:
+1. **Mengembalikan nilai** ke tempat fungsi dipanggil
+2. **Menghentikan** eksekusi fungsi (kode setelah `return` tidak akan dijalankan)
+
+```cpp
+#include <iostream>
+
+int tambah(int a, int b) {
+    return a + b;      // Kembalikan hasil penjumlahan
+    std::cout << "Baris ini tidak akan pernah dijalankan!" << std::endl;
+}
+
+int main() {
+    int hasil = tambah(3, 7);   // hasil = 10
+    std::cout << "3 + 7 = " << hasil << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+3 + 7 = 10
+```
+
+Perhatikan: baris `std::cout` setelah `return` di fungsi `tambah` **tidak pernah dieksekusi** karena fungsi sudah berhenti di `return`.
+
+## Return Type Harus Sesuai
+
+Nilai yang kamu return **harus sesuai** dengan tipe yang dideklarasikan:
+
+```cpp
+#include <iostream>
+#include <string>
+
+// Return type: int → harus return int
+int kuadrat(int n) {
+    return n * n;   // OK, int
+}
+
+// Return type: double → harus return double
+double setengah(double n) {
+    return n / 2.0;   // OK, double
+}
+
+// Return type: bool → harus return true atau false
+bool adalahPositif(int n) {
+    return n > 0;   // OK, ekspresi perbandingan menghasilkan bool
+}
+
+// Return type: string → harus return string
+std::string sapaan(std::string nama) {
+    return "Halo, " + nama + "!";   // OK, string
+}
+
+int main() {
+    std::cout << kuadrat(5) << std::endl;
+    std::cout << setengah(7.0) << std::endl;
+    std::cout << adalahPositif(10) << std::endl;
+    std::cout << sapaan("Andi") << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+25
+3.5
+1
+Halo, Andi!
+```
+
+## Tiga Cara Menggunakan Return Value
+
+Nilai yang dikembalikan fungsi bisa digunakan dengan tiga cara:
+
+```cpp
+#include <iostream>
+
+int kaliDua(int n) {
+    return n * 2;
+}
+
+int main() {
+    // Cara 1: Simpan di variabel
+    int hasil = kaliDua(5);
+    std::cout << "Cara 1: " << hasil << std::endl;
+
+    // Cara 2: Langsung di ekspresi
+    int total = kaliDua(3) + kaliDua(7);
+    std::cout << "Cara 2: " << total << std::endl;
+
+    // Cara 3: Langsung di cout
+    std::cout << "Cara 3: " << kaliDua(10) << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Cara 1: 10
+Cara 2: 20
+Cara 3: 20
+```
+
+:::tip
+**Kapan pakai cara mana?**
+- **Simpan di variabel** — kalau nilainya akan dipakai **lebih dari sekali**
+- **Langsung di ekspresi** — kalau hanya jadi **bagian dari perhitungan**
+- **Langsung di cout** — kalau hanya mau **ditampilkan sekali**
+:::
+
+## Early Return vs Single Exit Point
+
+Ada dua gaya menulis fungsi dengan beberapa kondisi:
+
+### Early Return — Keluar begitu kondisi terpenuhi
+
+```cpp
+#include <iostream>
+#include <string>
+
+std::string klasifikasiUmur(int umur) {
+    if (umur < 0) return "Umur tidak valid";
+    if (umur < 5) return "Balita";
+    if (umur < 13) return "Anak-anak";
+    if (umur < 18) return "Remaja";
+    if (umur < 60) return "Dewasa";
+    return "Lansia";
+}
+
+int main() {
+    std::cout << "Umur 3: " << klasifikasiUmur(3) << std::endl;
+    std::cout << "Umur 15: " << klasifikasiUmur(15) << std::endl;
+    std::cout << "Umur 45: " << klasifikasiUmur(45) << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Umur 3: Balita
+Umur 15: Remaja
+Umur 45: Dewasa
+```
+
+### Single Exit Point — Simpan di variabel, return di akhir
+
+```cpp
+#include <iostream>
+#include <string>
+
+std::string klasifikasiUmur(int umur) {
+    std::string hasil;
+
+    if (umur < 0) {
+        hasil = "Umur tidak valid";
+    } else if (umur < 5) {
+        hasil = "Balita";
+    } else if (umur < 13) {
+        hasil = "Anak-anak";
+    } else if (umur < 18) {
+        hasil = "Remaja";
+    } else if (umur < 60) {
+        hasil = "Dewasa";
+    } else {
+        hasil = "Lansia";
+    }
+
+    return hasil;   // Satu return di akhir
+}
+
+int main() {
+    std::cout << "Umur 3: " << klasifikasiUmur(3) << std::endl;
+    std::cout << "Umur 15: " << klasifikasiUmur(15) << std::endl;
+    std::cout << "Umur 45: " << klasifikasiUmur(45) << std::endl;
+
+    return 0;
+}
+```
+
+:::note
+**Mana yang lebih baik?** Keduanya valid! Early return membuat kode lebih pendek dan menghindari indentasi bertingkat. Single exit point lebih mudah di-debug karena kamu bisa cetak `hasil` sebelum return. Untuk pemula, pilih yang paling mudah kamu baca.
+:::
+
+## Fungsi Predikat (Return `bool`)
+
+Fungsi yang mengembalikan `bool` disebut **fungsi predikat**. Biasanya namanya diawali `is` atau `adalah` — seperti bertanya "apakah...?":
+
+```cpp
+#include <iostream>
+
+bool isEven(int angka) {
+    return angka % 2 == 0;
+}
+
+bool isPrime(int angka) {
+    if (angka <= 1) return false;
+
+    for (int i = 2; i < angka; i++) {
+        if (angka % i == 0) return false;
+    }
+
+    return true;
+}
+
+bool isLeapYear(int tahun) {
+    // Tahun kabisat: habis dibagi 400, ATAU
+    // habis dibagi 4 tapi TIDAK habis dibagi 100
+    return (tahun % 400 == 0) || (tahun % 4 == 0 && tahun % 100 != 0);
+}
+
+bool isPositive(int angka) {
+    return angka > 0;
+}
+
+int main() {
+    // Cek genap/ganjil
+    for (int i = 1; i <= 6; i++) {
+        std::cout << i << " genap? " << (isEven(i) ? "Ya" : "Tidak") << std::endl;
+    }
+
+    std::cout << std::endl;
+
+    // Cek bilangan prima
+    for (int i = 1; i <= 10; i++) {
+        if (isPrime(i)) {
+            std::cout << i << " adalah prima" << std::endl;
+        }
+    }
+
+    std::cout << std::endl;
+
+    // Cek tahun kabisat
+    std::cout << "2024 kabisat? " << (isLeapYear(2024) ? "Ya" : "Tidak") << std::endl;
+    std::cout << "1900 kabisat? " << (isLeapYear(1900) ? "Ya" : "Tidak") << std::endl;
+    std::cout << "2000 kabisat? " << (isLeapYear(2000) ? "Ya" : "Tidak") << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+1 genap? Tidak
+2 genap? Ya
+3 genap? Tidak
+4 genap? Ya
+5 genap? Tidak
+6 genap? Ya
+
+2 adalah prima
+3 adalah prima
+5 adalah prima
+7 adalah prima
+
+2024 kabisat? Ya
+1900 kabisat? Tidak
+2000 kabisat? Ya
+```
+
+:::tip
+Fungsi predikat sangat berguna karena bisa langsung dipakai di `if`:
+```cpp
+if (isPrime(angka)) {
+    std::cout << angka << " prima!" << std::endl;
+}
+```
+Kodenya jadi terbaca seperti bahasa Inggris!
+:::
+
+## Return `std::string` — Fungsi Konversi
+
+Fungsi yang mengembalikan string sangat berguna untuk mengubah data menjadi teks yang mudah dibaca:
+
+```cpp
+#include <iostream>
+#include <string>
+
+std::string numberToGrade(int nilai) {
+    if (nilai >= 90) return "A (Sangat Baik)";
+    if (nilai >= 80) return "B (Baik)";
+    if (nilai >= 70) return "C (Cukup)";
+    if (nilai >= 60) return "D (Kurang)";
+    return "E (Sangat Kurang)";
+}
+
+std::string dayToString(int hari) {
+    if (hari == 1) return "Senin";
+    if (hari == 2) return "Selasa";
+    if (hari == 3) return "Rabu";
+    if (hari == 4) return "Kamis";
+    if (hari == 5) return "Jumat";
+    if (hari == 6) return "Sabtu";
+    if (hari == 7) return "Minggu";
+    return "Hari tidak valid";
+}
+
+int main() {
+    // Konversi nilai ke grade
+    int nilaiSiswa[] = {95, 82, 67, 73, 55};
+    for (int i = 0; i < 5; i++) {
+        std::cout << "Nilai " << nilaiSiswa[i] << ": "
+                  << numberToGrade(nilaiSiswa[i]) << std::endl;
+    }
+
+    std::cout << std::endl;
+
+    // Konversi nomor ke nama hari
+    for (int i = 1; i <= 7; i++) {
+        std::cout << "Hari ke-" << i << ": " << dayToString(i) << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+Nilai 95: A (Sangat Baik)
+Nilai 82: B (Baik)
+Nilai 67: D (Kurang)
+Nilai 73: C (Cukup)
+Nilai 55: E (Sangat Kurang)
+
+Hari ke-1: Senin
+Hari ke-2: Selasa
+Hari ke-3: Rabu
+Hari ke-4: Kamis
+Hari ke-5: Jumat
+Hari ke-6: Sabtu
+Hari ke-7: Minggu
+```
+
+## Contoh: Fungsi getMax Tiga Angka
+
+```cpp
+#include <iostream>
+
+int getMax(int a, int b, int c) {
+    int maks = a;
+
+    if (b > maks) {
+        maks = b;
+    }
+    if (c > maks) {
+        maks = c;
+    }
+
+    return maks;
+}
+
+int main() {
+    std::cout << "Max(3, 7, 5) = " << getMax(3, 7, 5) << std::endl;
+    std::cout << "Max(10, 2, 8) = " << getMax(10, 2, 8) << std::endl;
+    std::cout << "Max(1, 1, 9) = " << getMax(1, 1, 9) << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Max(3, 7, 5) = 7
+Max(10, 2, 8) = 10
+Max(1, 1, 9) = 9
+```
+
+## Contoh: Klasifikasi BMI Lengkap
+
+```cpp
+#include <iostream>
+#include <string>
+
+double hitungBMI(double beratKg, double tinggiCm);
+std::string klasifikasiBMI(double bmi);
+void cetakLaporan(std::string nama, double berat, double tinggi);
+
+int main() {
+    cetakLaporan("Andi", 70.0, 175.0);
+    cetakLaporan("Budi", 95.0, 170.0);
+    cetakLaporan("Citra", 42.0, 160.0);
+
+    return 0;
+}
+
+double hitungBMI(double beratKg, double tinggiCm) {
+    double tinggiM = tinggiCm / 100.0;
+    return beratKg / (tinggiM * tinggiM);
+}
+
+std::string klasifikasiBMI(double bmi) {
+    if (bmi < 18.5) return "Kurus (Underweight)";
+    if (bmi < 25.0) return "Normal";
+    if (bmi < 30.0) return "Gemuk (Overweight)";
+    return "Obesitas";
+}
+
+void cetakLaporan(std::string nama, double berat, double tinggi) {
+    double bmi = hitungBMI(berat, tinggi);
+    std::string kategori = klasifikasiBMI(bmi);
+
+    std::cout << "=== Laporan BMI ===" << std::endl;
+    std::cout << "Nama    : " << nama << std::endl;
+    std::cout << "Berat   : " << berat << " kg" << std::endl;
+    std::cout << "Tinggi  : " << tinggi << " cm" << std::endl;
+    std::cout << "BMI     : " << bmi << std::endl;
+    std::cout << "Kategori: " << kategori << std::endl;
+    std::cout << std::endl;
+}
+```
+
+Output:
+```
+=== Laporan BMI ===
+Nama    : Andi
+Berat   : 70 kg
+Tinggi  : 175 cm
+BMI     : 22.8571
+Kategori: Normal
+
+=== Laporan BMI ===
+Nama    : Budi
+Berat   : 95 kg
+Tinggi  : 170 cm
+BMI     : 32.8719
+Kategori: Obesitas
+
+=== Laporan BMI ===
+Nama    : Citra
+Berat   : 42 kg
+Tinggi  : 160 cm
+BMI     : 16.4062
+Kategori: Kurus (Underweight)
+```
+
+## Preview: Rekursi (Fungsi Memanggil Dirinya Sendiri)
+
+Ini konsep yang mungkin terdengar aneh: **sebuah fungsi bisa memanggil dirinya sendiri!** Teknik ini disebut **rekursi**. Berikut contoh klasik — menghitung faktorial:
+
+```cpp
+#include <iostream>
+
+int faktorial(int n) {
+    // Base case: kondisi berhenti
+    if (n <= 1) {
+        return 1;
+    }
+
+    // Recursive case: panggil diri sendiri
+    return n * faktorial(n - 1);
+}
+
+int main() {
+    std::cout << "5! = " << faktorial(5) << std::endl;
+    std::cout << "3! = " << faktorial(3) << std::endl;
+    std::cout << "1! = " << faktorial(1) << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+5! = 120
+3! = 6
+1! = 1
+```
+
+**Bagaimana cara kerjanya?**
+
+```
+faktorial(5)
+= 5 * faktorial(4)
+= 5 * 4 * faktorial(3)
+= 5 * 4 * 3 * faktorial(2)
+= 5 * 4 * 3 * 2 * faktorial(1)
+= 5 * 4 * 3 * 2 * 1
+= 120
+```
+
+:::warning
+Rekursi **harus punya base case** (kondisi berhenti)! Tanpa base case, fungsi akan memanggil dirinya sendiri tanpa akhir sampai program crash. Kita akan pelajari rekursi lebih dalam di unit selanjutnya.
+:::
+
+## Kesalahan Umum
+
+### 1. Lupa bahwa `return` menghentikan fungsi
+
+```cpp
+int hitungSesuatu(int x) {
+    return x * 2;
+    // Semua kode di bawah ini TIDAK AKAN dijalankan!
+    std::cout << "Ini tidak akan tampil" << std::endl;
+    return x * 3;   // Tidak pernah tercapai
+}
+```
+
+### 2. Tidak semua jalur punya `return`
+
+```cpp
+// SALAH — kalau angka == 0, tidak ada return!
+std::string cekAngka(int angka) {
+    if (angka > 0) {
+        return "Positif";
+    } else if (angka < 0) {
+        return "Negatif";
+    }
+    // Bagaimana kalau angka == 0? Tidak ada return!
+}
+
+// BENAR — semua kemungkinan ter-cover
+std::string cekAngka(int angka) {
+    if (angka > 0) return "Positif";
+    if (angka < 0) return "Negatif";
+    return "Nol";
+}
+```
+
+### 3. Mengabaikan return value
+
+```cpp
+#include <iostream>
+
+int tambah(int a, int b) {
+    return a + b;
+}
+
+int main() {
+    // Memanggil fungsi tapi tidak menyimpan hasilnya
+    tambah(3, 5);   // Hasilnya 8 dibuang begitu saja!
+
+    // BENAR — simpan atau langsung gunakan
+    int hasil = tambah(3, 5);
+    std::cout << hasil << std::endl;
+
+    return 0;
+}
+```
+
+### 4. Return type tidak cocok
+
+```cpp
+// SALAH — fungsi bilang return int, tapi return string
+// int dapatkanNama() {
+//     return "Andi";   // ERROR!
+// }
+
+// BENAR
+std::string dapatkanNama() {
+    return "Andi";
+}
+```
+
+:::warning
+Compiler C++ biasanya memberi warning kalau ada jalur kode di fungsi non-void yang tidak punya `return`. **Jangan abaikan warning!** Perilaku program bisa tidak terduga.
+:::
+
+## Latihan
+
+**Latihan 1:** Buat fungsi `int getMax(int a, int b)` dan `int getMin(int a, int b)`, lalu buat fungsi `int getRange(int a, int b, int c)` yang mengembalikan selisih antara nilai terbesar dan terkecil dari tiga angka. Contoh: `getRange(3, 9, 1)` mengembalikan `8` (karena 9 - 1 = 8).
+
+**Latihan 2:** Buat tiga fungsi predikat:
+- `bool isDivisibleBy(int angka, int pembagi)` — cek apakah `angka` habis dibagi `pembagi`
+- `bool isVowel(char huruf)` — cek apakah huruf adalah vokal (a, i, u, e, o)
+- `bool isInRange(int angka, int min, int max)` — cek apakah `angka` berada di antara `min` dan `max` (inklusif)
+
+Panggil ketiga fungsi dengan beberapa contoh dan tampilkan hasilnya.
+
+**Latihan 3:** Buat program "Kalkulator Nilai Sekolah" dengan fungsi-fungsi:
+- `double hitungRataRata(int n1, int n2, int n3)` — rata-rata 3 nilai
+- `std::string tentukanGrade(double rataRata)` — konversi ke grade
+- `bool adalahLulus(double rataRata, double kkm)` — cek kelulusan
+- `void cetakRapor(std::string nama, int n1, int n2, int n3)` — cetak rapor lengkap
+
+Gunakan semua fungsi untuk mencetak rapor 2-3 siswa.
+
+## Ringkasan
+
+| Konsep | Penjelasan |
+|--------|------------|
+| **`return`** | Mengembalikan nilai dan menghentikan fungsi |
+| **Return type** | Harus sesuai dengan tipe nilai yang di-return |
+| **Simpan di variabel** | `int x = fungsi();` — untuk dipakai lagi |
+| **Langsung di ekspresi** | `fungsi() + 5` — jadi bagian perhitungan |
+| **Langsung di cout** | `std::cout << fungsi()` — tampilkan langsung |
+| **Early return** | Keluar dari fungsi begitu kondisi terpenuhi |
+| **Single exit point** | Satu `return` di akhir fungsi |
+| **Fungsi predikat** | Return `bool` — namanya diawali `is` atau `adalah` |
+| **Fungsi konversi** | Return `std::string` — mengubah data ke teks |
+| **Rekursi** | Fungsi yang memanggil dirinya sendiri (harus ada base case!) |
+
+Selamat! Kamu sudah menguasai dasar-dasar fungsi di C++ — mulai dari membuat, memberi parameter, sampai mengembalikan nilai. Dengan fungsi, kodemulebih rapi, lebih mudah dibaca, dan lebih mudah di-maintain. Di pelajaran-pelajaran berikutnya, kita akan memakai fungsi terus-menerus karena fungsi adalah **fondasi** dari pemrograman yang baik!

@@ -1,0 +1,416 @@
+---
+title: "Do-While Loop"
+unit: 3
+lesson: 3
+description: "Mengenal do-while loop — loop yang selalu dieksekusi minimal satu kali sebelum mengecek kondisi"
+objectives:
+  - "Memahami perbedaan do-while dengan while loop"
+  - "Menulis do-while loop dengan sintaks yang benar"
+  - "Mengetahui kapan menggunakan do-while (terutama untuk validasi input)"
+  - "Membuat program menu sederhana dengan do-while"
+estimatedTime: 20
+prerequisites: ["unit-3/02-for-loop"]
+difficulty: "beginner"
+tags: ["do-while", "loop", "perulangan", "menu", "validasi-input"]
+---
+
+# Do-While Loop
+
+Kamu sudah kenal `while` loop dan `for` loop. Sekarang ada satu lagi anggota keluarga loop: **do-while loop**. Bedanya? Do-while **selalu menjalankan kodenya minimal satu kali**, baru kemudian mengecek kondisi.
+
+## Analogi: Coba Dulu, Baru Nilai
+
+Bayangkan kamu di kantin sekolah mencoba makanan baru:
+
+```
+LAKUKAN:
+    Coba satu suap makanan baru
+SELAMA makanan terasa enak
+```
+
+Kamu **harus coba dulu** minimal sekali — kan nggak bisa bilang enak atau enggak sebelum mencoba? Baru setelah coba, kamu putuskan: mau lanjut makan atau berhenti.
+
+Bandingkan dengan while loop:
+```
+SELAMA makanan terasa enak:
+    Makan satu suap
+```
+
+Kalau pakai while, kamu mengecek dulu sebelum makan. Tapi... bagaimana bisa tahu enak sebelum dicoba?
+
+## Sintaks Do-While
+
+```cpp
+do {
+    // kode yang diulang
+} while (kondisi);
+```
+
+**Perhatikan:** ada **titik koma `;`** setelah `while (kondisi)`! Ini berbeda dari while loop biasa.
+
+**Alurnya:**
+1. Jalankan kode di dalam `do { ... }`
+2. Cek `kondisi` di `while`
+3. Kalau `true` — kembali ke langkah 1
+4. Kalau `false` — keluar dari loop
+
+```
+      ┌───────────┐
+      │  Blok     │◄──────┐
+      │  kode     │       │
+      └─────┬─────┘       │
+            ▼              │
+      ┌───────────┐       │
+      │Cek kondisi│       │
+      └─────┬─────┘       │
+       true/  \false      │
+           /    \          │
+          └──────┘    (keluar)
+```
+
+## Contoh 1: Perbedaan While vs Do-While
+
+Ini contoh paling jelas untuk melihat bedanya:
+
+```cpp
+#include <iostream>
+
+int main() {
+    // WHILE loop — kondisi dicek DULU
+    std::cout << "=== While Loop ===" << std::endl;
+    int a = 10;
+    while (a < 5) {
+        std::cout << "a = " << a << std::endl;
+        a++;
+    }
+    std::cout << "(Tidak ada output — kondisi langsung false)" << std::endl;
+
+    std::cout << std::endl;
+
+    // DO-WHILE loop — kode dijalankan DULU
+    std::cout << "=== Do-While Loop ===" << std::endl;
+    int b = 10;
+    do {
+        std::cout << "b = " << b << std::endl;
+        b++;
+    } while (b < 5);
+    std::cout << "(Dijalankan sekali meskipun kondisi false)" << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+=== While Loop ===
+(Tidak ada output — kondisi langsung false)
+
+=== Do-While Loop ===
+b = 10
+(Dijalankan sekali meskipun kondisi false)
+```
+
+Lihat? While loop tidak mencetak apa-apa karena `10 < 5` langsung `false`. Tapi do-while tetap menjalankan blok kodenya **sekali** sebelum mengecek kondisi.
+
+## Contoh 2: Validasi Input dari User
+
+Ini adalah penggunaan do-while yang **paling umum**. Kamu mau minta user memasukkan angka, dan kalau salah, minta lagi:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int nilai;
+
+    do {
+        std::cout << "Masukkan nilai (0-100): ";
+        std::cin >> nilai;
+
+        if (nilai < 0 || nilai > 100) {
+            std::cout << "Nilai tidak valid! Coba lagi." << std::endl;
+        }
+    } while (nilai < 0 || nilai > 100);
+
+    std::cout << "Nilai kamu: " << nilai << ". Terima kasih!" << std::endl;
+
+    return 0;
+}
+```
+
+Output (contoh interaksi):
+```
+Masukkan nilai (0-100): 150
+Nilai tidak valid! Coba lagi.
+Masukkan nilai (0-100): -10
+Nilai tidak valid! Coba lagi.
+Masukkan nilai (0-100): 85
+Nilai kamu: 85. Terima kasih!
+```
+
+:::note
+Bandingkan dengan versi while loop di pelajaran sebelumnya — di sana kita harus menulis `std::cin` **dua kali** (sekali sebelum loop, sekali di dalam loop). Dengan do-while, cukup **satu kali** karena kode pasti dijalankan dulu sebelum dicek.
+:::
+
+## Contoh 3: Menu Program Sederhana
+
+Do-while sangat cocok untuk membuat program dengan menu yang terus berulang sampai user memilih keluar:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int pilihan;
+
+    do {
+        std::cout << std::endl;
+        std::cout << "===== KALKULATOR SEDERHANA =====" << std::endl;
+        std::cout << "1. Penjumlahan" << std::endl;
+        std::cout << "2. Pengurangan" << std::endl;
+        std::cout << "3. Perkalian" << std::endl;
+        std::cout << "4. Pembagian" << std::endl;
+        std::cout << "0. Keluar" << std::endl;
+        std::cout << "Pilihan kamu: ";
+        std::cin >> pilihan;
+
+        if (pilihan == 1) {
+            int a, b;
+            std::cout << "Masukkan dua angka: ";
+            std::cin >> a >> b;
+            std::cout << "Hasil: " << a << " + " << b << " = " << a + b << std::endl;
+        } else if (pilihan == 2) {
+            int a, b;
+            std::cout << "Masukkan dua angka: ";
+            std::cin >> a >> b;
+            std::cout << "Hasil: " << a << " - " << b << " = " << a - b << std::endl;
+        } else if (pilihan == 3) {
+            int a, b;
+            std::cout << "Masukkan dua angka: ";
+            std::cin >> a >> b;
+            std::cout << "Hasil: " << a << " x " << b << " = " << a * b << std::endl;
+        } else if (pilihan == 4) {
+            int a, b;
+            std::cout << "Masukkan dua angka: ";
+            std::cin >> a >> b;
+            if (b != 0) {
+                std::cout << "Hasil: " << a << " / " << b << " = " << a / b << std::endl;
+            } else {
+                std::cout << "Error: tidak bisa dibagi nol!" << std::endl;
+            }
+        } else if (pilihan != 0) {
+            std::cout << "Pilihan tidak valid!" << std::endl;
+        }
+    } while (pilihan != 0);
+
+    std::cout << "Terima kasih! Sampai jumpa!" << std::endl;
+
+    return 0;
+}
+```
+
+Output (contoh interaksi):
+```
+===== KALKULATOR SEDERHANA =====
+1. Penjumlahan
+2. Pengurangan
+3. Perkalian
+4. Pembagian
+0. Keluar
+Pilihan kamu: 1
+Masukkan dua angka: 15 8
+Hasil: 15 + 8 = 23
+
+===== KALKULATOR SEDERHANA =====
+1. Penjumlahan
+2. Pengurangan
+3. Perkalian
+4. Pembagian
+0. Keluar
+Pilihan kamu: 3
+Masukkan dua angka: 6 7
+Hasil: 6 x 7 = 42
+
+===== KALKULATOR SEDERHANA =====
+1. Penjumlahan
+2. Pengurangan
+3. Perkalian
+4. Pembagian
+0. Keluar
+Pilihan kamu: 0
+Terima kasih! Sampai jumpa!
+```
+
+:::tip
+Pola "tampilkan menu, minta input, proses, ulangi sampai keluar" ini sangat umum di banyak program. Do-while sangat natural untuk pola ini karena menu harus ditampilkan minimal sekali.
+:::
+
+## Contoh 4: Tebak Angka
+
+Game sederhana di mana user harus menebak angka rahasia:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int rahasia = 42;  // angka yang harus ditebak
+    int tebakan;
+    int percobaan = 0;
+
+    std::cout << "=== TEBAK ANGKA (1-100) ===" << std::endl;
+
+    do {
+        std::cout << "Tebakan kamu: ";
+        std::cin >> tebakan;
+        percobaan++;
+
+        if (tebakan < rahasia) {
+            std::cout << "Terlalu kecil! Coba lagi." << std::endl;
+        } else if (tebakan > rahasia) {
+            std::cout << "Terlalu besar! Coba lagi." << std::endl;
+        }
+    } while (tebakan != rahasia);
+
+    std::cout << "BENAR! Kamu berhasil menebak dalam "
+              << percobaan << " percobaan!" << std::endl;
+
+    return 0;
+}
+```
+
+Output (contoh interaksi):
+```
+=== TEBAK ANGKA (1-100) ===
+Tebakan kamu: 50
+Terlalu besar! Coba lagi.
+Tebakan kamu: 25
+Terlalu kecil! Coba lagi.
+Tebakan kamu: 42
+BENAR! Kamu berhasil menebak dalam 3 percobaan!
+```
+
+## Contoh 5: Minta Password
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string password;
+    std::string passwordBenar = "rahasia123";
+    int sisa = 3;
+
+    do {
+        std::cout << "Masukkan password (" << sisa << " kesempatan): ";
+        std::cin >> password;
+        sisa--;
+
+        if (password != passwordBenar && sisa > 0) {
+            std::cout << "Password salah!" << std::endl;
+        }
+    } while (password != passwordBenar && sisa > 0);
+
+    if (password == passwordBenar) {
+        std::cout << "Akses diberikan! Selamat datang." << std::endl;
+    } else {
+        std::cout << "Akses ditolak! Terlalu banyak percobaan." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output (contoh interaksi):
+```
+Masukkan password (3 kesempatan): abc
+Password salah!
+Masukkan password (2 kesempatan): rahasia123
+Akses diberikan! Selamat datang.
+```
+
+## Kesalahan Umum
+
+### 1. Lupa titik koma setelah `while`
+
+```cpp
+// SALAH — akan error kompilasi
+do {
+    std::cout << "Halo" << std::endl;
+} while (kondisi)   // Kurang titik koma!
+
+// BENAR — perhatikan titik koma di akhir
+do {
+    std::cout << "Halo" << std::endl;
+} while (kondisi);  // Titik koma wajib!
+```
+
+:::warning
+Lupa titik koma `;` setelah `while(kondisi)` pada do-while adalah kesalahan yang sangat umum. Compiler akan memberikan error yang kadang membingungkan. Selalu ingat: do-while **butuh titik koma** di akhir!
+:::
+
+### 2. Menggunakan do-while padahal while biasa cukup
+
+```cpp
+// Tidak perlu do-while kalau bisa pakai while
+// KURANG TEPAT
+int i = 1;
+do {
+    std::cout << i << " ";
+    i++;
+} while (i <= 5);
+
+// LEBIH TEPAT — pakai for karena jumlah iterasi sudah jelas
+for (int i = 1; i <= 5; i++) {
+    std::cout << i << " ";
+}
+```
+
+### 3. Kondisi terbalik
+
+```cpp
+// SALAH — loop langsung berhenti karena kondisi salah
+int nilai;
+do {
+    std::cout << "Masukkan nilai (0-100): ";
+    std::cin >> nilai;
+} while (nilai >= 0 && nilai <= 100);  // Harusnya TIDAK valid!
+
+// BENAR — ulangi SELAMA input TIDAK valid
+do {
+    std::cout << "Masukkan nilai (0-100): ";
+    std::cin >> nilai;
+} while (nilai < 0 || nilai > 100);  // Ulangi kalau di luar range
+```
+
+## Kapan Pakai Do-While?
+
+Gunakan do-while ketika:
+1. **Validasi input** — harus minta input dulu baru bisa dicek
+2. **Menu program** — menu harus tampil minimal sekali
+3. **Game loop** — game harus jalan minimal satu ronde
+4. **Konfirmasi user** — tanya "Mau lanjut?" setelah selesai
+
+Jangan pakai do-while ketika:
+1. Kamu tahu berapa kali loop jalan (pakai `for`)
+2. Ada kemungkinan loop tidak perlu jalan sama sekali (pakai `while`)
+
+## Latihan
+
+**Latihan 1:** Buat program yang terus meminta user memasukkan angka positif. Setiap angka dijumlahkan. Program berhenti ketika user memasukkan angka 0 (nol), lalu tampilkan total penjumlahan. Gunakan do-while.
+
+**Latihan 2:** Buat program "Mini Quiz" dengan 3 pertanyaan pilihan ganda. Untuk setiap pertanyaan, gunakan do-while agar user harus menjawab A, B, C, atau D. Kalau memasukkan huruf lain, minta ulang. Di akhir, tampilkan skor total.
+
+:::tip
+Untuk Latihan 2, kamu bisa pakai tipe `char` untuk menyimpan jawaban user, dan cek apakah jawabannya termasuk 'A', 'B', 'C', atau 'D'.
+:::
+
+## Ringkasan
+
+| Konsep | Penjelasan |
+|--------|------------|
+| `do { ... } while (kondisi);` | Jalankan kode dulu, baru cek kondisi |
+| Minimal satu kali | Kode di dalam `do` **pasti** dijalankan minimal sekali |
+| Titik koma | **Wajib** ada `;` setelah `while(kondisi)` |
+| Validasi input | Kasus penggunaan paling umum untuk do-while |
+| Menu program | Cocok karena menu harus tampil minimal sekali |
+| While vs do-while | While: cek dulu, do-while: jalankan dulu |
+
+Sekarang kamu sudah mengenal ketiga jenis loop di C++! Tapi ada dua statement penting yang bisa mengontrol alur loop lebih presisi: **break** dan **continue**. Yuk, pelajari di lesson berikutnya!

@@ -1,0 +1,812 @@
+---
+title: "Project: Star Pattern Generator"
+unit: 3
+lesson: 7
+description: "Membuat program interaktif yang bisa generate berbagai pola bintang — menggabungkan semua konsep Unit 3!"
+objectives:
+  - "Menggabungkan while, for, do-while, break/continue, dan nested loops dalam satu program"
+  - "Membangun program secara bertahap dari sederhana ke kompleks"
+  - "Membuat menu interaktif dengan validasi input"
+  - "Menerapkan pola-pola bintang dalam program yang bisa dipilih user"
+estimatedTime: 60
+prerequisites: ["unit-3/06-loop-patterns"]
+difficulty: "beginner"
+isProject: true
+tags: ["project", "pola-bintang", "star-pattern", "nested-loops", "interactive"]
+---
+
+# Project: Star Pattern Generator
+
+Waktunya project! Kamu sudah belajar semua jenis loop di Unit 3 — `while`, `for`, `do-while`, `break`, `continue`, dan nested loops. Sekarang kita gabungkan semuanya dalam satu program keren: **Star Pattern Generator**!
+
+Program ini akan jadi "mesin pencetak pola" — user tinggal pilih jenis pola, masukkan ukuran, dan program langsung menggambarnya di layar. Kayak aplikasi filter foto, tapi versi terminal!
+
+:::note
+Project ini dibangun **step by step**. Jangan langsung loncat ke versi final! Ikuti setiap tahap dan pastikan kamu paham sebelum lanjut. Membangun program bertahap itu skill penting yang dipakai programmer profesional setiap hari.
+:::
+
+## Tahap 1: Satu Pola, Ukuran Tetap
+
+Kita mulai dari yang paling sederhana — program yang mencetak satu pola saja dengan ukuran tetap (hardcoded).
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "==========================" << std::endl;
+    std::cout << "  STAR PATTERN GENERATOR" << std::endl;
+    std::cout << "==========================" << std::endl;
+    std::cout << std::endl;
+
+    int tinggi = 5;
+
+    std::cout << "Pola Segitiga Bintang:" << std::endl;
+    std::cout << std::endl;
+
+    // Segitiga ke atas
+    for (int i = 1; i <= tinggi; i++) {
+        for (int j = 1; j <= i; j++) {
+            std::cout << "* ";
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+**Output:**
+```
+==========================
+  STAR PATTERN GENERATOR
+==========================
+
+Pola Segitiga Bintang:
+
+*
+* *
+* * *
+* * * *
+* * * * *
+```
+
+Simpel dan berfungsi! Tapi masih kaku — ukurannya selalu 5 dan cuma satu pola. Mari kita upgrade.
+
+## Tahap 2: User Bisa Input Ukuran
+
+Sekarang kita tambahkan input dari user, lengkap dengan **validasi** supaya ukurannya masuk akal.
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "==========================" << std::endl;
+    std::cout << "  STAR PATTERN GENERATOR" << std::endl;
+    std::cout << "==========================" << std::endl;
+    std::cout << std::endl;
+
+    int tinggi;
+
+    // Validasi input dengan do-while
+    do {
+        std::cout << "Masukkan tinggi pola (1-20): ";
+        std::cin >> tinggi;
+
+        if (tinggi < 1 || tinggi > 20) {
+            std::cout << "Tinggi harus antara 1 sampai 20!" << std::endl;
+        }
+    } while (tinggi < 1 || tinggi > 20);
+
+    std::cout << std::endl;
+    std::cout << "Pola Segitiga Bintang (tinggi " << tinggi << "):" << std::endl;
+    std::cout << std::endl;
+
+    for (int i = 1; i <= tinggi; i++) {
+        for (int j = 1; j <= i; j++) {
+            std::cout << "* ";
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Perhatikan kita pakai **do-while** untuk validasi input — program terus minta input sampai user memasukkan angka yang valid. Ini salah satu penggunaan do-while yang paling umum di dunia nyata!
+
+## Tahap 3: Menu untuk Pilih Pola
+
+Di sinilah program mulai keren. Kita tambahkan **menu pilihan** dengan **switch-case** sehingga user bisa memilih dari minimal 4 pola berbeda.
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "================================" << std::endl;
+    std::cout << "   STAR PATTERN GENERATOR v3" << std::endl;
+    std::cout << "================================" << std::endl;
+    std::cout << std::endl;
+
+    // === MENU PILIHAN POLA ===
+    int pilihan;
+    std::cout << "Pilih jenis pola:" << std::endl;
+    std::cout << "  1. Segitiga Kanan" << std::endl;
+    std::cout << "  2. Segitiga Terbalik" << std::endl;
+    std::cout << "  3. Piramida" << std::endl;
+    std::cout << "  4. Kotak Berongga" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Pilihan (1-4): ";
+    std::cin >> pilihan;
+
+    // === INPUT UKURAN ===
+    int tinggi;
+    do {
+        std::cout << "Masukkan tinggi pola (1-20): ";
+        std::cin >> tinggi;
+
+        if (tinggi < 1 || tinggi > 20) {
+            std::cout << "Tinggi harus antara 1 sampai 20!" << std::endl;
+        }
+    } while (tinggi < 1 || tinggi > 20);
+
+    std::cout << std::endl;
+
+    // === CETAK POLA BERDASARKAN PILIHAN ===
+    switch (pilihan) {
+        case 1: {
+            // Segitiga Kanan
+            std::cout << ">> Segitiga Kanan (tinggi " << tinggi << ")" << std::endl;
+            std::cout << std::endl;
+
+            for (int i = 1; i <= tinggi; i++) {
+                for (int j = 1; j <= i; j++) {
+                    std::cout << "* ";
+                }
+                std::cout << std::endl;
+            }
+            break;
+        }
+
+        case 2: {
+            // Segitiga Terbalik
+            std::cout << ">> Segitiga Terbalik (tinggi " << tinggi << ")" << std::endl;
+            std::cout << std::endl;
+
+            for (int i = 1; i <= tinggi; i++) {
+                for (int j = 1; j <= tinggi - i + 1; j++) {
+                    std::cout << "* ";
+                }
+                std::cout << std::endl;
+            }
+            break;
+        }
+
+        case 3: {
+            // Piramida
+            std::cout << ">> Piramida (tinggi " << tinggi << ")" << std::endl;
+            std::cout << std::endl;
+
+            for (int i = 1; i <= tinggi; i++) {
+                // Spasi
+                for (int s = 1; s <= tinggi - i; s++) {
+                    std::cout << " ";
+                }
+                // Bintang
+                for (int b = 1; b <= 2 * i - 1; b++) {
+                    std::cout << "*";
+                }
+                std::cout << std::endl;
+            }
+            break;
+        }
+
+        case 4: {
+            // Kotak Berongga
+            std::cout << ">> Kotak Berongga (ukuran " << tinggi << "x" << tinggi << ")" << std::endl;
+            std::cout << std::endl;
+
+            for (int i = 1; i <= tinggi; i++) {
+                for (int j = 1; j <= tinggi; j++) {
+                    if (i == 1 || i == tinggi || j == 1 || j == tinggi) {
+                        std::cout << "* ";
+                    } else {
+                        std::cout << "  ";
+                    }
+                }
+                std::cout << std::endl;
+            }
+            break;
+        }
+
+        default:
+            std::cout << "Pilihan tidak valid!" << std::endl;
+            break;
+    }
+
+    return 0;
+}
+```
+
+Sekarang user bisa pilih 4 pola berbeda! Setiap pola ada di case-nya sendiri di dalam switch. Rapi dan mudah ditambah pola baru.
+
+:::tip
+Perhatikan tanda kurung kurawal `{ }` di setiap `case`. Ini penting kalau kamu mendeklarasikan variabel di dalam case. Tanpa `{ }`, compiler bisa bingung dan error.
+:::
+
+## Tahap 4: Loop Ulang — User Bisa Generate Lagi
+
+Ini tahap terakhir sebelum versi final. Kita bungkus seluruh program dalam **while loop** sehingga user bisa generate pola berkali-kali tanpa restart program. Kita juga tambahkan opsi "Keluar" di menu.
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "================================" << std::endl;
+    std::cout << "   STAR PATTERN GENERATOR v4" << std::endl;
+    std::cout << "================================" << std::endl;
+
+    bool lanjut = true;
+
+    while (lanjut) {
+        std::cout << std::endl;
+
+        // Menu
+        int pilihan;
+        std::cout << "Pilih jenis pola:" << std::endl;
+        std::cout << "  1. Segitiga Kanan" << std::endl;
+        std::cout << "  2. Segitiga Terbalik" << std::endl;
+        std::cout << "  3. Piramida" << std::endl;
+        std::cout << "  4. Kotak Berongga" << std::endl;
+        std::cout << "  0. Keluar" << std::endl;
+        std::cout << std::endl;
+        std::cout << "Pilihan: ";
+        std::cin >> pilihan;
+
+        // Cek keluar
+        if (pilihan == 0) {
+            lanjut = false;
+            continue;  // langsung ke pengecekan while
+        }
+
+        // Validasi pilihan
+        if (pilihan < 1 || pilihan > 4) {
+            std::cout << "Pilihan tidak valid! Coba lagi." << std::endl;
+            continue;  // skip ke iterasi berikutnya
+        }
+
+        // Input ukuran
+        int tinggi;
+        do {
+            std::cout << "Masukkan tinggi pola (1-20): ";
+            std::cin >> tinggi;
+
+            if (tinggi < 1 || tinggi > 20) {
+                std::cout << "Tinggi harus antara 1 sampai 20!" << std::endl;
+            }
+        } while (tinggi < 1 || tinggi > 20);
+
+        std::cout << std::endl;
+
+        // Cetak pola (sama seperti Tahap 3)
+        switch (pilihan) {
+            case 1:
+                for (int i = 1; i <= tinggi; i++) {
+                    for (int j = 1; j <= i; j++) {
+                        std::cout << "* ";
+                    }
+                    std::cout << std::endl;
+                }
+                break;
+
+            case 2:
+                for (int i = 1; i <= tinggi; i++) {
+                    for (int j = 1; j <= tinggi - i + 1; j++) {
+                        std::cout << "* ";
+                    }
+                    std::cout << std::endl;
+                }
+                break;
+
+            case 3:
+                for (int i = 1; i <= tinggi; i++) {
+                    for (int s = 1; s <= tinggi - i; s++) {
+                        std::cout << " ";
+                    }
+                    for (int b = 1; b <= 2 * i - 1; b++) {
+                        std::cout << "*";
+                    }
+                    std::cout << std::endl;
+                }
+                break;
+
+            case 4:
+                for (int i = 1; i <= tinggi; i++) {
+                    for (int j = 1; j <= tinggi; j++) {
+                        if (i == 1 || i == tinggi || j == 1 || j == tinggi) {
+                            std::cout << "* ";
+                        } else {
+                            std::cout << "  ";
+                        }
+                    }
+                    std::cout << std::endl;
+                }
+                break;
+        }
+    }
+
+    std::cout << std::endl;
+    std::cout << "Terima kasih sudah menggunakan Star Pattern Generator!" << std::endl;
+
+    return 0;
+}
+```
+
+Sekarang programnya sudah **interaktif penuh**: user bisa pilih pola, masukkan ukuran, lihat hasilnya, lalu pilih lagi tanpa harus restart. Perhatikan bagaimana kita pakai:
+- **while loop** untuk mengulang seluruh program
+- **continue** untuk skip ke iterasi berikutnya saat input tidak valid
+- **do-while** untuk validasi ukuran
+- **switch-case** untuk pilihan pola
+- **nested for loops** untuk mencetak setiap pola
+- **bool** `lanjut` untuk kontrol kapan program berhenti
+
+Semua konsep Unit 3 ada di sini!
+
+## Versi Final: Star Pattern Generator Lengkap!
+
+Ini versi final yang sudah dipoles — dengan header yang keren, pemisah visual, dan 6 pola bintang. Baca pelan-pelan dan perhatikan setiap bagian.
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    // === HEADER PROGRAM ===
+    std::cout << "========================================" << std::endl;
+    std::cout << "      STAR PATTERN GENERATOR v1.0" << std::endl;
+    std::cout << "       Dibuat dengan C++ dan cinta" << std::endl;
+    std::cout << "========================================" << std::endl;
+
+    bool program_berjalan = true;
+
+    // === MAIN LOOP: program terus jalan sampai user pilih keluar ===
+    while (program_berjalan) {
+        std::cout << std::endl;
+        std::cout << "----------------------------------------" << std::endl;
+        std::cout << "  MENU POLA" << std::endl;
+        std::cout << "----------------------------------------" << std::endl;
+        std::cout << "  1. Segitiga Kanan" << std::endl;
+        std::cout << "  2. Segitiga Terbalik" << std::endl;
+        std::cout << "  3. Piramida" << std::endl;
+        std::cout << "  4. Piramida Terbalik" << std::endl;
+        std::cout << "  5. Kotak Berongga" << std::endl;
+        std::cout << "  6. Angka Bertangga" << std::endl;
+        std::cout << "  0. Keluar Program" << std::endl;
+        std::cout << "----------------------------------------" << std::endl;
+        std::cout << std::endl;
+
+        // Input pilihan menu
+        int pilihan;
+        std::cout << "Pilih pola (0-6): ";
+        std::cin >> pilihan;
+
+        // Cek apakah user mau keluar
+        if (pilihan == 0) {
+            program_berjalan = false;
+            break;  // keluar dari while loop
+        }
+
+        // Validasi pilihan menu
+        if (pilihan < 1 || pilihan > 6) {
+            std::cout << std::endl;
+            std::cout << "  Pilihan tidak tersedia! Silakan pilih 0-6." << std::endl;
+            continue;  // kembali ke awal loop, tampilkan menu lagi
+        }
+
+        // === INPUT UKURAN DENGAN VALIDASI ===
+        int tinggi;
+        do {
+            std::cout << "Masukkan tinggi/ukuran (1-20): ";
+            std::cin >> tinggi;
+
+            if (tinggi < 1 || tinggi > 20) {
+                std::cout << "  Ukuran harus antara 1 sampai 20. Coba lagi!" << std::endl;
+            }
+        } while (tinggi < 1 || tinggi > 20);
+
+        // === NAMA POLA UNTUK HEADER ===
+        std::string nama_pola;
+        switch (pilihan) {
+            case 1: nama_pola = "Segitiga Kanan";     break;
+            case 2: nama_pola = "Segitiga Terbalik";   break;
+            case 3: nama_pola = "Piramida";            break;
+            case 4: nama_pola = "Piramida Terbalik";   break;
+            case 5: nama_pola = "Kotak Berongga";      break;
+            case 6: nama_pola = "Angka Bertangga";     break;
+        }
+
+        std::cout << std::endl;
+        std::cout << ">> " << nama_pola << " (tinggi: " << tinggi << ")" << std::endl;
+        std::cout << std::endl;
+
+        // === CETAK POLA BERDASARKAN PILIHAN ===
+        switch (pilihan) {
+
+            // --- POLA 1: Segitiga Kanan ---
+            // *
+            // * *
+            // * * *
+            // * * * *
+            // * * * * *
+            case 1: {
+                for (int i = 1; i <= tinggi; i++) {
+                    for (int j = 1; j <= i; j++) {
+                        std::cout << "* ";
+                    }
+                    std::cout << std::endl;
+                }
+                break;
+            }
+
+            // --- POLA 2: Segitiga Terbalik ---
+            // * * * * *
+            // * * * *
+            // * * *
+            // * *
+            // *
+            case 2: {
+                for (int i = 1; i <= tinggi; i++) {
+                    for (int j = 1; j <= tinggi - i + 1; j++) {
+                        std::cout << "* ";
+                    }
+                    std::cout << std::endl;
+                }
+                break;
+            }
+
+            // --- POLA 3: Piramida ---
+            //     *
+            //    ***
+            //   *****
+            //  *******
+            // *********
+            case 3: {
+                for (int i = 1; i <= tinggi; i++) {
+                    // Cetak spasi di depan
+                    for (int s = 1; s <= tinggi - i; s++) {
+                        std::cout << " ";
+                    }
+                    // Cetak bintang
+                    for (int b = 1; b <= 2 * i - 1; b++) {
+                        std::cout << "*";
+                    }
+                    std::cout << std::endl;
+                }
+                break;
+            }
+
+            // --- POLA 4: Piramida Terbalik ---
+            // *********
+            //  *******
+            //   *****
+            //    ***
+            //     *
+            case 4: {
+                for (int i = 1; i <= tinggi; i++) {
+                    // Cetak spasi di depan (bertambah)
+                    for (int s = 1; s < i; s++) {
+                        std::cout << " ";
+                    }
+                    // Cetak bintang (berkurang)
+                    for (int b = 1; b <= 2 * (tinggi - i) + 1; b++) {
+                        std::cout << "*";
+                    }
+                    std::cout << std::endl;
+                }
+                break;
+            }
+
+            // --- POLA 5: Kotak Berongga ---
+            // * * * * *
+            // *       *
+            // *       *
+            // *       *
+            // * * * * *
+            case 5: {
+                for (int i = 1; i <= tinggi; i++) {
+                    for (int j = 1; j <= tinggi; j++) {
+                        if (i == 1 || i == tinggi || j == 1 || j == tinggi) {
+                            std::cout << "* ";
+                        } else {
+                            std::cout << "  ";
+                        }
+                    }
+                    std::cout << std::endl;
+                }
+                break;
+            }
+
+            // --- POLA 6: Angka Bertangga ---
+            // 1
+            // 1 2
+            // 1 2 3
+            // 1 2 3 4
+            // 1 2 3 4 5
+            case 6: {
+                for (int i = 1; i <= tinggi; i++) {
+                    for (int j = 1; j <= i; j++) {
+                        std::cout << j << " ";
+                    }
+                    std::cout << std::endl;
+                }
+                break;
+            }
+        }
+
+        // === PEMISAH SETELAH POLA ===
+        std::cout << std::endl;
+        std::cout << "(Pola selesai dicetak!)" << std::endl;
+
+    }  // akhir while loop
+
+    // === PESAN PENUTUP ===
+    std::cout << std::endl;
+    std::cout << "========================================" << std::endl;
+    std::cout << "  Terima kasih sudah menggunakan" << std::endl;
+    std::cout << "  Star Pattern Generator!" << std::endl;
+    std::cout << std::endl;
+    std::cout << "  Terus berlatih dan berkreasi!" << std::endl;
+    std::cout << "========================================" << std::endl;
+
+    return 0;
+}
+```
+
+## Penjelasan Kode
+
+Mari kita bedah bagian-bagian penting dari program ini.
+
+### 1. Main Loop (While)
+
+```cpp
+bool program_berjalan = true;
+
+while (program_berjalan) {
+    // ... seluruh isi program ...
+
+    if (pilihan == 0) {
+        program_berjalan = false;
+        break;
+    }
+}
+```
+
+Seluruh program dibungkus dalam `while` loop. Selama `program_berjalan` bernilai `true`, program terus menampilkan menu dan menerima input. Ketika user memilih 0, kita set `false` dan `break`.
+
+### 2. Validasi Input dengan Do-While
+
+```cpp
+int tinggi;
+do {
+    std::cout << "Masukkan tinggi/ukuran (1-20): ";
+    std::cin >> tinggi;
+
+    if (tinggi < 1 || tinggi > 20) {
+        std::cout << "  Ukuran harus antara 1 sampai 20. Coba lagi!" << std::endl;
+    }
+} while (tinggi < 1 || tinggi > 20);
+```
+
+Do-while sempurna untuk validasi input karena kita perlu minta input **minimal sekali** sebelum bisa mengecek apakah inputnya valid.
+
+### 3. Continue untuk Skip Iterasi
+
+```cpp
+if (pilihan < 1 || pilihan > 6) {
+    std::cout << "  Pilihan tidak tersedia!" << std::endl;
+    continue;  // langsung kembali ke menu
+}
+```
+
+Kalau user memasukkan pilihan yang tidak valid, `continue` membuat program langsung loncat ke awal while loop — menampilkan menu lagi tanpa menjalankan kode di bawahnya.
+
+### 4. Switch-Case untuk Routing Pola
+
+```cpp
+switch (pilihan) {
+    case 1: { /* pola segitiga */ break; }
+    case 2: { /* pola terbalik */ break; }
+    // ...
+}
+```
+
+Switch-case bertindak sebagai "router" — mengarahkan program ke kode pola yang tepat berdasarkan pilihan user. Setiap case dibungkus `{ }` supaya variabel lokal tidak bentrok.
+
+### 5. Nested Loops untuk Setiap Pola
+
+Setiap pola menggunakan nested loop dengan rumus yang berbeda:
+
+| Pola | Bintang per baris | Spasi per baris |
+|------|-------------------|-----------------|
+| Segitiga Kanan | `i` | - |
+| Segitiga Terbalik | `tinggi - i + 1` | - |
+| Piramida | `2 * i - 1` | `tinggi - i` |
+| Piramida Terbalik | `2 * (tinggi - i) + 1` | `i - 1` |
+| Kotak Berongga | `tinggi` (dengan if) | - |
+| Angka Bertangga | `i` (cetak angka) | - |
+
+## Contoh Sesi Program
+
+```
+========================================
+      STAR PATTERN GENERATOR v1.0
+       Dibuat dengan C++ dan cinta
+========================================
+
+----------------------------------------
+  MENU POLA
+----------------------------------------
+  1. Segitiga Kanan
+  2. Segitiga Terbalik
+  3. Piramida
+  4. Piramida Terbalik
+  5. Kotak Berongga
+  6. Angka Bertangga
+  0. Keluar Program
+----------------------------------------
+
+Pilih pola (0-6): 3
+Masukkan tinggi/ukuran (1-20): 6
+
+>> Piramida (tinggi: 6)
+
+     *
+    ***
+   *****
+  *******
+ *********
+***********
+
+(Pola selesai dicetak!)
+
+----------------------------------------
+  MENU POLA
+----------------------------------------
+  ...
+
+Pilih pola (0-6): 5
+Masukkan tinggi/ukuran (1-20): 5
+
+>> Kotak Berongga (tinggi: 5)
+
+* * * * *
+*       *
+*       *
+*       *
+* * * * *
+
+(Pola selesai dicetak!)
+
+----------------------------------------
+  MENU POLA
+----------------------------------------
+  ...
+
+Pilih pola (0-6): 0
+
+========================================
+  Terima kasih sudah menggunakan
+  Star Pattern Generator!
+
+  Terus berlatih dan berkreasi!
+========================================
+```
+
+## Konsep Unit 3 yang Digunakan
+
+| Konsep | Digunakan untuk |
+|--------|----------------|
+| `while` loop | Main loop — program berjalan terus sampai user keluar |
+| `for` loop | Outer loop (baris) dan inner loop (kolom/karakter) |
+| `do-while` | Validasi input ukuran — minta ulang sampai valid |
+| `break` | Keluar dari while loop saat user pilih 0, dan keluar dari switch |
+| `continue` | Skip ke iterasi berikutnya saat pilihan menu tidak valid |
+| Nested loops | Mencetak setiap pola bintang (baris x kolom) |
+| `switch-case` | Routing ke pola yang dipilih user |
+
+## Tantangan Ekstra
+
+Sudah berhasil bikin versi final? Coba upgrade program kamu dengan tantangan-tantangan ini!
+
+### Tantangan 1: Pola Diamond
+
+Gabungkan piramida dan piramida terbalik jadi diamond (berlian):
+
+```
+    *
+   ***
+  *****
+ *******
+*********
+ *******
+  *****
+   ***
+    *
+```
+
+*Hint: cetak piramida biasa, lalu piramida terbalik tanpa baris pertama (karena baris tengah sudah dicetak).*
+
+### Tantangan 2: Pola Angka Piramida
+
+Ganti bintang dengan angka di piramida:
+
+```
+    1
+   1 2 1
+  1 2 3 2 1
+ 1 2 3 4 3 2 1
+1 2 3 4 5 4 3 2 1
+```
+
+*Hint: butuh tiga inner loop — spasi, angka naik, angka turun.*
+
+### Tantangan 3: Pola Huruf
+
+Buat pola yang membentuk huruf dari nama user. Misalnya huruf "A":
+
+```
+   *
+  * *
+ *   *
+ *****
+*     *
+*     *
+```
+
+Ini menantang banget — kamu perlu menentukan posisi bintang dan spasi untuk setiap baris. Coba mulai dari huruf yang mudah seperti "T", "L", atau "I".
+
+### Tantangan 4: Simpan Statistik
+
+Tambahkan fitur yang menghitung dan menampilkan:
+- Berapa total pola yang sudah di-generate
+- Pola mana yang paling sering dipilih
+- Ukuran rata-rata yang dipakai
+
+Tampilkan statistik ini sebelum program keluar.
+
+### Tantangan 5: Custom Character
+
+Biarkan user memilih karakter selain bintang. Misalnya `#`, `@`, atau emoji:
+
+```
+Pilih karakter pola: #
+
+## #
+# # #
+# # # # #
+```
+
+*Hint: simpan karakter di variabel `char`, lalu pakai variabel itu sebagai pengganti `'*'` di semua loop.*
+
+:::tip
+Kalau kamu menyelesaikan minimal 2 tantangan ekstra, kamu sudah sangat hebat! Tapi yang paling penting bukan menyelesaikan semua tantangan — yang penting kamu **memahami** logika di balik kode dan bisa **memodifikasi** program sesukamu. Itulah inti dari pemrograman: kreativitas tanpa batas!
+:::
+
+## Latihan
+
+**Latihan 1:** Ketik ulang versi final dari awal tanpa melihat kode di atas. Ini latihan yang sangat efektif — otakmu akan memproses setiap baris secara mendalam. Pastikan semua 6 pola berfungsi dengan benar.
+
+**Latihan 2:** Tambahkan satu pola baru ke program — **Segitiga Siku-Siku Kanan**. Polanya segitiga, tapi rata kanan:
+
+```
+        *
+      * *
+    * * *
+  * * * *
+* * * * *
+```
+
+Kamu perlu menambahkan spasi di depan bintang, mirip seperti piramida.
+
+**Latihan 3:** Tambahkan fitur "Preview" — sebelum mencetak pola ukuran penuh, tunjukkan versi kecil (tinggi 3) sebagai preview. User bisa confirm apakah mau lanjut cetak ukuran penuh atau ganti pola.
+
+Selamat! Kamu sudah menyelesaikan **Unit 3: Perulangan (Loops)**! Kamu sekarang bisa membuat program yang mengulang tugas secara otomatis, memvalidasi input, dan menggambar pola-pola keren di terminal. Kemampuan ini adalah fondasi yang sangat kuat untuk belajar konsep-konsep pemrograman yang lebih lanjut!

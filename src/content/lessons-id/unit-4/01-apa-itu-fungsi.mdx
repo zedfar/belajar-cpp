@@ -1,0 +1,421 @@
+---
+title: "Apa itu Fungsi?"
+unit: 4
+lesson: 1
+description: "Mengenal konsep fungsi dalam C++ — blok kode yang bisa dipanggil berulang kali untuk menghindari duplikasi"
+objectives:
+  - "Memahami konsep fungsi sebagai blok kode yang bisa dipakai ulang"
+  - "Mengenal anatomi fungsi: return type, nama, parameter, body, return"
+  - "Membedakan deklarasi, definisi, dan pemanggilan fungsi"
+  - "Mengenal fungsi void dan fungsi yang mengembalikan nilai"
+  - "Menggunakan fungsi bawaan C++ seperti std::sqrt dan std::abs"
+estimatedTime: 30
+prerequisites: ["unit-3/07-project-pola-bintang"]
+difficulty: "beginner"
+tags: ["fungsi", "function", "void", "return", "DRY", "reusable-code"]
+---
+
+# Apa itu Fungsi?
+
+Coba bayangkan kamu harus menulis kode untuk menampilkan garis pemisah `================` di 10 tempat berbeda dalam programmu. Apakah kamu mau copy-paste 10 kali? Tentu tidak! Nah, di sinilah **fungsi** datang menyelamatkan hidupmu.
+
+## Analogi: Fungsi = Resep Masakan
+
+Bayangkan kamu punya **resep nasi goreng**. Resep itu ditulis sekali di buku resep, tapi kamu bisa **masak nasi goreng kapan saja** cukup dengan mengikuti resep tersebut. Kamu tidak perlu menulis ulang resepnya setiap kali mau masak!
+
+```
+Resep Nasi Goreng (bahan: nasi, telur, kecap):
+  1. Panaskan minyak
+  2. Masukkan telur, orak-arik
+  3. Masukkan nasi
+  4. Tambahkan kecap
+  5. Aduk rata
+  6. Sajikan!
+```
+
+Dalam programming, **fungsi** persis seperti resep:
+- **Nama resep** = nama fungsi
+- **Bahan-bahan** = parameter fungsi
+- **Langkah-langkah** = body (isi) fungsi
+- **Hasil masakan** = return value (nilai kembalian)
+
+Kamu tulis resep (fungsi) **sekali**, lalu bisa "masak" (panggil) **berkali-kali**!
+
+## Kenapa Fungsi Itu Penting? (DRY Principle)
+
+Ada prinsip penting dalam programming yang disebut **DRY** — **Don't Repeat Yourself** (Jangan Mengulang Dirimu Sendiri).
+
+Perhatikan kode tanpa fungsi ini:
+
+```cpp
+#include <iostream>
+
+int main() {
+    // Cetak garis pemisah ke-1
+    std::cout << "================================" << std::endl;
+    std::cout << "Selamat Datang!" << std::endl;
+
+    // Cetak garis pemisah ke-2
+    std::cout << "================================" << std::endl;
+    std::cout << "Menu Utama" << std::endl;
+
+    // Cetak garis pemisah ke-3
+    std::cout << "================================" << std::endl;
+    std::cout << "Terima Kasih!" << std::endl;
+
+    // Cetak garis pemisah ke-4
+    std::cout << "================================" << std::endl;
+
+    return 0;
+}
+```
+
+Baris `std::cout << "================================"` ditulis **4 kali**! Kalau suatu hari kamu mau ganti panjang garisnya, kamu harus edit di 4 tempat. Rawan lupa dan rawan typo.
+
+Dengan fungsi, kamu cukup tulis **sekali**:
+
+```cpp
+#include <iostream>
+
+void cetakGaris() {
+    std::cout << "================================" << std::endl;
+}
+
+int main() {
+    cetakGaris();
+    std::cout << "Selamat Datang!" << std::endl;
+
+    cetakGaris();
+    std::cout << "Menu Utama" << std::endl;
+
+    cetakGaris();
+    std::cout << "Terima Kasih!" << std::endl;
+
+    cetakGaris();
+
+    return 0;
+}
+```
+
+Output:
+```
+================================
+Selamat Datang!
+================================
+Menu Utama
+================================
+Terima Kasih!
+================================
+```
+
+Jauh lebih rapi, kan? Mau ganti garis jadi `--------`? Cukup edit **satu tempat** di fungsi `cetakGaris()`.
+
+## Anatomi Sebuah Fungsi
+
+Setiap fungsi punya bagian-bagian penting. Mari kita bedah:
+
+```cpp
+int hitungLuasPersegi(int sisi) {
+    int luas = sisi * sisi;
+    return luas;
+}
+```
+
+```
+int             hitungLuasPersegi    (int sisi)     { ... return luas; }
+^^^             ^^^^^^^^^^^^^^^^^    ^^^^^^^^^^     ^^^^^^^^^^^^^^^^^^^
+Return Type     Nama Fungsi          Parameter      Body (isi fungsi)
+```
+
+| Bagian | Penjelasan | Contoh |
+|--------|------------|--------|
+| **Return type** | Tipe data nilai yang dikembalikan | `int` |
+| **Nama fungsi** | Identitas fungsi, dipakai saat memanggil | `hitungLuasPersegi` |
+| **Parameter** | "Bahan" yang dibutuhkan fungsi | `int sisi` |
+| **Body** | Kode yang dijalankan saat fungsi dipanggil | `{ int luas = sisi * sisi; ... }` |
+| **Return statement** | Mengembalikan nilai ke pemanggil | `return luas;` |
+
+## Deklarasi vs Definisi vs Pemanggilan
+
+Ini tiga hal yang sering membingungkan pemula. Mari kita bedakan:
+
+```cpp
+#include <iostream>
+
+// 1. DEKLARASI (prototype) — "janji" bahwa fungsi ini ada
+int kaliDua(int angka);
+
+int main() {
+    // 3. PEMANGGILAN — menggunakan fungsi
+    int hasil = kaliDua(5);
+    std::cout << "5 x 2 = " << hasil << std::endl;
+
+    return 0;
+}
+
+// 2. DEFINISI — isi lengkap fungsi
+int kaliDua(int angka) {
+    return angka * 2;
+}
+```
+
+Output:
+```
+5 x 2 = 10
+```
+
+| Istilah | Apa yang dilakukan | Contoh |
+|---------|-------------------|--------|
+| **Deklarasi** (prototype) | Memberitahu compiler bahwa fungsi ini ada | `int kaliDua(int angka);` |
+| **Definisi** | Menulis isi lengkap fungsi | `int kaliDua(int angka) { return angka * 2; }` |
+| **Pemanggilan** | Menggunakan/menjalankan fungsi | `kaliDua(5)` |
+
+:::note
+Deklarasi diakhiri titik koma (`;`), sedangkan definisi diikuti kurung kurawal `{ }` berisi kode. Jangan sampai tertukar!
+:::
+
+## Fungsi `void` vs Fungsi yang Return Nilai
+
+Ada dua jenis fungsi berdasarkan apakah mereka mengembalikan nilai atau tidak:
+
+### Fungsi `void` — Tidak mengembalikan nilai
+
+Fungsi `void` hanya **melakukan sesuatu** tanpa memberikan hasil balik. Seperti menyuruh adikmu "tolong bersihkan meja" — dia melakukannya, tapi tidak memberi kamu apa-apa.
+
+```cpp
+#include <iostream>
+
+void spikeSpike(std::string nama) {
+    std::cout << "Halo, " << nama << "! Selamat belajar C++!" << std::endl;
+}
+
+int main() {
+    spikeSpike("Andi");
+    spikeSpike("Budi");
+    spikeSpike("Citra");
+
+    return 0;
+}
+```
+
+Output:
+```
+Halo, Andi! Selamat belajar C++!
+Halo, Budi! Selamat belajar C++!
+Halo, Citra! Selamat belajar C++!
+```
+
+### Fungsi yang Return Nilai — Mengembalikan hasil
+
+Fungsi ini **menghasilkan sesuatu** yang bisa kamu simpan atau gunakan. Seperti kamu tanya "berapa 5 + 3?" ke temanmu, dan dia menjawab "8".
+
+```cpp
+#include <iostream>
+
+int hitungLuasPersegi(int sisi) {
+    return sisi * sisi;
+}
+
+int main() {
+    int luas1 = hitungLuasPersegi(5);
+    int luas2 = hitungLuasPersegi(10);
+
+    std::cout << "Luas persegi sisi 5: " << luas1 << std::endl;
+    std::cout << "Luas persegi sisi 10: " << luas2 << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Luas persegi sisi 5: 25
+Luas persegi sisi 10: 100
+```
+
+## Kamu Sudah Pakai Fungsi!
+
+Tanpa sadar, kamu sebenarnya sudah menggunakan fungsi sejak awal belajar C++! Fungsi-fungsi bawaan C++ yang pernah kamu pakai:
+
+```cpp
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+
+int main() {
+    // std::sqrt — menghitung akar kuadrat (dari <cmath>)
+    double akar = std::sqrt(25.0);
+    std::cout << "Akar 25 = " << akar << std::endl;
+
+    // std::abs — nilai absolut (dari <cmath>)
+    int absolut = std::abs(-7);
+    std::cout << "|-7| = " << absolut << std::endl;
+
+    // std::max — nilai terbesar dari dua angka (dari <algorithm>)
+    int terbesar = std::max(10, 20);
+    std::cout << "Max(10, 20) = " << terbesar << std::endl;
+
+    // std::min — nilai terkecil dari dua angka (dari <algorithm>)
+    int terkecil = std::min(10, 20);
+    std::cout << "Min(10, 20) = " << terkecil << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Akar 25 = 5
+|-7| = 7
+Max(10, 20) = 20
+Min(10, 20) = 10
+```
+
+:::tip
+Bahkan `main()` itu sendiri adalah sebuah **fungsi**! Fungsi spesial yang otomatis dipanggil saat program dijalankan. Return type-nya `int`, dan `return 0` artinya "program berjalan sukses".
+:::
+
+## Contoh Lengkap: Menu Sederhana
+
+```cpp
+#include <iostream>
+
+void cetakGaris() {
+    std::cout << "================================" << std::endl;
+}
+
+void cetakHeader(std::string judul) {
+    cetakGaris();
+    std::cout << "  " << judul << std::endl;
+    cetakGaris();
+}
+
+void cetakMenu() {
+    cetakHeader("KANTIN SEKOLAH");
+    std::cout << "  1. Nasi Goreng   - Rp 15.000" << std::endl;
+    std::cout << "  2. Mie Ayam      - Rp 12.000" << std::endl;
+    std::cout << "  3. Es Teh        - Rp  5.000" << std::endl;
+    cetakGaris();
+}
+
+int main() {
+    cetakMenu();
+    return 0;
+}
+```
+
+Output:
+```
+================================
+  KANTIN SEKOLAH
+================================
+  1. Nasi Goreng   - Rp 15.000
+  2. Mie Ayam      - Rp 12.000
+  3. Es Teh        - Rp  5.000
+================================
+```
+
+Perhatikan bagaimana fungsi bisa **memanggil fungsi lain**! `cetakMenu()` memanggil `cetakHeader()`, yang memanggil `cetakGaris()`. Ini membuat kode sangat modular dan rapi.
+
+## Kesalahan Umum
+
+### 1. Memanggil fungsi sebelum dideklarasikan
+
+```cpp
+#include <iostream>
+
+int main() {
+    sapa("Andi");  // ERROR! Compiler belum tahu fungsi sapa
+    return 0;
+}
+
+void sapa(std::string nama) {
+    std::cout << "Halo, " << nama << "!" << std::endl;
+}
+```
+
+Solusi: tambahkan **deklarasi (prototype)** di atas `main`, atau pindahkan definisi fungsi ke atas `main`.
+
+### 2. Lupa `return` pada fungsi non-void
+
+```cpp
+// SALAH — lupa return!
+int hitungLuas(int sisi) {
+    int luas = sisi * sisi;
+    // Tidak ada return... hasilnya tidak terdefinisi!
+}
+
+// BENAR
+int hitungLuas(int sisi) {
+    int luas = sisi * sisi;
+    return luas;
+}
+```
+
+### 3. Menggunakan return value dari fungsi void
+
+```cpp
+void sapa(std::string nama) {
+    std::cout << "Halo, " << nama << "!" << std::endl;
+}
+
+int main() {
+    // SALAH — fungsi void tidak mengembalikan apa-apa!
+    // std::string hasil = sapa("Andi");
+
+    // BENAR — panggil saja tanpa menyimpan hasilnya
+    sapa("Andi");
+
+    return 0;
+}
+```
+
+:::warning
+Compiler mungkin tidak selalu memberi error kalau kamu lupa `return` di fungsi non-void, tapi programmu akan berperilaku tidak terduga. Selalu pastikan setiap jalur kode di fungsi non-void punya `return`!
+:::
+
+## Latihan
+
+**Latihan 1:** Buat fungsi `void cetakBintang(int jumlah)` yang mencetak bintang (`*`) sebanyak `jumlah` dalam satu baris. Lalu panggil fungsi tersebut dari `main` dengan jumlah 5, 10, dan 3.
+
+Contoh output:
+```
+*****
+**********
+***
+```
+
+**Latihan 2:** Buat fungsi `int kuadrat(int angka)` yang mengembalikan nilai kuadrat dari angka. Gunakan fungsi tersebut untuk menampilkan kuadrat dari 1 sampai 5.
+
+Contoh output:
+```
+1 kuadrat = 1
+2 kuadrat = 4
+3 kuadrat = 9
+4 kuadrat = 16
+5 kuadrat = 25
+```
+
+**Latihan 3:** Buat program dengan tiga fungsi:
+- `void cetakGaris()` — cetak garis `--------------------`
+- `void cetakJudul(std::string teks)` — cetak judul di antara dua garis
+- `int hitungTotal(int harga, int jumlah)` — return harga * jumlah
+
+Gunakan ketiga fungsi tersebut untuk menampilkan struk belanja sederhana.
+
+## Ringkasan
+
+| Konsep | Penjelasan |
+|--------|------------|
+| **Fungsi** | Blok kode bernama yang bisa dipanggil berulang kali |
+| **DRY Principle** | Don't Repeat Yourself — hindari duplikasi kode |
+| **Return type** | Tipe data yang dikembalikan fungsi (`int`, `double`, `void`, dll) |
+| **Parameter** | "Bahan" yang diterima fungsi saat dipanggil |
+| **Body** | Isi fungsi yang berada di dalam kurung kurawal `{ }` |
+| **`return`** | Mengembalikan nilai ke pemanggil |
+| **`void`** | Fungsi yang tidak mengembalikan nilai |
+| **Deklarasi** | Memberitahu compiler bahwa fungsi ada (diakhiri `;`) |
+| **Definisi** | Isi lengkap fungsi (diikuti `{ }`) |
+| **Pemanggilan** | Menjalankan fungsi dengan `namaFungsi(argumen)` |
+
+Sekarang kamu sudah tahu **apa** itu fungsi dan **kenapa** fungsi penting. Di pelajaran berikutnya, kita akan belajar cara **membuat fungsi sendiri** dari awal dengan lebih detail!

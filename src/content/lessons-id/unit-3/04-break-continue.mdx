@@ -1,0 +1,494 @@
+---
+title: "Break & Continue"
+unit: 3
+lesson: 4
+description: "Mengontrol alur loop dengan break (keluar dari loop) dan continue (skip ke iterasi berikutnya)"
+objectives:
+  - "Memahami fungsi break untuk keluar dari loop sepenuhnya"
+  - "Memahami fungsi continue untuk melewati satu iterasi"
+  - "Mengetahui kapan penggunaan break dan continue tepat"
+  - "Memahami perilaku break pada nested loop"
+estimatedTime: 25
+prerequisites: ["unit-3/03-do-while"]
+difficulty: "beginner"
+tags: ["break", "continue", "loop-control", "nested-loop", "perulangan"]
+---
+
+# Break & Continue
+
+Kamu sudah bisa membuat loop yang berjalan dari awal sampai akhir. Tapi kadang, kamu butuh kontrol lebih:
+- **"Stop! Saya sudah menemukan yang dicari, nggak perlu cek sisanya."** — pakai `break`
+- **"Yang ini di-skip aja, lanjut ke yang berikutnya."** — pakai `continue`
+
+## Analogi: Mencari Buku di Perpustakaan
+
+Bayangkan kamu di perpustakaan sekolah, menelusuri rak buku satu per satu:
+
+**Break** — "Cari buku Fisika"
+```
+Cek rak 1: Matematika → bukan, lanjut
+Cek rak 2: Bahasa Indonesia → bukan, lanjut
+Cek rak 3: Fisika → KETEMU! Berhenti cari (break)
+(Rak 4, 5, 6, ... tidak perlu dicek lagi)
+```
+
+**Continue** — "Ambil semua buku KECUALI yang rusak"
+```
+Cek rak 1: bagus → ambil
+Cek rak 2: RUSAK → skip, lanjut ke berikutnya (continue)
+Cek rak 3: bagus → ambil
+Cek rak 4: RUSAK → skip, lanjut ke berikutnya (continue)
+Cek rak 5: bagus → ambil
+```
+
+## Statement `break`
+
+`break` langsung **menghentikan loop** dan melanjutkan ke kode setelah loop.
+
+```cpp
+for (int i = 0; i < 100; i++) {
+    if (suatuKondisi) {
+        break;  // Keluar dari loop SEKARANG!
+    }
+    // kode lainnya
+}
+// Program lanjut ke sini setelah break
+```
+
+### Contoh 1: Cari Angka Pertama yang Habis Dibagi 7
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Mencari angka pertama di atas 100 yang habis dibagi 7..." << std::endl;
+
+    for (int i = 101; i < 200; i++) {
+        if (i % 7 == 0) {
+            std::cout << "Ketemu! Angkanya: " << i << std::endl;
+            break;  // Sudah ketemu, tidak perlu cek sisanya
+        }
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+Mencari angka pertama di atas 100 yang habis dibagi 7...
+Ketemu! Angkanya: 105
+```
+
+Tanpa `break`, loop akan terus jalan sampai 199 — padahal kita cuma butuh angka **pertama**. Dengan `break`, begitu 105 ditemukan, loop langsung berhenti. Efisien!
+
+### Contoh 2: Cari Nama di "Database"
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string nama[] = {"Andi", "Budi", "Citra", "Dewi", "Eka", "Fajar"};
+    int jumlah = 6;
+    std::string dicari = "Dewi";
+    bool ditemukan = false;
+
+    for (int i = 0; i < jumlah; i++) {
+        std::cout << "Mengecek: " << nama[i] << std::endl;
+        if (nama[i] == dicari) {
+            std::cout << dicari << " ditemukan di posisi " << i << "!" << std::endl;
+            ditemukan = true;
+            break;
+        }
+    }
+
+    if (!ditemukan) {
+        std::cout << dicari << " tidak ditemukan." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+Mengecek: Andi
+Mengecek: Budi
+Mengecek: Citra
+Mengecek: Dewi
+Dewi ditemukan di posisi 3!
+```
+
+Perhatikan: "Eka" dan "Fajar" tidak perlu dicek karena `break` menghentikan loop begitu "Dewi" ditemukan.
+
+### Contoh 3: Break dalam While Loop
+
+`break` juga bisa dipakai di while dan do-while, bukan cuma for:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int angka;
+
+    std::cout << "Masukkan angka (ketik -1 untuk berhenti):" << std::endl;
+
+    int total = 0;
+    int hitungan = 0;
+
+    while (true) {  // Loop "selamanya"
+        std::cout << "> ";
+        std::cin >> angka;
+
+        if (angka == -1) {
+            break;  // Keluar dari loop
+        }
+
+        total += angka;
+        hitungan++;
+    }
+
+    if (hitungan > 0) {
+        std::cout << "Total: " << total << std::endl;
+        std::cout << "Rata-rata: " << total / hitungan << std::endl;
+    } else {
+        std::cout << "Tidak ada angka yang dimasukkan." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output (contoh interaksi):
+```
+Masukkan angka (ketik -1 untuk berhenti):
+> 10
+> 20
+> 30
+> -1
+Total: 60
+Rata-rata: 20
+```
+
+:::note
+Pola `while (true)` dengan `break` di dalamnya cukup umum dipakai. Loop berjalan "selamanya" sampai kondisi tertentu terpenuhi dan `break` dipanggil. Tapi jangan berlebihan — kalau bisa pakai kondisi while biasa, itu lebih jelas.
+:::
+
+## Statement `continue`
+
+`continue` **melewati sisa kode** di iterasi saat ini dan langsung lanjut ke iterasi berikutnya.
+
+```cpp
+for (int i = 0; i < 10; i++) {
+    if (suatuKondisi) {
+        continue;  // Skip ke iterasi berikutnya
+    }
+    // kode ini TIDAK dijalankan kalau continue terpanggil
+}
+```
+
+### Contoh 4: Cetak Angka Ganjil Saja
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Angka ganjil dari 1-20:" << std::endl;
+
+    for (int i = 1; i <= 20; i++) {
+        if (i % 2 == 0) {
+            continue;  // Skip angka genap
+        }
+        std::cout << i << " ";
+    }
+
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Angka ganjil dari 1-20:
+1 3 5 7 9 11 13 15 17 19
+```
+
+Setiap kali `i` genap, `continue` melewati `std::cout` dan langsung ke iterasi berikutnya.
+
+### Contoh 5: Skip Angka Negatif
+
+```cpp
+#include <iostream>
+
+int main() {
+    int data[] = {5, -3, 8, -1, 12, -7, 3, 9};
+    int ukuran = 8;
+    int total = 0;
+
+    std::cout << "Data: ";
+    for (int i = 0; i < ukuran; i++) {
+        std::cout << data[i] << " ";
+    }
+    std::cout << std::endl;
+
+    std::cout << "Menjumlahkan hanya angka positif..." << std::endl;
+
+    for (int i = 0; i < ukuran; i++) {
+        if (data[i] < 0) {
+            std::cout << "  Skip " << data[i] << " (negatif)" << std::endl;
+            continue;
+        }
+        total += data[i];
+        std::cout << "  Tambah " << data[i] << " -> total = " << total << std::endl;
+    }
+
+    std::cout << "Total angka positif: " << total << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Data: 5 -3 8 -1 12 -7 3 9
+Menjumlahkan hanya angka positif...
+  Tambah 5 -> total = 5
+  Skip -3 (negatif)
+  Tambah 8 -> total = 13
+  Skip -1 (negatif)
+  Tambah 12 -> total = 25
+  Skip -7 (negatif)
+  Tambah 3 -> total = 28
+  Tambah 9 -> total = 37
+Total angka positif: 37
+```
+
+### Contoh 6: Skip Angka Tertentu
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Angka 1-15 (skip kelipatan 3):" << std::endl;
+
+    for (int i = 1; i <= 15; i++) {
+        if (i % 3 == 0) {
+            continue;
+        }
+        std::cout << i << " ";
+    }
+
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Angka 1-15 (skip kelipatan 3):
+1 2 4 5 7 8 10 11 13 14
+```
+
+## Nested Loop + Break
+
+Ini penting: **`break` hanya keluar dari loop terdalam** tempat ia berada, bukan semua loop sekaligus.
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "=== Nested Loop dengan Break ===" << std::endl;
+
+    for (int i = 1; i <= 3; i++) {
+        std::cout << "Loop luar i = " << i << std::endl;
+
+        for (int j = 1; j <= 5; j++) {
+            if (j == 3) {
+                std::cout << "  break saat j = 3!" << std::endl;
+                break;  // Hanya keluar dari loop DALAM (j)
+            }
+            std::cout << "  j = " << j << std::endl;
+        }
+        // Loop luar (i) tetap lanjut!
+    }
+
+    std::cout << "Selesai!" << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+=== Nested Loop dengan Break ===
+Loop luar i = 1
+  j = 1
+  j = 2
+  break saat j = 3!
+Loop luar i = 2
+  j = 1
+  j = 2
+  break saat j = 3!
+Loop luar i = 3
+  j = 1
+  j = 2
+  break saat j = 3!
+Selesai!
+```
+
+Lihat: `break` hanya menghentikan loop `j` (dalam), tapi loop `i` (luar) tetap berjalan 3 kali.
+
+:::warning
+Kalau kamu ingin keluar dari **semua** nested loop sekaligus, `break` saja tidak cukup. Kamu bisa gunakan variabel flag (boolean) untuk menandai bahwa semua loop harus berhenti, atau menggunakan `return` kalau mau keluar dari fungsi sepenuhnya.
+:::
+
+### Contoh 7: Mencari Pasangan Angka
+
+Cari dua angka dari array yang jumlahnya 10:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int angka[] = {2, 7, 4, 8, 3, 6};
+    int ukuran = 6;
+    bool ditemukan = false;
+
+    for (int i = 0; i < ukuran && !ditemukan; i++) {
+        for (int j = i + 1; j < ukuran; j++) {
+            if (angka[i] + angka[j] == 10) {
+                std::cout << "Pasangan ditemukan: "
+                          << angka[i] << " + " << angka[j]
+                          << " = 10" << std::endl;
+                ditemukan = true;
+                break;  // Keluar dari loop dalam
+            }
+        }
+        // Loop luar juga berhenti karena !ditemukan menjadi false
+    }
+
+    if (!ditemukan) {
+        std::cout << "Tidak ada pasangan yang jumlahnya 10." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+Pasangan ditemukan: 2 + 8 = 10
+```
+
+:::tip
+Perhatikan triknya: kita menambahkan `&& !ditemukan` di kondisi loop luar. Jadi ketika `ditemukan` menjadi `true`, loop luar juga berhenti. Ini cara umum untuk "break dari nested loop".
+:::
+
+## Gunakan Sparingly (Secukupnya)
+
+`break` dan `continue` memang berguna, tapi jangan berlebihan. Terlalu banyak `break` dan `continue` bisa membuat kode sulit dibaca — orang harus melacak banyak jalur untuk memahami alur program.
+
+```cpp
+// KURANG BAIK — terlalu banyak continue, sulit dibaca
+for (int i = 0; i < 100; i++) {
+    if (kondisi1) continue;
+    if (kondisi2) continue;
+    if (kondisi3) continue;
+    if (kondisi4) break;
+    // kode utama
+}
+
+// LEBIH BAIK — gabungkan kondisi
+for (int i = 0; i < 100; i++) {
+    if (!kondisi1 && !kondisi2 && !kondisi3) {
+        if (kondisi4) break;
+        // kode utama
+    }
+}
+```
+
+:::note
+Tidak ada aturan baku soal ini. Yang penting, kode kamu **mudah dibaca dan dipahami**. Kalau `break` atau `continue` membuat kode lebih jelas, pakai saja. Kalau malah membingungkan, cari cara lain.
+:::
+
+## Kesalahan Umum
+
+### 1. Lupa bahwa `break` hanya keluar dari loop terdalam
+
+```cpp
+// SALAH — mengira break keluar dari semua loop
+for (int i = 0; i < 5; i++) {
+    for (int j = 0; j < 5; j++) {
+        if (j == 2) break;  // Hanya keluar dari loop j!
+    }
+    // Loop i masih jalan!
+}
+```
+
+### 2. `continue` di while loop — hati-hati infinite loop!
+
+```cpp
+// SALAH — i tidak pernah di-update karena continue melompati i++
+int i = 0;
+while (i < 10) {
+    if (i == 5) {
+        continue;  // Loncat ke pengecekan kondisi, i tetap 5 selamanya!
+    }
+    std::cout << i << " ";
+    i++;
+}
+
+// BENAR — update i SEBELUM continue
+int i = 0;
+while (i < 10) {
+    if (i == 5) {
+        i++;       // Update dulu!
+        continue;
+    }
+    std::cout << i << " ";
+    i++;
+}
+```
+
+:::warning
+Ini jebakan yang sering terjadi! Di `for` loop, `continue` langsung menjalankan bagian **update** (`i++`), jadi aman. Tapi di `while` loop, `continue` langsung ke **pengecekan kondisi** — kalau update ada di bawah `continue`, ia tidak akan tereksekusi!
+:::
+
+### 3. Menggunakan break/continue di luar loop
+
+```cpp
+// ERROR — break dan continue hanya bisa di dalam loop
+int x = 5;
+if (x > 3) {
+    break;  // Error! Ini bukan di dalam loop
+}
+```
+
+## Latihan
+
+**Latihan 1:** Buat program yang meminta user memasukkan angka-angka satu per satu. Program berhenti (break) ketika user memasukkan angka 0. Di akhir, tampilkan berapa angka yang dimasukkan (tidak termasuk 0), serta angka terbesar dan terkecil.
+
+**Latihan 2:** Buat program yang mencetak semua bilangan dari 1 sampai 50, tapi **skip** (continue) angka-angka yang merupakan kelipatan 3 DAN kelipatan 5 sekaligus (yaitu kelipatan 15). Output yang di-skip: 15, 30, 45.
+
+**Latihan 3:** Buat program "Cari Kata" sederhana. Simpan 10 nama buah di array. Minta user memasukkan nama buah yang dicari. Gunakan loop dengan break untuk mencari. Tampilkan apakah buah ditemukan dan di posisi berapa.
+
+:::tip
+Untuk Latihan 1, kamu bisa menggunakan `while (true)` dengan `break` ketika user memasukkan 0. Inisialisasikan angka terbesar dengan nilai sangat kecil dan terkecil dengan nilai sangat besar.
+:::
+
+## Ringkasan
+
+| Konsep | Penjelasan |
+|--------|------------|
+| `break` | Keluar dari loop **sepenuhnya**, lanjut ke kode setelah loop |
+| `continue` | Skip **sisa iterasi ini**, lanjut ke iterasi berikutnya |
+| `break` di nested loop | Hanya keluar dari loop **terdalam** |
+| `continue` di for loop | Aman — langsung ke bagian update (`i++`) |
+| `continue` di while loop | Hati-hati — pastikan update variable tidak di-skip |
+| `while (true)` + `break` | Pola umum untuk loop dengan kondisi berhenti di tengah |
+| Gunakan secukupnya | Terlalu banyak break/continue bisa membuat kode sulit dibaca |
+
+Selamat! Kamu sudah menguasai semua jenis loop di C++ beserta cara mengontrolnya. Dengan kombinasi `for`, `while`, `do-while`, `break`, dan `continue`, kamu bisa membuat program yang melakukan tugas-tugas berulang dengan fleksibel dan efisien!

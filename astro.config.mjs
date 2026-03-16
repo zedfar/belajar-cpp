@@ -4,6 +4,8 @@ import mdx from '@astrojs/mdx'
 import tailwindcss from '@tailwindcss/vite'
 import sitemap from '@astrojs/sitemap'
 import vercel from '@astrojs/vercel'
+import remarkDirective from 'remark-directive'
+import { remarkInfoBox } from './src/plugins/remark-infobox.mjs'
 
 export default defineConfig({
   site: 'https://belajar-cpp.vercel.app',
@@ -29,6 +31,7 @@ export default defineConfig({
   },
 
   markdown: {
+    remarkPlugins: [remarkDirective, remarkInfoBox],
     shikiConfig: {
       theme: 'one-dark-pro',
       langs: ['cpp', 'c', 'javascript', 'bash', 'json'],

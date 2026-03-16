@@ -1,0 +1,399 @@
+---
+title: "Switch-Case"
+unit: 2
+lesson: 4
+description: "Membuat percabangan yang lebih rapi untuk banyak pilihan menggunakan switch-case"
+objectives:
+  - "Memahami sintaks switch-case dan cara kerjanya"
+  - "Menggunakan break dan default dengan benar"
+  - "Memahami fall-through behavior"
+  - "Menentukan kapan pakai switch vs if-else"
+estimatedTime: 30
+prerequisites: ["unit-2/02-if-else"]
+difficulty: "beginner"
+tags: ["switch", "case", "break", "default", "percabangan", "decision"]
+---
+
+# Switch-Case
+
+Bayangkan kamu di kantin sekolah dan mau pesan makanan. Kalau pakai if-else, kodenya akan jadi panjang banget:
+
+"Kalau pilih 1, nasi goreng. Kalau pilih 2, mie ayam. Kalau pilih 3, bakso. Kalau pilih 4, soto..."
+
+Nah, **switch-case** adalah cara yang lebih rapi untuk situasi seperti ini — ketika kamu membandingkan **satu variabel** dengan **banyak nilai yang spesifik**.
+
+## Sintaks Dasar Switch-Case
+
+```cpp
+switch (ekspresi) {
+    case nilai1:
+        // kode jika ekspresi == nilai1
+        break;
+    case nilai2:
+        // kode jika ekspresi == nilai2
+        break;
+    case nilai3:
+        // kode jika ekspresi == nilai3
+        break;
+    default:
+        // kode jika tidak ada case yang cocok
+        break;
+}
+```
+
+Bayangkan switch seperti **mesin penjual otomatis (vending machine)**. Kamu tekan tombol angka, dan mesin langsung tahu harus mengeluarkan minuman yang mana. Tidak perlu mengecek satu per satu dari atas — langsung lompat ke yang cocok!
+
+## Contoh Pertama: Hari dalam Seminggu
+
+```cpp
+#include <iostream>
+
+int main() {
+    int hari;
+    std::cout << "Masukkan nomor hari (1-7): ";
+    std::cin >> hari;
+
+    switch (hari) {
+        case 1:
+            std::cout << "Senin" << std::endl;
+            break;
+        case 2:
+            std::cout << "Selasa" << std::endl;
+            break;
+        case 3:
+            std::cout << "Rabu" << std::endl;
+            break;
+        case 4:
+            std::cout << "Kamis" << std::endl;
+            break;
+        case 5:
+            std::cout << "Jumat" << std::endl;
+            break;
+        case 6:
+            std::cout << "Sabtu" << std::endl;
+            break;
+        case 7:
+            std::cout << "Minggu" << std::endl;
+            break;
+        default:
+            std::cout << "Nomor hari tidak valid!" << std::endl;
+            break;
+    }
+
+    return 0;
+}
+```
+
+Coba bayangkan kalau ditulis pakai if-else — pasti panjang dan lebih susah dibaca! Dengan switch, setiap pilihan terlihat jelas dan rapi.
+
+## Pentingnya `break`
+
+`break` itu seperti **pintu keluar** dari switch. Tanpa `break`, program akan terus mengeksekusi case-case berikutnya, meskipun tidak cocok. Ini namanya **fall-through**.
+
+Lihat apa yang terjadi **tanpa break**:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int angka = 2;
+
+    switch (angka) {
+        case 1:
+            std::cout << "Satu" << std::endl;
+        case 2:
+            std::cout << "Dua" << std::endl;
+        case 3:
+            std::cout << "Tiga" << std::endl;
+        case 4:
+            std::cout << "Empat" << std::endl;
+        default:
+            std::cout << "Default" << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+Dua
+Tiga
+Empat
+Default
+```
+
+Lho, kok semuanya keluar? Karena setelah masuk `case 2`, program **jatuh terus ke bawah** (fall-through) tanpa berhenti. Seperti bola yang menggelinding di tangga — kalau tidak ada penghalang, dia terus turun!
+
+:::warning
+**Selalu pasang `break` di setiap case!** Lupa `break` adalah salah satu bug paling umum di C++. Compiler tidak akan memberikan error — programnya tetap jalan, tapi hasilnya salah.
+:::
+
+## `default` — Jaring Pengaman
+
+`default` adalah case terakhir yang dijalankan kalau **tidak ada case yang cocok**. Anggap saja seperti jawaban "lain-lain" di formulir pilihan ganda.
+
+```cpp
+#include <iostream>
+
+int main() {
+    int pilihan;
+    std::cout << "Pilih minuman (1-3):" << std::endl;
+    std::cout << "1. Teh Manis" << std::endl;
+    std::cout << "2. Es Jeruk" << std::endl;
+    std::cout << "3. Kopi Susu" << std::endl;
+    std::cout << "Pilihan: ";
+    std::cin >> pilihan;
+
+    switch (pilihan) {
+        case 1:
+            std::cout << "Kamu pesan Teh Manis. Harga: Rp5.000" << std::endl;
+            break;
+        case 2:
+            std::cout << "Kamu pesan Es Jeruk. Harga: Rp7.000" << std::endl;
+            break;
+        case 3:
+            std::cout << "Kamu pesan Kopi Susu. Harga: Rp10.000" << std::endl;
+            break;
+        default:
+            std::cout << "Pilihan tidak tersedia. Coba lagi!" << std::endl;
+            break;
+    }
+
+    return 0;
+}
+```
+
+:::tip
+Meskipun `break` di `default` secara teknis tidak wajib (karena sudah paling bawah), **biasakan tetap menulis `break`** di `default`. Ini kebiasaan baik — kalau suatu saat kamu menambah case di bawah default, kamu tidak akan kena bug fall-through.
+:::
+
+## Contoh: Konversi Nilai Huruf
+
+```cpp
+#include <iostream>
+
+int main() {
+    char nilai;
+    std::cout << "Masukkan nilai huruf (A/B/C/D/E): ";
+    std::cin >> nilai;
+
+    switch (nilai) {
+        case 'A':
+            std::cout << "Luar biasa! Kamu sangat menguasai materi." << std::endl;
+            break;
+        case 'B':
+            std::cout << "Bagus! Pemahaman kamu sudah baik." << std::endl;
+            break;
+        case 'C':
+            std::cout << "Cukup. Masih perlu belajar lebih giat." << std::endl;
+            break;
+        case 'D':
+            std::cout << "Kurang. Ayo tingkatkan belajarmu!" << std::endl;
+            break;
+        case 'E':
+            std::cout << "Tidak lulus. Jangan menyerah, coba lagi!" << std::endl;
+            break;
+        default:
+            std::cout << "Nilai tidak valid." << std::endl;
+            break;
+    }
+
+    return 0;
+}
+```
+
+:::note
+Perhatikan bahwa case untuk `char` menggunakan **tanda kutip tunggal** (`'A'`), bukan tanda kutip ganda (`"A"`). Ingat: tanda kutip tunggal untuk satu karakter, tanda kutip ganda untuk string.
+:::
+
+## Fall-Through yang Disengaja
+
+Kadang-kadang, fall-through justru berguna. Misalnya, kalau beberapa case punya aksi yang sama:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int hari;
+    std::cout << "Masukkan nomor hari (1-7): ";
+    std::cin >> hari;
+
+    switch (hari) {
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+            std::cout << "Hari kerja/sekolah. Semangat belajar!" << std::endl;
+            break;
+        case 6:
+        case 7:
+            std::cout << "Akhir pekan. Waktunya istirahat!" << std::endl;
+            break;
+        default:
+            std::cout << "Nomor hari tidak valid." << std::endl;
+            break;
+    }
+
+    return 0;
+}
+```
+
+Di sini, case 1 sampai 5 sengaja tidak diberi `break` karena semuanya punya aksi yang sama. Ini seperti menulis "Senin sampai Jumat = hari sekolah". Rapi, kan?
+
+## Kapan Pakai Switch vs If-Else?
+
+Ini pertanyaan penting! Kedua-duanya bisa dipakai untuk percabangan, tapi masing-masing punya kelebihannya.
+
+**Gunakan `switch` ketika:**
+- Membandingkan **satu variabel** dengan **beberapa nilai tetap** (diskrit)
+- Nilai yang dibandingkan berupa `int`, `char`, atau `enum`
+- Ada banyak pilihan (lebih dari 3)
+
+**Gunakan `if-else` ketika:**
+- Kondisinya melibatkan **perbandingan rentang** (misal: `nilai >= 80`)
+- Kondisinya melibatkan **beberapa variabel berbeda**
+- Perlu menggunakan operator logika (`&&`, `||`)
+- Membandingkan `string`, `float`, atau `double`
+
+## Batasan Switch
+
+Ada beberapa hal yang **tidak bisa** dilakukan switch:
+
+```cpp
+// TIDAK BISA: Menggunakan float/double
+double nilai = 85.5;
+switch (nilai) {  // ERROR!
+    case 85.5: // tidak bisa
+        break;
+}
+
+// TIDAK BISA: Menggunakan string
+std::string warna = "merah";
+switch (warna) {  // ERROR!
+    case "merah": // tidak bisa
+        break;
+}
+
+// TIDAK BISA: Menggunakan rentang
+int umur = 15;
+switch (umur) {
+    case (umur >= 13): // ERROR! Bukan nilai tetap
+        break;
+}
+```
+
+Untuk kasus-kasus di atas, gunakan **if-else**.
+
+## Perbandingan: Switch vs If-Else
+
+Berikut contoh yang sama ditulis dengan dua cara:
+
+**Versi if-else:**
+```cpp
+if (bulan == 1) {
+    std::cout << "Januari" << std::endl;
+} else if (bulan == 2) {
+    std::cout << "Februari" << std::endl;
+} else if (bulan == 3) {
+    std::cout << "Maret" << std::endl;
+} else {
+    std::cout << "Bulan tidak valid" << std::endl;
+}
+```
+
+**Versi switch (lebih rapi):**
+```cpp
+switch (bulan) {
+    case 1:
+        std::cout << "Januari" << std::endl;
+        break;
+    case 2:
+        std::cout << "Februari" << std::endl;
+        break;
+    case 3:
+        std::cout << "Maret" << std::endl;
+        break;
+    default:
+        std::cout << "Bulan tidak valid" << std::endl;
+        break;
+}
+```
+
+Untuk kasus pilihan diskrit seperti ini, switch lebih mudah dibaca dan lebih terstruktur.
+
+## Kesalahan Umum
+
+**1. Lupa `break` — bug paling klasik:**
+```cpp
+switch (pilihan) {
+    case 1:
+        std::cout << "Satu" << std::endl;
+        // Lupa break! Program lanjut ke case 2
+    case 2:
+        std::cout << "Dua" << std::endl;
+        break;
+}
+// Input 1 akan mencetak "Satu" DAN "Dua"
+```
+
+**2. Menggunakan tipe data yang tidak didukung:**
+```cpp
+double harga = 10.5;
+switch (harga) {  // ERROR: switch tidak bisa pakai double
+    case 10.5:
+        break;
+}
+```
+
+**3. Lupa kurung kurawal `{ }` di switch:**
+```cpp
+switch pilihan {  // ERROR: harus switch (pilihan)
+    case 1:
+        break;
+}
+```
+
+**4. Menggunakan variabel sebagai case:**
+```cpp
+int x = 5;
+switch (angka) {
+    case x:  // ERROR: case harus berupa konstanta, bukan variabel
+        break;
+}
+```
+
+:::tip
+Case di switch harus selalu berupa **nilai konstan** — angka literal (`1`, `2`, `3`), karakter literal (`'A'`, `'B'`), atau konstanta `const`. Variabel biasa tidak boleh!
+:::
+
+## Latihan
+
+**Latihan 1:** Buat program kalkulator sederhana. User memasukkan dua angka dan operator (`+`, `-`, `*`, `/`). Gunakan switch berdasarkan operator untuk menampilkan hasilnya.
+
+Contoh:
+```
+Angka pertama: 10
+Operator (+, -, *, /): *
+Angka kedua: 5
+Hasil: 10 * 5 = 50
+```
+
+**Latihan 2:** Buat program yang menerima nomor bulan (1-12) dan menampilkan jumlah hari di bulan tersebut. Gunakan fall-through untuk bulan-bulan yang punya jumlah hari sama. (Abaikan tahun kabisat untuk Februari — anggap saja 28 hari.)
+
+**Latihan 3:** Buat program menu restoran dengan minimal 5 pilihan makanan. Tampilkan nama makanan, harga, dan estimasi waktu penyajian berdasarkan pilihan user.
+
+## Ringkasan
+
+| Konsep | Penjelasan |
+|--------|-----------|
+| `switch (ekspresi)` | Memulai blok switch, mengecek nilai ekspresi |
+| `case nilai:` | Mencocokkan ekspresi dengan nilai tertentu |
+| `break;` | Keluar dari switch, **wajib** di setiap case |
+| `default:` | Dijalankan jika tidak ada case yang cocok |
+| Fall-through | Program lanjut ke case berikutnya jika tidak ada `break` |
+| Tipe yang didukung | `int`, `char`, `enum` (bukan `float`, `double`, `string`) |
+| Case harus konstan | Nilai case harus literal atau `const`, bukan variabel |
+
+Switch-case adalah alat yang powerful untuk membuat kode percabangan yang rapi. Ingat aturan utamanya: **selalu pakai `break`**, kecuali kamu sengaja ingin fall-through! Di pelajaran berikutnya, kita akan belajar tentang **ternary operator** — cara singkat menulis if-else sederhana.

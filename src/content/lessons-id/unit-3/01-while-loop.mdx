@@ -1,0 +1,401 @@
+---
+title: "While Loop"
+unit: 3
+lesson: 1
+description: "Belajar mengulang aksi dengan while loop — cara membuat program melakukan sesuatu berulang-ulang selama kondisi terpenuhi"
+objectives:
+  - "Memahami konsep perulangan (loop) dalam programming"
+  - "Menulis while loop dengan sintaks yang benar"
+  - "Menggunakan counter dan update variable di dalam loop"
+  - "Menghindari infinite loop (loop tak terbatas)"
+estimatedTime: 40
+prerequisites: ["unit-2/02-if-else"]
+difficulty: "beginner"
+tags: ["while", "loop", "perulangan", "iterasi", "counter"]
+---
+
+# While Loop
+
+Bayangkan kamu diminta menulis program yang mencetak "Halo!" sebanyak 1000 kali. Masa kamu harus menulis `std::cout << "Halo!"` seribu baris? Tentu tidak! Di sinilah **loop** (perulangan) hadir untuk menyelamatkanmu.
+
+## Analogi: Selama Belum Kenyang, Terus Makan
+
+Coba bayangkan situasi ini di kantin sekolah:
+
+```
+Selama perut belum kenyang:
+    Ambil satu suap nasi
+    Kunyah dan telan
+```
+
+Kamu tidak tahu pasti berapa suap yang dibutuhkan — bisa 10, bisa 20. Yang penting, kamu **terus makan selama belum kenyang**. Begitu kenyang, berhenti. Nah, ini persis cara kerja `while` loop!
+
+Contoh lain yang sering kamu alami:
+- **Selama** PR belum selesai, terus kerjakan
+- **Selama** HP belum penuh, terus di-charge
+- **Selama** belum sampai sekolah, terus jalan
+
+## Sintaks While Loop
+
+```cpp
+while (kondisi) {
+    // kode yang diulang selama kondisi true
+}
+```
+
+**Alurnya:**
+1. Cek `kondisi` di dalam tanda kurung `()`
+2. Kalau `true` — jalankan kode di dalam `{}`
+3. Kembali ke langkah 1 (cek kondisi lagi)
+4. Kalau `false` — keluar dari loop, lanjut ke baris setelah `}`
+
+```
+         ┌──────────────┐
+         │  Cek kondisi  │◄──────┐
+         └──────┬────────┘       │
+           true/  \false         │
+               /    \            │
+      ┌───────┐    (keluar)     │
+      │ Blok  │                  │
+      │ kode  │──────────────────┘
+      └───────┘
+```
+
+## Contoh 1: Hitung Mundur dari 10
+
+Seperti hitung mundur peluncuran roket!
+
+```cpp
+#include <iostream>
+
+int main() {
+    int hitungan = 10;
+
+    std::cout << "Hitung mundur dimulai!" << std::endl;
+
+    while (hitungan > 0) {
+        std::cout << hitungan << "..." << std::endl;
+        hitungan = hitungan - 1;  // kurangi 1 setiap kali
+    }
+
+    std::cout << "LIFTOFF! Roket meluncur!" << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Hitung mundur dimulai!
+10...
+9...
+8...
+7...
+6...
+5...
+4...
+3...
+2...
+1...
+LIFTOFF! Roket meluncur!
+```
+
+Perhatikan: setiap iterasi (putaran), variabel `hitungan` berkurang 1. Saat `hitungan` menjadi 0, kondisi `hitungan > 0` bernilai `false`, dan loop berhenti.
+
+## Contoh 2: Mencetak Angka 1 sampai 10
+
+```cpp
+#include <iostream>
+
+int main() {
+    int i = 1;
+
+    while (i <= 10) {
+        std::cout << i << " ";
+        i++;  // sama dengan i = i + 1
+    }
+
+    std::cout << std::endl;
+    std::cout << "Selesai! Variabel i sekarang: " << i << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+1 2 3 4 5 6 7 8 9 10
+Selesai! Variabel i sekarang: 11
+```
+
+:::tip
+`i++` adalah cara singkat menulis `i = i + 1`. Begitu juga `i--` sama dengan `i = i - 1`. Ini disebut **increment** dan **decrement** operator. Sangat sering dipakai dalam loop!
+:::
+
+Kenapa `i` akhirnya bernilai 11? Karena saat `i` menjadi 11, kondisi `i <= 10` bernilai `false`, loop berhenti, tapi nilai `i` tetap 11.
+
+## Contoh 3: Penjumlahan Angka 1 sampai 100
+
+Mau menjumlahkan 1 + 2 + 3 + ... + 100? Tanpa loop, kamu harus menulis penjumlahan super panjang. Dengan while loop:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int jumlah = 0;
+    int angka = 1;
+
+    while (angka <= 100) {
+        jumlah = jumlah + angka;  // atau: jumlah += angka;
+        angka++;
+    }
+
+    std::cout << "Jumlah angka 1 sampai 100 = " << jumlah << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Jumlah angka 1 sampai 100 = 5050
+```
+
+:::note
+Fun fact: Matematikawan Carl Friedrich Gauss konon menemukan jawaban ini (5050) saat masih kecil, tanpa menjumlahkan satu per satu. Tapi kita punya komputer, jadi bisa hitung dengan loop!
+:::
+
+## Update Variable: Kunci Agar Loop Berhenti
+
+Bagian terpenting dari while loop adalah **mengubah sesuatu** di dalam loop agar kondisi akhirnya menjadi `false`. Biasanya ini berupa:
+
+- **Increment:** `i++` atau `i += 1`
+- **Decrement:** `i--` atau `i -= 1`
+- **Operasi lain:** `n = n / 10`, `sisa = sisa - bayar`, dll.
+
+Tanpa update variable, loop tidak akan pernah berhenti!
+
+## Bahaya: Infinite Loop (Loop Tak Terbatas)
+
+Kalau kamu lupa meng-update variable, atau kondisi tidak pernah jadi `false`, kamu mendapat **infinite loop** — program berjalan terus tanpa henti!
+
+```cpp
+// JANGAN DICOBA tanpa siap Ctrl+C!
+int i = 1;
+
+while (i <= 10) {
+    std::cout << i << " ";
+    // Lupa i++! Variabel i tidak pernah berubah
+    // i selalu 1, kondisi selalu true
+    // Loop TIDAK PERNAH BERHENTI!
+}
+```
+
+:::warning
+Kalau programmu tiba-tiba "hang" dan tidak merespons, kemungkinan besar kamu terjebak infinite loop. Tekan **Ctrl+C** di terminal untuk menghentikan program secara paksa.
+:::
+
+Cara menghindari infinite loop:
+1. Pastikan ada **update variable** di dalam loop
+2. Pastikan update tersebut membuat kondisi **akhirnya menjadi false**
+3. Cek: apakah variabel di kondisi berubah di dalam loop?
+
+## Contoh 4: Menghitung Jumlah Digit
+
+Berapa digit dari angka 12345? Kita bisa hitung dengan membagi angka dengan 10 berulang kali sampai habis:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int angka = 12345;
+    int angkaAsli = angka;  // simpan nilai asli
+    int jumlahDigit = 0;
+
+    while (angka > 0) {
+        angka = angka / 10;  // hapus digit terakhir
+        jumlahDigit++;
+    }
+
+    std::cout << "Angka " << angkaAsli << " memiliki "
+              << jumlahDigit << " digit." << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Angka 12345 memiliki 5 digit.
+```
+
+Cara kerjanya:
+| Iterasi | angka | angka / 10 | jumlahDigit |
+|---------|-------|------------|-------------|
+| 1       | 12345 | 1234       | 1           |
+| 2       | 1234  | 123        | 2           |
+| 3       | 123   | 12         | 3           |
+| 4       | 12    | 1          | 4           |
+| 5       | 1     | 0          | 5           |
+
+Saat `angka` menjadi 0, kondisi `angka > 0` bernilai `false` dan loop berhenti.
+
+## Contoh 5: Validasi Input Sederhana
+
+While loop sangat berguna untuk memastikan user memasukkan data yang benar:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int nilai;
+
+    std::cout << "Masukkan nilai (0-100): ";
+    std::cin >> nilai;
+
+    while (nilai < 0 || nilai > 100) {
+        std::cout << "Nilai tidak valid! Harus antara 0-100." << std::endl;
+        std::cout << "Masukkan nilai lagi: ";
+        std::cin >> nilai;
+    }
+
+    std::cout << "Nilai kamu: " << nilai << ". Terima kasih!" << std::endl;
+
+    return 0;
+}
+```
+
+Output (contoh interaksi):
+```
+Masukkan nilai (0-100): 150
+Nilai tidak valid! Harus antara 0-100.
+Masukkan nilai lagi: -5
+Nilai tidak valid! Harus antara 0-100.
+Masukkan nilai lagi: 85
+Nilai kamu: 85. Terima kasih!
+```
+
+Program terus meminta input **selama** nilai yang dimasukkan tidak valid. Begitu valid, loop berhenti.
+
+## Contoh 6: Mencetak Bilangan Genap
+
+```cpp
+#include <iostream>
+
+int main() {
+    int i = 2;
+
+    std::cout << "Bilangan genap dari 2 sampai 20:" << std::endl;
+
+    while (i <= 20) {
+        std::cout << i << " ";
+        i += 2;  // loncat 2 setiap kali
+    }
+
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Bilangan genap dari 2 sampai 20:
+2 4 6 8 10 12 14 16 18 20
+```
+
+:::tip
+Kamu tidak harus selalu menambah 1. Bisa `+= 2`, `+= 5`, `*= 2`, atau operasi apapun — yang penting loop akhirnya berhenti!
+:::
+
+## Kesalahan Umum
+
+### 1. Lupa update variable (infinite loop)
+
+```cpp
+// SALAH — i tidak pernah berubah
+int i = 1;
+while (i <= 5) {
+    std::cout << i << " ";
+    // Lupa: i++;
+}
+
+// BENAR
+int i = 1;
+while (i <= 5) {
+    std::cout << i << " ";
+    i++;
+}
+```
+
+### 2. Kondisi awal sudah false (loop tidak pernah jalan)
+
+```cpp
+int i = 10;
+while (i < 5) {
+    std::cout << i << " ";  // Tidak pernah dieksekusi!
+    i++;
+}
+// Karena 10 < 5 adalah false, loop langsung dilewati
+```
+
+### 3. Off-by-one error (salah satu angka)
+
+```cpp
+// Mau cetak 1 sampai 5, tapi dapat 1 sampai 4
+int i = 1;
+while (i < 5) {     // Harusnya i <= 5
+    std::cout << i << " ";
+    i++;
+}
+// Output: 1 2 3 4 (kurang 5!)
+```
+
+:::warning
+**Off-by-one error** adalah salah satu bug paling umum dalam programming. Selalu periksa: apakah pakai `<` atau `<=`? Apakah mulai dari 0 atau 1?
+:::
+
+### 4. Titik koma setelah `while`
+
+```cpp
+// SALAH — titik koma membuat while "kosong"
+int i = 1;
+while (i <= 5); {   // Loop kosong ini = infinite loop!
+    std::cout << i << " ";
+    i++;
+}
+
+// BENAR — tanpa titik koma
+int i = 1;
+while (i <= 5) {
+    std::cout << i << " ";
+    i++;
+}
+```
+
+## Latihan
+
+**Latihan 1:** Buat program yang mencetak semua bilangan ganjil dari 1 sampai 50 menggunakan while loop. Hint: mulai dari `i = 1` dan tambah 2 setiap iterasi.
+
+**Latihan 2:** Buat program yang menerima sebuah angka bulat positif, lalu mencetak angka tersebut secara terbalik. Contoh: input `12345`, output `54321`. Hint: gunakan `% 10` untuk mengambil digit terakhir, dan `/ 10` untuk menghapusnya.
+
+**Latihan 3:** Buat program yang menghitung **faktorial** dari sebuah angka. Faktorial dari n (ditulis n!) adalah n x (n-1) x (n-2) x ... x 1. Contoh: 5! = 5 x 4 x 3 x 2 x 1 = 120.
+
+:::tip
+Untuk Latihan 3, mulai dengan variabel `hasil = 1`, lalu kalikan dengan angka yang terus berkurang. Ingat: 0! = 1 (kasus khusus).
+:::
+
+## Ringkasan
+
+| Konsep | Penjelasan |
+|--------|------------|
+| `while (kondisi)` | Ulangi blok kode **selama** kondisi bernilai `true` |
+| Kondisi dicek dulu | Kondisi dicek **sebelum** setiap iterasi |
+| Update variable | **Wajib** mengubah sesuatu agar loop berhenti |
+| `i++` / `i--` | Increment / decrement — cara cepat menambah/mengurangi 1 |
+| `i += n` | Menambah `i` sebanyak `n` setiap iterasi |
+| Infinite loop | Loop yang tidak pernah berhenti — biasanya karena lupa update variable |
+| Ctrl+C | Cara menghentikan program yang terjebak infinite loop |
+| Off-by-one | Bug karena salah pakai `<` vs `<=` atau salah mulai |
+
+Sekarang kamu bisa membuat program yang mengulang aksi! Tapi while loop bukan satu-satunya cara. Di pelajaran berikutnya, kita akan belajar **for loop** — cara yang lebih ringkas dan rapi untuk perulangan yang sudah tahu berapa kali harus diulang.

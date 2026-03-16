@@ -1,0 +1,469 @@
+---
+title: "For Loop"
+unit: 3
+lesson: 2
+description: "Mengenal for loop — cara lebih ringkas dan rapi untuk perulangan yang sudah tahu berapa kali harus diulang"
+objectives:
+  - "Memahami sintaks dan alur kerja for loop"
+  - "Membandingkan for loop dengan while loop"
+  - "Menulis loop mundur dan loop dengan step custom"
+  - "Mengenal range-based for loop (C++11)"
+estimatedTime: 40
+prerequisites: ["unit-3/01-while-loop"]
+difficulty: "beginner"
+tags: ["for", "loop", "perulangan", "iterasi", "range-based"]
+---
+
+# For Loop
+
+Di pelajaran sebelumnya, kamu sudah belajar while loop. Sekarang bayangkan kamu mau mencetak angka 1 sampai 10. Dengan while loop, kamu perlu menulis inisialisasi, kondisi, dan update di tiga tempat berbeda. **For loop** menggabungkan ketiganya dalam satu baris yang rapi!
+
+## Analogi: Lari Keliling Lapangan
+
+Guru olahragamu bilang: "Lari keliling lapangan **5 kali**!" Kamu sudah tahu pasti berapa kali harus lari. Setiap selesai satu putaran, kamu menghitung: "Putaran 1... putaran 2... putaran 3..." sampai selesai 5 putaran.
+
+Nah, `for` loop cocok untuk situasi seperti ini — ketika kamu **sudah tahu** berapa kali perulangan harus dilakukan.
+
+## Sintaks For Loop
+
+```cpp
+for (inisialisasi; kondisi; update) {
+    // kode yang diulang
+}
+```
+
+Tiga bagian dalam tanda kurung:
+1. **Inisialisasi** — dijalankan sekali di awal (biasanya membuat counter)
+2. **Kondisi** — dicek sebelum setiap iterasi (lanjut kalau `true`, berhenti kalau `false`)
+3. **Update** — dijalankan setelah setiap iterasi (biasanya increment/decrement)
+
+```
+    ┌───────────────┐
+    │ Inisialisasi  │ (sekali saja)
+    └───────┬───────┘
+            ▼
+    ┌───────────────┐
+    │  Cek kondisi  │◄──────────┐
+    └───────┬───────┘           │
+       true/  \false            │
+           /    \               │
+  ┌───────┐    (keluar)        │
+  │ Blok  │                     │
+  │ kode  │                     │
+  └───┬───┘                     │
+      ▼                         │
+  ┌───────────────┐             │
+  │    Update     │─────────────┘
+  └───────────────┘
+```
+
+## Contoh 1: Cetak Angka 1 sampai 10
+
+```cpp
+#include <iostream>
+
+int main() {
+    for (int i = 1; i <= 10; i++) {
+        std::cout << i << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+1 2 3 4 5 6 7 8 9 10
+```
+
+Bandingkan dengan while loop yang setara:
+
+```cpp
+// While loop
+int i = 1;           // inisialisasi
+while (i <= 10) {    // kondisi
+    std::cout << i << " ";
+    i++;             // update
+}
+
+// For loop (lebih ringkas!)
+for (int i = 1; i <= 10; i++) {
+    std::cout << i << " ";
+}
+```
+
+Perhatikan: ketiga komponen (inisialisasi, kondisi, update) yang tersebar di while loop, sekarang terkumpul rapi dalam satu baris di for loop.
+
+## Contoh 2: Lari Keliling Lapangan
+
+```cpp
+#include <iostream>
+
+int main() {
+    int totalPutaran = 5;
+
+    std::cout << "=== Lari Keliling Lapangan ===" << std::endl;
+
+    for (int putaran = 1; putaran <= totalPutaran; putaran++) {
+        std::cout << "Putaran ke-" << putaran << " selesai!" << std::endl;
+    }
+
+    std::cout << "Capek tapi sehat!" << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+=== Lari Keliling Lapangan ===
+Putaran ke-1 selesai!
+Putaran ke-2 selesai!
+Putaran ke-3 selesai!
+Putaran ke-4 selesai!
+Putaran ke-5 selesai!
+Capek tapi sehat!
+```
+
+## Kapan Pakai For vs While?
+
+| Situasi | Gunakan | Alasan |
+|---------|---------|--------|
+| Tahu berapa kali loop | `for` | Jumlah iterasi sudah jelas |
+| Sampai kondisi terpenuhi | `while` | Tidak tahu berapa kali |
+| Menelusuri angka 1-100 | `for` | Jumlah pasti: 100 kali |
+| Tunggu user input benar | `while` | Tidak tahu kapan user benar |
+| Cetak isi array | `for` | Ukuran array sudah diketahui |
+| Baca data sampai habis | `while` | Tidak tahu berapa banyak data |
+
+:::tip
+Aturan mudahnya: kalau kamu bisa bilang "ulangi sebanyak N kali", pakai `for`. Kalau kamu bilang "ulangi sampai...", pakai `while`. Tapi secara teknis, keduanya bisa saling menggantikan.
+:::
+
+## Contoh 3: Loop Mundur (Decrement)
+
+Hitung mundur dari 10 ke 1:
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Hitung mundur: ";
+
+    for (int i = 10; i >= 1; i--) {
+        std::cout << i << " ";
+    }
+
+    std::cout << std::endl;
+    std::cout << "Tahun Baru! Selamat!" << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Hitung mundur: 10 9 8 7 6 5 4 3 2 1
+Tahun Baru! Selamat!
+```
+
+Perhatikan: inisialisasi mulai dari 10, kondisi `i >= 1` (lanjut selama `i` masih `>= 1`), dan update `i--` (kurangi 1).
+
+## Contoh 4: Loop dengan Step Custom
+
+Kamu tidak harus selalu menambah atau mengurangi 1. Bisa pakai step berapa saja!
+
+```cpp
+#include <iostream>
+
+int main() {
+    // Cetak bilangan genap 2-20 (step 2)
+    std::cout << "Bilangan genap: ";
+    for (int i = 2; i <= 20; i += 2) {
+        std::cout << i << " ";
+    }
+    std::cout << std::endl;
+
+    // Cetak kelipatan 5 dari 5-50 (step 5)
+    std::cout << "Kelipatan 5: ";
+    for (int i = 5; i <= 50; i += 5) {
+        std::cout << i << " ";
+    }
+    std::cout << std::endl;
+
+    // Cetak pangkat 2: 1, 2, 4, 8, 16... (step x2)
+    std::cout << "Pangkat 2: ";
+    for (int i = 1; i <= 1024; i *= 2) {
+        std::cout << i << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Bilangan genap: 2 4 6 8 10 12 14 16 18 20
+Kelipatan 5: 5 10 15 20 25 30 35 40 45 50
+Pangkat 2: 1 2 4 8 16 32 64 128 256 512 1024
+```
+
+## Contoh 5: Tabel Perkalian
+
+Bikin tabel perkalian seperti di buku matematika:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int angka = 7;
+
+    std::cout << "=== Tabel Perkalian " << angka << " ===" << std::endl;
+
+    for (int i = 1; i <= 10; i++) {
+        std::cout << angka << " x " << i << " = " << angka * i << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+=== Tabel Perkalian 7 ===
+7 x 1 = 7
+7 x 2 = 14
+7 x 3 = 21
+7 x 4 = 28
+7 x 5 = 35
+7 x 6 = 42
+7 x 7 = 49
+7 x 8 = 56
+7 x 9 = 63
+7 x 10 = 70
+```
+
+## Contoh 6: FizzBuzz Sederhana
+
+FizzBuzz adalah tantangan programming yang terkenal! Aturannya:
+- Jika angka habis dibagi 3, cetak "Fizz"
+- Jika angka habis dibagi 5, cetak "Buzz"
+- Jika habis dibagi 3 DAN 5, cetak "FizzBuzz"
+- Selain itu, cetak angkanya
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "=== FizzBuzz 1-30 ===" << std::endl;
+
+    for (int i = 1; i <= 30; i++) {
+        if (i % 3 == 0 && i % 5 == 0) {
+            std::cout << "FizzBuzz";
+        } else if (i % 3 == 0) {
+            std::cout << "Fizz";
+        } else if (i % 5 == 0) {
+            std::cout << "Buzz";
+        } else {
+            std::cout << i;
+        }
+        std::cout << " ";
+    }
+
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+1 2 Fizz 4 Buzz Fizz 7 8 Fizz Buzz 11 Fizz 13 14 FizzBuzz 16 17 Fizz 19 Buzz Fizz 22 23 Fizz Buzz 26 Fizz 28 29 FizzBuzz
+```
+
+## Contoh 7: Mencetak Pola Bintang
+
+Pola segitiga dari bintang — ini sering jadi soal ujian!
+
+```cpp
+#include <iostream>
+
+int main() {
+    int tinggi = 5;
+
+    for (int baris = 1; baris <= tinggi; baris++) {
+        for (int kolom = 1; kolom <= baris; kolom++) {
+            std::cout << "* ";
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+*
+* *
+* * *
+* * * *
+* * * * *
+```
+
+:::note
+Di sini kita pakai **nested loop** (loop di dalam loop). For loop dalam mencetak bintang sebanyak nomor baris saat ini. Baris 1 = 1 bintang, baris 2 = 2 bintang, dan seterusnya.
+:::
+
+## Range-Based For Loop (C++11)
+
+C++ modern punya cara yang lebih simpel untuk menelusuri isi sebuah koleksi data. Namanya **range-based for loop**:
+
+```cpp
+for (auto elemen : koleksi) {
+    // gunakan elemen
+}
+```
+
+Ini seperti bilang: "**untuk setiap** elemen **di dalam** koleksi, lakukan..."
+
+```cpp
+#include <iostream>
+
+int main() {
+    int nilai[] = {85, 90, 78, 92, 88};
+
+    std::cout << "Daftar nilai: ";
+    for (auto n : nilai) {
+        std::cout << n << " ";
+    }
+    std::cout << std::endl;
+
+    // Hitung rata-rata
+    int total = 0;
+    int jumlah = 0;
+    for (auto n : nilai) {
+        total += n;
+        jumlah++;
+    }
+
+    std::cout << "Rata-rata: " << total / jumlah << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Daftar nilai: 85 90 78 92 88
+Rata-rata: 86
+```
+
+:::tip
+Keyword `auto` meminta compiler untuk otomatis menentukan tipe data. Sangat praktis! Kamu juga bisa tulis `int n` alih-alih `auto n` kalau mau eksplisit.
+:::
+
+## Kesalahan Umum
+
+### 1. Titik koma setelah for (loop kosong)
+
+```cpp
+// SALAH — titik koma membuat loop kosong
+for (int i = 0; i < 5; i++); {
+    std::cout << i << " ";  // Error: i tidak dikenal di sini!
+}
+
+// BENAR
+for (int i = 0; i < 5; i++) {
+    std::cout << i << " ";
+}
+```
+
+### 2. Mengubah counter di dalam loop
+
+```cpp
+// BERBAHAYA — jangan ubah i di dalam loop dan di update sekaligus
+for (int i = 0; i < 10; i++) {
+    std::cout << i << " ";
+    i++;  // i bertambah 2 per iterasi, hasilnya membingungkan!
+}
+// Output: 0 2 4 6 8 (bukan 0 1 2 3 4 5 6 7 8 9)
+```
+
+### 3. Off-by-one: mulai dari 0 vs 1
+
+```cpp
+// Mulai dari 0 — umum di programming
+for (int i = 0; i < 5; i++) {
+    std::cout << i << " ";  // 0 1 2 3 4 (5 angka)
+}
+
+// Mulai dari 1 — lebih natural untuk manusia
+for (int i = 1; i <= 5; i++) {
+    std::cout << i << " ";  // 1 2 3 4 5 (5 angka)
+}
+```
+
+:::warning
+Perhatikan perbedaan `i < 5` (mulai dari 0) vs `i <= 5` (mulai dari 1). Keduanya menghasilkan 5 iterasi, tapi angkanya berbeda. Pastikan kamu konsisten!
+:::
+
+### 4. Variabel loop tidak bisa diakses di luar loop
+
+```cpp
+for (int i = 0; i < 5; i++) {
+    std::cout << i << " ";
+}
+// std::cout << i;  // ERROR! i tidak ada di sini
+
+// Solusi: deklarasikan i di luar loop kalau perlu diakses nanti
+int i;
+for (i = 0; i < 5; i++) {
+    std::cout << i << " ";
+}
+std::cout << "Nilai i sekarang: " << i;  // OK: i = 5
+```
+
+## Latihan
+
+**Latihan 1:** Buat program yang mencetak tabel perkalian dari 1 sampai 5 menggunakan nested for loop. Formatnya:
+
+```
+1 x 1 = 1    2 x 1 = 2    3 x 1 = 3    ...
+1 x 2 = 2    2 x 2 = 4    3 x 2 = 6    ...
+...
+```
+
+**Latihan 2:** Buat program yang mencetak pola segitiga terbalik:
+
+```
+* * * * *
+* * * *
+* * *
+* *
+*
+```
+
+**Latihan 3:** Buat program yang menampilkan semua bilangan prima dari 2 sampai 50. Hint: sebuah bilangan prima hanya bisa dibagi 1 dan dirinya sendiri. Gunakan nested loop — loop luar untuk setiap angka, loop dalam untuk mengecek apakah ada pembagi selain 1 dan dirinya.
+
+:::tip
+Untuk Latihan 3, gunakan variabel `bool isPrima = true` dan set ke `false` kalau ditemukan pembagi. Loop dalam cukup mengecek dari 2 sampai `i / 2`.
+:::
+
+## Ringkasan
+
+| Konsep | Penjelasan |
+|--------|------------|
+| `for (init; kondisi; update)` | Loop dengan tiga komponen dalam satu baris |
+| Inisialisasi | Dijalankan **sekali** sebelum loop dimulai |
+| Kondisi | Dicek **sebelum** setiap iterasi |
+| Update | Dijalankan **setelah** setiap iterasi |
+| `for` vs `while` | `for` = tahu berapa kali, `while` = sampai kondisi terpenuhi |
+| Loop mundur | Gunakan decrement: `for (int i = 10; i >= 1; i--)` |
+| Step custom | `i += 2`, `i *= 2`, `i += 5`, dll. |
+| Nested loop | Loop di dalam loop — untuk pola 2D, tabel, dll. |
+| Range-based for | `for (auto x : koleksi)` — cara modern menelusuri data |
+
+For loop adalah senjata andalan programmer. Kamu akan menggunakannya **sangat sering** di hampir setiap program. Tapi ada satu lagi jenis loop yang perlu kamu kenal — **do-while loop**. Yuk, lanjut ke pelajaran berikutnya!

@@ -1,0 +1,330 @@
+---
+title: "Ternary Operator"
+unit: 2
+lesson: 5
+description: "Menulis percabangan sederhana dalam satu baris menggunakan ternary operator"
+objectives:
+  - "Memahami sintaks ternary operator"
+  - "Menggunakan ternary untuk assignment sederhana"
+  - "Mengetahui kapan sebaiknya pakai dan tidak pakai ternary"
+estimatedTime: 15
+prerequisites: ["unit-2/02-if-else"]
+difficulty: "beginner"
+tags: ["ternary", "operator", "conditional", "shorthand", "percabangan"]
+---
+
+# Ternary Operator
+
+Pernahkah kamu menulis pesan singkat di chat? Daripada menulis paragraf panjang, kamu langsung to the point. Nah, **ternary operator** itu seperti versi "chat singkat" dari if-else. Kalau if-else butuh beberapa baris, ternary bisa melakukannya dalam **satu baris** saja!
+
+## Sintaks Ternary
+
+```
+kondisi ? nilai_jika_true : nilai_jika_false
+```
+
+Itu saja! Tiga bagian, dipisahkan oleh `?` dan `:`. Makanya namanya **ternary** (artinya "tiga bagian").
+
+Cara membacanya: **"Kalau kondisi benar, hasilnya ini. Kalau salah, hasilnya itu."**
+
+## Contoh Pertama: Ganjil atau Genap
+
+**Versi if-else (4 baris):**
+```cpp
+#include <iostream>
+
+int main() {
+    int angka = 7;
+    std::string hasil;
+
+    if (angka % 2 == 0) {
+        hasil = "Genap";
+    } else {
+        hasil = "Ganjil";
+    }
+
+    std::cout << angka << " adalah bilangan " << hasil << std::endl;
+    return 0;
+}
+```
+
+**Versi ternary (1 baris):**
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    int angka = 7;
+    std::string hasil = (angka % 2 == 0) ? "Genap" : "Ganjil";
+
+    std::cout << angka << " adalah bilangan " << hasil << std::endl;
+    return 0;
+}
+```
+
+Jauh lebih ringkas, kan? Satu baris langsung menentukan nilai `hasil` berdasarkan kondisi.
+
+## Contoh: Mencari Nilai Maksimum
+
+```cpp
+#include <iostream>
+
+int main() {
+    int a = 15;
+    int b = 23;
+
+    int maks = (a > b) ? a : b;
+
+    std::cout << "Nilai terbesar: " << maks << std::endl;
+    return 0;
+}
+```
+
+Output:
+```
+Nilai terbesar: 23
+```
+
+Ternary di sini bekerja seperti: "Kalau `a` lebih besar dari `b`, ambil `a`. Kalau tidak, ambil `b`."
+
+## Contoh: Mencari Nilai Minimum
+
+```cpp
+#include <iostream>
+
+int main() {
+    int x = 42;
+    int y = 17;
+
+    int minimum = (x < y) ? x : y;
+
+    std::cout << "Nilai terkecil: " << minimum << std::endl;
+    return 0;
+}
+```
+
+Output:
+```
+Nilai terkecil: 17
+```
+
+## Contoh: Status Kelulusan
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    int nilai;
+    std::cout << "Masukkan nilai ujian: ";
+    std::cin >> nilai;
+
+    std::string status = (nilai >= 75) ? "LULUS" : "TIDAK LULUS";
+
+    std::cout << "Status: " << status << std::endl;
+    return 0;
+}
+```
+
+Singkat, jelas, dan mudah dibaca. Satu baris langsung menentukan lulus atau tidak.
+
+## Ternary Langsung di `cout`
+
+Kamu bahkan bisa pakai ternary langsung di dalam `cout` tanpa menyimpan ke variabel:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int umur;
+    std::cout << "Berapa umurmu? ";
+    std::cin >> umur;
+
+    std::cout << "Kamu " << ((umur >= 17) ? "boleh" : "belum boleh")
+              << " membuat SIM." << std::endl;
+
+    return 0;
+}
+```
+
+:::note
+Perhatikan **tanda kurung ekstra** di sekitar ternary saat digunakan di dalam `cout`. Ini penting agar compiler tidak bingung antara operator `<<` dan ternary. Biasakan membungkus ternary dengan tanda kurung `( )` saat menggunakannya di dalam ekspresi yang lebih besar.
+:::
+
+## Perbandingan: If-Else vs Ternary
+
+Berikut beberapa contoh side-by-side untuk melihat perbedaannya:
+
+**Contoh 1: Diskon**
+
+```cpp
+// If-else
+int harga = 50000;
+int diskon;
+if (harga > 100000) {
+    diskon = 10;
+} else {
+    diskon = 0;
+}
+
+// Ternary
+int harga = 50000;
+int diskon = (harga > 100000) ? 10 : 0;
+```
+
+**Contoh 2: Sapaan**
+
+```cpp
+// If-else
+std::string sapaan;
+if (jam < 12) {
+    sapaan = "Selamat Pagi";
+} else {
+    sapaan = "Selamat Siang";
+}
+
+// Ternary
+std::string sapaan = (jam < 12) ? "Selamat Pagi" : "Selamat Siang";
+```
+
+**Contoh 3: Nilai absolut**
+
+```cpp
+// If-else
+int nilai = -5;
+int absolut;
+if (nilai < 0) {
+    absolut = -nilai;
+} else {
+    absolut = nilai;
+}
+
+// Ternary
+int nilai = -5;
+int absolut = (nilai < 0) ? -nilai : nilai;
+```
+
+## Kapan Pakai Ternary?
+
+:::tip
+**Gunakan ternary ketika:**
+- Kamu hanya perlu **memilih salah satu dari dua nilai**
+- Logikanya **sederhana dan mudah dibaca** dalam satu baris
+- Digunakan untuk **assignment** (menyimpan nilai ke variabel)
+
+**Jangan gunakan ternary ketika:**
+- Ada **banyak kondisi** (pakai if-else if atau switch)
+- Aksinya **bukan assignment** tapi menjalankan kode yang panjang
+- Logikanya sudah **rumit** — lebih baik pakai if-else biasa agar mudah dibaca
+:::
+
+## Jangan Lakukan Ini: Nested Ternary
+
+Secara teknis, kamu bisa menyarangkan (nesting) ternary di dalam ternary. Tapi **jangan**!
+
+```cpp
+// JANGAN LAKUKAN INI - susah dibaca!
+std::string grade = (nilai >= 90) ? "A"
+                  : (nilai >= 80) ? "B"
+                  : (nilai >= 70) ? "C"
+                  : (nilai >= 60) ? "D"
+                  : "E";
+```
+
+Kode di atas memang benar secara teknis, tapi bayangkan temanmu membaca ini — pasti bingung! Untuk kasus seperti ini, pakai if-else if biasa:
+
+```cpp
+// JAUH LEBIH BAIK - jelas dan mudah dibaca
+std::string grade;
+if (nilai >= 90) {
+    grade = "A";
+} else if (nilai >= 80) {
+    grade = "B";
+} else if (nilai >= 70) {
+    grade = "C";
+} else if (nilai >= 60) {
+    grade = "D";
+} else {
+    grade = "E";
+}
+```
+
+:::warning
+**Aturan emas ternary:** Kalau kamu harus berpikir lebih dari 3 detik untuk memahami sebuah ternary, itu tandanya lebih baik pakai if-else biasa. Kode yang mudah dibaca jauh lebih penting daripada kode yang singkat.
+:::
+
+## Contoh Lengkap: Cek Tahun Kabisat (Sederhana)
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    int tahun;
+    std::cout << "Masukkan tahun: ";
+    std::cin >> tahun;
+
+    // Versi sederhana: hanya cek habis dibagi 4
+    std::string status = (tahun % 4 == 0) ? "Kabisat" : "Bukan Kabisat";
+
+    std::cout << "Tahun " << tahun << " adalah tahun " << status << std::endl;
+
+    return 0;
+}
+```
+
+## Kesalahan Umum
+
+**1. Lupa tanda kurung saat pakai di dalam `cout`:**
+```cpp
+// SALAH - compiler bingung
+std::cout << angka % 2 == 0 ? "Genap" : "Ganjil" << std::endl;
+
+// BENAR - bungkus dengan kurung
+std::cout << ((angka % 2 == 0) ? "Genap" : "Ganjil") << std::endl;
+```
+
+**2. Tipe data tidak cocok antara true dan false:**
+```cpp
+// BERMASALAH - satu int, satu string
+auto hasil = (kondisi) ? 42 : "empat puluh dua";  // ERROR!
+```
+
+Kedua sisi ternary (`?` dan `:`) harus menghasilkan **tipe data yang sama** atau yang bisa dikonversi satu sama lain.
+
+**3. Menggunakan ternary untuk menjalankan aksi, bukan menghasilkan nilai:**
+```cpp
+// KURANG TEPAT - ternary bukan untuk ini
+(skor > 100) ? std::cout << "Bonus!" : std::cout << "Normal";
+
+// LEBIH BAIK - pakai if-else
+if (skor > 100) {
+    std::cout << "Bonus!" << std::endl;
+} else {
+    std::cout << "Normal" << std::endl;
+}
+```
+
+Ternary dirancang untuk **menghasilkan nilai**, bukan untuk menjalankan perintah. Meskipun contoh di atas bisa jalan, if-else lebih tepat untuk kasus seperti itu.
+
+## Latihan
+
+**Latihan 1:** Buat program yang meminta user memasukkan suhu dalam Celsius, lalu tampilkan apakah air dalam keadaan "Membeku" (di bawah 0) atau "Tidak Membeku" menggunakan ternary.
+
+**Latihan 2:** Buat program yang meminta dua angka dari user, lalu tampilkan mana yang lebih besar. Gunakan ternary operator. Tangani juga kasus jika kedua angka sama (boleh pakai if tambahan untuk kasus ini).
+
+**Latihan 3:** Buat program yang meminta nilai ujian (0-100), lalu tentukan apakah siswa mendapat predikat "Tuntas" (>= 75) atau "Belum Tuntas" menggunakan ternary. Tampilkan juga pesan motivasi yang berbeda untuk masing-masing predikat.
+
+## Ringkasan
+
+| Konsep | Penjelasan |
+|--------|-----------|
+| `kondisi ? a : b` | Jika kondisi true, hasilnya `a`. Jika false, hasilnya `b` |
+| Kegunaan utama | Assignment sederhana berdasarkan kondisi |
+| Kelebihan | Ringkas, satu baris untuk logika sederhana |
+| Kekurangan | Susah dibaca kalau logikanya rumit |
+| Nested ternary | Hindari! Pakai if-else if sebagai gantinya |
+| Tipe data | Kedua sisi (`?` dan `:`) harus tipe yang sama/kompatibel |
+| Di dalam `cout` | Bungkus dengan tanda kurung ekstra `(( ))` |
+
+Ternary operator adalah "shortcut" yang berguna untuk percabangan sederhana. Ingat: gunakan dengan bijak — kalau ragu, pakai if-else biasa saja. Selanjutnya, kita akan menggabungkan semua yang sudah dipelajari di Unit 2 dalam sebuah **project seru: Game Tebak Angka**!

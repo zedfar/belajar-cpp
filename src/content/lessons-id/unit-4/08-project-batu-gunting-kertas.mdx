@@ -1,0 +1,738 @@
+---
+title: "Project: Batu Gunting Kertas"
+unit: 4
+lesson: 8
+description: "Membuat game Batu Gunting Kertas vs komputer menggunakan semua konsep fungsi dari Unit 4"
+objectives:
+  - "Menggabungkan semua konsep fungsi dalam satu program lengkap"
+  - "Mendesain program dengan fungsi-fungsi yang terorganisir"
+  - "Menggunakan pass by reference untuk mengelola skor"
+  - "Menerapkan function overloading secara praktis"
+  - "Menulis kode dengan scope yang baik tanpa global variable"
+estimatedTime: 75
+prerequisites: ["unit-4/07-scope-lifetime"]
+difficulty: "beginner"
+isProject: true
+tags: ["project", "game", "batu-gunting-kertas", "fungsi", "overloading", "reference"]
+---
+
+# Project: Batu Gunting Kertas
+
+Selamat! Kamu sudah menyelesaikan semua lesson di Unit 4 tentang fungsi. Sekarang waktunya menggabungkan semuanya dalam project yang seru — **Game Batu Gunting Kertas** (Rock Paper Scissors) melawan komputer!
+
+Kita akan membangun game ini **step by step**, dan setiap tahap menambahkan konsep baru dari Unit 4. Di akhir, kamu akan punya game yang lengkap dengan kode yang terorganisir rapi menggunakan fungsi-fungsi.
+
+:::note
+Project ini menggunakan hampir semua konsep yang sudah kamu pelajari di Unit 4: deklarasi fungsi, parameter, return value, pass by reference, function overloading, dan scope. Ini adalah "ujian" yang seru untuk semua skill barumu!
+:::
+
+## Desain Fungsi
+
+Sebelum coding, mari kita **desain dulu** fungsi-fungsi yang dibutuhkan. Ini kebiasaan baik — programmer profesional selalu merencanakan sebelum menulis kode!
+
+| Fungsi | Tugas | Parameter | Return |
+|--------|-------|-----------|--------|
+| `tampilkanHeader()` | Menampilkan judul game | - | void |
+| `getPilihanPemain()` | Minta input dari pemain | - | int |
+| `getPilihanKomputer()` | Generate pilihan random | - | int |
+| `namaPilihan()` | Ubah angka jadi nama | int pilihan | string |
+| `tentukanPemenang()` | Cek siapa yang menang | int pemain, int komputer | int |
+| `tampilkanHasil()` | Tampilkan hasil ronde | int hasil, string pemain, string komputer | void |
+| `updateSkor()` | Update skor menang/kalah/seri | int hasil, int& menang, int& kalah, int& seri | void |
+| `tampilkanSkor()` | Tampilkan skor (overloaded) | (2 versi) | void |
+| `tanyaMainLagi()` | Tanya mau main lagi? | - | bool |
+
+Lihat bagaimana setiap fungsi punya tugas **satu hal** yang jelas? Ini prinsip penting dalam programming — **satu fungsi, satu tugas**.
+
+## Tahap 1: Struktur Dasar dan Input
+
+Kita mulai dengan hal paling sederhana — menampilkan menu dan mendapatkan input pemain:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <cstdlib>
+#include <ctime>
+
+void tampilkanHeader() {
+    std::cout << "=================================" << std::endl;
+    std::cout << "    BATU GUNTING KERTAS v1.0" << std::endl;
+    std::cout << "=================================" << std::endl;
+    std::cout << std::endl;
+}
+
+int getPilihanPemain() {
+    int pilihan;
+
+    std::cout << "Pilih gerakanmu:" << std::endl;
+    std::cout << "  1. Batu" << std::endl;
+    std::cout << "  2. Gunting" << std::endl;
+    std::cout << "  3. Kertas" << std::endl;
+    std::cout << "Pilihan (1/2/3): ";
+    std::cin >> pilihan;
+
+    return pilihan;
+}
+
+int getPilihanKomputer() {
+    return std::rand() % 3 + 1;  // random 1-3
+}
+
+std::string namaPilihan(int pilihan) {
+    switch (pilihan) {
+        case 1: return "Batu";
+        case 2: return "Gunting";
+        case 3: return "Kertas";
+        default: return "???";
+    }
+}
+
+int main() {
+    std::srand(std::time(0));
+
+    tampilkanHeader();
+
+    int pemain = getPilihanPemain();
+    int komputer = getPilihanKomputer();
+
+    std::cout << std::endl;
+    std::cout << "Kamu memilih: " << namaPilihan(pemain) << std::endl;
+    std::cout << "Komputer memilih: " << namaPilihan(komputer) << std::endl;
+
+    return 0;
+}
+```
+
+Contoh output:
+
+```
+=================================
+    BATU GUNTING KERTAS v1.0
+=================================
+
+Pilih gerakanmu:
+  1. Batu
+  2. Gunting
+  3. Kertas
+Pilihan (1/2/3): 1
+
+Kamu memilih: Batu
+Komputer memilih: Gunting
+```
+
+Sudah bisa jalan! Tapi belum ada penentuan pemenang. Mari tambahkan.
+
+## Tahap 2: Tentukan Pemenang dengan Return Value
+
+Sekarang kita buat fungsi yang menentukan siapa pemenangnya. Fungsi ini **return** sebuah int:
+- `0` = seri
+- `1` = pemain menang
+- `-1` = komputer menang
+
+```cpp
+int tentukanPemenang(int pemain, int komputer) {
+    // Seri
+    if (pemain == komputer) {
+        return 0;
+    }
+
+    // Pemain menang jika:
+    // Batu (1) mengalahkan Gunting (2)
+    // Gunting (2) mengalahkan Kertas (3)
+    // Kertas (3) mengalahkan Batu (1)
+    if ((pemain == 1 && komputer == 2) ||
+        (pemain == 2 && komputer == 3) ||
+        (pemain == 3 && komputer == 1)) {
+        return 1;
+    }
+
+    // Selain itu, komputer menang
+    return -1;
+}
+
+void tampilkanHasil(int hasil,
+                    const std::string& pilihan_pemain,
+                    const std::string& pilihan_komputer) {
+    std::cout << std::endl;
+    std::cout << "---------------------------------" << std::endl;
+    std::cout << "Kamu: " << pilihan_pemain
+              << "  vs  Komputer: " << pilihan_komputer << std::endl;
+
+    if (hasil == 0) {
+        std::cout << "Hasil: SERI!" << std::endl;
+    } else if (hasil == 1) {
+        std::cout << "Hasil: KAMU MENANG!" << std::endl;
+    } else {
+        std::cout << "Hasil: Komputer menang..." << std::endl;
+    }
+    std::cout << "---------------------------------" << std::endl;
+}
+```
+
+:::tip
+Perhatikan logika `tentukanPemenang`. Kita hanya perlu mengecek kondisi pemain menang — kalau bukan seri dan bukan pemain menang, pasti komputer yang menang. Logika sederhana tapi efektif!
+:::
+
+Sekarang `main()` jadi:
+
+```cpp
+int main() {
+    std::srand(std::time(0));
+
+    tampilkanHeader();
+
+    int pemain = getPilihanPemain();
+    int komputer = getPilihanKomputer();
+
+    int hasil = tentukanPemenang(pemain, komputer);
+
+    tampilkanHasil(hasil, namaPilihan(pemain), namaPilihan(komputer));
+
+    return 0;
+}
+```
+
+Lihat betapa bersihnya `main()` sekarang! Setiap baris melakukan satu hal yang jelas.
+
+## Tahap 3: Loop dan Skor dengan Pass by Reference
+
+Sekarang kita tambahkan fitur main berulang kali dengan skor. Di sinilah **pass by reference** berperan — fungsi `updateSkor` perlu mengubah variabel skor yang ada di `main()`:
+
+```cpp
+void updateSkor(int hasil, int& menang, int& kalah, int& seri) {
+    if (hasil == 0) {
+        seri++;
+    } else if (hasil == 1) {
+        menang++;
+    } else {
+        kalah++;
+    }
+}
+
+bool tanyaMainLagi() {
+    char jawab;
+    std::cout << std::endl;
+    std::cout << "Main lagi? (y/n): ";
+    std::cin >> jawab;
+    return (jawab == 'y' || jawab == 'Y');
+}
+```
+
+Dan `main()` sekarang pakai `do-while` loop:
+
+```cpp
+int main() {
+    std::srand(std::time(0));
+
+    tampilkanHeader();
+
+    int menang = 0;
+    int kalah = 0;
+    int seri = 0;
+
+    do {
+        int pemain = getPilihanPemain();
+
+        // Validasi input
+        if (pemain < 1 || pemain > 3) {
+            std::cout << "Pilihan tidak valid! Masukkan 1, 2, atau 3." << std::endl;
+            continue;
+        }
+
+        int komputer = getPilihanKomputer();
+        int hasil = tentukanPemenang(pemain, komputer);
+
+        tampilkanHasil(hasil, namaPilihan(pemain), namaPilihan(komputer));
+
+        // Update skor via reference
+        updateSkor(hasil, menang, kalah, seri);
+
+        std::cout << "Skor: Menang=" << menang
+                  << " Kalah=" << kalah
+                  << " Seri=" << seri << std::endl;
+
+    } while (tanyaMainLagi());
+
+    std::cout << std::endl;
+    std::cout << "Terima kasih sudah bermain!" << std::endl;
+
+    return 0;
+}
+```
+
+:::note
+Perhatikan bahwa variabel `pemain`, `komputer`, dan `hasil` dideklarasikan **di dalam loop**. Mereka dibuat ulang setiap ronde dan mati di akhir iterasi — ini scope yang baik! Sementara `menang`, `kalah`, dan `seri` di luar loop karena harus bertahan antar ronde.
+:::
+
+## Tahap 4: Function Overloading untuk Tampilan Skor
+
+Sekarang kita terapkan **function overloading**! Kita buat dua versi `tampilkanSkor`:
+- Versi singkat: hanya menang dan kalah
+- Versi lengkap: menang, kalah, dan seri
+
+```cpp
+// Versi 1: tampilan singkat (menang dan kalah saja)
+void tampilkanSkor(int menang, int kalah) {
+    std::cout << std::endl;
+    std::cout << "--- Skor Cepat ---" << std::endl;
+    std::cout << "Menang: " << menang << " | Kalah: " << kalah << std::endl;
+}
+
+// Versi 2: tampilan lengkap (menang, kalah, dan seri)
+void tampilkanSkor(int menang, int kalah, int seri) {
+    int total = menang + kalah + seri;
+
+    std::cout << std::endl;
+    std::cout << "=============================" << std::endl;
+    std::cout << "      PAPAN SKOR" << std::endl;
+    std::cout << "=============================" << std::endl;
+    std::cout << "  Menang : " << menang << std::endl;
+    std::cout << "  Kalah  : " << kalah << std::endl;
+    std::cout << "  Seri   : " << seri << std::endl;
+    std::cout << "  Total  : " << total << " ronde" << std::endl;
+    std::cout << "=============================" << std::endl;
+
+    if (total > 0) {
+        double win_rate = (double)menang / total * 100;
+        std::cout << "  Win rate: " << win_rate << "%" << std::endl;
+        std::cout << "=============================" << std::endl;
+    }
+}
+```
+
+Sekarang di dalam loop kita pakai versi singkat, dan di akhir game pakai versi lengkap:
+
+```cpp
+// Di dalam loop:
+tampilkanSkor(menang, kalah);  // panggil versi 2 parameter
+
+// Setelah loop selesai:
+tampilkanSkor(menang, kalah, seri);  // panggil versi 3 parameter
+```
+
+Compiler otomatis memilih versi yang benar berdasarkan jumlah argumen!
+
+## Tahap 5: Scope yang Baik — Tanpa Global Variable
+
+Di versi final, perhatikan bahwa kita **tidak menggunakan global variable sama sekali**. Semua data mengalir melalui parameter dan return value:
+
+- `skor` disimpan di `main()` dan dikirim via reference ke `updateSkor()`
+- Pilihan pemain dan komputer dibuat lokal di setiap iterasi loop
+- Setiap fungsi hanya punya akses ke data yang dia **butuhkan**
+
+Ini membuat kode lebih aman, lebih mudah di-debug, dan lebih mudah dimodifikasi.
+
+## Kode Final Lengkap
+
+Ini dia versi lengkap game Batu Gunting Kertas! Ketik ulang (atau pelajari baik-baik) setiap bagiannya:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <cstdlib>
+#include <ctime>
+
+// ============================================
+// DEKLARASI FUNGSI (function prototypes)
+// ============================================
+void tampilkanHeader();
+int getPilihanPemain();
+int getPilihanKomputer();
+std::string namaPilihan(int pilihan);
+int tentukanPemenang(int pemain, int komputer);
+void tampilkanHasil(int hasil,
+                    const std::string& pilihan_pemain,
+                    const std::string& pilihan_komputer);
+void updateSkor(int hasil, int& menang, int& kalah, int& seri);
+void tampilkanSkor(int menang, int kalah);
+void tampilkanSkor(int menang, int kalah, int seri);
+bool tanyaMainLagi();
+void tampilkanPenutup(int menang, int kalah, int seri);
+
+// ============================================
+// FUNGSI MAIN
+// ============================================
+int main() {
+    std::srand(std::time(0));
+
+    tampilkanHeader();
+
+    // Skor disimpan lokal di main
+    int menang = 0;
+    int kalah = 0;
+    int seri = 0;
+
+    // Game loop
+    do {
+        std::cout << std::endl;
+
+        // Dapatkan pilihan pemain
+        int pemain = getPilihanPemain();
+
+        // Validasi input
+        if (pemain < 1 || pemain > 3) {
+            std::cout << "Pilihan tidak valid! Masukkan 1, 2, atau 3." << std::endl;
+            continue;
+        }
+
+        // Dapatkan pilihan komputer
+        int komputer = getPilihanKomputer();
+
+        // Tentukan pemenang
+        int hasil = tentukanPemenang(pemain, komputer);
+
+        // Tampilkan hasil ronde ini
+        tampilkanHasil(hasil, namaPilihan(pemain), namaPilihan(komputer));
+
+        // Update skor (pass by reference)
+        updateSkor(hasil, menang, kalah, seri);
+
+        // Tampilkan skor singkat (overload: 2 parameter)
+        tampilkanSkor(menang, kalah);
+
+    } while (tanyaMainLagi());
+
+    // Tampilkan skor lengkap (overload: 3 parameter)
+    tampilkanSkor(menang, kalah, seri);
+
+    // Pesan penutup
+    tampilkanPenutup(menang, kalah, seri);
+
+    return 0;
+}
+
+// ============================================
+// IMPLEMENTASI FUNGSI
+// ============================================
+
+void tampilkanHeader() {
+    std::cout << "========================================" << std::endl;
+    std::cout << "     BATU  GUNTING  KERTAS  v1.0" << std::endl;
+    std::cout << "========================================" << std::endl;
+    std::cout << "  Aturan:" << std::endl;
+    std::cout << "  - Batu mengalahkan Gunting" << std::endl;
+    std::cout << "  - Gunting mengalahkan Kertas" << std::endl;
+    std::cout << "  - Kertas mengalahkan Batu" << std::endl;
+    std::cout << "========================================" << std::endl;
+}
+
+int getPilihanPemain() {
+    int pilihan;
+
+    std::cout << "Pilih gerakanmu:" << std::endl;
+    std::cout << "  1. Batu     [*]" << std::endl;
+    std::cout << "  2. Gunting  [V]" << std::endl;
+    std::cout << "  3. Kertas   [_]" << std::endl;
+    std::cout << "Pilihan (1/2/3): ";
+    std::cin >> pilihan;
+
+    return pilihan;
+}
+
+int getPilihanKomputer() {
+    return std::rand() % 3 + 1;
+}
+
+std::string namaPilihan(int pilihan) {
+    switch (pilihan) {
+        case 1: return "Batu";
+        case 2: return "Gunting";
+        case 3: return "Kertas";
+        default: return "???";
+    }
+}
+
+int tentukanPemenang(int pemain, int komputer) {
+    // Return: 0 = seri, 1 = pemain menang, -1 = komputer menang
+
+    if (pemain == komputer) {
+        return 0;  // seri
+    }
+
+    // Pemain menang jika:
+    // Batu (1) vs Gunting (2)
+    // Gunting (2) vs Kertas (3)
+    // Kertas (3) vs Batu (1)
+    if ((pemain == 1 && komputer == 2) ||
+        (pemain == 2 && komputer == 3) ||
+        (pemain == 3 && komputer == 1)) {
+        return 1;  // pemain menang
+    }
+
+    return -1;  // komputer menang
+}
+
+void tampilkanHasil(int hasil,
+                    const std::string& pilihan_pemain,
+                    const std::string& pilihan_komputer) {
+    std::cout << std::endl;
+    std::cout << "-----------------------------------------" << std::endl;
+    std::cout << "  Kamu: " << pilihan_pemain
+              << "  vs  Komputer: " << pilihan_komputer << std::endl;
+    std::cout << "-----------------------------------------" << std::endl;
+
+    if (hasil == 0) {
+        std::cout << "  Hasil: SERI! Kalian kompak!" << std::endl;
+    } else if (hasil == 1) {
+        std::cout << "  Hasil: KAMU MENANG! Selamat!" << std::endl;
+    } else {
+        std::cout << "  Hasil: Komputer menang. Coba lagi!" << std::endl;
+    }
+
+    std::cout << "-----------------------------------------" << std::endl;
+}
+
+void updateSkor(int hasil, int& menang, int& kalah, int& seri) {
+    if (hasil == 0) {
+        seri++;
+    } else if (hasil == 1) {
+        menang++;
+    } else {
+        kalah++;
+    }
+}
+
+// Overload 1: tampilan singkat (setelah tiap ronde)
+void tampilkanSkor(int menang, int kalah) {
+    std::cout << "  [Skor] Menang: " << menang
+              << " | Kalah: " << kalah << std::endl;
+}
+
+// Overload 2: tampilan lengkap (di akhir game)
+void tampilkanSkor(int menang, int kalah, int seri) {
+    int total = menang + kalah + seri;
+
+    std::cout << std::endl;
+    std::cout << "========================================" << std::endl;
+    std::cout << "           PAPAN SKOR AKHIR" << std::endl;
+    std::cout << "========================================" << std::endl;
+    std::cout << "  Menang : " << menang << std::endl;
+    std::cout << "  Kalah  : " << kalah << std::endl;
+    std::cout << "  Seri   : " << seri << std::endl;
+    std::cout << "  Total  : " << total << " ronde" << std::endl;
+    std::cout << "----------------------------------------" << std::endl;
+
+    if (total > 0) {
+        double win_rate = (double)menang / total * 100;
+        std::cout << "  Win Rate: " << win_rate << "%" << std::endl;
+    }
+
+    std::cout << "========================================" << std::endl;
+}
+
+bool tanyaMainLagi() {
+    char jawab;
+    std::cout << std::endl;
+    std::cout << "Main lagi? (y/n): ";
+    std::cin >> jawab;
+    return (jawab == 'y' || jawab == 'Y');
+}
+
+void tampilkanPenutup(int menang, int kalah, int seri) {
+    std::cout << std::endl;
+
+    if (menang > kalah) {
+        std::cout << "Kamu lebih banyak menang! Hebat!" << std::endl;
+    } else if (kalah > menang) {
+        std::cout << "Komputer unggul kali ini. Jangan menyerah!" << std::endl;
+    } else {
+        std::cout << "Seri! Kalian seimbang!" << std::endl;
+    }
+
+    std::cout << "Terima kasih sudah bermain! Sampai jumpa!" << std::endl;
+    std::cout << std::endl;
+}
+```
+
+## Contoh Sesi Bermain
+
+```
+========================================
+     BATU  GUNTING  KERTAS  v1.0
+========================================
+  Aturan:
+  - Batu mengalahkan Gunting
+  - Gunting mengalahkan Kertas
+  - Kertas mengalahkan Batu
+========================================
+
+Pilih gerakanmu:
+  1. Batu     [*]
+  2. Gunting  [V]
+  3. Kertas   [_]
+Pilihan (1/2/3): 1
+
+-----------------------------------------
+  Kamu: Batu  vs  Komputer: Gunting
+-----------------------------------------
+  Hasil: KAMU MENANG! Selamat!
+-----------------------------------------
+  [Skor] Menang: 1 | Kalah: 0
+
+Main lagi? (y/n): y
+
+Pilih gerakanmu:
+  1. Batu     [*]
+  2. Gunting  [V]
+  3. Kertas   [_]
+Pilihan (1/2/3): 3
+
+-----------------------------------------
+  Kamu: Kertas  vs  Komputer: Kertas
+-----------------------------------------
+  Hasil: SERI! Kalian kompak!
+-----------------------------------------
+  [Skor] Menang: 1 | Kalah: 0
+
+Main lagi? (y/n): y
+
+Pilih gerakanmu:
+  1. Batu     [*]
+  2. Gunting  [V]
+  3. Kertas   [_]
+Pilihan (1/2/3): 2
+
+-----------------------------------------
+  Kamu: Gunting  vs  Komputer: Batu
+-----------------------------------------
+  Hasil: Komputer menang. Coba lagi!
+-----------------------------------------
+  [Skor] Menang: 1 | Kalah: 1
+
+Main lagi? (y/n): n
+
+========================================
+           PAPAN SKOR AKHIR
+========================================
+  Menang : 1
+  Kalah  : 1
+  Seri   : 1
+  Total  : 3 ronde
+----------------------------------------
+  Win Rate: 33.3333%
+========================================
+
+Seri! Kalian seimbang!
+Terima kasih sudah bermain! Sampai jumpa!
+```
+
+## Penjelasan Setiap Fungsi
+
+Mari kita bahas kenapa setiap fungsi dipisah begitu:
+
+### `tampilkanHeader()` — Tidak ada parameter, tidak ada return
+
+Fungsi ini cuma menampilkan teks. Tidak perlu menerima data apapun dan tidak perlu mengembalikan apapun. Sederhana, tapi memisahkannya dari `main()` membuat kode lebih rapi.
+
+### `getPilihanPemain()` — Return int
+
+Fungsi ini **mengembalikan** pilihan pemain sebagai int. Semua logika input ada di dalam fungsi ini, jadi `main()` cukup menerima hasilnya saja.
+
+### `getPilihanKomputer()` — Return int
+
+Satu baris saja! Tapi tetap dipisah karena: (1) namanya menjelaskan apa yang dilakukan, dan (2) kalau nanti mau mengubah algoritmanya (misal pakai random yang lebih canggih), cukup ubah di satu tempat.
+
+### `namaPilihan()` — Pass by value, return string
+
+Menerima angka (1/2/3), mengembalikan nama ("Batu"/"Gunting"/"Kertas"). Ini **utility function** — fungsi kecil yang sering dipakai di banyak tempat.
+
+### `tentukanPemenang()` — Pass by value, return int
+
+Menerima dua pilihan, mengembalikan hasil (-1/0/1). Ini **business logic** dari game — aturan siapa yang menang. Dipisah supaya mudah ditest dan diubah.
+
+### `tampilkanHasil()` — Const reference untuk string
+
+Parameter string dikirim dengan `const std::string&` — reference supaya efisien (tidak ada copy), const supaya aman (tidak diubah).
+
+### `updateSkor()` — Pass by reference
+
+Ini fungsi yang **mengubah** variabel di luar dirinya! Parameter `menang`, `kalah`, `seri` pakai `&` karena fungsi ini perlu menambah nilainya.
+
+### `tampilkanSkor()` — Overloaded!
+
+Dua versi: (1) singkat dengan 2 parameter untuk setelah tiap ronde, (2) lengkap dengan 3 parameter untuk akhir game. Compiler otomatis pilih versi yang tepat.
+
+### `tanyaMainLagi()` — Return bool
+
+Return `true` kalau mau main lagi, `false` kalau tidak. Dipakai langsung di kondisi `while`.
+
+### `tampilkanPenutup()` — Pass by value
+
+Hanya membaca skor untuk menampilkan pesan penutup. Tidak perlu reference karena tidak mengubah apapun.
+
+## Konsep Unit 4 yang Digunakan
+
+| Konsep | Digunakan di |
+|--------|-------------|
+| Deklarasi fungsi & prototype | Semua fungsi dideklarasikan di atas `main()` |
+| Parameter & argumen | Hampir semua fungsi menerima parameter |
+| Return value | `getPilihanPemain()`, `tentukanPemenang()`, `namaPilihan()`, `tanyaMainLagi()` |
+| Pass by value | Parameter `int` dan `double` yang tidak perlu diubah |
+| Pass by reference | `updateSkor()` mengubah skor via `&` |
+| Const reference | `tampilkanHasil()` menerima `const std::string&` |
+| Function overloading | `tampilkanSkor()` punya 2 versi |
+| Local scope | Semua variabel lokal, tidak ada global variable |
+| Block scope | `pemain`, `komputer`, `hasil` hanya hidup di dalam loop |
+
+## Tantangan Ekstra
+
+Sudah selesai dan mau lebih menantang? Coba tantangan-tantangan ini:
+
+**Tantangan 1: Mode 2 Pemain**
+
+Ubah game menjadi mode 2 pemain! Pemain 1 memilih dulu (inputnya di-"sembunyikan" dengan mencetak banyak baris kosong sebelum pemain 2 memilih). Buat fungsi baru `getPilihanPemain(int nomor_pemain)` yang menerima nomor pemain sebagai parameter.
+
+**Tantangan 2: Best of 5**
+
+Tambahkan mode "Best of 5" — siapa yang pertama menang 3 ronde, dia pemenang keseluruhan. Buat fungsi `bool sudahAdaPemenang(int menang, int kalah, int target)` yang mengecek apakah salah satu pemain sudah mencapai target kemenangan.
+
+**Tantangan 3: Statistik Win Rate**
+
+Buat fungsi `void tampilkanStatistik(int menang, int kalah, int seri)` yang menampilkan:
+- Win rate (persentase menang)
+- Lose rate (persentase kalah)
+- Draw rate (persentase seri)
+- Streak terpanjang (menang berturut-turut) — ini butuh tracking tambahan!
+
+**Tantangan 4: Pilihan Tambahan**
+
+Tambahkan pilihan "Kadal" dan "Spock" (versi dari serial TV "The Big Bang Theory"):
+- Gunting memotong Kertas
+- Kertas menutupi Batu
+- Batu menghancurkan Kadal
+- Kadal meracuni Spock
+- Spock menghancurkan Gunting
+- Gunting memenggal Kadal
+- Kadal memakan Kertas
+- Kertas membantah Spock
+- Spock melelehkan Batu
+- Batu menghancurkan Gunting
+
+Kamu perlu meng-update `namaPilihan()`, `getPilihanPemain()`, dan `tentukanPemenang()`.
+
+**Tantangan 5: Riwayat Permainan**
+
+Simpan riwayat setiap ronde (siapa pilih apa, hasilnya apa) dan tampilkan di akhir. Kamu bisa pakai array (yang akan dipelajari di unit berikutnya) atau cukup cetak langsung ke layar setiap ronde.
+
+:::tip
+Jangan merasa harus menyelesaikan semua tantangan. Pilih satu atau dua yang paling menarik buat kamu. Yang penting, kamu bereksperimen dan bersenang-senang sambil belajar!
+:::
+
+## Latihan
+
+**Latihan 1:** Ketik ulang kode final di atas dari awal (jangan copy-paste!). Pastikan game berjalan dengan benar. Mengetik ulang membantu otakmu memahami setiap baris.
+
+**Latihan 2:** Tambahkan validasi di `getPilihanPemain()` — jika input bukan 1, 2, atau 3, cetak pesan error dan minta input ulang (gunakan loop di dalam fungsi).
+
+**Latihan 3:** Buat fungsi `void tampilkanEmoji(int pilihan)` yang menampilkan ASCII art sederhana:
+
+```
+Batu:     Gunting:     Kertas:
+ ___       _   _        ___
+|   |     | | | |      |   |___
+|___|     |_|_|_|      |_______|
+```
+
+**Latihan 4:** Modifikasi game agar di akhir menampilkan pesan berbeda berdasarkan win rate: di bawah 30% "Perlu latihan!", 30-60% "Lumayan!", di atas 60% "Kamu jago!"
+
+Selamat! Kamu sudah menyelesaikan **Unit 4: Fungsi**! Sekarang kamu bisa memecah program besar menjadi fungsi-fungsi kecil yang terorganisir. Ini adalah skill fundamental yang akan terus kamu pakai di semua program C++ yang kamu buat ke depannya!

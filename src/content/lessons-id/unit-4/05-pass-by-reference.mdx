@@ -1,0 +1,309 @@
+---
+title: "Pass by Reference"
+unit: 4
+lesson: 5
+description: "Memahami perbedaan pass by value dan pass by reference, serta kapan menggunakan masing-masing"
+objectives:
+  - "Memahami perbedaan pass by value dan pass by reference"
+  - "Menggunakan tanda & untuk pass by reference"
+  - "Mengenal const reference untuk efisiensi tanpa mengubah data"
+  - "Membuat fungsi swap dan fungsi yang mengembalikan banyak nilai"
+estimatedTime: 30
+prerequisites: ["unit-4/04-return-values"]
+difficulty: "beginner"
+tags: ["reference", "pass-by-value", "pass-by-reference", "const-reference", "fungsi"]
+---
+
+# Pass by Reference
+
+Sampai sekarang, setiap kali kamu mengirim variabel ke fungsi, yang dikirim adalah **salinannya** (copy). Fungsi bekerja dengan copy itu, dan variabel asli di luar fungsi tidak berubah sama sekali. Ini namanya **pass by value**.
+
+Tapi bagaimana kalau kamu INGIN fungsi mengubah variabel aslinya? Misalnya, kamu mau bikin fungsi yang menukar isi dua variabel? Di sinilah **pass by reference** masuk!
+
+Analoginya begini: pass by value itu seperti kamu fotokopi PR temanmu — kalau kamu coret-coret fotokopinya, PR asli temanmu tetap bersih. Sedangkan pass by reference itu seperti kamu langsung pinjam PR aslinya — kalau kamu coret, PR aslinya juga kecoret!
+
+## Pass by Value: Review
+
+Coba perhatikan kode ini:
+
+```cpp
+#include <iostream>
+
+void tambahSepuluh(int angka) {
+    angka = angka + 10;
+    std::cout << "Di dalam fungsi: " << angka << std::endl;
+}
+
+int main() {
+    int nilai = 5;
+
+    tambahSepuluh(nilai);
+    std::cout << "Di luar fungsi: " << nilai << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Di dalam fungsi: 15
+Di luar fungsi: 5
+```
+
+Lihat? Variabel `nilai` di `main()` tetap 5! Fungsi hanya mengubah **salinan**-nya. Kadang ini yang kita mau, tapi kadang tidak.
+
+## Pass by Reference: Tanda `&`
+
+Untuk membuat fungsi bisa mengubah variabel asli, tambahkan tanda `&` (ampersand) setelah tipe data di parameter:
+
+```cpp
+#include <iostream>
+
+void tambahSepuluh(int& angka) {  // perhatikan tanda &
+    angka = angka + 10;
+    std::cout << "Di dalam fungsi: " << angka << std::endl;
+}
+
+int main() {
+    int nilai = 5;
+
+    tambahSepuluh(nilai);
+    std::cout << "Di luar fungsi: " << nilai << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Di dalam fungsi: 15
+Di luar fungsi: 15
+```
+
+Sekarang variabel `nilai` di `main()` ikut berubah! Cuma beda satu karakter (`&`), tapi efeknya besar banget.
+
+:::tip
+Cara baca deklarasi `int& angka`: "angka adalah **reference** ke sebuah int". Artinya, `angka` bukan variabel baru — dia adalah **nama lain** (alias) untuk variabel yang dikirim.
+:::
+
+## Contoh Klasik: Fungsi Swap
+
+Salah satu contoh paling klasik untuk pass by reference adalah fungsi yang menukar isi dua variabel:
+
+```cpp
+#include <iostream>
+
+void tukar(int& a, int& b) {
+    int temp = a;
+    a = b;
+    b = temp;
+}
+
+int main() {
+    int x = 10;
+    int y = 20;
+
+    std::cout << "Sebelum tukar: x = " << x << ", y = " << y << std::endl;
+
+    tukar(x, y);
+
+    std::cout << "Setelah tukar: x = " << x << ", y = " << y << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Sebelum tukar: x = 10, y = 20
+Setelah tukar: x = 20, y = 10
+```
+
+Tanpa reference, fungsi `tukar` ini **tidak mungkin** bekerja! Kalau pakai pass by value, yang ditukar cuma salinannya, dan `x` serta `y` di `main()` tetap sama.
+
+:::warning
+Kalau kamu coba bikin fungsi `tukar` tanpa `&`, programnya tetap jalan tanpa error — tapi hasilnya tidak sesuai harapan. Ini jenis bug yang susah ditemukan karena **tidak ada pesan error**!
+:::
+
+## Mengembalikan Banyak Nilai dengan Reference
+
+Fungsi hanya bisa `return` satu nilai. Tapi dengan reference, kamu bisa "mengembalikan" banyak nilai sekaligus:
+
+```cpp
+#include <iostream>
+
+void cariMinMax(int a, int b, int c, int& minimum, int& maksimum) {
+    // Cari minimum
+    minimum = a;
+    if (b < minimum) minimum = b;
+    if (c < minimum) minimum = c;
+
+    // Cari maksimum
+    maksimum = a;
+    if (b > maksimum) maksimum = b;
+    if (c > maksimum) maksimum = c;
+}
+
+int main() {
+    int min_val, max_val;
+
+    cariMinMax(15, 7, 23, min_val, max_val);
+
+    std::cout << "Minimum: " << min_val << std::endl;
+    std::cout << "Maksimum: " << max_val << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Minimum: 7
+Maksimum: 23
+```
+
+Perhatikan: parameter `a`, `b`, `c` dikirim by value (karena fungsi hanya perlu baca nilainya), sedangkan `minimum` dan `maksimum` dikirim by reference (karena fungsi perlu mengisi hasilnya).
+
+## Const Reference: Baca Tapi Jangan Ubah
+
+Kadang kamu mau pakai reference bukan untuk mengubah data, tapi untuk **efisiensi**. Misalnya, kalau kamu kirim `std::string` yang panjang, meng-copy-nya butuh waktu dan memori. Dengan reference, tidak ada copy yang terjadi.
+
+Tapi bagaimana caranya bilang "ini reference, tapi jangan ubah"? Pakai `const`:
+
+```cpp
+#include <iostream>
+#include <string>
+
+void cetakSalam(const std::string& nama) {  // const reference
+    std::cout << "Halo, " << nama << "! Selamat belajar C++!" << std::endl;
+
+    // nama = "lain";  // ERROR! tidak bisa mengubah const reference
+}
+
+int main() {
+    std::string siswa = "Budi";
+    cetakSalam(siswa);
+
+    return 0;
+}
+```
+
+`const std::string& nama` artinya: "kirim reference (jadi tidak ada copy), tapi fungsi **berjanji** tidak akan mengubahnya."
+
+:::note
+Untuk tipe data kecil seperti `int`, `double`, `bool`, `char`, pass by value sudah cukup efisien. Const reference lebih berguna untuk tipe data "besar" seperti `std::string`, array, atau objek-objek yang akan kamu pelajari nanti.
+:::
+
+## Kapan Pakai Apa?
+
+Ini panduan sederhana:
+
+| Situasi | Gunakan | Contoh |
+|---------|---------|--------|
+| Fungsi cuma perlu baca nilai kecil (int, double) | Pass by value | `int kuadrat(int x)` |
+| Fungsi perlu **mengubah** variabel asli | Pass by reference | `void tukar(int& a, int& b)` |
+| Fungsi perlu baca data besar tanpa ubah | Const reference | `void cetak(const std::string& teks)` |
+
+## Contoh Lengkap: Sistem Penilaian
+
+```cpp
+#include <iostream>
+#include <string>
+
+// Const reference: hanya baca, tipe besar (string)
+void tampilkanHeader(const std::string& judul) {
+    std::cout << "=========================" << std::endl;
+    std::cout << "  " << judul << std::endl;
+    std::cout << "=========================" << std::endl;
+}
+
+// Reference: mengubah variabel asli
+void inputNilai(int& uts, int& uas, int& tugas) {
+    std::cout << "Masukkan nilai UTS: ";
+    std::cin >> uts;
+    std::cout << "Masukkan nilai UAS: ";
+    std::cin >> uas;
+    std::cout << "Masukkan nilai Tugas: ";
+    std::cin >> tugas;
+}
+
+// Pass by value: hanya baca, tipe kecil (int)
+double hitungRataRata(int uts, int uas, int tugas) {
+    return (uts + uas + tugas) / 3.0;
+}
+
+// Reference: mengisi grade berdasarkan rata-rata
+void tentukanGrade(double rata_rata, char& grade) {
+    if (rata_rata >= 85) {
+        grade = 'A';
+    } else if (rata_rata >= 70) {
+        grade = 'B';
+    } else if (rata_rata >= 55) {
+        grade = 'C';
+    } else {
+        grade = 'D';
+    }
+}
+
+int main() {
+    int uts, uas, tugas;
+    char grade;
+
+    tampilkanHeader("Sistem Penilaian Siswa");
+
+    inputNilai(uts, uas, tugas);
+
+    double rata_rata = hitungRataRata(uts, uas, tugas);
+
+    tentukanGrade(rata_rata, grade);
+
+    std::cout << std::endl;
+    std::cout << "Rata-rata: " << rata_rata << std::endl;
+    std::cout << "Grade: " << grade << std::endl;
+
+    return 0;
+}
+```
+
+## Bahaya: Jangan Return Reference ke Variabel Lokal!
+
+Ini kesalahan yang harus kamu hindari:
+
+```cpp
+// JANGAN LAKUKAN INI!
+int& bahaya() {
+    int angka = 42;
+    return angka;  // BAHAYA! angka akan dihancurkan setelah fungsi selesai
+}
+```
+
+Variabel `angka` hidup di dalam fungsi `bahaya()`. Begitu fungsi selesai, variabel itu dihancurkan. Kalau kamu return reference-nya, reference itu menunjuk ke "tempat kosong" — ini bisa menyebabkan bug aneh atau crash.
+
+:::warning
+Jangan pernah mengembalikan reference ke variabel lokal. Compiler biasanya memberi warning, tapi tidak selalu. Ini seperti memberikan alamat rumah yang sudah dirobohkan — siapa pun yang datang ke alamat itu akan kebingungan!
+:::
+
+## Sekilas: Reference vs Pointer
+
+Kamu mungkin pernah dengar tentang **pointer** di C++. Pointer dan reference punya fungsi mirip — keduanya bisa membuat fungsi mengubah data di luar dirinya. Bedanya:
+
+- **Reference** (`&`): lebih sederhana, harus diinisialisasi, tidak bisa "kosong"
+- **Pointer** (`*`): lebih fleksibel, bisa kosong (null), sintaks lebih rumit
+
+Untuk sekarang, reference sudah lebih dari cukup. Pointer akan dibahas lebih detail di unit lanjutan.
+
+## Latihan
+
+**Latihan 1:** Buat fungsi `void gandakan(int& angka)` yang mengalikan variabel dengan 2. Panggil dari `main()` dan buktikan bahwa variabel asli berubah.
+
+**Latihan 2:** Buat fungsi `void urutkanDua(int& a, int& b)` yang memastikan `a` selalu lebih kecil dari `b`. Jika `a` lebih besar dari `b`, tukar nilainya.
+
+**Latihan 3:** Buat fungsi `void hitungLingkaran(double radius, double& keliling, double& luas)` yang menghitung keliling dan luas lingkaran sekaligus. Gunakan `const double PI = 3.14159`.
+
+**Latihan 4:** Buat fungsi `void sapaSiswa(const std::string& nama, int umur)` yang mencetak sapaan. Jelaskan kenapa `nama` pakai const reference tapi `umur` pakai pass by value.
+
+Sekarang kamu sudah paham kapan dan bagaimana menggunakan reference. Di lesson berikutnya, kita akan belajar tentang **function overloading** — cara bikin banyak fungsi dengan nama sama tapi parameter berbeda!

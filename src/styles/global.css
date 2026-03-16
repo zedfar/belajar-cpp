@@ -1,27 +1,101 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+@config "../../tailwind.config.ts";
 
 @layer base {
   :root {
     --font-sans: 'Inter', system-ui, sans-serif;
     --font-mono: 'JetBrains Mono', 'Menlo', monospace;
+    color-scheme: light dark;
   }
 
   body {
     @apply bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100;
     font-family: var(--font-sans);
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 
   code, pre {
     font-family: var(--font-mono);
   }
+
+  /* Text selection */
+  ::selection {
+    @apply bg-primary-200 dark:bg-primary-800 text-slate-900 dark:text-white;
+  }
 }
 
 /* Prose overrides for lesson content */
 .prose pre {
-  @apply !bg-[#1E1E1E] !text-slate-200;
+  @apply !p-0 !bg-transparent !border-0 !shadow-none;
 }
 
 .prose code {
-  @apply !bg-slate-100 dark:!bg-slate-800 !text-slate-800 dark:!text-slate-200;
+  @apply !font-mono !text-sm;
+  background: rgb(241 245 249) !important;
+  color: #1d4ed8 !important;
+  padding: 0.15em 0.45em !important;
+  border-radius: 0.3rem !important;
+  font-weight: 500 !important;
 }
+
+.dark .prose code {
+  background: rgb(30 41 59) !important;
+  color: #93c5fd !important;
+}
+
+/* Strip backtick pseudo-elements from prose inline code */
+.prose code::before,
+.prose code::after {
+  content: '' !important;
+}
+
+/* :::note :::tip :::warning :::error :::fun directive styles */
+.infobox {
+  @apply border-l-4 p-4 my-5 rounded-r-lg text-sm;
+}
+.infobox p {
+  @apply m-0 leading-relaxed;
+}
+.infobox > *:first-child {
+  @apply mt-0;
+}
+.infobox > *:last-child {
+  @apply mb-0;
+}
+.infobox::before {
+  display: block;
+  font-weight: 600;
+  font-size: 0.8rem;
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.02em;
+}
+.infobox-note {
+  @apply border-slate-400 bg-slate-50 dark:bg-slate-900/60 text-slate-700 dark:text-slate-300;
+}
+.infobox-note::before { content: "📝  Catatan"; }
+.infobox-tip {
+  @apply border-blue-500 bg-blue-50 dark:bg-blue-950/30 text-blue-800 dark:text-blue-200;
+}
+.infobox-tip::before { content: "💡  Tips"; }
+.infobox-warning {
+  @apply border-amber-500 bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-200;
+}
+.infobox-warning::before { content: "⚠️  Perhatian"; }
+.infobox-error {
+  @apply border-red-500 bg-red-50 dark:bg-red-950/30 text-red-800 dark:text-red-200;
+}
+.infobox-error::before { content: "🚫  Error"; }
+.infobox-fun {
+  @apply border-violet-500 bg-violet-50 dark:bg-violet-950/30 text-violet-800 dark:text-violet-200;
+}
+.infobox-fun::before { content: "🌟  Fun Fact"; }
+
+/* Custom scrollbar for code blocks */
+pre::-webkit-scrollbar { height: 5px; width: 5px; }
+pre::-webkit-scrollbar-track { background: transparent; }
+pre::-webkit-scrollbar-thumb { background: #374151; border-radius: 9999px; }
+pre::-webkit-scrollbar-thumb:hover { background: #4b5563; }
+
+/* Smooth scroll for TOC */
+html { scroll-behavior: smooth; }

@@ -1,0 +1,425 @@
+---
+title: "Loop Patterns (Pola dengan Loop)"
+unit: 3
+lesson: 6
+description: "Membuat berbagai pola ASCII yang keren menggunakan nested loops — dari segitiga bintang sampai piramida!"
+objectives:
+  - "Membuat pola segitiga bintang (ke atas dan ke bawah)"
+  - "Membuat pola piramida dengan spasi dan bintang"
+  - "Membuat kotak berongga"
+  - "Mengembangkan strategi berpikir untuk memecahkan pola loop"
+estimatedTime: 45
+prerequisites: ["unit-3/05-nested-loops"]
+difficulty: "beginner"
+tags: ["pola", "pattern", "nested-loops", "ascii-art", "bintang"]
+---
+
+# Loop Patterns (Pola dengan Loop)
+
+Ini dia lesson yang paling FUN di Unit 3! Kita akan "menggambar" dengan kode — membuat berbagai pola ASCII menggunakan nested loops. Ini bukan cuma latihan biasa, ini seni!
+
+Membuat pola dengan loop itu kayak main puzzle. Kamu harus mengamati polanya dulu, pecah jadi baris dan kolom, baru tulis kodenya. Skill ini sangat melatih **logical thinking** — kemampuan berpikir yang paling penting buat programmer.
+
+:::tip
+**Strategi Utama:** Untuk setiap pola, tanyakan dua pertanyaan ini:
+1. **Berapa baris?** (ini jadi outer loop)
+2. **Apa yang dicetak di setiap baris?** (ini jadi inner loop)
+
+Pecah masalah besar jadi potongan kecil. Jangan langsung mikirin keseluruhan pola — fokus per baris dulu!
+:::
+
+## Pola 1: Segitiga Bintang ke Bawah
+
+Kita mulai dari yang relatif mudah. Target output:
+
+```
+* * * * *
+* * * *
+* * *
+* *
+*
+```
+
+**Amati dulu polanya sebelum lihat kode!**
+
+Coba jawab:
+- Baris 1: berapa bintang? **5**
+- Baris 2: berapa bintang? **4**
+- Baris 3: berapa bintang? **3**
+- Baris ke-i: berapa bintang? **6 - i** (kalau i mulai dari 1)
+
+Sudah ketemu? Sekarang kodenya:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int tinggi = 5;
+
+    for (int i = 1; i <= tinggi; i++) {
+        // Baris ke-i punya (tinggi - i + 1) bintang
+        for (int j = 1; j <= tinggi - i + 1; j++) {
+            std::cout << "* ";
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+**Output:**
+```
+* * * * *
+* * * *
+* * *
+* *
+*
+```
+
+Kuncinya ada di batas inner loop: `j <= tinggi - i + 1`. Setiap baris naik (`i` bertambah), jumlah bintang berkurang.
+
+## Pola 2: Segitiga Bintang ke Atas
+
+Sekarang kebalikannya:
+
+```
+*
+* *
+* * *
+* * * *
+* * * * *
+```
+
+**Coba tebak kodenya sebelum scroll ke bawah!**
+
+Baris ke-i punya **i** bintang. Lebih simple, kan?
+
+```cpp
+#include <iostream>
+
+int main() {
+    int tinggi = 5;
+
+    for (int i = 1; i <= tinggi; i++) {
+        // Baris ke-i punya i bintang
+        for (int j = 1; j <= i; j++) {
+            std::cout << "* ";
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+**Output:**
+```
+*
+* *
+* * *
+* * * *
+* * * * *
+```
+
+Inner loop cuma sampai `j <= i`. Baris pertama (`i=1`): 1 bintang. Baris kelima (`i=5`): 5 bintang. Simpel dan elegan!
+
+## Pola 3: Piramida Tengah
+
+Nah, ini yang mulai menantang! Target output:
+
+```
+        *
+      * * *
+    * * * * *
+  * * * * * * *
+* * * * * * * * *
+```
+
+Piramida ini kelihatan susah, tapi kalau kita pecah per baris, ada polanya:
+
+| Baris (i) | Jumlah spasi | Jumlah bintang |
+|-----------|-------------|---------------|
+| 1 | 4 | 1 |
+| 2 | 3 | 3 |
+| 3 | 2 | 5 |
+| 4 | 1 | 7 |
+| 5 | 0 | 9 |
+
+Rumusnya (kalau `tinggi = 5`):
+- Spasi per baris = `tinggi - i`
+- Bintang per baris = `2 * i - 1`
+
+**Triknya:** Setiap baris punya **dua inner loop** — satu untuk spasi, satu untuk bintang!
+
+```cpp
+#include <iostream>
+
+int main() {
+    int tinggi = 5;
+
+    for (int i = 1; i <= tinggi; i++) {
+        // Inner loop 1: cetak spasi
+        for (int s = 1; s <= tinggi - i; s++) {
+            std::cout << "  ";  // 2 spasi per "slot"
+        }
+
+        // Inner loop 2: cetak bintang
+        for (int b = 1; b <= 2 * i - 1; b++) {
+            std::cout << "* ";
+        }
+
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+**Output:**
+```
+        *
+      * * *
+    * * * * *
+  * * * * * * *
+* * * * * * * * *
+```
+
+:::note
+Kunci piramida: **spasi sebelum bintang**. Tanpa spasi, bintangnya akan rata kiri dan bukan piramida. Perhatikan bahwa spasi kita pakai `"  "` (2 spasi) supaya sejajar dengan `"* "` (bintang + spasi).
+:::
+
+## Pola 4: Kotak Berongga
+
+Ini pola yang unik — kita cetak bintang hanya di **pinggiran** kotak, tengahnya kosong:
+
+```
+* * * * *
+*       *
+*       *
+*       *
+* * * * *
+```
+
+Kapan kita cetak bintang?
+- Di **baris pertama** atau **baris terakhir** (seluruh baris terisi bintang)
+- Di **kolom pertama** atau **kolom terakhir** (pinggiran kiri dan kanan)
+
+```cpp
+#include <iostream>
+
+int main() {
+    int ukuran = 5;
+
+    for (int i = 1; i <= ukuran; i++) {
+        for (int j = 1; j <= ukuran; j++) {
+            // Cetak bintang kalau di pinggiran
+            if (i == 1 || i == ukuran || j == 1 || j == ukuran) {
+                std::cout << "* ";
+            } else {
+                std::cout << "  ";  // isi tengah: spasi
+            }
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+**Output:**
+```
+* * * * *
+*       *
+*       *
+*       *
+* * * * *
+```
+
+Di sini kita pakai **if-else di dalam inner loop** untuk menentukan apakah posisi `(i, j)` ada di pinggiran atau bukan. `i == 1` artinya baris pertama, `i == ukuran` baris terakhir, `j == 1` kolom pertama, `j == ukuran` kolom terakhir.
+
+## Pola 5: Angka Bertangga
+
+Sekarang kita ganti bintang dengan angka:
+
+```
+1
+1 2
+1 2 3
+1 2 3 4
+1 2 3 4 5
+```
+
+Ini mirip segitiga ke atas, tapi isinya angka yang naik:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int tinggi = 5;
+
+    for (int i = 1; i <= tinggi; i++) {
+        for (int j = 1; j <= i; j++) {
+            std::cout << j << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+**Output:**
+```
+1
+1 2
+1 2 3
+1 2 3 4
+1 2 3 4 5
+```
+
+Bedanya cuma di `std::cout << j << " "` — kita cetak nilai `j` langsung, bukan bintang. Simpel banget, kan?
+
+**Variasi — angka baris:**
+
+Bagaimana kalau angka yang dicetak adalah nomor **baris**, bukan kolom?
+
+```cpp
+#include <iostream>
+
+int main() {
+    int tinggi = 5;
+
+    for (int i = 1; i <= tinggi; i++) {
+        for (int j = 1; j <= i; j++) {
+            std::cout << i << " ";  // cetak i, bukan j
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+**Output:**
+```
+1
+2 2
+3 3 3
+4 4 4 4
+5 5 5 5 5
+```
+
+Cuma ganti `j` jadi `i` di `cout`, hasilnya sudah berbeda!
+
+## Strategi Memecahkan Pola Apapun
+
+Sekarang kamu sudah lihat 5 pola. Ini "resep" umum untuk memecahkan pola apapun:
+
+**Langkah 1: Amati pola per baris**
+Tulis di kertas: baris 1 isinya apa, baris 2 isinya apa, dst.
+
+**Langkah 2: Cari hubungan antara nomor baris dan isi**
+- Berapa karakter di baris ke-i?
+- Ada spasi di depan? Berapa?
+- Karakter apa yang dicetak? Bintang, angka, spasi?
+
+**Langkah 3: Tentukan inner loop**
+- Apakah butuh satu inner loop atau lebih?
+- Berapa batas awal dan akhir masing-masing inner loop?
+
+**Langkah 4: Tulis kode dan test**
+- Mulai dengan ukuran kecil (tinggi 3 atau 4) biar gampang di-debug.
+- Kalau belum benar, trace manual per baris.
+
+:::tip
+Jangan langsung nulis kode! Ambil kertas, gambar polanya, tulis rumus per baris. Programmer terbaik selalu **berpikir dulu, coding kemudian**. Ini bukan lambat — ini justru cara paling cepat karena kamu tidak buang waktu debugging kode yang salah konsep.
+:::
+
+## Contoh Bonus: Gabungan Spasi dan Angka
+
+Pola yang menggabungkan semua teknik:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int tinggi = 5;
+
+    for (int i = 1; i <= tinggi; i++) {
+        // Cetak spasi
+        for (int s = 1; s <= tinggi - i; s++) {
+            std::cout << "  ";
+        }
+
+        // Cetak angka naik: 1 sampai i
+        for (int j = 1; j <= i; j++) {
+            std::cout << j << " ";
+        }
+
+        // Cetak angka turun: i-1 sampai 1
+        for (int j = i - 1; j >= 1; j--) {
+            std::cout << j << " ";
+        }
+
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+**Output:**
+```
+        1
+      1 2 1
+    1 2 3 2 1
+  1 2 3 4 3 2 1
+1 2 3 4 5 4 3 2 1
+```
+
+Piramida angka! Di sini kita pakai **tiga inner loop** dalam satu baris: spasi, angka naik, angka turun. Kelihatan rumit, tapi kalau dipecah per bagian, setiap loop sederhana.
+
+## Latihan
+
+**Latihan 1:** Buat pola segitiga terbalik dengan angka:
+```
+5 4 3 2 1
+4 3 2 1
+3 2 1
+2 1
+1
+```
+
+**Latihan 2:** Buat piramida terbalik (segitiga ke bawah, rata tengah):
+```
+* * * * * * * * *
+  * * * * * * *
+    * * * * *
+      * * *
+        *
+```
+
+*Hint: kebalikan dari Pola 3 — spasi bertambah, bintang berkurang.*
+
+**Latihan 3:** Buat pola "zig-zag" sederhana dari bintang:
+```
+*       *
+  *   *
+    *
+  *   *
+*       *
+```
+
+*Hint: bintang muncul kalau `j == i` atau `j == ukuran - i + 1`.*
+
+**Latihan 4:** Buat pola huruf "X" dari bintang dengan ukuran yang bisa diinput user. Contoh ukuran 5:
+```
+*       *
+  *   *
+    *
+  *   *
+*       *
+```
+
+**Latihan 5:** Coba bikin pola kreasimu sendiri! Gambar dulu di kertas, lalu tulis kodenya. Share hasilnya ke teman — siapa yang bikin pola paling keren?

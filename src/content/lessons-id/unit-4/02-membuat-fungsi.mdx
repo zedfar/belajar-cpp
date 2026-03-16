@@ -1,0 +1,628 @@
+---
+title: "Membuat Fungsi"
+unit: 4
+lesson: 2
+description: "Belajar menulis fungsi C++ dari awal — mulai dari sintaks, return type, prototype, sampai best practice"
+objectives:
+  - "Menulis fungsi C++ dengan berbagai return type"
+  - "Memahami dan menggunakan function prototype (forward declaration)"
+  - "Mengorganisir kode dengan prototype di atas main dan definisi di bawah main"
+  - "Menerapkan prinsip single responsibility pada fungsi"
+estimatedTime: 40
+prerequisites: ["unit-4/01-apa-itu-fungsi"]
+difficulty: "beginner"
+tags: ["fungsi", "function", "prototype", "forward-declaration", "return-type", "single-responsibility"]
+---
+
+# Membuat Fungsi
+
+Di pelajaran sebelumnya, kamu sudah mengenal **apa itu fungsi** dan kenapa fungsi penting. Sekarang saatnya belajar **cara membuat fungsi sendiri** dari nol! Kita akan bahas sintaks lengkapnya, berbagai return type, dan cara mengorganisir kode dengan rapi.
+
+## Sintaks Lengkap Membuat Fungsi
+
+Berikut template dasar membuat fungsi:
+
+```cpp
+return_type namaFungsi(tipe_param1 param1, tipe_param2 param2) {
+    // kode yang dijalankan
+    return nilai; // untuk fungsi non-void
+}
+```
+
+Mari kita buat fungsi pertamamu dari nol:
+
+```cpp
+#include <iostream>
+
+// Fungsi yang menjumlahkan dua angka
+int tambah(int a, int b) {
+    int hasil = a + b;
+    return hasil;
+}
+
+int main() {
+    int jumlah = tambah(3, 7);
+    std::cout << "3 + 7 = " << jumlah << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+3 + 7 = 10
+```
+
+## Return Type: Apa yang Dikembalikan?
+
+Return type menentukan **tipe data** apa yang dikembalikan fungsi. Berikut beberapa yang paling sering dipakai:
+
+### `int` — Mengembalikan bilangan bulat
+
+```cpp
+#include <iostream>
+
+int hitungKelilingPersegi(int sisi) {
+    return sisi * 4;
+}
+
+int main() {
+    std::cout << "Keliling persegi sisi 5: " << hitungKelilingPersegi(5) << std::endl;
+    std::cout << "Keliling persegi sisi 12: " << hitungKelilingPersegi(12) << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Keliling persegi sisi 5: 20
+Keliling persegi sisi 12: 48
+```
+
+### `double` — Mengembalikan bilangan desimal
+
+```cpp
+#include <iostream>
+
+double hitungKelilingLingkaran(double jariJari) {
+    return 2 * 3.14159 * jariJari;
+}
+
+double hitungLuasLingkaran(double jariJari) {
+    return 3.14159 * jariJari * jariJari;
+}
+
+int main() {
+    double r = 7.0;
+
+    std::cout << "Jari-jari: " << r << std::endl;
+    std::cout << "Keliling: " << hitungKelilingLingkaran(r) << std::endl;
+    std::cout << "Luas: " << hitungLuasLingkaran(r) << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Jari-jari: 7
+Keliling: 43.9823
+Luas: 153.938
+```
+
+### `bool` — Mengembalikan true atau false
+
+```cpp
+#include <iostream>
+
+bool adalahGenap(int angka) {
+    return angka % 2 == 0;
+}
+
+int main() {
+    std::cout << "4 genap? " << adalahGenap(4) << std::endl;
+    std::cout << "7 genap? " << adalahGenap(7) << std::endl;
+
+    if (adalahGenap(10)) {
+        std::cout << "10 memang genap!" << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+4 genap? 1
+7 genap? 0
+10 memang genap!
+```
+
+### `std::string` — Mengembalikan teks
+
+```cpp
+#include <iostream>
+#include <string>
+
+std::string dapatkanGrade(int nilai) {
+    if (nilai >= 90) {
+        return "A";
+    } else if (nilai >= 80) {
+        return "B";
+    } else if (nilai >= 70) {
+        return "C";
+    } else if (nilai >= 60) {
+        return "D";
+    } else {
+        return "E";
+    }
+}
+
+int main() {
+    int nilaiAndi = 85;
+    int nilaiBudi = 72;
+
+    std::cout << "Andi: " << nilaiAndi << " -> Grade " << dapatkanGrade(nilaiAndi) << std::endl;
+    std::cout << "Budi: " << nilaiBudi << " -> Grade " << dapatkanGrade(nilaiBudi) << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Andi: 85 -> Grade B
+Budi: 72 -> Grade C
+```
+
+### `void` — Tidak mengembalikan apa-apa
+
+```cpp
+#include <iostream>
+
+void cetakMenu() {
+    std::cout << "=== MENU UTAMA ===" << std::endl;
+    std::cout << "1. Mulai Permainan" << std::endl;
+    std::cout << "2. Pengaturan" << std::endl;
+    std::cout << "3. Keluar" << std::endl;
+    std::cout << "==================" << std::endl;
+}
+
+int main() {
+    cetakMenu();
+    return 0;
+}
+```
+
+Output:
+```
+=== MENU UTAMA ===
+1. Mulai Permainan
+2. Pengaturan
+3. Keluar
+==================
+```
+
+## Function Prototype (Forward Declaration)
+
+Saat programmu semakin besar, kamu ingin mengatur kode supaya `main()` ada di **atas** (supaya gampang ditemukan), dan definisi fungsi ada di **bawah**. Masalahnya, compiler membaca dari atas ke bawah — kalau fungsi belum dideklarasikan saat dipanggil, compiler akan error!
+
+Solusinya: **function prototype** (atau forward declaration).
+
+```cpp
+#include <iostream>
+
+// PROTOTYPE — deklarasi di atas main
+double celsiusKefahrenheit(double celsius);
+double fahrenheitKeCelsius(double fahrenheit);
+void cetakHasil(double celsius, double fahrenheit);
+
+int main() {
+    double suhuC = 100.0;
+    double suhuF = celsiusKefahrenheit(suhuC);
+
+    cetakHasil(suhuC, suhuF);
+
+    double suhuF2 = 72.0;
+    double suhuC2 = fahrenheitKeCelsius(suhuF2);
+
+    cetakHasil(suhuC2, suhuF2);
+
+    return 0;
+}
+
+// DEFINISI — di bawah main
+double celsiusKefahrenheit(double celsius) {
+    return (celsius * 9.0 / 5.0) + 32.0;
+}
+
+double fahrenheitKeCelsius(double fahrenheit) {
+    return (fahrenheit - 32.0) * 5.0 / 9.0;
+}
+
+void cetakHasil(double celsius, double fahrenheit) {
+    std::cout << celsius << " C = " << fahrenheit << " F" << std::endl;
+}
+```
+
+Output:
+```
+100 C = 212 F
+22.2222 C = 72 F
+```
+
+:::note
+**Pola yang direkomendasikan:**
+1. `#include` di paling atas
+2. **Prototype** semua fungsi setelah include
+3. **`main()`** di tengah
+4. **Definisi** fungsi di bawah main
+
+Pola ini membuat `main()` mudah ditemukan dan kode lebih terorganisir.
+:::
+
+### Kenapa Prototype Diperlukan?
+
+Tanpa prototype, kamu harus menulis semua fungsi **di atas** `main()`. Ini masih oke untuk program kecil, tapi kalau fungsinya ada 20-30, kamu harus scroll jauh ke bawah untuk menemukan `main()`. Prototype memecahkan masalah ini.
+
+```cpp
+// TANPA prototype — semua fungsi harus di atas main
+// (bisa, tapi kurang rapi untuk program besar)
+
+void fungsiA() { /* ... */ }
+void fungsiB() { /* ... */ }
+void fungsiC() { /* ... */ }
+// ... 20 fungsi lagi ...
+
+int main() {
+    // main terkubur di bawah
+}
+```
+
+```cpp
+// DENGAN prototype — main di atas, rapi!
+
+void fungsiA();
+void fungsiB();
+void fungsiC();
+
+int main() {
+    // main mudah ditemukan
+}
+
+void fungsiA() { /* ... */ }
+void fungsiB() { /* ... */ }
+void fungsiC() { /* ... */ }
+```
+
+## Contoh Lengkap: Cek Bilangan Prima
+
+Ini contoh fungsi yang cukup seru — mengecek apakah sebuah bilangan prima:
+
+```cpp
+#include <iostream>
+
+bool adalahPrima(int angka);
+void cekDanCetak(int angka);
+
+int main() {
+    cekDanCetak(2);
+    cekDanCetak(7);
+    cekDanCetak(10);
+    cekDanCetak(13);
+    cekDanCetak(1);
+
+    return 0;
+}
+
+bool adalahPrima(int angka) {
+    if (angka <= 1) {
+        return false;
+    }
+
+    for (int i = 2; i < angka; i++) {
+        if (angka % i == 0) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+void cekDanCetak(int angka) {
+    if (adalahPrima(angka)) {
+        std::cout << angka << " adalah bilangan prima" << std::endl;
+    } else {
+        std::cout << angka << " bukan bilangan prima" << std::endl;
+    }
+}
+```
+
+Output:
+```
+2 adalah bilangan prima
+7 adalah bilangan prima
+10 bukan bilangan prima
+13 adalah bilangan prima
+1 bukan bilangan prima
+```
+
+## Contoh Lengkap: Kalkulator Sederhana
+
+```cpp
+#include <iostream>
+
+double tambah(double a, double b);
+double kurang(double a, double b);
+double kali(double a, double b);
+double bagi(double a, double b);
+void cetakHasil(std::string operasi, double a, double b, double hasil);
+
+int main() {
+    double x = 15.0;
+    double y = 4.0;
+
+    cetakHasil("Penjumlahan", x, y, tambah(x, y));
+    cetakHasil("Pengurangan", x, y, kurang(x, y));
+    cetakHasil("Perkalian", x, y, kali(x, y));
+    cetakHasil("Pembagian", x, y, bagi(x, y));
+
+    return 0;
+}
+
+double tambah(double a, double b) {
+    return a + b;
+}
+
+double kurang(double a, double b) {
+    return a - b;
+}
+
+double kali(double a, double b) {
+    return a * b;
+}
+
+double bagi(double a, double b) {
+    if (b == 0) {
+        std::cout << "Error: tidak bisa membagi dengan nol!" << std::endl;
+        return 0;
+    }
+    return a / b;
+}
+
+void cetakHasil(std::string operasi, double a, double b, double hasil) {
+    std::cout << operasi << ": " << a << " dan " << b << " = " << hasil << std::endl;
+}
+```
+
+Output:
+```
+Penjumlahan: 15 dan 4 = 19
+Pengurangan: 15 dan 4 = 11
+Perkalian: 15 dan 4 = 60
+Pembagian: 15 dan 4 = 3.75
+```
+
+## Debugging Tip: Cetak Nilai Sebelum Return
+
+Saat fungsimu menghasilkan nilai yang salah, cara paling cepat untuk debug adalah mencetak nilai sebelum di-return:
+
+```cpp
+#include <iostream>
+
+double hitungDiskon(double harga, double persenDiskon) {
+    double diskon = harga * persenDiskon / 100.0;
+    double hargaAkhir = harga - diskon;
+
+    // Debug: cetak untuk memastikan kalkulasi benar
+    std::cout << "[DEBUG] Harga awal: " << harga << std::endl;
+    std::cout << "[DEBUG] Diskon " << persenDiskon << "%: " << diskon << std::endl;
+    std::cout << "[DEBUG] Harga akhir: " << hargaAkhir << std::endl;
+
+    return hargaAkhir;
+}
+
+int main() {
+    double bayar = hitungDiskon(100000, 15);
+    std::cout << "Yang harus dibayar: Rp " << bayar << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+[DEBUG] Harga awal: 100000
+[DEBUG] Diskon 15%: 15000
+[DEBUG] Harga akhir: 85000
+Yang harus dibayar: Rp 85000
+```
+
+:::tip
+Setelah bug-nya ketemu, jangan lupa **hapus atau komentari** baris debug-nya! Kamu tidak mau user melihat pesan `[DEBUG]` di program finalmu.
+:::
+
+## Best Practice: Satu Fungsi = Satu Tugas
+
+Prinsip **Single Responsibility** — setiap fungsi sebaiknya hanya melakukan **satu hal**. Jangan buat fungsi yang "serba bisa" tapi jadi sulit dipahami.
+
+```cpp
+// KURANG BAIK — satu fungsi ngerjain terlalu banyak
+void prosesNilai(int nilai) {
+    // Hitung grade
+    std::string grade;
+    if (nilai >= 90) grade = "A";
+    else if (nilai >= 80) grade = "B";
+    else grade = "C";
+
+    // Cetak header
+    std::cout << "==================" << std::endl;
+    std::cout << "  RAPOR SISWA" << std::endl;
+    std::cout << "==================" << std::endl;
+
+    // Cetak hasil
+    std::cout << "Nilai: " << nilai << std::endl;
+    std::cout << "Grade: " << grade << std::endl;
+
+    // Cetak pesan
+    if (nilai >= 75) {
+        std::cout << "Status: LULUS" << std::endl;
+    } else {
+        std::cout << "Status: TIDAK LULUS" << std::endl;
+    }
+}
+```
+
+```cpp
+// LEBIH BAIK — setiap fungsi punya satu tugas jelas
+
+#include <iostream>
+#include <string>
+
+std::string dapatkanGrade(int nilai);
+bool adalahLulus(int nilai, int kkm);
+void cetakGaris();
+void cetakRapor(int nilai);
+
+int main() {
+    cetakRapor(85);
+    std::cout << std::endl;
+    cetakRapor(60);
+
+    return 0;
+}
+
+std::string dapatkanGrade(int nilai) {
+    if (nilai >= 90) return "A";
+    else if (nilai >= 80) return "B";
+    else if (nilai >= 70) return "C";
+    else if (nilai >= 60) return "D";
+    else return "E";
+}
+
+bool adalahLulus(int nilai, int kkm) {
+    return nilai >= kkm;
+}
+
+void cetakGaris() {
+    std::cout << "==================" << std::endl;
+}
+
+void cetakRapor(int nilai) {
+    cetakGaris();
+    std::cout << "  RAPOR SISWA" << std::endl;
+    cetakGaris();
+    std::cout << "Nilai: " << nilai << std::endl;
+    std::cout << "Grade: " << dapatkanGrade(nilai) << std::endl;
+
+    if (adalahLulus(nilai, 75)) {
+        std::cout << "Status: LULUS" << std::endl;
+    } else {
+        std::cout << "Status: TIDAK LULUS" << std::endl;
+    }
+    cetakGaris();
+}
+```
+
+Output:
+```
+==================
+  RAPOR SISWA
+==================
+Nilai: 85
+Grade: B
+Status: LULUS
+==================
+
+==================
+  RAPOR SISWA
+==================
+Nilai: 60
+Grade: D
+Status: TIDAK LULUS
+==================
+```
+
+## Kesalahan Umum
+
+### 1. Prototype tidak cocok dengan definisi
+
+```cpp
+// Prototype
+int hitung(int a, int b);
+
+// Definisi — ERROR! Parameter berbeda dari prototype
+int hitung(int a, double b) {
+    return a + b;
+}
+```
+
+:::warning
+Prototype dan definisi harus **persis sama** — return type, nama fungsi, jumlah dan tipe parameter. Kalau beda, compiler akan bingung!
+:::
+
+### 2. Lupa titik koma di prototype
+
+```cpp
+// SALAH — lupa titik koma
+int tambah(int a, int b)
+
+// BENAR
+int tambah(int a, int b);
+```
+
+### 3. Return type tidak sesuai
+
+```cpp
+// SALAH — bilang return int tapi return string
+int dapatkanNama() {
+    return "Andi"; // ERROR!
+}
+
+// BENAR
+std::string dapatkanNama() {
+    return "Andi";
+}
+```
+
+### 4. Memanggil fungsi tanpa tanda kurung
+
+```cpp
+// SALAH — tanpa () bukan memanggil fungsi!
+cetakMenu;
+
+// BENAR
+cetakMenu();
+```
+
+## Latihan
+
+**Latihan 1:** Buat fungsi `double hitungBMI(double beratKg, double tinggiM)` yang menghitung Body Mass Index dengan rumus: berat / (tinggi * tinggi). Panggil fungsi ini dengan beberapa contoh data dan tampilkan hasilnya.
+
+**Latihan 2:** Buat program dengan prototype di atas `main` dan definisi di bawah `main` yang memiliki fungsi-fungsi berikut:
+- `int luasPersegiPanjang(int panjang, int lebar)`
+- `int kelilingPersegiPanjang(int panjang, int lebar)`
+- `void cetakInfo(int panjang, int lebar)`
+
+Fungsi `cetakInfo` harus memanggil kedua fungsi lainnya dan menampilkan hasilnya.
+
+**Latihan 3:** Buat program "Konverter Suhu" dengan fungsi-fungsi:
+- `double celsiusKeFahrenheit(double c)`
+- `double celsiusKeKelvin(double c)`
+- `void cetakSemuaKonversi(double celsius)`
+
+Panggil `cetakSemuaKonversi` untuk suhu 0, 37, dan 100 derajat Celsius.
+
+## Ringkasan
+
+| Konsep | Penjelasan |
+|--------|------------|
+| **Return type** | Tipe data yang dikembalikan: `int`, `double`, `bool`, `std::string`, `void` |
+| **Prototype** | Deklarasi fungsi di atas `main` diakhiri `;` |
+| **Definisi** | Isi lengkap fungsi di bawah `main` |
+| **Pola organisasi** | Include, prototype, `main()`, definisi |
+| **Single Responsibility** | Satu fungsi sebaiknya hanya melakukan satu tugas |
+| **Debug tip** | Cetak nilai sebelum `return` untuk memastikan kalkulasi benar |
+
+Sekarang kamu sudah bisa membuat fungsi sendiri dengan berbagai return type! Tapi fungsi-fungsi kita belum fleksibel — bagaimana kalau kita mau fungsi yang bisa menerima input berbeda-beda? Di pelajaran berikutnya, kita akan mendalami **parameter dan argumen**!

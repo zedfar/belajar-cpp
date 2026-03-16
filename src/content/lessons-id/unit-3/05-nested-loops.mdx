@@ -1,0 +1,378 @@
+---
+title: "Nested Loops (Loop Bersarang)"
+unit: 3
+lesson: 5
+description: "Belajar menggunakan loop di dalam loop untuk membuat pola 2 dimensi seperti tabel dan grid"
+objectives:
+  - "Memahami konsep loop di dalam loop (nested loops)"
+  - "Membedakan peran outer loop (baris) dan inner loop (kolom)"
+  - "Mampu melacak eksekusi nested loop secara manual (trace through)"
+  - "Memahami dampak performa nested loop O(n²)"
+estimatedTime: 40
+prerequisites: ["unit-3/04-break-continue"]
+difficulty: "beginner"
+tags: ["nested-loops", "loop-bersarang", "grid", "tabel", "perulangan"]
+---
+
+# Nested Loops (Loop Bersarang)
+
+Bayangkan kamu lagi mengisi absen kelas. Kamu buka setiap baris (setiap murid), lalu di setiap baris itu kamu isi kolom-kolom: nama, tanggal lahir, alamat... Itu **loop di dalam loop** — atau istilah kerennya, **nested loop**!
+
+Nested loop adalah salah satu konsep paling penting di pemrograman. Dengan ini, kamu bisa bekerja dengan data 2 dimensi — baris dan kolom, seperti tabel Excel atau grid di game.
+
+## Konsep Dasar: Loop dalam Loop
+
+Coba perhatikan struktur ini:
+
+```cpp
+#include <iostream>
+
+int main() {
+    // Outer loop: mengurus BARIS
+    for (int baris = 1; baris <= 3; baris++) {
+        // Inner loop: mengurus KOLOM
+        for (int kolom = 1; kolom <= 4; kolom++) {
+            std::cout << "* ";
+        }
+        std::cout << std::endl;  // pindah baris setelah inner loop selesai
+    }
+
+    return 0;
+}
+```
+
+**Output:**
+```
+* * * *
+* * * *
+* * * *
+```
+
+Apa yang terjadi di sini?
+1. **Outer loop** jalan 3 kali (baris 1, 2, 3)
+2. Untuk **setiap** iterasi outer loop, **inner loop** jalan 4 kali (kolom 1, 2, 3, 4)
+3. Setelah inner loop selesai, kita cetak `endl` untuk pindah baris
+4. Total: 3 x 4 = 12 kali cetak bintang
+
+:::tip
+Cara mudah mengingat: **Outer loop = baris**, **Inner loop = kolom** (karakter per baris). Setiap kali outer loop maju satu langkah, inner loop jalan dari awal lagi.
+:::
+
+## Melacak Eksekusi dengan Tangan (Trace Through)
+
+Ini skill penting banget! Kalau kamu bisa "jadi komputer" dan melacak jalannya kode di kepala (atau di kertas), debugging jadi jauh lebih gampang.
+
+Mari kita trace nested loop yang lebih kecil:
+
+```cpp
+#include <iostream>
+
+int main() {
+    for (int i = 1; i <= 2; i++) {
+        for (int j = 1; j <= 3; j++) {
+            std::cout << "(" << i << "," << j << ") ";
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+**Output:**
+```
+(1,1) (1,2) (1,3)
+(2,1) (2,2) (2,3)
+```
+
+**Trace langkah demi langkah:**
+
+| Langkah | i | j | Yang dicetak |
+|---------|---|---|-------------|
+| 1 | 1 | 1 | (1,1) |
+| 2 | 1 | 2 | (1,2) |
+| 3 | 1 | 3 | (1,3) |
+| 4 | 1 | - | endl (pindah baris) |
+| 5 | 2 | 1 | (2,1) |
+| 6 | 2 | 2 | (2,2) |
+| 7 | 2 | 3 | (2,3) |
+| 8 | 2 | - | endl (pindah baris) |
+
+Perhatikan: ketika `i` naik dari 1 ke 2, `j` **mulai ulang dari 1**. Inner loop selalu reset setiap kali outer loop maju.
+
+:::note
+**Tips trace:** Ambil kertas, buat tabel dengan kolom untuk setiap variabel. Isi satu baris untuk setiap langkah. Ini cara paling efektif untuk memahami nested loop — bahkan programmer profesional masih sering pakai cara ini!
+:::
+
+## Contoh: Tabel Perkalian 10x10
+
+Ingat tabel perkalian yang sering dipajang di dinding kelas? Kita bisa bikin itu dengan nested loop!
+
+```cpp
+#include <iostream>
+#include <iomanip>  // untuk setw (set width)
+
+int main() {
+    std::cout << "=== TABEL PERKALIAN 10x10 ===" << std::endl;
+    std::cout << std::endl;
+
+    // Header kolom
+    std::cout << "    ";  // spasi untuk kolom pertama
+    for (int j = 1; j <= 10; j++) {
+        std::cout << std::setw(4) << j;
+    }
+    std::cout << std::endl;
+
+    // Garis pemisah
+    std::cout << "   ";
+    for (int j = 1; j <= 10; j++) {
+        std::cout << "----";
+    }
+    std::cout << std::endl;
+
+    // Isi tabel
+    for (int i = 1; i <= 10; i++) {
+        std::cout << std::setw(2) << i << " |";  // header baris
+        for (int j = 1; j <= 10; j++) {
+            std::cout << std::setw(4) << i * j;
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+**Output (sebagian):**
+```
+=== TABEL PERKALIAN 10x10 ===
+
+       1   2   3   4   5   6   7   8   9  10
+   ----------------------------------------
+ 1 |   1   2   3   4   5   6   7   8   9  10
+ 2 |   2   4   6   8  10  12  14  16  18  20
+ 3 |   3   6   9  12  15  18  21  24  27  30
+...
+10 |  10  20  30  40  50  60  70  80  90 100
+```
+
+Keren, kan? `std::setw(4)` dari `<iomanip>` membuat setiap angka menempati 4 karakter, jadi kolom-kolomnya rapi.
+
+## Contoh: Grid Bintang Persegi
+
+Mau bikin kotak bintang? Gampang!
+
+```cpp
+#include <iostream>
+
+int main() {
+    int ukuran;
+
+    std::cout << "Masukkan ukuran kotak: ";
+    std::cin >> ukuran;
+
+    for (int baris = 1; baris <= ukuran; baris++) {
+        for (int kolom = 1; kolom <= ukuran; kolom++) {
+            std::cout << "* ";
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+**Input: 5, Output:**
+```
+* * * * *
+* * * * *
+* * * * *
+* * * * *
+* * * * *
+```
+
+## Hati-hati Performa: O(n^2)
+
+Nested loop itu powerful, tapi ada harga yang harus dibayar — **performa**.
+
+```cpp
+#include <iostream>
+
+int main() {
+    int n;
+    std::cout << "Masukkan n: ";
+    std::cin >> n;
+
+    int hitung = 0;
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            hitung++;
+        }
+    }
+
+    std::cout << "Total operasi: " << hitung << std::endl;
+
+    return 0;
+}
+```
+
+| n | Total operasi |
+|---|--------------|
+| 5 | 25 |
+| 10 | 100 |
+| 100 | 10.000 |
+| 1.000 | 1.000.000 |
+| 10.000 | 100.000.000 |
+
+Lihat polanya? Kalau `n` dikali 10, operasi dikali **100** (10 pangkat 2). Ini disebut **O(n^2)** — kompleksitas kuadrat. Untuk `n` kecil tidak masalah, tapi kalau `n` besar... komputermu bisa "mikir" lama banget.
+
+:::warning
+Hati-hati dengan nested loop pada data besar. Kalau outer loop 1.000 kali dan inner loop 1.000 kali, totalnya **1.000.000** operasi. Tiga level nested loop? Bisa **1.000.000.000** (satu miliar) operasi. Komputer bisa nge-hang!
+:::
+
+## Contoh Menarik: Loading Bar ASCII
+
+Yuk bikin sesuatu yang kelihatan keren — loading bar sederhana!
+
+```cpp
+#include <iostream>
+#include <chrono>   // untuk waktu
+#include <thread>   // untuk sleep
+
+int main() {
+    int total = 20;  // panjang loading bar
+
+    std::cout << "Downloading file..." << std::endl;
+
+    for (int i = 0; i <= total; i++) {
+        // Hitung persentase
+        int persen = (i * 100) / total;
+
+        // Cetak loading bar
+        std::cout << "\r[";  // \r = kembali ke awal baris
+
+        // Inner loop: cetak bagian yang sudah terisi
+        for (int j = 0; j < i; j++) {
+            std::cout << "#";
+        }
+
+        // Inner loop kedua: cetak bagian kosong
+        for (int j = i; j < total; j++) {
+            std::cout << " ";
+        }
+
+        std::cout << "] " << persen << "%";
+        std::cout.flush();  // paksa tampilkan sekarang
+
+        // Tunggu sebentar supaya kelihatan animasinya
+        std::this_thread::sleep_for(std::chrono::milliseconds(150));
+    }
+
+    std::cout << std::endl;
+    std::cout << "Download selesai!" << std::endl;
+
+    return 0;
+}
+```
+
+**Animasi di terminal:**
+```
+[##########          ] 50%
+```
+
+Di sini kita pakai **dua inner loop**: satu untuk mencetak `#` (bagian terisi) dan satu untuk mencetak spasi (bagian kosong). Karakter `\r` membuat kursor kembali ke awal baris, sehingga loading bar "bergerak" di tempat.
+
+:::note
+`std::this_thread::sleep_for` butuh `#include <chrono>` dan `#include <thread>`. Ini fitur C++ modern yang membuat program "tidur" sebentar. Tanpa jeda ini, loading bar akan selesai terlalu cepat untuk dilihat!
+:::
+
+## Break di Nested Loop
+
+Ingat `break`? Di nested loop, `break` hanya menghentikan loop **terdalam** tempat dia berada. Outer loop tetap jalan!
+
+```cpp
+#include <iostream>
+
+int main() {
+    for (int i = 1; i <= 3; i++) {
+        std::cout << "Baris " << i << ": ";
+
+        for (int j = 1; j <= 5; j++) {
+            if (j == 4) {
+                break;  // hanya keluar dari inner loop!
+            }
+            std::cout << j << " ";
+        }
+
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+**Output:**
+```
+Baris 1: 1 2 3
+Baris 2: 1 2 3
+Baris 3: 1 2 3
+```
+
+Walaupun inner loop harusnya jalan sampai `j == 5`, `break` menghentikannya di `j == 4`. Tapi outer loop (i) tetap jalan 3 kali.
+
+:::warning
+Kalau kamu mau keluar dari **kedua** loop sekaligus, `break` saja tidak cukup. Kamu perlu trik tambahan, misalnya pakai variabel `bool`:
+
+```cpp
+bool selesai = false;
+for (int i = 0; i < 10 && !selesai; i++) {
+    for (int j = 0; j < 10; j++) {
+        if (/* kondisi tertentu */) {
+            selesai = true;
+            break;  // keluar inner loop
+        }
+    }
+    // selesai == true, maka outer loop juga berhenti
+}
+```
+:::
+
+## Ringkasan
+
+| Konsep | Penjelasan |
+|--------|-----------|
+| Nested loop | Loop di dalam loop — untuk bekerja dengan data 2D |
+| Outer loop | Mengontrol **baris** |
+| Inner loop | Mengontrol **kolom** (karakter per baris) |
+| Reset inner loop | Inner loop mulai ulang setiap kali outer loop maju |
+| O(n^2) | Nested loop = operasi berlipat ganda, hati-hati performa |
+| `break` di nested loop | Hanya menghentikan loop **terdalam** |
+
+## Latihan
+
+**Latihan 1:** Buat program yang mencetak grid angka seperti ini (ukuran 5x5):
+
+```
+1 2 3 4 5
+1 2 3 4 5
+1 2 3 4 5
+1 2 3 4 5
+1 2 3 4 5
+```
+
+**Latihan 2:** Modifikasi Latihan 1 sehingga angka di setiap baris dimulai dari nomor baris:
+
+```
+1 2 3 4 5
+2 3 4 5 6
+3 4 5 6 7
+4 5 6 7 8
+5 6 7 8 9
+```
+
+*Hint: nilai kolom = `i + j - 1`*
+
+**Latihan 3:** Buat program yang mencetak tabel perkalian sesuai input user. Kalau user input 5, cetak tabel 5x5. Kalau input 7, cetak tabel 7x7.
+
+**Latihan 4:** Buat program "pencarian koordinat" — user memasukkan sebuah angka, dan program mencari angka tersebut di dalam grid perkalian, lalu mencetak koordinat `(baris, kolom)` di mana angka itu ditemukan. Gunakan `break` untuk berhenti setelah menemukan yang pertama.

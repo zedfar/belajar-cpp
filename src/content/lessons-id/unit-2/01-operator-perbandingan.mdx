@@ -1,0 +1,271 @@
+---
+title: "Operator Perbandingan"
+unit: 2
+lesson: 1
+description: "Mengenal operator perbandingan di C++ untuk membandingkan dua nilai"
+objectives:
+  - "Memahami 6 operator perbandingan: ==, !=, <, >, <=, >="
+  - "Mengetahui bahwa hasil perbandingan adalah bool (true/false)"
+  - "Bisa menggunakan operator perbandingan dalam program"
+  - "Menghindari kesalahan umum: = vs =="
+estimatedTime: 20
+prerequisites: ["unit-1/03-variabel-tipe-data"]
+difficulty: "beginner"
+tags: ["operator", "perbandingan", "comparison", "bool", "relational"]
+---
+
+# Operator Perbandingan
+
+Dalam kehidupan sehari-hari, kamu sering membandingkan hal-hal, kan? "Nilaiku lebih tinggi dari KKM nggak ya?", "Umurku sudah cukup buat bikin SIM belum?", "Harga bakso di kantin A sama nggak dengan kantin B?" Nah, di C++ kita juga bisa membandingkan nilai-nilai — dan hasilnya selalu **benar** atau **salah**.
+
+## Analogi: Timbangan dan Penggaris
+
+Bayangkan operator perbandingan seperti **timbangan** atau **penggaris**. Kamu menaruh dua benda, lalu bertanya: "Mana yang lebih berat?", "Sama nggak panjangnya?", "Yang kiri lebih pendek?" Jawabannya selalu **ya** (true) atau **tidak** (false).
+
+```
+   ┌─────┐         ┌─────┐
+   │  5  │   >?    │  3  │    Jawaban: true (ya, 5 lebih besar dari 3)
+   └─────┘         └─────┘
+
+   ┌─────┐         ┌─────┐
+   │  7  │   ==?   │  7  │    Jawaban: true (ya, keduanya sama)
+   └─────┘         └─────┘
+
+   ┌─────┐         ┌─────┐
+   │  2  │   >?    │  8  │    Jawaban: false (tidak, 2 tidak lebih besar dari 8)
+   └─────┘         └─────┘
+```
+
+## 6 Operator Perbandingan di C++
+
+C++ punya 6 operator untuk membandingkan dua nilai:
+
+| Operator | Arti | Contoh | Hasil |
+|----------|------|--------|-------|
+| `==` | Sama dengan | `5 == 5` | `true` |
+| `!=` | Tidak sama dengan | `5 != 3` | `true` |
+| `<` | Kurang dari | `3 < 7` | `true` |
+| `>` | Lebih dari | `10 > 4` | `true` |
+| `<=` | Kurang dari atau sama dengan | `5 <= 5` | `true` |
+| `>=` | Lebih dari atau sama dengan | `8 >= 10` | `false` |
+
+## Hasil Perbandingan: `bool`
+
+Ingat tipe data `bool` dari Unit 1? Semua operator perbandingan menghasilkan nilai `bool` — yaitu `true` (benar) atau `false` (salah). Di layar, `true` ditampilkan sebagai `1` dan `false` sebagai `0`.
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << (5 == 5) << std::endl;   // 1 (true)
+    std::cout << (5 == 3) << std::endl;   // 0 (false)
+    std::cout << (10 > 7) << std::endl;   // 1 (true)
+    std::cout << (2 > 9) << std::endl;    // 0 (false)
+
+    return 0;
+}
+```
+
+Output:
+```
+1
+0
+1
+0
+```
+
+:::note
+Kenapa pakai tanda kurung `()` di dalam `cout`? Karena operator `<<` punya prioritas lebih tinggi dari operator perbandingan. Tanpa kurung, compiler akan bingung. Jadi selalu bungkus perbandingan dengan tanda kurung saat dipakai di `cout`.
+:::
+
+## Menyimpan Hasil Perbandingan
+
+Kamu bisa menyimpan hasil perbandingan ke dalam variabel `bool`:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int nilaiUjian = 85;
+    int kkm = 75;
+
+    bool lulus = nilaiUjian >= kkm;
+
+    std::cout << "Nilai ujian: " << nilaiUjian << std::endl;
+    std::cout << "KKM: " << kkm << std::endl;
+    std::cout << "Lulus: " << lulus << std::endl;  // 1 (true)
+
+    return 0;
+}
+```
+
+Output:
+```
+Nilai ujian: 85
+KKM: 75
+Lulus: 1
+```
+
+## Contoh Praktis: Membandingkan Umur
+
+```cpp
+#include <iostream>
+
+int main() {
+    int umurAndi = 17;
+    int umurBudi = 15;
+
+    std::cout << "Umur Andi: " << umurAndi << std::endl;
+    std::cout << "Umur Budi: " << umurBudi << std::endl;
+    std::cout << std::endl;
+
+    std::cout << "Andi lebih tua dari Budi? " << (umurAndi > umurBudi) << std::endl;
+    std::cout << "Umur mereka sama? " << (umurAndi == umurBudi) << std::endl;
+    std::cout << "Andi sudah 17 tahun? " << (umurAndi >= 17) << std::endl;
+    std::cout << "Budi belum 17 tahun? " << (umurBudi < 17) << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Umur Andi: 17
+Umur Budi: 15
+
+Andi lebih tua dari Budi? 1
+Umur mereka sama? 0
+Andi sudah 17 tahun? 1
+Budi belum 17 tahun? 1
+```
+
+## Contoh Praktis: Membandingkan Skor Game
+
+```cpp
+#include <iostream>
+
+int main() {
+    int skorPlayer1 = 4500;
+    int skorPlayer2 = 4500;
+    int skorHighScore = 5000;
+
+    std::cout << "Player 1: " << skorPlayer1 << std::endl;
+    std::cout << "Player 2: " << skorPlayer2 << std::endl;
+    std::cout << "High Score: " << skorHighScore << std::endl;
+    std::cout << std::endl;
+
+    std::cout << "Skor seri? " << (skorPlayer1 == skorPlayer2) << std::endl;
+    std::cout << "Player 1 pecah rekor? " << (skorPlayer1 > skorHighScore) << std::endl;
+    std::cout << "Player 2 belum pecah rekor? " << (skorPlayer2 <= skorHighScore) << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Player 1: 4500
+Player 2: 4500
+High Score: 5000
+
+Skor seri? 1
+Player 1 pecah rekor? 0
+Player 2 belum pecah rekor? 1
+```
+
+## Contoh Praktis: Cek Suhu
+
+```cpp
+#include <iostream>
+
+int main() {
+    double suhuBadan = 37.8;
+    double batasDemam = 37.5;
+
+    std::cout << "Suhu badan: " << suhuBadan << " C" << std::endl;
+    std::cout << "Batas demam: " << batasDemam << " C" << std::endl;
+    std::cout << "Sedang demam? " << (suhuBadan > batasDemam) << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Suhu badan: 37.8 C
+Batas demam: 37.5 C
+Sedang demam? 1
+```
+
+## Kesalahan Umum
+
+### 1. Menggunakan `=` alih-alih `==`
+
+Ini adalah **kesalahan paling sering** bagi pemula! Ingat:
+- `=` artinya **memberikan nilai** (assignment)
+- `==` artinya **membandingkan** (comparison)
+
+```cpp
+int x = 5;
+
+// SALAH — ini mengubah x jadi 10, bukan membandingkan!
+// x = 10;
+
+// BENAR — ini membandingkan apakah x sama dengan 10
+// x == 10;
+```
+
+:::warning
+`=` dan `==` adalah dua hal yang **sangat berbeda**! Satu tanda sama dengan (`=`) berarti "simpan nilai ini". Dua tanda sama dengan (`==`) berarti "apakah kedua nilai ini sama?" Jangan sampai tertukar!
+:::
+
+### 2. Membandingkan tipe data yang berbeda
+
+```cpp
+int a = 5;
+double b = 5.0;
+
+// Ini akan jalan, tapi hati-hati dengan bilangan desimal
+std::cout << (a == b) << std::endl;  // 1 (true), karena 5 == 5.0
+```
+
+:::tip
+Membandingkan `int` dengan `double` biasanya aman untuk angka sederhana. Tapi hati-hati dengan hasil perhitungan desimal — terkadang `0.1 + 0.2` bukan tepat `0.3` karena cara komputer menyimpan bilangan desimal.
+:::
+
+### 3. Lupa tanda kurung di `cout`
+
+```cpp
+// SALAH — compiler bingung
+// std::cout << 5 > 3 << std::endl;
+
+// BENAR — pakai tanda kurung
+std::cout << (5 > 3) << std::endl;
+```
+
+## Latihan
+
+**Latihan 1:** Buat program yang mendeklarasikan dua variabel `int` berisi tinggi badan (dalam cm) dua orang temanmu. Lalu tampilkan hasil perbandingan: siapa yang lebih tinggi, apakah tinggi mereka sama, dan apakah masing-masing di atas 160 cm.
+
+**Latihan 2:** Buat program yang menyimpan harga dua barang ke dalam variabel `double`. Bandingkan harga keduanya dan tampilkan:
+- Apakah harganya sama?
+- Apakah barang pertama lebih murah?
+- Apakah barang kedua harganya di atas 50000?
+
+**Latihan 3:** Deklarasikan variabel `int umur` dan `int batasMin = 12`. Simpan hasil perbandingan `umur >= batasMin` ke variabel `bool bolehMasuk`, lalu tampilkan hasilnya.
+
+## Ringkasan
+
+| Konsep | Penjelasan |
+|--------|------------|
+| `==` | Sama dengan — cek apakah dua nilai identik |
+| `!=` | Tidak sama dengan — cek apakah dua nilai berbeda |
+| `<` | Kurang dari |
+| `>` | Lebih dari |
+| `<=` | Kurang dari atau sama dengan |
+| `>=` | Lebih dari atau sama dengan |
+| Hasil perbandingan | Selalu `bool` — `true` (1) atau `false` (0) |
+| `=` vs `==` | `=` untuk memberi nilai, `==` untuk membandingkan |
+| Tanda kurung di `cout` | Selalu bungkus perbandingan dengan `()` di dalam `cout` |
+
+Sekarang kamu tahu cara membandingkan nilai! Di pelajaran berikutnya, kita akan menggunakan hasil perbandingan ini untuk **membuat keputusan** dalam program menggunakan `if` dan `else`.
