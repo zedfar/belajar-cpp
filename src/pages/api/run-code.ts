@@ -33,7 +33,7 @@ export const POST: APIRoute = async ({ request }) => {
   const JUDGE0_URL = import.meta.env.JUDGE0_API_URL || 'https://judge0-ce.p.rapidapi.com'
   const JUDGE0_KEY = import.meta.env.JUDGE0_API_KEY || ''
 
-  console.log(JUDGE0_KEY);
+  // console.log(JUDGE0_KEY);
   
 
   const headers: Record<string, string> = {
@@ -41,7 +41,7 @@ export const POST: APIRoute = async ({ request }) => {
   }
   if (JUDGE0_KEY) {
     headers['X-RapidAPI-Key'] = JUDGE0_KEY
-    headers['X-RapidAPI-Host'] = 'judge0-extra-ce.p.rapidapi.com' // 'judge0-ce.p.rapidapi.com'
+    headers['X-RapidAPI-Host'] = 'judge0-ce.p.rapidapi.com'
   }
 
   try {
