@@ -30,18 +30,22 @@ export const POST: APIRoute = async ({ request }) => {
     })
   }
 
-  const JUDGE0_URL = import.meta.env.JUDGE0_API_URL || 'https://judge0-ce.p.rapidapi.com'
+  const JUDGE0_URL = (import.meta.env.JUDGE0_API_URL || 'https://judge0-ce.p.rapidapi.com').replace(/\/$/, '')
   const JUDGE0_KEY = import.meta.env.JUDGE0_API_KEY || ''
-
-  // console.log(JUDGE0_KEY);
-  
+  const isSelfHosted = !JUDGE0_URL.includes('rapidapi.com')
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
   }
   if (JUDGE0_KEY) {
-    headers['X-RapidAPI-Key'] = JUDGE0_KEY
-    headers['X-RapidAPI-Host'] = 'judge0-ce.p.rapidapi.com'
+    if (isSelfHosted) {
+      // Self-hosted Judge0: gunakan X-Auth-Token
+      headers['X-Auth-Token'] = JUDGE0_KEY
+    } else {
+      // RapidAPI Judge0
+      headers['X-RapidAPI-Key'] = JUDGE0_KEY
+      headers['X-RapidAPI-Host'] = 'judge0-ce.p.rapidapi.com'
+    }
   }
 
   try {

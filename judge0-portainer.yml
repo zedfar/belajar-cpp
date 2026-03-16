@@ -1,0 +1,126 @@
+# Judge0 CE — Self-Hosted Stack untuk Portainer
+# ================================================
+# Cara deploy di Portainer:
+#   1. Buka Portainer → Stacks → + Add Stack
+#   2. Copy-paste isi file ini
+#   3. Ganti semua nilai yang ada komentar "GANTI INI"
+#   4. Klik "Deploy the stack"
+#
+# Setelah deploy, API tersedia di:
+#   http://<ip-server>:2358
+#
+# Test: http://<ip-server>:2358/system_info
+# ================================================
+
+version: "3.9"
+
+# Reusable environment block (YAML anchor)
+x-judge0-env: &judge0-env
+  POSTGRES_HOST: db
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: judge0
+  POSTGRES_USER: judge0
+  POSTGRES_PASSWORD: "GantiPasswordDB_YangKuat123!"   # GANTI INI
+  REDIS_HOST: redis
+  REDIS_PORT: "6379"
+  REDIS_PASSWORD: "GantiPasswordRedis_YangKuat456!"   # GANTI INI
+
+  # Keamanan API — token untuk X-Auth-Token header
+  # Kosongkan (AUTHN_TOKEN: "") untuk akses tanpa auth (tidak disarankan di production)
+  AUTHN_HEADER: "X-Auth-Token"
+  AUTHN_TOKEN: "ganti-dengan-token-rahasia-kamu"      # GANTI INI
+
+  # Secret key untuk Rails (generate random 64 char)
+  SECRET_KEY_BASE: "gantiDenganStringAcak64KarakterAtauLebih_abcdefghijklmnopqrstuvwxyz1234"  # GANTI INI
+
+  # Batas resource per submission
+  CPU_TIME_LIMIT: "5"           # detik
+  CPU_EXTRA_TIME: "1"
+  WALL_TIME_LIMIT: "10"
+  MEMORY_LIMIT: "128000"        # KB (128 MB)
+  STACK_LIMIT: "64000"          # KB (64 MB)
+  MAX_PROCESSES_AND_OR_THREADS: "60"
+  ENABLE_PER_PROCESS_AND_THREAD_TIME_LIMIT: "false"
+  ENABLE_PER_PROCESS_AND_THREAD_MEMORY_LIMIT: "true"
+  MAX_FILE_SIZE: "1024"         # KB (1 MB)
+
+  # Queue
+  REDIS_CACHE_STORE: "false"
+
+services:
+  # ── Database ──────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: judge0
+      POSTGRES_USER: judge0
+      POSTGRES_PASSWORD: "GantiPasswordDB_YangKuat123!"   # GANTI INI (sama dengan atas)
+    volumes:
+      - judge0_db:/var/lib/postgresql/data
+    networks:
+      - judge0-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U judge0"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Redis (queue) ──────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: >
+      sh -c 'redis-server --requirepass "$$REDIS_PASSWORD" --appendonly no --save ""'
+    environment:
+      REDIS_PASSWORD: "GantiPasswordRedis_YangKuat456!"   # GANTI INI (sama dengan atas)
+    volumes:
+      - judge0_redis:/data
+    networks:
+      - judge0-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "GantiPasswordRedis_YangKuat456!", "ping"]  # GANTI INI
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Judge0 API Server ──────────────────────────────
+  server:
+    image: judge0/judge0:1.13.1
+    restart: unless-stopped
+    environment:
+      <<: *judge0-env
+    ports:
+      - "2358:2358"   # Ganti port kiri kalau 2358 sudah dipakai
+    privileged: true  # WAJIB untuk isolasi sandbox
+    networks:
+      - judge0-net
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # ── Judge0 Workers (eksekutor kode) ───────────────
+  workers:
+    image: judge0/judge0:1.13.1
+    restart: unless-stopped
+    command: ["./scripts/workers"]
+    environment:
+      <<: *judge0-env
+    privileged: true  # WAJIB untuk isolasi sandbox
+    networks:
+      - judge0-net
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  judge0_db:
+  judge0_redis:
+
+networks:
+  judge0-net:
+    driver: bridge
