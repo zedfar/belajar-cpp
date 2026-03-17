@@ -44,6 +44,16 @@ const snippets = [
                 {t(lang, 'code.reset')}
               </button>
               <button
+                id="download-btn"
+                class="px-3 py-1 rounded text-xs bg-slate-700 hover:bg-slate-600 text-slate-300 transition-colors flex items-center gap-1.5"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M10.75 2.75a.75.75 0 00-1.5 0v8.614L6.295 8.235a.75.75 0 10-1.09 1.03l4.25 4.5a.75.75 0 001.09 0l4.25-4.5a.75.75 0 00-1.09-1.03l-2.955 3.129V2.75z" />
+                  <path d="M3.5 12.75a.75.75 0 00-1.5 0v2.5A2.75 2.75 0 004.75 18h10.5A2.75 2.75 0 0018 15.25v-2.5a.75.75 0 00-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5z" />
+                </svg>
+                {lang === 'id' ? 'Unduh' : 'Download'}
+              </button>
+              <button
                 id="run-btn"
                 class="px-4 py-1.5 rounded text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-medium transition-colors flex items-center gap-1.5"
               >
@@ -54,9 +64,10 @@ const snippets = [
               </button>
             </div>
           </div>
+          <div id="code-editor-cm" class="w-full h-80"></div>
           <textarea
             id="code-editor"
-            class="w-full h-80 p-4 bg-transparent text-slate-100 font-mono text-sm resize-none focus:outline-none"
+            class="w-full h-80 p-4 bg-transparent text-slate-100 font-mono text-sm resize-none focus:outline-none hidden"
             spellcheck="false"
           >{defaultCode}</textarea>
         </div>
@@ -136,20 +147,91 @@ const snippets = [
     </div>
   </div>
 
-  <script is:inline define:vars={{ lang }}>
-    const editor = document.getElementById('code-editor')
+  <script is:inline define:vars={{ lang, defaultCode }}>
+    const editorFallback = document.getElementById('code-editor')
+    const editorCmContainer = document.getElementById('code-editor-cm')
     const stdinInput = document.getElementById('stdin-input')
     const runBtn = document.getElementById('run-btn')
     const resetBtn = document.getElementById('reset-btn')
+    const downloadBtn = document.getElementById('download-btn')
     const outputArea = document.getElementById('output-area')
     const execTime = document.getElementById('exec-time')
 
-    const defaultCode = editor?.value || ''
+    // Editor state - managed by CodeMirror or fallback textarea
+    let cmView = null
+    let currentCode = defaultCode || ''
+
+    function getCode() {
+      if (cmView) return cmView.state.doc.toString()
+      return editorFallback?.value || ''
+    }
+
+    function setCode(value) {
+      if (cmView) {
+        const current = cmView.state.doc.toString()
+        if (current !== value) {
+          cmView.dispatch({ changes: { from: 0, to: current.length, insert: value } })
+        }
+      }
+      if (editorFallback) editorFallback.value = value
+      currentCode = value
+    }
+
+    // Initialize CodeMirror
+    if (editorCmContainer) {
+      Promise.all([
+        import('@codemirror/view'),
+        import('@codemirror/state'),
+        import('@codemirror/lang-cpp'),
+        import('@codemirror/theme-one-dark'),
+        import('@codemirror/basic-setup'),
+      ]).then(([viewMod, stateMod, cppMod, themeMod, setupMod]) => {
+        const { EditorView, keymap } = viewMod
+        const { EditorState } = stateMod
+        const { cpp } = cppMod
+        const { oneDark } = themeMod
+        const { basicSetup } = setupMod
+
+        const state = EditorState.create({
+          doc: currentCode,
+          extensions: [
+            basicSetup,
+            cpp(),
+            oneDark,
+            EditorView.theme({
+              '&': { height: '320px', fontSize: '14px' },
+              '.cm-scroller': { overflow: 'auto' },
+            }),
+            EditorView.updateListener.of(update => {
+              if (update.docChanged) {
+                currentCode = update.state.doc.toString()
+              }
+            }),
+            keymap.of([{
+              key: 'Ctrl-Enter',
+              run: () => { runCode(); return true },
+            }, {
+              key: 'Meta-Enter',
+              run: () => { runCode(); return true },
+            }]),
+          ],
+        })
+
+        cmView = new EditorView({ state, parent: editorCmContainer })
+        // Hide fallback textarea
+        if (editorFallback) editorFallback.classList.add('hidden')
+      }).catch(err => {
+        console.warn('CodeMirror failed to load, using textarea fallback:', err)
+        // Show fallback textarea
+        if (editorCmContainer) editorCmContainer.classList.add('hidden')
+        if (editorFallback) editorFallback.classList.remove('hidden')
+      })
+    }
 
     // Run code
     async function runCode() {
-      if (!editor || !outputArea || !runBtn) return
-      const code = editor.value
+      if (!outputArea || !runBtn) return
+      const code = getCode()
       const stdin = stdinInput?.value || ''
 
       runBtn.disabled = true
@@ -173,15 +255,12 @@ const snippets = [
         const statusId = result.status?.id
 
         if (statusId === 3) {
-          // Accepted
           outputArea.textContent = result.stdout || (lang === 'id' ? '(Tidak ada output)' : '(No output)')
           outputArea.className = 'p-4 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-mono text-sm min-h-[80px] whitespace-pre-wrap'
         } else if (statusId === 6) {
-          // Compilation error
           outputArea.textContent = (lang === 'id' ? 'Error Kompilasi:\n' : 'Compilation Error:\n') + (result.compile_output || '')
           outputArea.className = 'p-4 bg-white dark:bg-slate-950 text-red-600 dark:text-red-400 font-mono text-sm min-h-[80px] whitespace-pre-wrap'
         } else {
-          // Runtime error or other
           outputArea.textContent = (result.stderr || result.compile_output || result.status?.description || 'Error')
           outputArea.className = 'p-4 bg-white dark:bg-slate-950 text-red-600 dark:text-red-400 font-mono text-sm min-h-[80px] whitespace-pre-wrap'
         }
@@ -201,25 +280,24 @@ const snippets = [
 
     runBtn?.addEventListener('click', runCode)
 
-    // Ctrl+Enter shortcut
-    editor?.addEventListener('keydown', (e) => {
+    // Ctrl+Enter shortcut for fallback textarea
+    editorFallback?.addEventListener('keydown', (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
         e.preventDefault()
         runCode()
       }
-      // Tab support
       if (e.key === 'Tab') {
         e.preventDefault()
-        const start = editor.selectionStart
-        const end = editor.selectionEnd
-        editor.value = editor.value.substring(0, start) + '    ' + editor.value.substring(end)
-        editor.selectionStart = editor.selectionEnd = start + 4
+        const start = editorFallback.selectionStart
+        const end = editorFallback.selectionEnd
+        editorFallback.value = editorFallback.value.substring(0, start) + '    ' + editorFallback.value.substring(end)
+        editorFallback.selectionStart = editorFallback.selectionEnd = start + 4
       }
     })
 
     // Reset
     resetBtn?.addEventListener('click', () => {
-      if (editor) editor.value = defaultCode
+      setCode(defaultCode || '')
       if (outputArea) {
         outputArea.innerHTML = '<span class="text-slate-400 italic">' + (lang === 'id' ? 'Output akan muncul di sini...' : 'Output will appear here...') + '</span>'
         outputArea.className = 'p-4 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-mono text-sm min-h-[80px] whitespace-pre-wrap'
@@ -227,10 +305,24 @@ const snippets = [
       if (execTime) execTime.classList.add('hidden')
     })
 
+    // Download
+    downloadBtn?.addEventListener('click', () => {
+      const code = getCode()
+      const blob = new Blob([code], { type: 'text/plain' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'belajar-cpp-code.cpp'
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+    })
+
     // Snippet buttons
     document.querySelectorAll('.snippet-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        if (editor) editor.value = btn.getAttribute('data-snippet') || ''
+        setCode(btn.getAttribute('data-snippet') || '')
       })
     })
   </script>

@@ -9,6 +9,7 @@ interface CodePlaygroundProps {
   lang: Language
   readOnly?: boolean
   showOutput?: boolean
+  showStdin?: boolean
   expectedOutput?: string
   onSuccess?: () => void
   height?: number
@@ -129,11 +130,21 @@ function ResetIcon() {
   )
 }
 
+function DownloadIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+      <path d="M10.75 2.75a.75.75 0 00-1.5 0v8.614L6.295 8.235a.75.75 0 10-1.09 1.03l4.25 4.5a.75.75 0 001.09 0l4.25-4.5a.75.75 0 00-1.09-1.03l-2.955 3.129V2.75z" />
+      <path d="M3.5 12.75a.75.75 0 00-1.5 0v2.5A2.75 2.75 0 004.75 18h10.5A2.75 2.75 0 0018 15.25v-2.5a.75.75 0 00-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5z" />
+    </svg>
+  )
+}
+
 export function CodePlayground({
   initialCode,
   lang,
   readOnly = false,
   showOutput = true,
+  showStdin = false,
   expectedOutput,
   onSuccess,
   height = 250,
@@ -145,16 +156,30 @@ export function CodePlayground({
   const [execTime, setExecTime] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
   const [matched, setMatched] = useState(false)
+  const [stdin, setStdin] = useState('')
+  const [stdinOpen, setStdinOpen] = useState(false)
   const editorRef = useRef<HTMLDivElement>(null)
 
   useCodeMirror(editorRef, code, setCode, readOnly, height)
+
+  const handleDownload = useCallback(() => {
+    const blob = new Blob([code], { type: 'text/plain' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'code.cpp'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }, [code])
 
   const handleRun = useCallback(async () => {
     setIsRunning(true)
     setOutput(null)
     setMatched(false)
     try {
-      const result = await runCodeViaProxy({ code })
+      const result = await runCodeViaProxy({ code, stdin: stdin || undefined })
       const { text, isError: hasError } = getDisplayOutput(result)
       setOutput(text)
       setIsError(hasError)
@@ -170,7 +195,7 @@ export function CodePlayground({
     } finally {
       setIsRunning(false)
     }
-  }, [code, expectedOutput, onSuccess])
+  }, [code, stdin, expectedOutput, onSuccess])
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(code).then(() => {
@@ -216,6 +241,16 @@ export function CodePlayground({
             {copied ? (lang === 'id' ? 'Tersalin!' : 'Copied!') : (lang === 'id' ? 'Salin' : 'Copy')}
           </Button>
           <Button
+            variant="ghost"
+            size="sm"
+            icon={<DownloadIcon />}
+            onClick={handleDownload}
+            aria-label={lang === 'id' ? 'Unduh kode' : 'Download code'}
+            className="text-slate-400 hover:text-white hover:bg-slate-700"
+          >
+            {lang === 'id' ? 'Unduh' : 'Download'}
+          </Button>
+          <Button
             variant="success"
             size="sm"
             icon={<PlayIcon />}
@@ -227,6 +262,29 @@ export function CodePlayground({
           </Button>
         </div>
       </div>
+
+      {/* Stdin panel */}
+      {showStdin && (
+        <div className="border-t border-slate-700">
+          <button
+            type="button"
+            onClick={() => setStdinOpen(prev => !prev)}
+            className="flex items-center gap-1.5 w-full px-3 py-1.5 text-xs text-slate-400 hover:text-slate-200 bg-slate-800 transition-colors"
+          >
+            <span>{stdinOpen ? '\u25BC' : '\u25B6'}</span>
+            <span className="font-mono">Input (stdin)</span>
+          </button>
+          {stdinOpen && (
+            <textarea
+              value={stdin}
+              onChange={e => setStdin(e.target.value)}
+              placeholder={lang === 'id' ? 'Masukkan input di sini...' : 'Enter input here...'}
+              spellCheck={false}
+              className="w-full h-20 p-3 bg-slate-900 text-slate-100 font-mono text-sm resize-none focus:outline-none border-t border-slate-700"
+            />
+          )}
+        </div>
+      )}
 
       {/* Editor + Output */}
       <div className="flex flex-col md:flex-row">
