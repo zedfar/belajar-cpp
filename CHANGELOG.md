@@ -1,0 +1,97 @@
+# Changelog
+
+Semua perubahan penting pada proyek belajar-cpp dicatat di file ini. Format mengikuti [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+
+## [Unreleased]
+
+## [2026-03-17] - v1.0.0
+
+### Added
+- Komponen Exercise interaktif pada semua lesson di unit-1 dan unit-2
+- Scroll position save/restore functionality di lesson page
+- Reading time tracker untuk setiap lesson
+- SVG diagram workflow programming di lesson setup lingkungan
+- Custom modal yang elegan menggantikan browser alert/confirm/prompt
+- Medium priority dan nice-to-have features di playground
+- Mobile-first UX untuk playground (snippet strip, spinner, auto-scroll, stdin collapsible)
+- Syntax highlighting di playground CodeMirror
+- Download button di playground
+- Stdin input di playground component
+- Copy button pada semua code block di halaman lesson
+- SVG diagram yang responsive/adaptive
+- SVG icons untuk menggantikan emoji features di home page
+- Upgrade stats cards dan bottom CTA section di home
+- Favicon SVG dengan design code bracket
+- Judge0 self-hosted deployment guide (Oracle Cloud + Portainer)
+- Judge0 self-hosted Portainer stack dengan API auth handling
+- Unit 5 (Array & Data) dan Unit 6 (Struct & File I/O) lessons
+- MIT license dan dokumentasi README lengkap
+- English translations untuk Unit 1-6 (43 lessons)
+
+### Fixed
+- SyntaxError: const currentLink dideklarasikan dua kali di is:inline script
+- Lesson page UX improvements (TOC sticky, reading progress, typography, i18n)
+- Semua bug kritis di progress tracking
+- Resolve all TypeScript errors dan add OG image
+- Auto-scroll tidak agresif + cooldown 3s anti-spam run
+- Copy button hanya muncul di code block berbahasa, bukan output block
+- CodeMirror syntax highlighting di playground (hapus is:inline)
+- Syntax highlighting playground — ganti basicSetup lama dengan stable API
+- Playground CodeMirror editor tidak muncul + URL fallback
+- Update site URL di astro.config.mjs ke domain aktual
+- Tampilan scroll pada playground editor
+- Playground snippets — konsisten std:: dan tambah 4 contoh baru
+- Home page tampilkan semua 7 unit, hapus slice(0,4) dan tanda +
+- Replace deprecated unescape/escape dengan Buffer di run-code API
+- 404 issues: progress page, home CTA slug, GitHub URL
+- Mobile hamburger menu tidak merespons pada non-lesson pages
+- Hapus teks centang dari label Selesai (sudah ada SVG icon)
+
+### Changed
+- Ganti emoji badge dengan SVG icons di halaman progress
+- Ganti browser alert/confirm/prompt dengan custom modal elegan
+- Polish UI — hero illustration, nav icons, footer redesign, SVG fixes
+- Lesson page UX — TOC sticky, reading progress, typography improvements
+
+### Removed
+- Deprecated is:inline script dari CodeMirror implementation
+- Slice(0,4) limit dari unit display di home page
+
+## [2026-03-16]
+
+### Added
+- MIT license dan dokumentasi README dengan full documentation
+- Favicon SVG dengan design code bracket dan theme-color meta
+- Judge0 self-hosted deployment guide (Oracle Cloud + Portainer)
+- Judge0 self-hosted Portainer stack dengan update API auth handling
+- Unit 2-4 lessons dengan redesign CodeBlock UI dan fix remark-directive
+
+### Fixed
+- Mobile hamburger menu not responding pada non-lesson pages
+- Remark-directive configuration issues
+
+### Changed
+- Redesign CodeBlock UI untuk consistency
+
+## [Initial Release - 2026-03-16]
+
+### Added
+- Initial repository setup dengan Astro v5 + React + TypeScript + Tailwind v4
+- Unit 0 lessons
+- Unit 1 lessons
+- Basic playground dengan Code Runner functionality
+- Progress tracking page
+- Navigation dan layout structure
+
+---
+
+## Legacy Notes
+
+Proyek dimulai dengan 3 initial commits untuk setup repositori pada 2026-03-16, kemudian berkembang pesat dengan penambahan:
+- Unit 1-4 lessons lengkap
+- Unit 5-6 lessons untuk Array, Data structures, Struct, dan File I/O
+- English translations untuk 43 lessons
+- Judge0 integration untuk code execution
+- Comprehensive playground UI dengan syntax highlighting
+- Exercise components interaktif
+- Reading progress tracking dan UX improvements
