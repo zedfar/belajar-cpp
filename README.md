@@ -10,7 +10,7 @@
   [![Astro](https://img.shields.io/badge/Astro-v5-FF5D01?logo=astro&logoColor=white)](https://astro.build)
   [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
   [![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
-  [![Deploy](https://img.shields.io/badge/Deploy-Vercel-black?logo=vercel)](https://belajar-cpp.vercel.app)
+  [![Deploy](https://img.shields.io/badge/Live-belajar--cpp.varnimyr.my.id-black?logo=vercel)](https://belajar-cpp.varnimyr.my.id)
 
 </div>
 
@@ -106,7 +106,7 @@ Buka **http://localhost:4321** di browser.
 |----------|------------|--------|
 | `JUDGE0_API_URL` | Judge0 endpoint | `https://judge0-ce.p.rapidapi.com` |
 | `JUDGE0_API_KEY` | API key / auth token | `your-key-here` |
-| `PUBLIC_SITE_URL` | URL production | `https://belajar-cpp.vercel.app` |
+| `PUBLIC_SITE_URL` | URL production | `https://belajar-cpp.varnimyr.my.id` |
 
 > Untuk self-host Judge0 sendiri (gratis di Oracle Cloud), lihat [JUDGE0_SELF_HOSTED.md](./JUDGE0_SELF_HOSTED.md).
 
@@ -192,7 +192,7 @@ Gunakan directive ini untuk callout penting.
 
 ## Deployment
 
-Project ini di-deploy ke Vercel. Setiap push ke `main` akan trigger deployment otomatis.
+Project ini di-deploy ke **[belajar-cpp.varnimyr.my.id](https://belajar-cpp.varnimyr.my.id)**. Setiap push ke `main` akan trigger deployment otomatis.
 
 ```bash
 # Build production
@@ -213,5 +213,5 @@ Dirilis di bawah [MIT License](./LICENSE). Bebas digunakan, dimodifikasi, dan di
 ---
 
 <div align="center">
-  <sub>Dibuat dengan ❤️ untuk pelajar Indonesia &middot; <a href="https://belajar-cpp.vercel.app">belajar-cpp.vercel.app</a></sub>
+  <sub>Dibuat dengan ❤️ untuk pelajar Indonesia &middot; <a href="https://belajar-cpp.varnimyr.my.id">belajar-cpp.varnimyr.my.id</a></sub>
 </div>
