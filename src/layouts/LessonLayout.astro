@@ -55,6 +55,47 @@ const currentPath = Astro.url.pathname
     <Sidebar lang={lang} currentSlug={currentLessonSlug} />
   </aside>
 
+  <!-- Copy button for Shiki-rendered fenced code blocks in MDX -->
+  <script is:inline>
+    document.querySelectorAll('pre.astro-code').forEach(pre => {
+      // Skip if already wrapped (e.g. inside CodeBlock.astro)
+      if (pre.closest('.copy-btn') || pre.parentElement?.querySelector('.shiki-copy-btn')) return
+
+      const wrapper = document.createElement('div')
+      wrapper.style.cssText = 'position:relative'
+      pre.parentNode.insertBefore(wrapper, pre)
+      wrapper.appendChild(pre)
+
+      const btn = document.createElement('button')
+      btn.className = 'shiki-copy-btn'
+      btn.setAttribute('aria-label', 'Copy code')
+      btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>'
+      btn.style.cssText = 'position:absolute;top:10px;right:10px;padding:5px 8px;border-radius:6px;border:none;cursor:pointer;background:rgba(255,255,255,0.08);color:#9ca3af;transition:all 0.15s;display:flex;align-items:center;gap:4px;font-size:11px;font-family:inherit'
+
+      btn.addEventListener('mouseenter', () => { btn.style.background = 'rgba(255,255,255,0.15)'; btn.style.color = '#e2e8f0' })
+      btn.addEventListener('mouseleave', () => { if (!btn.dataset.copied) { btn.style.background = 'rgba(255,255,255,0.08)'; btn.style.color = '#9ca3af' } })
+
+      btn.addEventListener('click', async () => {
+        const code = pre.querySelector('code')?.innerText || pre.innerText
+        try { await navigator.clipboard.writeText(code) }
+        catch {
+          const ta = Object.assign(document.createElement('textarea'), { value: code, style: 'position:fixed;opacity:0' })
+          document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta)
+        }
+        btn.dataset.copied = '1'
+        btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!'
+        btn.style.background = 'rgba(52,211,153,0.15)'; btn.style.color = '#34d399'
+        setTimeout(() => {
+          delete btn.dataset.copied
+          btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>'
+          btn.style.background = 'rgba(255,255,255,0.08)'; btn.style.color = '#9ca3af'
+        }, 2000)
+      })
+
+      wrapper.appendChild(btn)
+    })
+  </script>
+
   <script is:inline>
     // Mobile sidebar toggle
     const overlay = document.getElementById('sidebar-overlay')
