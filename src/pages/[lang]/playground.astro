@@ -148,11 +148,13 @@ const snippets = [
   </div>
 
   <script>
-    import { EditorView, keymap } from '@codemirror/view'
-    import { EditorState } from '@codemirror/state'
+    import { EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLineGutter, drawSelection, dropCursor, highlightSpecialChars } from '@codemirror/view'
+    import { EditorState, EditorSelection } from '@codemirror/state'
+    import { history, defaultKeymap, historyKeymap, indentWithTab } from '@codemirror/commands'
+    import { syntaxHighlighting, defaultHighlightStyle, indentOnInput, bracketMatching, foldGutter } from '@codemirror/language'
+    import { closeBrackets, autocompletion } from '@codemirror/autocomplete'
     import { cpp } from '@codemirror/lang-cpp'
     import { oneDark } from '@codemirror/theme-one-dark'
-    import { basicSetup } from '@codemirror/basic-setup'
 
     const editorFallback = document.getElementById('code-editor') as HTMLTextAreaElement | null
     const editorCmContainer = document.getElementById('code-editor-cm') as HTMLElement | null
@@ -243,25 +245,38 @@ const snippets = [
         const state = EditorState.create({
           doc: currentCode,
           extensions: [
-            basicSetup,
+            // Core editor features
+            lineNumbers(),
+            highlightActiveLineGutter(),
+            highlightSpecialChars(),
+            history(),
+            foldGutter(),
+            drawSelection(),
+            dropCursor(),
+            EditorState.allowMultipleSelections.of(true),
+            indentOnInput(),
+            syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+            bracketMatching(),
+            closeBrackets(),
+            autocompletion(),
+            highlightActiveLine(),
+            keymap.of([
+              ...defaultKeymap,
+              ...historyKeymap,
+              indentWithTab,
+              { key: 'Ctrl-Enter', run: () => { runCode(); return true } },
+              { key: 'Meta-Enter', run: () => { runCode(); return true } },
+            ]),
+            // C++ language + one-dark theme (includes syntax token colors)
             cpp(),
             oneDark,
             EditorView.theme({
               '&': { height: '320px', fontSize: '14px' },
-              '.cm-scroller': { overflow: 'auto' },
+              '.cm-scroller': { overflow: 'auto', fontFamily: 'JetBrains Mono, monospace' },
             }),
             EditorView.updateListener.of(update => {
-              if (update.docChanged) {
-                currentCode = update.state.doc.toString()
-              }
+              if (update.docChanged) currentCode = update.state.doc.toString()
             }),
-            keymap.of([{
-              key: 'Ctrl-Enter',
-              run: () => { runCode(); return true },
-            }, {
-              key: 'Meta-Enter',
-              run: () => { runCode(); return true },
-            }]),
           ],
         })
 
