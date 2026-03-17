@@ -1,0 +1,365 @@
+---
+title: "String Basics"
+unit: 1
+lesson: 6
+description: "Learn about std::string, concatenation, and basic string operations"
+objectives:
+  - "Use std::string to store and manipulate text"
+  - "Combine strings with concatenation"
+  - "Use basic string functions: length(), substr(), and comparison"
+estimatedTime: 30
+prerequisites: ["unit-1/05"]
+difficulty: "beginner"
+tags: ["string", "concatenation", "length", "substr", "text"]
+---
+
+# String Basics
+
+We've been using strings since the Hello World lesson — every time you write `"Hello, World!"`, that's a string. But strings in C++ can do much more than just hold static text. You can combine, slice, measure, and compare strings. In this lesson, we'll master the fundamentals of string manipulation.
+
+## What Is a String?
+
+Think of a string as a **bead necklace**. Each bead is a single **character** — a letter, digit, symbol, or space. You can count how many beads there are, add new beads, pick out a specific bead, or cut off part of the necklace.
+
+```
+String "Hello"  ->  ['H'] ['e'] ['l'] ['l'] ['o']
+                     0     1     2     3     4     <- position (index)
+```
+
+Each character has a **position** (index) that starts from **0** — not 1. This is a common convention in virtually all programming languages.
+
+## Declaring Strings
+
+```cpp
+#include <iostream>
+#include <string>    // Don't forget to include this!
+
+int main() {
+    std::string greeting = "Hello, world!";
+    std::string firstName = "Budi";
+    std::string lastName = "Santoso";
+    std::string empty = "";     // An empty string — valid!
+
+    std::cout << greeting << std::endl;
+
+    return 0;
+}
+```
+
+:::warning
+Always include `#include <string>` at the top of the file when using `std::string`. Although some compilers include it automatically through `<iostream>`, don't rely on this behavior — better safe than sorry.
+:::
+
+## Concatenation (Combining)
+
+You can combine two strings using the `+` operator:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string firstName = "Budi";
+    std::string lastName = "Santoso";
+
+    std::string fullName = firstName + " " + lastName;
+
+    std::cout << "Full name: " << fullName << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Full name: Budi Santoso
+```
+
+Notice: we added `" "` (a string containing a space) between the first and last name. Without it, the result would be `"BudiSantoso"` — stuck together without a space.
+
+### Concatenation with `+=`
+
+You can also append text to an existing string:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string message = "Hello";
+    std::cout << "Before: " << message << std::endl;
+
+    message += ", ";
+    message += "how are you";
+    message += "?";
+    std::cout << "After: " << message << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Before: Hello
+After: Hello, how are you?
+```
+
+:::note
+The `+` operator for strings can **only** combine strings with strings. You cannot directly combine a string with a number. To convert a number to a string, use `std::to_string()`:
+
+```cpp
+std::string text = "My age is " + std::to_string(17) + " years";
+```
+:::
+
+## Measuring String Length
+
+To find out how many characters are in a string, use `.length()` or `.size()` — both produce the same result:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string word = "Programming";
+
+    std::cout << "Word: " << word << std::endl;
+    std::cout << "Length (length): " << word.length() << std::endl;
+    std::cout << "Length (size): " << word.size() << std::endl;
+
+    std::string empty = "";
+    std::cout << "Empty string length: " << empty.length() << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Word: Programming
+Length (length): 11
+Length (size): 11
+Empty string length: 0
+```
+
+`length()` and `size()` count **all characters**, including spaces:
+
+```cpp
+std::string sentence = "Hello World";
+std::cout << sentence.length() << std::endl;  // 11 (including the space)
+```
+
+## Accessing Individual Characters
+
+You can access a specific character using an **index** in square brackets `[]`:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string word = "Hello";
+
+    std::cout << "Character at 0: " << word[0] << std::endl;  // H
+    std::cout << "Character at 1: " << word[1] << std::endl;  // e
+    std::cout << "Character at 4: " << word[4] << std::endl;  // o
+
+    return 0;
+}
+```
+
+Output:
+```
+Character at 0: H
+Character at 1: e
+Character at 4: o
+```
+
+:::tip
+Remember that indices start from **0**, not 1. The first character is at position 0, the second at position 1, and so on. The last character is at position `length() - 1`. This zero-indexing concept will be explored in more depth in Unit 5 when we learn about arrays.
+:::
+
+## Extracting a Portion with `substr()`
+
+`substr()` (substring) extracts a part of the text from a string. The format is:
+
+```
+string.substr(start_position, character_count)
+```
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string sentence = "Learning C++ is fun!";
+
+    std::string part1 = sentence.substr(0, 8);      // "Learning"
+    std::string part2 = sentence.substr(9, 3);       // "C++"
+    std::string part3 = sentence.substr(16);          // "fun!" (to the end)
+
+    std::cout << "Part 1: " << part1 << std::endl;
+    std::cout << "Part 2: " << part2 << std::endl;
+    std::cout << "Part 3: " << part3 << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Part 1: Learning
+Part 2: C++
+Part 3: fun!
+```
+
+If you don't provide the second parameter (character count), `substr()` takes all characters from the starting position to the end of the string.
+
+## Comparing Strings
+
+Strings can be compared using comparison operators:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string a = "hello";
+    std::string b = "hello";
+    std::string c = "Hello";
+
+    if (a == b) {
+        std::cout << "a and b are the same" << std::endl;
+    }
+
+    if (a != c) {
+        std::cout << "a and c are different" << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+a and b are the same
+a and c are different
+```
+
+String comparison is **case-sensitive** — `"hello"` and `"Hello"` are two **different** strings because uppercase and lowercase letters are distinguished.
+
+You can also compare strings lexicographically (dictionary order) using `<`, `>`, `<=`, `>=`:
+
+```cpp
+std::string apple = "apple";
+std::string banana = "banana";
+
+if (apple < banana) {
+    std::cout << "apple comes before banana in the dictionary" << std::endl;
+}
+```
+
+## Finding Text in a String
+
+`find()` locates the position of the first occurrence of a text within a string:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string sentence = "I love learning C++";
+
+    int position = sentence.find("learning");
+
+    if (position != std::string::npos) {
+        std::cout << "'learning' found at position " << position << std::endl;
+    } else {
+        std::cout << "Not found" << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+'learning' found at position 7
+```
+
+`std::string::npos` is a special value meaning "not found". If `find()` returns `npos`, it means the text you're searching for doesn't exist in the string.
+
+## Full Program: Username Generator
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string firstName;
+    std::string lastName;
+    int birthYear;
+
+    std::cout << "=== Username Generator ===" << std::endl;
+
+    std::cout << "First name: ";
+    std::cin >> firstName;
+
+    std::cout << "Last name: ";
+    std::cin >> lastName;
+
+    std::cout << "Birth year: ";
+    std::cin >> birthYear;
+
+    // Create username: first 3 letters of first name + last name + last 2 digits of year
+    std::string username = firstName.substr(0, 3) + lastName + std::to_string(birthYear % 100);
+
+    std::cout << "\nYour username: " << username << std::endl;
+    std::cout << "Username length: " << username.length() << " characters" << std::endl;
+
+    return 0;
+}
+```
+
+Example interaction:
+```
+=== Username Generator ===
+First name: Rina
+Last name: Sari
+Birth year: 2009
+
+Your username: RinSari09
+Username length: 9 characters
+```
+
+## Exercises
+
+Create a program that:
+1. Asks for a first name and last name (one word each)
+2. Combines them into a full name
+3. Displays the full name, total character count, and initials (first letter of first name + first letter of last name)
+
+Example interaction:
+```
+First name: Ahmad
+Last name: Fauzi
+
+Full name: Ahmad Fauzi
+Character count: 11
+Initials: AF
+```
+
+Hint: use `[0]` to get the first character, and `length()` to count the length.
+
+## Summary
+
+- `std::string` stores text, requires `#include <string>`
+- **Concatenation** (`+`, `+=`): combining strings
+- `.length()` / `.size()`: count the number of characters
+- `[index]`: access a character at a specific position (starting from 0)
+- `.substr(pos, len)`: extract a portion of a string
+- `==`, `!=`, `<`, `>`: compare strings (case-sensitive)
+- `.find(text)`: find the position of text within a string
+- `std::to_string(number)`: convert a number to a string
+
+In the next lesson, we'll learn about **constants and the `auto` keyword** — how to create variables that can't be changed and let the compiler figure out the data type.

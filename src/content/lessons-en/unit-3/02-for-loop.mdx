@@ -1,0 +1,469 @@
+---
+title: "For Loop"
+unit: 3
+lesson: 2
+description: "Learn about the for loop — a more concise and tidy way to loop when you already know how many times to repeat"
+objectives:
+  - "Understand the syntax and flow of a for loop"
+  - "Compare for loops with while loops"
+  - "Write reverse loops and loops with custom steps"
+  - "Learn about range-based for loops (C++11)"
+estimatedTime: 40
+prerequisites: ["unit-3/01-while-loop"]
+difficulty: "beginner"
+tags: ["for", "loop", "repetition", "iteration", "range-based"]
+---
+
+# For Loop
+
+In the previous lesson, you learned the while loop. Now imagine you want to print numbers 1 to 10. With a while loop, you need to write the initialization, condition, and update in three different places. The **for loop** combines all three into one neat line!
+
+## Analogy: Running Laps Around the Field
+
+Your PE teacher says: "Run around the field **5 times**!" You already know exactly how many times you have to run. After each lap, you count: "Lap 1... lap 2... lap 3..." until you've completed 5 laps.
+
+The `for` loop is perfect for situations like this — when you **already know** how many times the loop should run.
+
+## For Loop Syntax
+
+```cpp
+for (initialization; condition; update) {
+    // code that repeats
+}
+```
+
+Three parts inside the parentheses:
+1. **Initialization** — runs once at the start (usually creates a counter)
+2. **Condition** — checked before each iteration (continues if `true`, stops if `false`)
+3. **Update** — runs after each iteration (usually increment/decrement)
+
+```
+    +----------------+
+    | Initialization | (once only)
+    +--------+-------+
+             v
+    +----------------+
+    | Check condition |<-----------+
+    +--------+-------+            |
+        true/  \false             |
+            /    \                |
+   +-------+    (exit)           |
+   | Code  |                     |
+   | block |                     |
+   +---+---+                     |
+       v                         |
+   +----------------+            |
+   |    Update      |------------+
+   +----------------+
+```
+
+## Example 1: Print Numbers 1 to 10
+
+```cpp
+#include <iostream>
+
+int main() {
+    for (int i = 1; i <= 10; i++) {
+        std::cout << i << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+1 2 3 4 5 6 7 8 9 10
+```
+
+Compare with the equivalent while loop:
+
+```cpp
+// While loop
+int i = 1;           // initialization
+while (i <= 10) {    // condition
+    std::cout << i << " ";
+    i++;             // update
+}
+
+// For loop (more concise!)
+for (int i = 1; i <= 10; i++) {
+    std::cout << i << " ";
+}
+```
+
+Notice: the three components (initialization, condition, update) that were scattered across the while loop are now neatly gathered in one line in the for loop.
+
+## Example 2: Running Laps Around the Field
+
+```cpp
+#include <iostream>
+
+int main() {
+    int totalLaps = 5;
+
+    std::cout << "=== Running Laps Around the Field ===" << std::endl;
+
+    for (int lap = 1; lap <= totalLaps; lap++) {
+        std::cout << "Lap " << lap << " completed!" << std::endl;
+    }
+
+    std::cout << "Tired but healthy!" << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+=== Running Laps Around the Field ===
+Lap 1 completed!
+Lap 2 completed!
+Lap 3 completed!
+Lap 4 completed!
+Lap 5 completed!
+Tired but healthy!
+```
+
+## When to Use For vs While?
+
+| Situation | Use | Reason |
+|-----------|-----|--------|
+| Know how many times to loop | `for` | Number of iterations is clear |
+| Until a condition is met | `while` | Don't know how many times |
+| Traverse numbers 1-100 | `for` | Exact count: 100 times |
+| Wait for correct user input | `while` | Don't know when user will be correct |
+| Print array contents | `for` | Array size is already known |
+| Read data until exhausted | `while` | Don't know how much data |
+
+:::tip
+Easy rule of thumb: if you can say "repeat N times", use `for`. If you say "repeat until...", use `while`. But technically, the two can always substitute for each other.
+:::
+
+## Example 3: Reverse Loop (Decrement)
+
+Count down from 10 to 1:
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Countdown: ";
+
+    for (int i = 10; i >= 1; i--) {
+        std::cout << i << " ";
+    }
+
+    std::cout << std::endl;
+    std::cout << "Happy New Year!" << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Countdown: 10 9 8 7 6 5 4 3 2 1
+Happy New Year!
+```
+
+Notice: initialization starts at 10, condition `i >= 1` (continue as long as `i` is still `>= 1`), and update `i--` (subtract 1).
+
+## Example 4: Loop with Custom Step
+
+You don't always have to add or subtract 1. You can use any step size!
+
+```cpp
+#include <iostream>
+
+int main() {
+    // Print even numbers 2-20 (step 2)
+    std::cout << "Even numbers: ";
+    for (int i = 2; i <= 20; i += 2) {
+        std::cout << i << " ";
+    }
+    std::cout << std::endl;
+
+    // Print multiples of 5 from 5-50 (step 5)
+    std::cout << "Multiples of 5: ";
+    for (int i = 5; i <= 50; i += 5) {
+        std::cout << i << " ";
+    }
+    std::cout << std::endl;
+
+    // Print powers of 2: 1, 2, 4, 8, 16... (step x2)
+    std::cout << "Powers of 2: ";
+    for (int i = 1; i <= 1024; i *= 2) {
+        std::cout << i << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Even numbers: 2 4 6 8 10 12 14 16 18 20
+Multiples of 5: 5 10 15 20 25 30 35 40 45 50
+Powers of 2: 1 2 4 8 16 32 64 128 256 512 1024
+```
+
+## Example 5: Multiplication Table
+
+Make a multiplication table like the ones in math books:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int number = 7;
+
+    std::cout << "=== Multiplication Table for " << number << " ===" << std::endl;
+
+    for (int i = 1; i <= 10; i++) {
+        std::cout << number << " x " << i << " = " << number * i << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+=== Multiplication Table for 7 ===
+7 x 1 = 7
+7 x 2 = 14
+7 x 3 = 21
+7 x 4 = 28
+7 x 5 = 35
+7 x 6 = 42
+7 x 7 = 49
+7 x 8 = 56
+7 x 9 = 63
+7 x 10 = 70
+```
+
+## Example 6: Simple FizzBuzz
+
+FizzBuzz is a famous programming challenge! The rules:
+- If a number is divisible by 3, print "Fizz"
+- If a number is divisible by 5, print "Buzz"
+- If divisible by both 3 AND 5, print "FizzBuzz"
+- Otherwise, print the number
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "=== FizzBuzz 1-30 ===" << std::endl;
+
+    for (int i = 1; i <= 30; i++) {
+        if (i % 3 == 0 && i % 5 == 0) {
+            std::cout << "FizzBuzz";
+        } else if (i % 3 == 0) {
+            std::cout << "Fizz";
+        } else if (i % 5 == 0) {
+            std::cout << "Buzz";
+        } else {
+            std::cout << i;
+        }
+        std::cout << " ";
+    }
+
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+1 2 Fizz 4 Buzz Fizz 7 8 Fizz Buzz 11 Fizz 13 14 FizzBuzz 16 17 Fizz 19 Buzz Fizz 22 23 Fizz Buzz 26 Fizz 28 29 FizzBuzz
+```
+
+## Example 7: Printing a Star Pattern
+
+A triangle pattern made of stars — this is a common exam question!
+
+```cpp
+#include <iostream>
+
+int main() {
+    int height = 5;
+
+    for (int row = 1; row <= height; row++) {
+        for (int col = 1; col <= row; col++) {
+            std::cout << "* ";
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+*
+* *
+* * *
+* * * *
+* * * * *
+```
+
+:::note
+Here we use a **nested loop** (a loop inside a loop). The inner for loop prints stars equal to the current row number. Row 1 = 1 star, row 2 = 2 stars, and so on.
+:::
+
+## Range-Based For Loop (C++11)
+
+Modern C++ has a simpler way to traverse the contents of a data collection. It's called the **range-based for loop**:
+
+```cpp
+for (auto element : collection) {
+    // use element
+}
+```
+
+This is like saying: "**for each** element **in** the collection, do..."
+
+```cpp
+#include <iostream>
+
+int main() {
+    int scores[] = {85, 90, 78, 92, 88};
+
+    std::cout << "List of scores: ";
+    for (auto n : scores) {
+        std::cout << n << " ";
+    }
+    std::cout << std::endl;
+
+    // Calculate average
+    int total = 0;
+    int count = 0;
+    for (auto n : scores) {
+        total += n;
+        count++;
+    }
+
+    std::cout << "Average: " << total / count << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+List of scores: 85 90 78 92 88
+Average: 86
+```
+
+:::tip
+The `auto` keyword asks the compiler to automatically determine the data type. Very handy! You can also write `int n` instead of `auto n` if you want to be explicit.
+:::
+
+## Common Mistakes
+
+### 1. Semicolon after for (empty loop)
+
+```cpp
+// WRONG — the semicolon makes the loop empty
+for (int i = 0; i < 5; i++); {
+    std::cout << i << " ";  // Error: i is not recognized here!
+}
+
+// CORRECT
+for (int i = 0; i < 5; i++) {
+    std::cout << i << " ";
+}
+```
+
+### 2. Modifying the counter inside the loop
+
+```cpp
+// DANGEROUS — don't modify i inside the loop and in the update at the same time
+for (int i = 0; i < 10; i++) {
+    std::cout << i << " ";
+    i++;  // i increases by 2 per iteration, result is confusing!
+}
+// Output: 0 2 4 6 8 (not 0 1 2 3 4 5 6 7 8 9)
+```
+
+### 3. Off-by-one: starting from 0 vs 1
+
+```cpp
+// Starting from 0 — common in programming
+for (int i = 0; i < 5; i++) {
+    std::cout << i << " ";  // 0 1 2 3 4 (5 numbers)
+}
+
+// Starting from 1 — more natural for humans
+for (int i = 1; i <= 5; i++) {
+    std::cout << i << " ";  // 1 2 3 4 5 (5 numbers)
+}
+```
+
+:::warning
+Notice the difference between `i < 5` (starting from 0) vs `i <= 5` (starting from 1). Both produce 5 iterations, but the numbers are different. Make sure you're consistent!
+:::
+
+### 4. Loop variable cannot be accessed outside the loop
+
+```cpp
+for (int i = 0; i < 5; i++) {
+    std::cout << i << " ";
+}
+// std::cout << i;  // ERROR! i doesn't exist here
+
+// Solution: declare i outside the loop if you need to access it later
+int i;
+for (i = 0; i < 5; i++) {
+    std::cout << i << " ";
+}
+std::cout << "Value of i now: " << i;  // OK: i = 5
+```
+
+## Exercises
+
+**Exercise 1:** Create a program that prints a multiplication table from 1 to 5 using nested for loops. Format:
+
+```
+1 x 1 = 1    2 x 1 = 2    3 x 1 = 3    ...
+1 x 2 = 2    2 x 2 = 4    3 x 2 = 6    ...
+...
+```
+
+**Exercise 2:** Create a program that prints an inverted star triangle:
+
+```
+* * * * *
+* * * *
+* * *
+* *
+*
+```
+
+**Exercise 3:** Create a program that displays all prime numbers from 2 to 50. Hint: a prime number can only be divided by 1 and itself. Use nested loops — the outer loop for each number, the inner loop to check if there are any divisors besides 1 and itself.
+
+:::tip
+For Exercise 3, use a variable `bool isPrime = true` and set it to `false` if a divisor is found. The inner loop only needs to check from 2 to `i / 2`.
+:::
+
+## Summary
+
+| Concept | Explanation |
+|---------|-------------|
+| `for (init; condition; update)` | A loop with three components in one line |
+| Initialization | Runs **once** before the loop starts |
+| Condition | Checked **before** each iteration |
+| Update | Runs **after** each iteration |
+| `for` vs `while` | `for` = know how many times, `while` = until condition is met |
+| Reverse loop | Use decrement: `for (int i = 10; i >= 1; i--)` |
+| Custom step | `i += 2`, `i *= 2`, `i += 5`, etc. |
+| Nested loop | A loop inside a loop — for 2D patterns, tables, etc. |
+| Range-based for | `for (auto x : collection)` — modern way to traverse data |
+
+The for loop is a programmer's go-to weapon. You'll use it **very often** in almost every program. But there's one more type of loop you need to know — the **do-while loop**. Let's continue to the next lesson!

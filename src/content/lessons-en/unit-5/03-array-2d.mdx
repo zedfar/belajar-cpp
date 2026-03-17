@@ -1,0 +1,492 @@
+---
+title: "2D Arrays"
+unit: 5
+lesson: 3
+description: "Introduction to two-dimensional arrays — how to store data in table form (rows and columns) like matrices, spreadsheets, or game boards"
+objectives:
+  - "Understand the concept of 2D arrays as a rows x columns table"
+  - "Declare and initialize 2D arrays"
+  - "Access elements with two indices: row and column"
+  - "Use nested loops to traverse 2D arrays"
+  - "Build a grade matrix and simple game board program"
+estimatedTime: 35
+prerequisites: ["unit-5/02-array-loop"]
+difficulty: "beginner"
+tags: ["array-2d", "matriks", "nested-loop", "tabel", "multidimensi"]
+---
+
+# 2D Arrays
+
+In the previous lesson, your arrays only had one row — like a row of lockers. But what if you want to store data in **table** form? For example, scores of 5 students for 3 subjects? Well, you need a **2-dimensional array**!
+
+## Analogy: Spreadsheet or Chessboard
+
+You've surely seen a spreadsheet (Excel/Google Sheets), right? Data is arranged in **rows** and **columns**. Each cell has an address: which row, which column.
+
+A 2D array is exactly like that!
+
+```
+  2D array "scores" (3 rows x 4 columns):
+
+              Col 0     Col 1     Col 2     Col 3
+            ┌─────────┬─────────┬─────────┬─────────┐
+  Row 0     │   85    │   90    │   78    │   92    │
+            ├─────────┼─────────┼─────────┼─────────┤
+  Row 1     │   76    │   88    │   95    │   82    │
+            ├─────────┼─────────┼─────────┼─────────┤
+  Row 2     │   90    │   72    │   85    │   88    │
+            └─────────┴─────────┴─────────┴─────────┘
+
+  Access: scores[1][2] = 95  (row 1, column 2)
+```
+
+Or imagine a **chessboard** — 8 rows and 8 columns. Each square has a position: `board[row][col]`.
+
+## Declaring 2D Arrays
+
+```cpp
+// Declaration without initialization
+int matrix[3][4];  // 3 rows, 4 columns
+
+// Declaration with initialization
+int scores[3][4] = {
+    {85, 90, 78, 92},   // row 0
+    {76, 88, 95, 82},   // row 1
+    {90, 72, 85, 88}    // row 2
+};
+
+// All elements become 0
+int empty[3][4] = {};
+```
+
+Accessing elements: `arrayName[row][col]`
+
+- `scores[0][0]` = 85 (row 0, column 0)
+- `scores[1][2]` = 95 (row 1, column 2)
+- `scores[2][3]` = 88 (row 2, column 3)
+
+## Example 1: My First 2D Array
+
+```cpp
+#include <iostream>
+
+int main() {
+    int table[2][3] = {
+        {1, 2, 3},
+        {4, 5, 6}
+    };
+
+    // Access elements one by one
+    std::cout << "Row 0, Col 0: " << table[0][0] << std::endl;
+    std::cout << "Row 0, Col 2: " << table[0][2] << std::endl;
+    std::cout << "Row 1, Col 1: " << table[1][1] << std::endl;
+
+    // Modify an element
+    table[1][2] = 99;
+    std::cout << "After modification, [1][2]: " << table[1][2] << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Row 0, Col 0: 1
+Row 0, Col 2: 3
+Row 1, Col 1: 5
+After modification, [1][2]: 99
+```
+
+## Example 2: Nested Loop for Traversal
+
+To traverse all elements of a 2D array, you need a **nested loop** — a loop inside a loop:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int matrix[3][4] = {
+        {1, 2, 3, 4},
+        {5, 6, 7, 8},
+        {9, 10, 11, 12}
+    };
+
+    int rows = 3;
+    int cols = 4;
+
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            std::cout << matrix[i][j] << "\t";
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+1	2	3	4
+5	6	7	8
+9	10	11	12
+```
+
+:::note
+The nested loop pattern for 2D arrays: the outer loop (`i`) traverses **rows**, the inner loop (`j`) traverses **columns**. This is like reading a book — left to right (columns), then move to a new line.
+:::
+
+## Example 3: Student Grade Matrix
+
+The most relevant example for you — a score table for several students across several subjects:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    const int STUDENTS = 4;
+    const int SUBJECTS = 3;
+
+    std::string studentNames[STUDENTS] = {"Andi", "Budi", "Citra", "Dewi"};
+    std::string subjectNames[SUBJECTS] = {"Math", "Science", "Language"};
+
+    int scores[STUDENTS][SUBJECTS] = {
+        {85, 90, 78},   // Andi
+        {76, 88, 92},   // Budi
+        {92, 75, 85},   // Citra
+        {88, 82, 90}    // Dewi
+    };
+
+    // Print the table
+    std::cout << "=== SCORE TABLE ===" << std::endl;
+    std::cout << "Name\t";
+    for (int j = 0; j < SUBJECTS; j++) {
+        std::cout << subjectNames[j] << "\t";
+    }
+    std::cout << "Avg" << std::endl;
+    std::cout << "-----------------------------------" << std::endl;
+
+    for (int i = 0; i < STUDENTS; i++) {
+        std::cout << studentNames[i] << "\t";
+
+        int total = 0;
+        for (int j = 0; j < SUBJECTS; j++) {
+            std::cout << scores[i][j] << "\t";
+            total += scores[i][j];
+        }
+
+        double average = static_cast<double>(total) / SUBJECTS;
+        std::cout << average << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+=== SCORE TABLE ===
+Name	Math	Science	Language	Avg
+-----------------------------------
+Andi	85	90	78	84.3333
+Budi	76	88	92	85.3333
+Citra	92	75	85	84
+Dewi	88	82	90	86.6667
+```
+
+## Example 4: Input 2D Array from User
+
+```cpp
+#include <iostream>
+
+int main() {
+    const int ROWS = 2;
+    const int COLS = 3;
+    int data[ROWS][COLS];
+
+    // Input
+    std::cout << "Enter " << ROWS * COLS << " numbers:" << std::endl;
+    for (int i = 0; i < ROWS; i++) {
+        for (int j = 0; j < COLS; j++) {
+            std::cout << "data[" << i << "][" << j << "] = ";
+            std::cin >> data[i][j];
+        }
+    }
+
+    // Output
+    std::cout << std::endl << "Entered table:" << std::endl;
+    for (int i = 0; i < ROWS; i++) {
+        for (int j = 0; j < COLS; j++) {
+            std::cout << data[i][j] << "\t";
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output (example):
+```
+Enter 6 numbers:
+data[0][0] = 10
+data[0][1] = 20
+data[0][2] = 30
+data[1][0] = 40
+data[1][1] = 50
+data[1][2] = 60
+
+Entered table:
+10	20	30
+40	50	60
+```
+
+## Example 5: Tic-Tac-Toe Board
+
+2D arrays are perfect for game boards!
+
+```cpp
+#include <iostream>
+
+int main() {
+    char board[3][3] = {
+        {'X', 'O', 'X'},
+        {' ', 'X', 'O'},
+        {'O', ' ', 'X'}
+    };
+
+    std::cout << "=== TIC-TAC-TOE ===" << std::endl;
+    std::cout << "  0   1   2" << std::endl;
+
+    for (int i = 0; i < 3; i++) {
+        std::cout << i << " ";
+        for (int j = 0; j < 3; j++) {
+            std::cout << "[" << board[i][j] << "]";
+            if (j < 2) std::cout << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    // Check if a position is empty
+    int row, col;
+    std::cout << std::endl << "Enter position (row col): ";
+    std::cin >> row >> col;
+
+    if (row >= 0 && row < 3 && col >= 0 && col < 3) {
+        if (board[row][col] == ' ') {
+            board[row][col] = 'O';
+            std::cout << "Successfully placed O!" << std::endl;
+        } else {
+            std::cout << "Position already occupied!" << std::endl;
+        }
+    } else {
+        std::cout << "Position outside the board!" << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output (example input "1 0"):
+```
+=== TIC-TAC-TOE ===
+  0   1   2
+0 [X] [O] [X]
+1 [ ] [X] [O]
+2 [O] [ ] [X]
+
+Enter position (row col): 1 0
+Successfully placed O!
+```
+
+## Example 6: Simple Grid Map
+
+```cpp
+#include <iostream>
+
+int main() {
+    // 0 = path, 1 = wall, 2 = door, 3 = treasure
+    int map[5][5] = {
+        {1, 1, 2, 1, 1},
+        {0, 0, 0, 0, 1},
+        {1, 0, 1, 0, 1},
+        {1, 0, 1, 0, 0},
+        {1, 1, 1, 1, 3}
+    };
+
+    std::cout << "=== DUNGEON MAP ===" << std::endl;
+
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
+            switch (map[i][j]) {
+                case 0: std::cout << ". "; break;  // path
+                case 1: std::cout << "# "; break;  // wall
+                case 2: std::cout << "D "; break;  // door
+                case 3: std::cout << "$ "; break;  // treasure
+            }
+        }
+        std::cout << std::endl;
+    }
+
+    std::cout << std::endl;
+    std::cout << "Legend:" << std::endl;
+    std::cout << "# = Wall" << std::endl;
+    std::cout << ". = Path" << std::endl;
+    std::cout << "D = Door" << std::endl;
+    std::cout << "$ = Treasure" << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+=== DUNGEON MAP ===
+# # D # #
+. . . . #
+# . # . #
+# . # . .
+# # # # $
+
+Legend:
+# = Wall
+. = Path
+D = Door
+$ = Treasure
+```
+
+## Example 7: Matrix Transpose (Bonus)
+
+Transpose means swapping rows into columns and vice versa:
+
+```cpp
+#include <iostream>
+
+int main() {
+    const int ROWS = 2;
+    const int COLS = 3;
+
+    int original[ROWS][COLS] = {
+        {1, 2, 3},
+        {4, 5, 6}
+    };
+
+    int transposed[COLS][ROWS];  // Dimensions are swapped!
+
+    // Transpose process
+    for (int i = 0; i < ROWS; i++) {
+        for (int j = 0; j < COLS; j++) {
+            transposed[j][i] = original[i][j];
+        }
+    }
+
+    // Print original
+    std::cout << "Original matrix (" << ROWS << "x" << COLS << "):" << std::endl;
+    for (int i = 0; i < ROWS; i++) {
+        for (int j = 0; j < COLS; j++) {
+            std::cout << original[i][j] << "\t";
+        }
+        std::cout << std::endl;
+    }
+
+    // Print transposed
+    std::cout << std::endl;
+    std::cout << "Transposed matrix (" << COLS << "x" << ROWS << "):" << std::endl;
+    for (int i = 0; i < COLS; i++) {
+        for (int j = 0; j < ROWS; j++) {
+            std::cout << transposed[i][j] << "\t";
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+Original matrix (2x3):
+1	2	3
+4	5	6
+
+Transposed matrix (3x2):
+1	4
+2	5
+3	6
+```
+
+:::tip
+The key to transposing: `transposed[j][i] = original[i][j]`. The row and column indices are swapped! A 2x3 matrix becomes 3x2.
+:::
+
+## Common Mistakes
+
+### 1. Mixing up rows and columns
+
+```cpp
+int matrix[3][4];  // 3 rows, 4 columns
+
+// WRONG — accessing column 4 when there are only 0-3
+// matrix[0][4] = 10;  // Out of bounds!
+
+// CORRECT
+matrix[0][3] = 10;  // Last column
+```
+
+### 2. Wrong loop bounds
+
+```cpp
+int m[3][4];
+
+// WRONG — loop bounds are swapped!
+for (int i = 0; i < 4; i++) {      // should be < 3 (rows)
+    for (int j = 0; j < 3; j++) {  // should be < 4 (columns)
+        std::cout << m[i][j];
+    }
+}
+
+// CORRECT
+for (int i = 0; i < 3; i++) {      // rows: 0, 1, 2
+    for (int j = 0; j < 4; j++) {  // columns: 0, 1, 2, 3
+        std::cout << m[i][j];
+    }
+}
+```
+
+### 3. Forgetting that declaration is `[rows][cols]`
+
+```cpp
+// Reads as: 3 rows, 4 columns
+int table[3][4];
+
+// Access: table[row_number][col_number]
+table[2][3] = 99;  // 3rd row, 4th column
+```
+
+## Exercises
+
+**Exercise 1:** Create a program that stores scores for 3 students across 4 subjects in a 2D array. Calculate and display the average for each student and the average for each subject.
+
+**Exercise 2:** Create a 4x4 game board containing numbers 1-16. Display the board in a neat table format. Then ask the user to enter a position (row, column) and display the number at that position.
+
+**Exercise 3:** Create a program that adds two 2x3 matrices. Ask the user to input both matrices, then display the sum. Remember: matrix addition = elements at the same position are added together.
+
+:::tip
+For Exercise 1, you need two processes: loop per row (for student averages) and loop per column (for subject averages). The per-column average is a bit trickier — outer loop on columns, inner loop on rows.
+:::
+
+## Summary
+
+| Concept | Explanation |
+|---------|------------|
+| 2D array | An array shaped as a table: rows x columns |
+| Declaration | `int m[rows][cols];` |
+| Element access | `m[i][j]` — row `i`, column `j` |
+| Initialization | Use nested curly braces: `{{...}, {...}}` |
+| Traversal | Nested loop: outer loop = rows, inner loop = columns |
+| Total elements | rows x columns (e.g., 3x4 = 12 elements) |
+| Transpose | Swap rows and columns: `t[j][i] = m[i][j]` |
+| Example uses | Score tables, game boards, grid maps, matrices |
+
+2D arrays open up many possibilities — from score tables to simple games! But both 1D and 2D arrays have one limitation: their **size is fixed** and must be determined at compile time. In the next lesson, you'll learn about `std::vector` — an array that can dynamically change size!

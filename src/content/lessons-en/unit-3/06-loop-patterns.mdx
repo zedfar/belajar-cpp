@@ -1,0 +1,425 @@
+---
+title: "Loop Patterns"
+unit: 3
+lesson: 6
+description: "Create various cool ASCII patterns using nested loops — from star triangles to pyramids!"
+objectives:
+  - "Create star triangle patterns (upward and downward)"
+  - "Create pyramid patterns with spaces and stars"
+  - "Create hollow rectangles"
+  - "Develop thinking strategies for solving loop patterns"
+estimatedTime: 45
+prerequisites: ["unit-3/05-nested-loops"]
+difficulty: "beginner"
+tags: ["pattern", "nested-loops", "ascii-art", "stars"]
+---
+
+# Loop Patterns
+
+This is the most FUN lesson in Unit 3! We'll "draw" with code — creating various ASCII patterns using nested loops. This isn't just an ordinary exercise, it's art!
+
+Making patterns with loops is like solving a puzzle. You have to observe the pattern first, break it into rows and columns, then write the code. This skill is great training for **logical thinking** — the most important thinking ability for a programmer.
+
+:::tip
+**Main Strategy:** For every pattern, ask yourself two questions:
+1. **How many rows?** (this becomes the outer loop)
+2. **What is printed on each row?** (this becomes the inner loop)
+
+Break the big problem into small pieces. Don't try to think about the entire pattern at once — focus on one row at a time!
+:::
+
+## Pattern 1: Downward Star Triangle
+
+Let's start with something relatively easy. Target output:
+
+```
+* * * * *
+* * * *
+* * *
+* *
+*
+```
+
+**Observe the pattern before looking at the code!**
+
+Try to answer:
+- Row 1: how many stars? **5**
+- Row 2: how many stars? **4**
+- Row 3: how many stars? **3**
+- Row i: how many stars? **6 - i** (if i starts from 1)
+
+Got it? Now the code:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int height = 5;
+
+    for (int i = 1; i <= height; i++) {
+        // Row i has (height - i + 1) stars
+        for (int j = 1; j <= height - i + 1; j++) {
+            std::cout << "* ";
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+**Output:**
+```
+* * * * *
+* * * *
+* * *
+* *
+*
+```
+
+The key is in the inner loop's limit: `j <= height - i + 1`. As each row goes up (`i` increases), the number of stars decreases.
+
+## Pattern 2: Upward Star Triangle
+
+Now the opposite:
+
+```
+*
+* *
+* * *
+* * * *
+* * * * *
+```
+
+**Try to guess the code before scrolling down!**
+
+Row i has **i** stars. Simpler, right?
+
+```cpp
+#include <iostream>
+
+int main() {
+    int height = 5;
+
+    for (int i = 1; i <= height; i++) {
+        // Row i has i stars
+        for (int j = 1; j <= i; j++) {
+            std::cout << "* ";
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+**Output:**
+```
+*
+* *
+* * *
+* * * *
+* * * * *
+```
+
+The inner loop only goes up to `j <= i`. First row (`i=1`): 1 star. Fifth row (`i=5`): 5 stars. Simple and elegant!
+
+## Pattern 3: Centered Pyramid
+
+Now this one gets challenging! Target output:
+
+```
+        *
+      * * *
+    * * * * *
+  * * * * * * *
+* * * * * * * * *
+```
+
+This pyramid looks hard, but if we break it down row by row, there's a pattern:
+
+| Row (i) | Number of spaces | Number of stars |
+|---------|-----------------|-----------------|
+| 1 | 4 | 1 |
+| 2 | 3 | 3 |
+| 3 | 2 | 5 |
+| 4 | 1 | 7 |
+| 5 | 0 | 9 |
+
+The formulas (when `height = 5`):
+- Spaces per row = `height - i`
+- Stars per row = `2 * i - 1`
+
+**The trick:** Each row has **two inner loops** — one for spaces, one for stars!
+
+```cpp
+#include <iostream>
+
+int main() {
+    int height = 5;
+
+    for (int i = 1; i <= height; i++) {
+        // Inner loop 1: print spaces
+        for (int s = 1; s <= height - i; s++) {
+            std::cout << "  ";  // 2 spaces per "slot"
+        }
+
+        // Inner loop 2: print stars
+        for (int b = 1; b <= 2 * i - 1; b++) {
+            std::cout << "* ";
+        }
+
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+**Output:**
+```
+        *
+      * * *
+    * * * * *
+  * * * * * * *
+* * * * * * * * *
+```
+
+:::note
+The key to the pyramid: **spaces before the stars**. Without spaces, the stars would be left-aligned and it wouldn't be a pyramid. Notice that we use `"  "` (2 spaces) so it lines up with `"* "` (star + space).
+:::
+
+## Pattern 4: Hollow Rectangle
+
+This is a unique pattern — we print stars only at the **edges** of the rectangle, leaving the center empty:
+
+```
+* * * * *
+*       *
+*       *
+*       *
+* * * * *
+```
+
+When do we print a star?
+- On the **first row** or **last row** (the entire row is filled with stars)
+- On the **first column** or **last column** (the left and right edges)
+
+```cpp
+#include <iostream>
+
+int main() {
+    int size = 5;
+
+    for (int i = 1; i <= size; i++) {
+        for (int j = 1; j <= size; j++) {
+            // Print a star if on the edge
+            if (i == 1 || i == size || j == 1 || j == size) {
+                std::cout << "* ";
+            } else {
+                std::cout << "  ";  // center: space
+            }
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+**Output:**
+```
+* * * * *
+*       *
+*       *
+*       *
+* * * * *
+```
+
+Here we use an **if-else inside the inner loop** to determine whether position `(i, j)` is on the edge or not. `i == 1` means first row, `i == size` last row, `j == 1` first column, `j == size` last column.
+
+## Pattern 5: Staircase Numbers
+
+Now let's replace stars with numbers:
+
+```
+1
+1 2
+1 2 3
+1 2 3 4
+1 2 3 4 5
+```
+
+This is similar to the upward triangle, but with ascending numbers instead:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int height = 5;
+
+    for (int i = 1; i <= height; i++) {
+        for (int j = 1; j <= i; j++) {
+            std::cout << j << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+**Output:**
+```
+1
+1 2
+1 2 3
+1 2 3 4
+1 2 3 4 5
+```
+
+The only difference is `std::cout << j << " "` — we print the value of `j` directly, not a star. Super simple, right?
+
+**Variation — row numbers:**
+
+What if the number printed is the **row** number, not the column?
+
+```cpp
+#include <iostream>
+
+int main() {
+    int height = 5;
+
+    for (int i = 1; i <= height; i++) {
+        for (int j = 1; j <= i; j++) {
+            std::cout << i << " ";  // print i, not j
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+**Output:**
+```
+1
+2 2
+3 3 3
+4 4 4 4
+5 5 5 5 5
+```
+
+Just changing `j` to `i` in `cout`, and the result is already different!
+
+## Strategy for Solving Any Pattern
+
+Now you've seen 5 patterns. Here's a general "recipe" for solving any pattern:
+
+**Step 1: Observe the pattern row by row**
+Write on paper: what's in row 1, row 2, etc.
+
+**Step 2: Find the relationship between the row number and its contents**
+- How many characters in row i?
+- Are there spaces in front? How many?
+- What characters are printed? Stars, numbers, spaces?
+
+**Step 3: Determine the inner loop(s)**
+- Do you need one inner loop or more?
+- What are the start and end bounds for each inner loop?
+
+**Step 4: Write the code and test**
+- Start with a small size (height 3 or 4) so it's easy to debug.
+- If it's not right, manually trace each row.
+
+:::tip
+Don't jump straight to coding! Grab a piece of paper, draw the pattern, write the formula for each row. The best programmers always **think first, code later**. This isn't slow — it's actually the fastest approach because you won't waste time debugging code with the wrong concept.
+:::
+
+## Bonus Example: Combining Spaces and Numbers
+
+A pattern that combines all techniques:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int height = 5;
+
+    for (int i = 1; i <= height; i++) {
+        // Print spaces
+        for (int s = 1; s <= height - i; s++) {
+            std::cout << "  ";
+        }
+
+        // Print ascending numbers: 1 to i
+        for (int j = 1; j <= i; j++) {
+            std::cout << j << " ";
+        }
+
+        // Print descending numbers: i-1 down to 1
+        for (int j = i - 1; j >= 1; j--) {
+            std::cout << j << " ";
+        }
+
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+**Output:**
+```
+        1
+      1 2 1
+    1 2 3 2 1
+  1 2 3 4 3 2 1
+1 2 3 4 5 4 3 2 1
+```
+
+A number pyramid! Here we use **three inner loops** in one row: spaces, ascending numbers, descending numbers. It looks complex, but when broken down piece by piece, each loop is simple.
+
+## Exercises
+
+**Exercise 1:** Create a reverse triangle pattern with numbers:
+```
+5 4 3 2 1
+4 3 2 1
+3 2 1
+2 1
+1
+```
+
+**Exercise 2:** Create an inverted pyramid (downward triangle, centered):
+```
+* * * * * * * * *
+  * * * * * * *
+    * * * * *
+      * * *
+        *
+```
+
+*Hint: the opposite of Pattern 3 — spaces increase, stars decrease.*
+
+**Exercise 3:** Create a simple "zig-zag" pattern with stars:
+```
+*       *
+  *   *
+    *
+  *   *
+*       *
+```
+
+*Hint: a star appears if `j == i` or `j == size - i + 1`.*
+
+**Exercise 4:** Create an "X" pattern with stars, where the size can be input by the user. Example for size 5:
+```
+*       *
+  *   *
+    *
+  *   *
+*       *
+```
+
+**Exercise 5:** Try creating your own custom pattern! Draw it on paper first, then write the code. Share the result with friends — who can make the coolest pattern?

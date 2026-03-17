@@ -1,0 +1,467 @@
+---
+title: "Enum & Type Alias"
+unit: 6
+lesson: 5
+description: "Learn how to create custom data types with enum class and simplify type names with type aliases"
+objectives:
+  - "Understand the problem of magic numbers and how to solve it with enums"
+  - "Use enum class (scoped enum) to create enumeration data types"
+  - "Use enums with switch-case"
+  - "Assign explicit values to enum members"
+  - "Create type aliases with using and understand the difference from typedef"
+estimatedTime: 25
+prerequisites: ["unit-6/04-file-output"]
+difficulty: "beginner"
+tags: ["enum", "enum-class", "typedef", "using", "type-alias"]
+---
+
+# Enum & Type Alias
+
+Have you ever written code like this?
+
+```cpp
+int day = 3;  // 3 means what day?? Wednesday? Thursday?
+int status = 0; // What does 0 mean? Failed? Not started?
+```
+
+Numbers like `3` and `0` above are called **magic numbers** — numbers with hidden meaning that is not clear from the code. This makes code hard to read and prone to bugs.
+
+In this lesson, you will learn two C++ features that make code clearer and neater: **enum** (enumeration) and **type alias**.
+
+## The Magic Numbers Problem
+
+Look at this example — code full of magic numbers:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int orderStatus = 2;
+
+    if (orderStatus == 0) {
+        std::cout << "Order pending" << std::endl;
+    } else if (orderStatus == 1) {
+        std::cout << "Order processing" << std::endl;
+    } else if (orderStatus == 2) {
+        std::cout << "Order completed" << std::endl;
+    } else if (orderStatus == 3) {
+        std::cout << "Order cancelled" << std::endl;
+    }
+
+    return 0;
+}
+```
+
+The problems:
+- You have to **remember** what each number means (0=pending, 1=processing, etc.)
+- What if you accidentally write `orderStatus = 5`? No error, but the program behaves incorrectly
+- Anyone else reading the code will be confused
+
+**Enum** is here to solve this problem!
+
+## Enum Class: Modern Enumeration Type
+
+`enum class` lets you create your own data type with predefined values:
+
+```cpp
+#include <iostream>
+
+// Enum class definition
+enum class OrderStatus {
+    Pending,
+    Processing,
+    Completed,
+    Cancelled
+};
+
+int main() {
+    OrderStatus status = OrderStatus::Completed;
+
+    if (status == OrderStatus::Pending) {
+        std::cout << "Order pending" << std::endl;
+    } else if (status == OrderStatus::Processing) {
+        std::cout << "Order processing" << std::endl;
+    } else if (status == OrderStatus::Completed) {
+        std::cout << "Order completed" << std::endl;
+    } else if (status == OrderStatus::Cancelled) {
+        std::cout << "Order cancelled" << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Now the code is **crystal clear**! No need to remember numbers — just read the value names.
+
+:::tip
+Notice the syntax `OrderStatus::Completed` — you have to specify the enum name first, then the value name. This is what is called **scoped** (having a scope). This prevents name conflicts between different enums.
+:::
+
+## Enum for Days of the Week
+
+Here is a classic example of enum usage:
+
+```cpp
+#include <iostream>
+
+enum class Day {
+    Monday,
+    Tuesday,
+    Wednesday,
+    Thursday,
+    Friday,
+    Saturday,
+    Sunday
+};
+
+void displayDay(Day day) {
+    switch (day) {
+        case Day::Monday:    std::cout << "Monday";    break;
+        case Day::Tuesday:   std::cout << "Tuesday";   break;
+        case Day::Wednesday: std::cout << "Wednesday"; break;
+        case Day::Thursday:  std::cout << "Thursday";  break;
+        case Day::Friday:    std::cout << "Friday";    break;
+        case Day::Saturday:  std::cout << "Saturday";  break;
+        case Day::Sunday:    std::cout << "Sunday";    break;
+    }
+}
+
+bool isWorkday(Day day) {
+    return day != Day::Saturday && day != Day::Sunday;
+}
+
+int main() {
+    Day today = Day::Wednesday;
+
+    std::cout << "Today is: ";
+    displayDay(today);
+    std::cout << std::endl;
+
+    if (isWorkday(today)) {
+        std::cout << "It's a workday, stay focused at school!" << std::endl;
+    } else {
+        std::cout << "It's a day off, enjoy your rest!" << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Today is: Wednesday
+It's a workday, stay focused at school!
+```
+
+:::note
+Enum and `switch-case` are a perfect pair! Each enum value has one case that handles it. If you forget to handle a value, some compilers will even give a warning.
+:::
+
+## Why `enum class` Is Better Than Plain `enum`
+
+C++ has two kinds of enum. The old one (`enum`) and the modern one (`enum class`). Always use `enum class`!
+
+```cpp
+// plain enum (AVOID) — values "leak" outside
+enum Color { Red, Green, Blue };
+enum Light { Red, Yellow, Green };  // ERROR! Red and Green already exist!
+
+// enum class (USE THIS) — values are isolated
+enum class Color { Red, Green, Blue };
+enum class Light { Red, Yellow, Green };  // OK! Color::Red and Light::Red are different
+
+Color c = Color::Red;
+Light l = Light::Red;
+// c == l;  // ERROR! Cannot compare — different types (this is good!)
+```
+
+Advantages of `enum class`:
+1. **No name conflicts** — `Color::Red` and `Light::Red` can coexist
+2. **Cannot be mixed** — you cannot accidentally compare a `Color` with a `Light`
+3. **No automatic conversion to int** — prevents bugs from implicit conversion
+
+## Enum with Explicit Values
+
+By default, enum starts at 0 and increments by one. But you can specify your own values:
+
+```cpp
+#include <iostream>
+
+enum class Status {
+    Pass = 1,
+    Fail = 0,
+    Pending = 2
+};
+
+enum class HttpCode {
+    OK = 200,
+    NotFound = 404,
+    ServerError = 500
+};
+
+int main() {
+    Status result = Status::Pass;
+
+    // To get the int value, you need static_cast
+    std::cout << "Status code: " << static_cast<int>(result) << std::endl;
+
+    HttpCode response = HttpCode::NotFound;
+    std::cout << "HTTP: " << static_cast<int>(response) << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Status code: 1
+HTTP: 404
+```
+
+:::note
+With `enum class`, you need `static_cast<int>()` to convert an enum to a number. This is intentional — so that converting an enum to int must be **explicit** and does not happen accidentally.
+:::
+
+## Practical Example: Order System
+
+Here is a more complete example — enum is used to manage order statuses:
+
+```cpp
+#include <iostream>
+#include <string>
+
+enum class OrderStatus {
+    Pending,
+    Processing,
+    Shipped,
+    Completed,
+    Cancelled
+};
+
+enum class Category {
+    Electronics,
+    Food,
+    Clothing,
+    Books
+};
+
+std::string getStatusText(OrderStatus status) {
+    switch (status) {
+        case OrderStatus::Pending:    return "Waiting for confirmation";
+        case OrderStatus::Processing: return "Being processed";
+        case OrderStatus::Shipped:    return "In transit";
+        case OrderStatus::Completed:  return "Order completed";
+        case OrderStatus::Cancelled:  return "Cancelled";
+        default:                      return "Unknown";
+    }
+}
+
+std::string getCategoryText(Category cat) {
+    switch (cat) {
+        case Category::Electronics: return "Electronics";
+        case Category::Food:        return "Food";
+        case Category::Clothing:    return "Clothing";
+        case Category::Books:       return "Books";
+        default:                    return "Other";
+    }
+}
+
+int main() {
+    std::string itemName = "Asus Laptop";
+    Category category = Category::Electronics;
+    OrderStatus status = OrderStatus::Pending;
+
+    std::cout << "=== Order Details ===" << std::endl;
+    std::cout << "Item    : " << itemName << std::endl;
+    std::cout << "Category: " << getCategoryText(category) << std::endl;
+    std::cout << "Status  : " << getStatusText(status) << std::endl;
+
+    // Update status
+    status = OrderStatus::Processing;
+    std::cout << "\n[Update] Status: " << getStatusText(status) << std::endl;
+
+    status = OrderStatus::Shipped;
+    std::cout << "[Update] Status: " << getStatusText(status) << std::endl;
+
+    status = OrderStatus::Completed;
+    std::cout << "[Update] Status: " << getStatusText(status) << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+=== Order Details ===
+Item    : Asus Laptop
+Category: Electronics
+Status  : Waiting for confirmation
+
+[Update] Status: Being processed
+[Update] Status: In transit
+[Update] Status: Order completed
+```
+
+## Type Alias with `using`
+
+Sometimes type names in C++ can be long and confusing. **Type aliases** let you give a shorter, more meaningful name:
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+
+// Create aliases — new names for existing types
+using StudentGrade = double;
+using NameList = std::vector<std::string>;
+using GradeList = std::vector<double>;
+
+// Functions become easier to read!
+double calculateAverage(const GradeList& grades) {
+    double total = 0;
+    for (const StudentGrade& g : grades) {
+        total += g;
+    }
+    return total / grades.size();
+}
+
+int main() {
+    NameList students = {"Budi", "Siti", "Andi"};
+    GradeList grades = {85.5, 92.0, 78.3};
+
+    std::cout << "Average: " << calculateAverage(grades) << std::endl;
+
+    return 0;
+}
+```
+
+Without aliases, the code above would use `std::vector<std::string>` and `std::vector<double>` everywhere — longer and less clear in meaning.
+
+:::tip
+A type alias does not create a new type — it just gives an **alternative name** for an existing type. `StudentGrade` and `double` are the exact same type, just with different names. The advantage is that the code becomes easier to read and understand.
+:::
+
+## `typedef` vs `using`
+
+`typedef` is the old way to create type aliases (before C++11). `using` is the modern way and is more recommended:
+
+```cpp
+// Old way (typedef) — still valid but less recommended
+typedef double StudentGrade;
+typedef std::vector<std::string> NameList;
+
+// Modern way (using) — clearer and more consistent
+using StudentGrade = double;
+using NameList = std::vector<std::string>;
+```
+
+Why is `using` better?
+1. **Easier to read** — the format `using NewName = OldType` resembles assignment, more natural
+2. **More consistent** — `typedef` has a confusing order for complex types
+3. **More powerful** — `using` can be used for template aliases (advanced concept)
+
+:::note
+You may still encounter `typedef` in older code or in older C++ books. That's fine — `typedef` is still valid and functional. But for new code, always use `using`.
+:::
+
+## Combining Enum and Type Alias
+
+Enum and type alias can be used together to create very clean code:
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+
+enum class Direction {
+    North,
+    South,
+    East,
+    West
+};
+
+// Type aliases to clarify the code
+using Coordinate = int;
+using Steps = int;
+
+struct Position {
+    Coordinate x;
+    Coordinate y;
+};
+
+void move(Position& pos, Direction dir, Steps distance) {
+    switch (dir) {
+        case Direction::North: pos.y += distance; break;
+        case Direction::South: pos.y -= distance; break;
+        case Direction::East:  pos.x += distance; break;
+        case Direction::West:  pos.x -= distance; break;
+    }
+}
+
+std::string directionName(Direction dir) {
+    switch (dir) {
+        case Direction::North: return "North";
+        case Direction::South: return "South";
+        case Direction::East:  return "East";
+        case Direction::West:  return "West";
+        default:               return "?";
+    }
+}
+
+int main() {
+    Position player = {0, 0};
+
+    std::cout << "=== Simple Adventure ===" << std::endl;
+    std::cout << "Starting position: (" << player.x << ", " << player.y << ")" << std::endl;
+
+    // Move
+    move(player, Direction::North, 3);
+    std::cout << "Moved North 3 steps -> ("
+              << player.x << ", " << player.y << ")" << std::endl;
+
+    move(player, Direction::East, 5);
+    std::cout << "Moved East 5 steps -> ("
+              << player.x << ", " << player.y << ")" << std::endl;
+
+    move(player, Direction::South, 1);
+    std::cout << "Moved South 1 step -> ("
+              << player.x << ", " << player.y << ")" << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+=== Simple Adventure ===
+Starting position: (0, 0)
+Moved North 3 steps -> (0, 3)
+Moved East 5 steps -> (5, 3)
+Moved South 1 step -> (5, 2)
+```
+
+## Summary
+
+| Concept | Explanation | Example |
+|---------|------------|---------|
+| Magic numbers | Numbers with unclear meaning (avoid!) | `if (status == 2)` |
+| `enum class` | Modern enumeration type (scoped) | `enum class Day { Monday, Tuesday };` |
+| Accessing enum values | Use `EnumName::Value` | `Day::Monday` |
+| Explicit values | Specify numeric enum values | `enum class S { OK=200 };` |
+| `static_cast<int>` | Convert enum to int | `static_cast<int>(Day::Monday)` |
+| `using` | Modern type alias | `using Score = double;` |
+| `typedef` | Old type alias | `typedef double Score;` |
+
+## Exercises
+
+**Exercise 1:** Create an `enum class Color` with values `Red`, `Green`, `Blue`, `Yellow`, and `White`. Create a function `std::string colorName(Color c)` that returns the color name as a string. Display all colors using a loop.
+
+**Exercise 2:** Build a simple food ordering system. Use `enum class Size { Small, Medium, Large }` and `enum class Drink { Tea, Coffee, Juice, Water }`. Calculate the price based on the choice (Small=5000, Medium=8000, Large=12000).
+
+**Exercise 3:** Create an `enum class Month` for 12 months. Create a function that takes a `Month` and returns the number of days in that month (ignore leap years). Also create a function that returns the season name (Rainy/Dry) based on the month.
+
+**Exercise 4:** Use type aliases to clarify a calculator program. Create `using Number = double;` and `using Operation = char;`. Refactor a simple calculator using these aliases so the code is more meaningful.

@@ -1,0 +1,586 @@
+---
+title: "Strings as Character Arrays"
+unit: 5
+lesson: 5
+description: "Understanding strings as a sequence of characters, accessing individual characters, using important string methods, and processing text with loops"
+objectives:
+  - "Understand that std::string is a sequence of characters"
+  - "Access individual characters with index and the at() method"
+  - "Use important string methods: length(), substr(), find(), replace()"
+  - "Convert uppercase/lowercase with toupper() and tolower()"
+  - "Iterate through string characters with loops"
+  - "Use std::vector<std::string> to store multiple strings"
+  - "Read string input with spaces using std::getline()"
+estimatedTime: 25
+prerequisites: ["unit-5/04-vector"]
+difficulty: "beginner"
+tags: ["string", "array-karakter", "method-string", "iterasi", "getline", "palindrom"]
+---
+
+# Strings as Character Arrays
+
+You've known `std::string` since Unit 1 for storing text. But did you know that under the hood, a string is actually a **collection (array) of characters**? Every letter, digit, space, and even punctuation mark in a string has its own **position (index)**.
+
+In this lesson, we'll dissect strings more deeply and learn lots of cool tricks for processing text!
+
+## String = Sequence of Characters
+
+`std::string` stores characters in order, similar to `std::vector<char>`. Each character has an index starting from **0**:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string name = "Budi";
+
+    // Index:  0='B'  1='u'  2='d'  3='i'
+
+    std::cout << "String: " << name << std::endl;
+    std::cout << "Length: " << name.length() << std::endl;
+    std::cout << "First character: " << name[0] << std::endl;
+    std::cout << "Last character: " << name[3] << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+String: Budi
+Length: 4
+First character: B
+Last character: i
+```
+
+:::note
+Remember, indexing always starts from **0**, not 1! So the string `"Budi"` has indices 0 through 3 (length - 1).
+:::
+
+## Accessing Characters: `[]` vs `at()`
+
+There are two ways to access individual characters:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string word = "Halo";
+
+    // Method 1: operator [] — fast, but no bounds checking
+    char c1 = word[0];   // 'H'
+    char c2 = word[2];   // 'l'
+
+    // Method 2: at() method — safer, has bounds checking
+    char c3 = word.at(0);  // 'H'
+    char c4 = word.at(3);  // 'o'
+
+    std::cout << c1 << c2 << c3 << c4 << std::endl;
+
+    // word.at(10);  // ERROR! Will throw an exception because index is out of bounds
+    // word[10];     // DANGER! No error but the result is garbage (undefined behavior)
+
+    return 0;
+}
+```
+
+:::tip
+Use `at()` when you're not sure whether the index is valid. Use `[]` when you're certain the index is safe (for example, inside a controlled loop). `at()` is slightly slower because of the bounds checking, but it's much safer!
+:::
+
+## Important String Methods
+
+`std::string` has many built-in methods that are very useful. Here are the most commonly used ones:
+
+### `length()` and `size()`
+
+Both return the number of characters in the string. They are identical in function:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string message = "Good morning!";
+
+    std::cout << "length(): " << message.length() << std::endl;  // 13
+    std::cout << "size(): " << message.size() << std::endl;      // 13
+    // Both are the same — use whichever you prefer!
+
+    std::string empty = "";
+    std::cout << "Empty string: " << empty.length() << std::endl;  // 0
+
+    return 0;
+}
+```
+
+### `substr()` — Extract a Substring
+
+`substr(position, length)` returns a portion of the string:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string sentence = "Learning C++ is fun!";
+
+    std::string word1 = sentence.substr(0, 8);     // "Learning"
+    std::string word2 = sentence.substr(9, 3);     // "C++"
+    std::string rest = sentence.substr(13);         // "is fun!" (to the end)
+
+    std::cout << word1 << std::endl;
+    std::cout << word2 << std::endl;
+    std::cout << rest << std::endl;
+
+    return 0;
+}
+```
+
+### `find()` — Search for Text in a String
+
+`find()` returns the first position where the text is found. If not found, the result is `std::string::npos`:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string sentence = "I like eating fried rice";
+
+    size_t pos1 = sentence.find("eating");
+    if (pos1 != std::string::npos) {
+        std::cout << "'eating' found at position: " << pos1 << std::endl;
+    }
+
+    size_t pos2 = sentence.find("pizza");
+    if (pos2 == std::string::npos) {
+        std::cout << "'pizza' not found" << std::endl;
+    }
+
+    // Search for a single character
+    size_t pos3 = sentence.find('i');
+    std::cout << "'i' first found at position: " << pos3 << std::endl;
+
+    return 0;
+}
+```
+
+### `replace()` and `append()`
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    // replace(position, length, new_string)
+    std::string greeting = "Hello World!";
+    greeting.replace(6, 5, "Indonesia");  // Replace "World" with "Indonesia"
+    std::cout << greeting << std::endl;   // "Hello Indonesia!"
+
+    // append() — add to the end
+    std::string name = "Budi";
+    name.append(" Santoso");
+    std::cout << name << std::endl;  // "Budi Santoso"
+
+    // Can also use the += operator
+    std::string hobby = "Coding";
+    hobby += " C++";
+    std::cout << hobby << std::endl;  // "Coding C++"
+
+    return 0;
+}
+```
+
+## Uppercase/Lowercase Conversion
+
+The `toupper()` and `tolower()` functions from the `<cctype>` header work on **a single character**. To convert an entire string, we use a loop:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <cctype>
+
+int main() {
+    std::string message = "Hello World!";
+
+    // Convert to uppercase
+    std::string upper = message;
+    for (int i = 0; i < upper.length(); i++) {
+        upper[i] = std::toupper(upper[i]);
+    }
+    std::cout << "UPPER: " << upper << std::endl;  // "HELLO WORLD!"
+
+    // Convert to lowercase
+    std::string lower = message;
+    for (int i = 0; i < lower.length(); i++) {
+        lower[i] = std::tolower(lower[i]);
+    }
+    std::cout << "lower: " << lower << std::endl;  // "hello world!"
+
+    return 0;
+}
+```
+
+:::note
+`toupper()` and `tolower()` only change letters (a-z, A-Z). Other characters like digits, spaces, and punctuation remain unchanged.
+:::
+
+## Iterating Characters with Loops
+
+One of the most powerful things you can do with strings is **traverse each character one by one** using a loop:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string word = "Programming";
+
+    // Method 1: for loop with index
+    std::cout << "Characters one by one: ";
+    for (int i = 0; i < word.length(); i++) {
+        std::cout << word[i] << " ";
+    }
+    std::cout << std::endl;
+
+    // Method 2: range-based for loop (more modern)
+    std::cout << "With range-for: ";
+    for (char c : word) {
+        std::cout << c << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Characters one by one: P r o g r a m m i n g
+With range-for: P r o g r a m m i n g
+```
+
+### Example: Count Letter Frequency
+
+```cpp
+#include <iostream>
+#include <string>
+#include <cctype>
+
+int main() {
+    std::string text = "Learn Programming";
+
+    int vowel_count = 0;
+    int consonant_count = 0;
+    int space_count = 0;
+
+    for (char c : text) {
+        char lower = std::tolower(c);
+
+        if (lower == 'a' || lower == 'i' || lower == 'u' ||
+            lower == 'e' || lower == 'o') {
+            vowel_count++;
+        } else if (std::isalpha(c)) {
+            consonant_count++;
+        } else if (c == ' ') {
+            space_count++;
+        }
+    }
+
+    std::cout << "Text: \"" << text << "\"" << std::endl;
+    std::cout << "Vowels: " << vowel_count << std::endl;
+    std::cout << "Consonants: " << consonant_count << std::endl;
+    std::cout << "Spaces: " << space_count << std::endl;
+
+    return 0;
+}
+```
+
+## Palindrome Check
+
+A palindrome is a word/sentence that reads the same forwards and backwards (examples: "katak", "level"). This is a classic string processing example:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <cctype>
+
+bool isPalindrome(const std::string& word) {
+    int left = 0;
+    int right = word.length() - 1;
+
+    while (left < right) {
+        if (std::tolower(word[left]) != std::tolower(word[right])) {
+            return false;
+        }
+        left++;
+        right--;
+    }
+    return true;
+}
+
+int main() {
+    std::string word1 = "katak";
+    std::string word2 = "Level";
+    std::string word3 = "Hello";
+
+    std::cout << word1 << " palindrome? "
+              << (isPalindrome(word1) ? "Yes" : "No") << std::endl;
+    std::cout << word2 << " palindrome? "
+              << (isPalindrome(word2) ? "Yes" : "No") << std::endl;
+    std::cout << word3 << " palindrome? "
+              << (isPalindrome(word3) ? "Yes" : "No") << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+katak palindrome? Yes
+Level palindrome? Yes
+Hello palindrome? No
+```
+
+:::tip
+The "two pointer" technique (one from the left, one from the right) is a very common pattern in programming. You'll encounter it frequently in various problems!
+:::
+
+## Reverse String
+
+Reversing the order of characters in a string:
+
+```cpp
+#include <iostream>
+#include <string>
+
+std::string reverseString(const std::string& input) {
+    std::string result = "";
+    for (int i = input.length() - 1; i >= 0; i--) {
+        result += input[i];
+    }
+    return result;
+}
+
+int main() {
+    std::string original = "Hello World";
+    std::string reversed = reverseString(original);
+
+    std::cout << "Original: " << original << std::endl;
+    std::cout << "Reversed: " << reversed << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Original: Hello World
+Reversed: dlroW olleH
+```
+
+## Title Case Converter
+
+Converting the first letter of each word to uppercase:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <cctype>
+
+std::string toTitleCase(const std::string& input) {
+    std::string result = input;
+    bool word_start = true;
+
+    for (int i = 0; i < result.length(); i++) {
+        if (word_start && std::isalpha(result[i])) {
+            result[i] = std::toupper(result[i]);
+            word_start = false;
+        } else if (result[i] == ' ') {
+            word_start = true;
+        } else {
+            result[i] = std::tolower(result[i]);
+        }
+    }
+
+    return result;
+}
+
+int main() {
+    std::string title = "lEARNING c++ FOR beginners";
+    std::cout << "Before: " << title << std::endl;
+    std::cout << "After:  " << toTitleCase(title) << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Before: lEARNING c++ FOR beginners
+After:  Learning C++ For Beginners
+```
+
+## Simple Anagram Checker
+
+Two words are called **anagrams** if they consist of the same letters in the same quantities (example: "listen" and "silent"). Here's a simple way to check:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <cctype>
+#include <algorithm>
+
+bool isAnagram(std::string a, std::string b) {
+    // Remove spaces and convert to lowercase
+    std::string cleanA = "";
+    std::string cleanB = "";
+
+    for (char c : a) {
+        if (std::isalpha(c)) {
+            cleanA += std::tolower(c);
+        }
+    }
+    for (char c : b) {
+        if (std::isalpha(c)) {
+            cleanB += std::tolower(c);
+        }
+    }
+
+    // If lengths differ, they're definitely not anagrams
+    if (cleanA.length() != cleanB.length()) {
+        return false;
+    }
+
+    // Sort both strings then compare
+    std::sort(cleanA.begin(), cleanA.end());
+    std::sort(cleanB.begin(), cleanB.end());
+
+    return cleanA == cleanB;
+}
+
+int main() {
+    std::cout << "listen & silent: "
+              << (isAnagram("listen", "silent") ? "Anagram!" : "Not anagram") << std::endl;
+    std::cout << "hello & world: "
+              << (isAnagram("hello", "world") ? "Anagram!" : "Not anagram") << std::endl;
+    std::cout << "Dormitory & Dirty Room: "
+              << (isAnagram("Dormitory", "Dirty Room") ? "Anagram!" : "Not anagram") << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+listen & silent: Anagram!
+hello & world: Not anagram
+Dormitory & Dirty Room: Anagram!
+```
+
+## Vector of Strings
+
+You can store many strings in a `std::vector<std::string>`:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+int main() {
+    std::vector<std::string> fruits = {"Apple", "Orange", "Mango", "Durian", "Rambutan"};
+
+    // Display all
+    std::cout << "Fruit list:" << std::endl;
+    for (int i = 0; i < fruits.size(); i++) {
+        std::cout << "  " << (i + 1) << ". " << fruits[i] << std::endl;
+    }
+
+    // Add a new fruit
+    fruits.push_back("Watermelon");
+    std::cout << "\nAfter adding: " << fruits.size() << " fruits" << std::endl;
+
+    // Search for a fruit
+    std::string target = "Mango";
+    for (int i = 0; i < fruits.size(); i++) {
+        if (fruits[i] == target) {
+            std::cout << target << " found at position " << i << std::endl;
+            break;
+        }
+    }
+
+    return 0;
+}
+```
+
+## String Input with Spaces: `std::getline()`
+
+`std::cin >>` stops reading when it encounters a space. To read an entire line (including spaces), use `std::getline()`:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string full_name;
+    std::string address;
+
+    std::cout << "Enter full name: ";
+    std::getline(std::cin, full_name);
+
+    std::cout << "Enter address: ";
+    std::getline(std::cin, address);
+
+    std::cout << std::endl;
+    std::cout << "Name: " << full_name << std::endl;
+    std::cout << "Address: " << address << std::endl;
+
+    return 0;
+}
+```
+
+```
+Enter full name: Budi Santoso
+Enter address: Jl. Merdeka No. 17 Jakarta
+
+Name: Budi Santoso
+Address: Jl. Merdeka No. 17 Jakarta
+```
+
+:::warning
+Be careful when mixing `std::cin >>` with `std::getline()`! After `cin >>`, the newline character (`\n`) is still left in the buffer. You need to add `std::cin.ignore()` before `getline()`:
+
+```cpp
+int age;
+std::cout << "Age: ";
+std::cin >> age;
+
+std::cin.ignore();  // Discard the leftover newline!
+
+std::string name;
+std::cout << "Name: ";
+std::getline(std::cin, name);
+```
+
+Without `cin.ignore()`, `getline()` will immediately read the empty newline and the name will be empty!
+:::
+
+## Exercises
+
+**Exercise 1:** Create a program that takes a word as input, then counts how many vowels and consonants it contains.
+
+**Exercise 2:** Create a function `bool isPalindrome(std::string word)` that checks whether a word is a palindrome. Test with the words: "racecar", "madam", "hello", "katak".
+
+**Exercise 3:** Create a program that takes a sentence as input, then displays the sentence with each word reversed (not the word order). Example: "Hello World" becomes "olleH dlroW".
+
+**Exercise 4:** Create a program that stores 5 friend names in a `std::vector<std::string>`, then display all names that are longer than 4 characters.
+
+**Exercise 5:** Create a **password strength checker** program that checks whether a password meets the requirements: at least 8 characters, contains uppercase letters, lowercase letters, and digits. Use `std::isdigit()`, `std::isupper()`, `std::islower()` from `<cctype>`.

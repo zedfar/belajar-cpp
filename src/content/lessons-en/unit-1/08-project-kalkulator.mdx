@@ -1,0 +1,425 @@
+---
+title: "Project: Simple Calculator"
+unit: 1
+lesson: 8
+description: "Build a simple calculator that combines all Unit 1 concepts"
+objectives:
+  - "Plan a program from scratch (planning and pseudocode)"
+  - "Implement a calculator with input, output, and arithmetic operations"
+  - "Test the program with various scenarios"
+estimatedTime: 60
+prerequisites: ["unit-1/07"]
+difficulty: "beginner"
+tags: ["project", "calculator", "practice", "integration"]
+---
+
+# Project: Simple Calculator
+
+Congratulations! You've learned all the fundamental concepts in Unit 1. Now it's time to combine everything into a real project — a **Simple Calculator**.
+
+This is your first project, so we'll go through each step slowly: from planning to implementation and testing. This is how professional programmers work — they don't jump straight into coding, they **plan first**.
+
+## Program Specification
+
+Our calculator needs to:
+
+1. Ask the user to enter the **first number**
+2. Ask the user to enter an **operator** (+, -, *, /)
+3. Ask the user to enter the **second number**
+4. Calculate and display the **result**
+
+Expected interaction example:
+```
+=== SIMPLE CALCULATOR ===
+
+Enter first number: 15
+Enter operator (+, -, *, /): *
+Enter second number: 4
+
+Result: 15 * 4 = 60
+```
+
+## Step 1: Planning
+
+Before writing a single line of code, let's think about:
+
+**What data needs to be stored?**
+- First number (decimal — `double`)
+- Second number (decimal — `double`)
+- Operator (single character — `char`)
+- Calculation result (decimal — `double`)
+
+**Program flow:**
+1. Display the calculator title
+2. Ask for the first number input
+3. Ask for the operator input
+4. Ask for the second number input
+5. Calculate based on the chosen operator
+6. Display the result
+
+**Edge cases to consider:**
+- What if the user divides by 0?
+- What if the user enters an invalid operator?
+
+## Step 2: Pseudocode
+
+Pseudocode is "fake code" — writing the program logic in plain language before writing it in C++. This helps us think about the logic without getting distracted by syntax.
+
+```
+PROGRAM Calculator:
+    DISPLAY title "SIMPLE CALCULATOR"
+
+    ASK input num1 (double)
+    ASK input operation (char)
+    ASK input num2 (double)
+
+    IF operation is '+':
+        result = num1 + num2
+    IF operation is '-':
+        result = num1 - num2
+    IF operation is '*':
+        result = num1 * num2
+    IF operation is '/':
+        IF num2 is 0:
+            DISPLAY "Error: cannot divide by 0!"
+        OTHERWISE:
+            result = num1 / num2
+    OTHERWISE:
+        DISPLAY "Invalid operator!"
+
+    DISPLAY "num1 operation num2 = result"
+```
+
+This pseudocode can't be run yet, but it already gives a clear picture of what needs to be written.
+
+## Step 3: Implementation
+
+Now it's time to write the actual C++ code. We'll build it step by step.
+
+### Version 1: Basic Skeleton
+
+Start with the program skeleton:
+
+```cpp
+#include <iostream>
+
+int main() {
+    // Variables
+    double num1, num2, result;
+    char operation;
+
+    // Title
+    std::cout << "=== SIMPLE CALCULATOR ===" << std::endl;
+    std::cout << std::endl;
+
+    // Input
+    std::cout << "Enter first number: ";
+    std::cin >> num1;
+
+    std::cout << "Enter operator (+, -, *, /): ";
+    std::cin >> operation;
+
+    std::cout << "Enter second number: ";
+    std::cin >> num2;
+
+    // TODO: Calculate result
+    // TODO: Display result
+
+    return 0;
+}
+```
+
+Try running it — the program can already accept input, even though it doesn't calculate anything yet.
+
+### Version 2: Add the Calculation
+
+Now let's add the calculation logic. We'll use `if` and `else if` — even though we haven't formally learned them (that's in Unit 2), the concept is intuitive enough: "if this condition is true, do this".
+
+```cpp
+#include <iostream>
+
+int main() {
+    double num1, num2, result;
+    char operation;
+    bool valid = true;  // Flag to mark whether the operation is valid
+
+    // Title
+    std::cout << "=== SIMPLE CALCULATOR ===" << std::endl;
+    std::cout << std::endl;
+
+    // Input
+    std::cout << "Enter first number: ";
+    std::cin >> num1;
+
+    std::cout << "Enter operator (+, -, *, /): ";
+    std::cin >> operation;
+
+    std::cout << "Enter second number: ";
+    std::cin >> num2;
+
+    // Calculation
+    if (operation == '+') {
+        result = num1 + num2;
+    } else if (operation == '-') {
+        result = num1 - num2;
+    } else if (operation == '*') {
+        result = num1 * num2;
+    } else if (operation == '/') {
+        if (num2 == 0) {
+            std::cout << "\nError: Cannot divide by zero!" << std::endl;
+            valid = false;
+        } else {
+            result = num1 / num2;
+        }
+    } else {
+        std::cout << "\nError: Operator '" << operation << "' is not valid!" << std::endl;
+        std::cout << "Use one of: +, -, *, /" << std::endl;
+        valid = false;
+    }
+
+    // Output result (only if the operation is valid)
+    if (valid) {
+        std::cout << "\nResult: " << num1 << " " << operation << " " << num2 << " = " << result << std::endl;
+    }
+
+    return 0;
+}
+```
+
+This is the complete version of our calculator! Let's understand the key parts.
+
+## Understanding the Code
+
+### Variables Used
+
+```cpp
+double num1, num2, result;   // Three double variables on one line
+char operation;               // Operator as a character
+bool valid = true;            // Flag: did the operation succeed?
+```
+
+We use `double` (not `int`) so the calculator can handle decimal numbers. `char` for the operator because an operator is just a single character (+, -, *, /). `bool valid` serves as a "flag" indicating whether the calculation succeeded.
+
+### Branching with `if/else if/else`
+
+Although we haven't formally learned this, the logic is straightforward:
+
+```cpp
+if (operation == '+') {       // If the operator is '+'
+    result = num1 + num2;
+} else if (operation == '-') { // Otherwise, if the operator is '-'
+    result = num1 - num2;
+} else {                       // Otherwise (unknown operator)
+    // handle error
+}
+```
+
+Notice: we compare `char` using **single** quotes (`'+'`), not double quotes (`"+"`).
+
+### Handling Division by Zero
+
+```cpp
+} else if (operation == '/') {
+    if (num2 == 0) {
+        std::cout << "Error: Cannot divide by zero!" << std::endl;
+        valid = false;
+    } else {
+        result = num1 / num2;
+    }
+}
+```
+
+Division by zero is undefined — it can cause a crash or an infinite result. We handle it by checking `num2 == 0` before performing the division.
+
+## Step 4: Testing
+
+A good program should be tested with various scenarios. Try running it with the following inputs:
+
+**Test 1: Basic addition**
+```
+First number: 10
+Operator: +
+Second number: 5
+Expected: 10 + 5 = 15
+```
+
+**Test 2: Decimal division**
+```
+First number: 7
+Operator: /
+Second number: 2
+Expected: 7 / 2 = 3.5
+```
+
+**Test 3: Division by zero**
+```
+First number: 10
+Operator: /
+Second number: 0
+Expected: Error message
+```
+
+**Test 4: Invalid operator**
+```
+First number: 5
+Operator: ^
+Second number: 3
+Expected: Error message
+```
+
+**Test 5: Negative numbers**
+```
+First number: -8
+Operator: *
+Second number: 3
+Expected: -8 * 3 = -24
+```
+
+:::tip
+Testing is important! Every professional programmer tests their programs with various scenarios — including "weird" scenarios like negative numbers, zero, and invalid input. Make it a habit to test your programs before considering them done.
+:::
+
+## Complete Solution Code (Final Version)
+
+Here's the complete, polished code with comments:
+
+```cpp
+#include <iostream>
+
+int main() {
+    // === Variables ===
+    double num1, num2;     // User input
+    double result = 0;      // Calculation result
+    char operation;          // Operator (+, -, *, /)
+    bool valid = true;       // Is the operation valid?
+
+    // === Header ===
+    std::cout << "=============================" << std::endl;
+    std::cout << "   SIMPLE C++ CALCULATOR     " << std::endl;
+    std::cout << "=============================" << std::endl;
+    std::cout << std::endl;
+
+    // === Input ===
+    std::cout << "Enter first number  : ";
+    std::cin >> num1;
+
+    std::cout << "Enter operator (+, -, *, /): ";
+    std::cin >> operation;
+
+    std::cout << "Enter second number : ";
+    std::cin >> num2;
+
+    // === Calculation ===
+    if (operation == '+') {
+        result = num1 + num2;
+    } else if (operation == '-') {
+        result = num1 - num2;
+    } else if (operation == '*') {
+        result = num1 * num2;
+    } else if (operation == '/') {
+        if (num2 == 0) {
+            std::cout << "\n[ERROR] Cannot divide by zero!" << std::endl;
+            valid = false;
+        } else {
+            result = num1 / num2;
+        }
+    } else {
+        std::cout << "\n[ERROR] Operator '" << operation << "' not recognized." << std::endl;
+        std::cout << "Available operators: +, -, *, /" << std::endl;
+        valid = false;
+    }
+
+    // === Output ===
+    if (valid) {
+        std::cout << std::endl;
+        std::cout << "-----------------------------" << std::endl;
+        std::cout << "  " << num1 << " " << operation << " " << num2 << " = " << result << std::endl;
+        std::cout << "-----------------------------" << std::endl;
+    }
+
+    std::cout << "\nThank you for using the calculator!" << std::endl;
+
+    return 0;
+}
+```
+
+Full interaction example:
+```
+=============================
+   SIMPLE C++ CALCULATOR
+=============================
+
+Enter first number  : 12.5
+Enter operator (+, -, *, /): *
+Enter second number : 4
+
+-----------------------------
+  12.5 * 4 = 50
+-----------------------------
+
+Thank you for using the calculator!
+```
+
+## Bonus Challenges
+
+Already done? Try these extra challenges to test your skills:
+
+**Challenge 1: Modulo Operator**
+
+Add support for the `%` (modulo) operator. Remember that modulo only works with integers, so you'll need to convert `double` to `int`:
+
+```cpp
+} else if (operation == '%') {
+    if (num2 == 0) {
+        std::cout << "Error: Cannot modulo by zero!" << std::endl;
+        valid = false;
+    } else {
+        result = (int)num1 % (int)num2;
+    }
+}
+```
+
+**Challenge 2: Display Extra Information**
+
+Before displaying the result, also show:
+- The type of operation (Addition/Subtraction/Multiplication/Division)
+- Whether the result is positive, negative, or zero
+
+**Challenge 3: Multiple Calculations**
+
+Wrap the entire program in a loop (we'll learn loops in Unit 3, but if you're curious, try using `while(true)` and `break`).
+
+## Reflection: What You've Learned
+
+In this project, you used **nearly every concept** from Unit 1:
+
+| Concept | Used For |
+|---------|----------|
+| `#include <iostream>` | Input/output |
+| `int main()` | Program entry point |
+| `std::cout <<` | Displaying text and results |
+| `std::cin >>` | Receiving user input |
+| Variables (`double`, `char`, `bool`) | Storing data |
+| Arithmetic operators (`+`, `-`, `*`, `/`) | Calculations |
+| Comments (`//`) | Code documentation |
+| `const` (can be added) | For values that don't change |
+
+## Unit 1 Wrap-Up
+
+Congratulations! You've completed **Unit 1: C++ Basics**! Let's recap what you've mastered:
+
+- Writing and running C++ programs from scratch
+- Understanding program structure: `#include`, `main()`, `return`
+- Writing comments to document code
+- Using variables and various data types
+- Receiving input from users and displaying output
+- Performing arithmetic operations
+- Basic string manipulation
+- Using constants (`const`) and `auto`
+- Building a complete program from planning through testing
+
+This is a strong foundation. Every concept you learned here will be used continuously in the units ahead.
+
+In **Unit 2**, you'll learn about **branching** (`if/else`, `switch`) and **boolean logic** — how to make programs that can "make decisions". Our calculator actually gave us a sneak peek at Unit 2 by using `if/else` — so you already have a head start!
+
+Keep up the momentum, and remember: every great programmer once stood at this very point. You've started your journey!

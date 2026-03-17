@@ -1,0 +1,1265 @@
+---
+title: "Final Project: Contact Manager"
+unit: 6
+lesson: 6
+description: "Curriculum capstone project — build a complete contact management application that integrates all concepts from Unit 0 through Unit 6"
+objectives:
+  - "Integrate all C++ concepts from Unit 0 through Unit 6 in one program"
+  - "Build a complete CRUD application with file storage"
+  - "Use struct, enum, vector, functions, and file I/O together"
+  - "Write organized, well-commented, and maintainable code"
+  - "Complete the final project with pride!"
+estimatedTime: 120
+prerequisites: ["unit-6/05-enum-typedef"]
+difficulty: "intermediate"
+isProject: true
+tags: ["project", "final-project", "contact-manager", "crud", "struct", "enum", "file-io", "vector"]
+---
+
+# Final Project: Contact Manager
+
+Welcome to the **final project** in your C++ learning journey! This is not just any project — it is the **culmination of the entire curriculum**. Here, you will use **everything** you have learned from Unit 0 through Unit 6 to build one complete and useful application.
+
+We will build a **Contact Manager Application** — a program that can store, search, edit, and delete contact data, with permanent file storage. Like your very own digital phone book!
+
+:::note
+This is a fairly large project. Don't panic! We will build it **step by step**, starting from the simplest parts. Each step adds a new feature, and at every step you will see concepts you have already mastered from previous units working together.
+:::
+
+## Concepts Being Integrated
+
+Before we start coding, look at how much you have already learned — and all of it will be used in this project:
+
+| Unit | Concept | Used For |
+|------|---------|----------|
+| Unit 0 | Variables, data types, input/output | Contact data input, displaying menus |
+| Unit 1 | Conditions (if/else, switch) | Menu choices, input validation, filtering |
+| Unit 2 | Loops (while, for, do-while) | Repeating menu, iterating contacts |
+| Unit 3 | Strings | Name, phone number, email, searching |
+| Unit 4 | Functions | Code organization, each feature = one function |
+| Unit 5 | Array/Vector | Storing the contact list |
+| Unit 6 | Struct | Structured contact data |
+| Unit 6 | File I/O | Saving and loading contacts from file |
+| Unit 6 | Enum | Contact categories |
+
+Amazing, right? All that knowledge now comes together into one complete program!
+
+## Program Design
+
+### Struct and Enum
+
+```cpp
+// Contact category
+enum class Category {
+    Family,
+    Friend,
+    Work,
+    Other
+};
+
+// Data for one contact
+struct Contact {
+    std::string name;
+    std::string phone;
+    std::string email;
+    Category category;
+};
+```
+
+### Required Functions
+
+| Function | Task |
+|----------|------|
+| `displayMenu()` | Display the main menu |
+| `addContact()` | Input and add a new contact |
+| `displayAllContacts()` | Display all contacts in a table |
+| `searchContact()` | Search contacts by name |
+| `editContact()` | Edit an existing contact's data |
+| `deleteContact()` | Delete a contact from the list |
+| `sortContacts()` | Sort contacts by name |
+| `filterByCategory()` | Display contacts from a specific category |
+| `saveToFile()` | Save all contacts to a CSV file |
+| `loadFromFile()` | Load contacts from a CSV file when the program starts |
+| `categoryToString()` | Convert Category enum to string |
+| `stringToCategory()` | Convert string to Category enum |
+
+## Step 1: Basic Structure and Menu
+
+We start with the program skeleton — struct, enum, and main menu:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+enum class Category {
+    Family,
+    Friend,
+    Work,
+    Other
+};
+
+struct Contact {
+    std::string name;
+    std::string phone;
+    std::string email;
+    Category category;
+};
+
+// Convert category to string
+std::string categoryToString(Category cat) {
+    switch (cat) {
+        case Category::Family: return "Family";
+        case Category::Friend: return "Friend";
+        case Category::Work:   return "Work";
+        case Category::Other:  return "Other";
+        default:               return "Other";
+    }
+}
+
+void displayMenu() {
+    std::cout << std::endl;
+    std::cout << "=====================================" << std::endl;
+    std::cout << "      CONTACT MANAGER v1.0" << std::endl;
+    std::cout << "=====================================" << std::endl;
+    std::cout << "  1. Add Contact" << std::endl;
+    std::cout << "  2. Display All Contacts" << std::endl;
+    std::cout << "  3. Search Contact" << std::endl;
+    std::cout << "  4. Edit Contact" << std::endl;
+    std::cout << "  5. Delete Contact" << std::endl;
+    std::cout << "  6. Sort by Name" << std::endl;
+    std::cout << "  7. Filter by Category" << std::endl;
+    std::cout << "  8. Save & Exit" << std::endl;
+    std::cout << "=====================================" << std::endl;
+    std::cout << "  Choice: ";
+}
+
+int main() {
+    std::vector<Contact> contactList;
+    int choice;
+
+    do {
+        displayMenu();
+        std::cin >> choice;
+        std::cin.ignore();  // Discard the newline after cin >>
+
+        switch (choice) {
+            case 1:
+                std::cout << "[Add contact - not yet implemented]" << std::endl;
+                break;
+            case 2:
+                std::cout << "[Display contacts - not yet implemented]" << std::endl;
+                break;
+            // ... cases 3-7
+            case 8:
+                std::cout << "Saving and exiting..." << std::endl;
+                break;
+            default:
+                std::cout << "Invalid choice!" << std::endl;
+        }
+    } while (choice != 8);
+
+    return 0;
+}
+```
+
+The basic skeleton is done! Now let's fill in the features one by one.
+
+## Step 2: Add and Display Contacts
+
+### Add Contact Function
+
+```cpp
+Category chooseCategory() {
+    int choice;
+    std::cout << "  Category:" << std::endl;
+    std::cout << "    1. Family" << std::endl;
+    std::cout << "    2. Friend" << std::endl;
+    std::cout << "    3. Work" << std::endl;
+    std::cout << "    4. Other" << std::endl;
+    std::cout << "  Choose (1-4): ";
+    std::cin >> choice;
+    std::cin.ignore();
+
+    switch (choice) {
+        case 1: return Category::Family;
+        case 2: return Category::Friend;
+        case 3: return Category::Work;
+        default: return Category::Other;
+    }
+}
+
+void addContact(std::vector<Contact>& list) {
+    Contact newContact;
+
+    std::cout << std::endl;
+    std::cout << "--- Add New Contact ---" << std::endl;
+
+    std::cout << "  Name  : ";
+    std::getline(std::cin, newContact.name);
+
+    std::cout << "  Phone : ";
+    std::getline(std::cin, newContact.phone);
+
+    std::cout << "  Email : ";
+    std::getline(std::cin, newContact.email);
+
+    newContact.category = chooseCategory();
+
+    list.push_back(newContact);
+
+    std::cout << std::endl;
+    std::cout << "  Contact \"" << newContact.name << "\" successfully added!" << std::endl;
+}
+```
+
+### Display All Contacts Function
+
+```cpp
+#include <iomanip>  // Add at the top
+
+void displayAllContacts(const std::vector<Contact>& list) {
+    std::cout << std::endl;
+
+    if (list.empty()) {
+        std::cout << "  No contacts saved yet." << std::endl;
+        return;
+    }
+
+    std::cout << "--- Contact List (" << list.size() << " contacts) ---" << std::endl;
+    std::cout << std::left;
+    std::cout << std::setw(5)  << "No"
+              << std::setw(20) << "Name"
+              << std::setw(16) << "Phone"
+              << std::setw(25) << "Email"
+              << std::setw(12) << "Category"
+              << std::endl;
+    std::cout << std::string(78, '-') << std::endl;
+
+    for (int i = 0; i < static_cast<int>(list.size()); i++) {
+        std::cout << std::setw(5)  << (i + 1)
+                  << std::setw(20) << list[i].name
+                  << std::setw(16) << list[i].phone
+                  << std::setw(25) << list[i].email
+                  << std::setw(12) << categoryToString(list[i].category)
+                  << std::endl;
+    }
+
+    std::cout << std::string(78, '-') << std::endl;
+}
+```
+
+Now update `main()` to call these functions:
+
+```cpp
+case 1:
+    addContact(contactList);
+    break;
+case 2:
+    displayAllContacts(contactList);
+    break;
+```
+
+:::tip
+Notice that `addContact` receives the vector by **reference** (`&`) because it needs to add data, while `displayAllContacts` receives a **const reference** (`const &`) because it only reads. This is a good practice you learned in Unit 4!
+:::
+
+## Step 3: Search Contacts (Case-Insensitive)
+
+For a comfortable search, we make it case-insensitive — "budi", "BUDI", and "Budi" are all treated the same:
+
+```cpp
+#include <algorithm>  // Add at the top for std::transform
+
+// Helper function: convert string to lowercase
+std::string toLower(std::string str) {
+    std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+    return str;
+}
+
+void searchContact(const std::vector<Contact>& list) {
+    if (list.empty()) {
+        std::cout << "  No contacts saved yet." << std::endl;
+        return;
+    }
+
+    std::string keyword;
+    std::cout << std::endl;
+    std::cout << "--- Search Contact ---" << std::endl;
+    std::cout << "  Enter name: ";
+    std::getline(std::cin, keyword);
+
+    std::string keywordLower = toLower(keyword);
+    bool found = false;
+    int number = 1;
+
+    std::cout << std::endl;
+
+    for (int i = 0; i < static_cast<int>(list.size()); i++) {
+        // Check if the keyword exists in the name (case-insensitive)
+        if (toLower(list[i].name).find(keywordLower) != std::string::npos) {
+            if (!found) {
+                std::cout << "  Search results:" << std::endl;
+                found = true;
+            }
+            std::cout << "  " << number << ". " << list[i].name
+                      << " | " << list[i].phone
+                      << " | " << list[i].email
+                      << " | " << categoryToString(list[i].category)
+                      << std::endl;
+            number++;
+        }
+    }
+
+    if (!found) {
+        std::cout << "  No contact found with the name \""
+                  << keyword << "\"." << std::endl;
+    }
+}
+```
+
+:::note
+`std::string::find()` returns the position of the substring found. If not found, it returns `std::string::npos`. So `!= std::string::npos` means "substring was found". This is the standard way to search for text within a C++ string.
+:::
+
+## Step 4: Edit and Delete Contacts
+
+### Edit Contact
+
+```cpp
+void editContact(std::vector<Contact>& list) {
+    if (list.empty()) {
+        std::cout << "  No contacts saved yet." << std::endl;
+        return;
+    }
+
+    displayAllContacts(list);
+
+    int number;
+    std::cout << "  Choose the contact number to edit: ";
+    std::cin >> number;
+    std::cin.ignore();
+
+    if (number < 1 || number > static_cast<int>(list.size())) {
+        std::cout << "  Invalid number!" << std::endl;
+        return;
+    }
+
+    int idx = number - 1;  // Convert to index (starts from 0)
+    Contact& c = list[idx];  // Reference to the contact being edited
+
+    std::cout << std::endl;
+    std::cout << "--- Edit Contact: " << c.name << " ---" << std::endl;
+    std::cout << "  (Press Enter to keep unchanged)" << std::endl;
+
+    std::string input;
+
+    std::cout << "  Name [" << c.name << "]: ";
+    std::getline(std::cin, input);
+    if (!input.empty()) c.name = input;
+
+    std::cout << "  Phone [" << c.phone << "]: ";
+    std::getline(std::cin, input);
+    if (!input.empty()) c.phone = input;
+
+    std::cout << "  Email [" << c.email << "]: ";
+    std::getline(std::cin, input);
+    if (!input.empty()) c.email = input;
+
+    std::cout << "  Change category? (y/n): ";
+    std::getline(std::cin, input);
+    if (input == "y" || input == "Y") {
+        c.category = chooseCategory();
+    }
+
+    std::cout << "  Contact successfully updated!" << std::endl;
+}
+```
+
+### Delete Contact
+
+```cpp
+void deleteContact(std::vector<Contact>& list) {
+    if (list.empty()) {
+        std::cout << "  No contacts saved yet." << std::endl;
+        return;
+    }
+
+    displayAllContacts(list);
+
+    int number;
+    std::cout << "  Choose the contact number to delete: ";
+    std::cin >> number;
+    std::cin.ignore();
+
+    if (number < 1 || number > static_cast<int>(list.size())) {
+        std::cout << "  Invalid number!" << std::endl;
+        return;
+    }
+
+    int idx = number - 1;
+    std::string deleteName = list[idx].name;
+
+    // Confirmation
+    std::string confirm;
+    std::cout << "  Are you sure you want to delete \"" << deleteName << "\"? (y/n): ";
+    std::getline(std::cin, confirm);
+
+    if (confirm == "y" || confirm == "Y") {
+        list.erase(list.begin() + idx);
+        std::cout << "  Contact \"" << deleteName << "\" successfully deleted." << std::endl;
+    } else {
+        std::cout << "  Deletion cancelled." << std::endl;
+    }
+}
+```
+
+:::warning
+The `erase` function removes an element from the vector and shifts all elements after it. For small contact lists (hundreds or thousands), this is fine. But for very large data sets, there are more efficient data structures available.
+:::
+
+## Step 5: Sort and Filter
+
+### Sort by Name
+
+```cpp
+void sortContacts(std::vector<Contact>& list) {
+    if (list.size() < 2) {
+        std::cout << "  Too few contacts to sort." << std::endl;
+        return;
+    }
+
+    // Bubble sort by name (case-insensitive)
+    for (int i = 0; i < static_cast<int>(list.size()) - 1; i++) {
+        for (int j = 0; j < static_cast<int>(list.size()) - 1 - i; j++) {
+            if (toLower(list[j].name) > toLower(list[j + 1].name)) {
+                // Swap positions
+                Contact temp = list[j];
+                list[j] = list[j + 1];
+                list[j + 1] = temp;
+            }
+        }
+    }
+
+    std::cout << "  Contacts successfully sorted by name!" << std::endl;
+    displayAllContacts(list);
+}
+```
+
+### Filter by Category
+
+```cpp
+void filterByCategory(const std::vector<Contact>& list) {
+    if (list.empty()) {
+        std::cout << "  No contacts saved yet." << std::endl;
+        return;
+    }
+
+    std::cout << std::endl;
+    std::cout << "--- Filter by Category ---" << std::endl;
+    Category cat = chooseCategory();
+
+    std::cout << std::endl;
+    std::cout << "  Contacts in category " << categoryToString(cat) << ":" << std::endl;
+    std::cout << std::string(50, '-') << std::endl;
+
+    int count = 0;
+    for (int i = 0; i < static_cast<int>(list.size()); i++) {
+        if (list[i].category == cat) {
+            count++;
+            std::cout << "  " << count << ". " << list[i].name
+                      << " | " << list[i].phone
+                      << " | " << list[i].email
+                      << std::endl;
+        }
+    }
+
+    if (count == 0) {
+        std::cout << "  No contacts in this category." << std::endl;
+    } else {
+        std::cout << std::string(50, '-') << std::endl;
+        std::cout << "  Total: " << count << " contacts" << std::endl;
+    }
+}
+```
+
+## Step 6: Save and Load File (CSV)
+
+This is the part that makes contact data **permanent** — saved even when the program is closed!
+
+We use the **CSV** (Comma-Separated Values) format because it is simple and can be opened with other programs like Excel:
+
+### Save to File
+
+```cpp
+#include <fstream>  // Add at the top
+
+void saveToFile(const std::vector<Contact>& list,
+                const std::string& fileName) {
+    std::ofstream file(fileName);
+
+    if (!file.is_open()) {
+        std::cout << "  Failed to open file for saving!" << std::endl;
+        return;
+    }
+
+    // Write each contact as one CSV line
+    for (int i = 0; i < static_cast<int>(list.size()); i++) {
+        file << list[i].name << ","
+             << list[i].phone << ","
+             << list[i].email << ","
+             << categoryToString(list[i].category)
+             << std::endl;
+    }
+
+    file.close();
+    std::cout << "  " << list.size() << " contacts successfully saved to "
+              << fileName << std::endl;
+}
+```
+
+### Load from File
+
+```cpp
+#include <sstream>  // Add at the top for std::getline with delimiter
+
+Category stringToCategory(const std::string& str) {
+    if (str == "Family") return Category::Family;
+    if (str == "Friend") return Category::Friend;
+    if (str == "Work")   return Category::Work;
+    return Category::Other;
+}
+
+void loadFromFile(std::vector<Contact>& list,
+                  const std::string& fileName) {
+    std::ifstream file(fileName);
+
+    if (!file.is_open()) {
+        // File doesn't exist yet — not an error, maybe first time running
+        std::cout << "  No saved data found (a new file will be created when you save)."
+                  << std::endl;
+        return;
+    }
+
+    std::string line;
+    int count = 0;
+
+    while (std::getline(file, line)) {
+        if (line.empty()) continue;  // Skip empty lines
+
+        // Parse CSV: name,phone,email,category
+        Contact c;
+        std::stringstream ss(line);
+        std::string catStr;
+
+        std::getline(ss, c.name, ',');
+        std::getline(ss, c.phone, ',');
+        std::getline(ss, c.email, ',');
+        std::getline(ss, catStr, ',');
+
+        c.category = stringToCategory(catStr);
+
+        list.push_back(c);
+        count++;
+    }
+
+    file.close();
+
+    if (count > 0) {
+        std::cout << "  " << count << " contacts successfully loaded from "
+                  << fileName << std::endl;
+    }
+}
+```
+
+:::tip
+The CSV format we use is simple: each line is one contact, and fields are separated by commas. This is sufficient for our project. Keep in mind that if a contact name contains a comma, this format can break — in the real world, proper CSV uses quotation marks to handle that case.
+:::
+
+## Complete Final Code
+
+Here is the complete Contact Manager Application code! All steps combined into one program ready to run:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+#include <fstream>
+#include <sstream>
+#include <iomanip>
+#include <algorithm>
+
+// ============================================================
+// ENUM & STRUCT
+// ============================================================
+
+enum class Category {
+    Family,
+    Friend,
+    Work,
+    Other
+};
+
+struct Contact {
+    std::string name;
+    std::string phone;
+    std::string email;
+    Category category;
+};
+
+// ============================================================
+// CONSTANTS
+// ============================================================
+
+const std::string FILE_NAME = "contacts.csv";
+
+// ============================================================
+// FUNCTION DECLARATIONS
+// ============================================================
+
+// Utilities
+std::string categoryToString(Category cat);
+Category stringToCategory(const std::string& str);
+std::string toLower(std::string str);
+Category chooseCategory();
+
+// Menu
+void displayMenu();
+
+// CRUD
+void addContact(std::vector<Contact>& list);
+void displayAllContacts(const std::vector<Contact>& list);
+void searchContact(const std::vector<Contact>& list);
+void editContact(std::vector<Contact>& list);
+void deleteContact(std::vector<Contact>& list);
+
+// Sort & Filter
+void sortContacts(std::vector<Contact>& list);
+void filterByCategory(const std::vector<Contact>& list);
+
+// File I/O
+void saveToFile(const std::vector<Contact>& list, const std::string& fileName);
+void loadFromFile(std::vector<Contact>& list, const std::string& fileName);
+
+// ============================================================
+// MAIN FUNCTION
+// ============================================================
+
+int main() {
+    std::vector<Contact> contactList;
+
+    // Load data from file when the program starts
+    std::cout << "=========================================" << std::endl;
+    std::cout << "      CONTACT MANAGER v1.0" << std::endl;
+    std::cout << "=========================================" << std::endl;
+    loadFromFile(contactList, FILE_NAME);
+
+    int choice;
+
+    do {
+        displayMenu();
+        std::cin >> choice;
+        std::cin.ignore();  // Discard leftover newline from cin >>
+
+        switch (choice) {
+            case 1:
+                addContact(contactList);
+                break;
+            case 2:
+                displayAllContacts(contactList);
+                break;
+            case 3:
+                searchContact(contactList);
+                break;
+            case 4:
+                editContact(contactList);
+                break;
+            case 5:
+                deleteContact(contactList);
+                break;
+            case 6:
+                sortContacts(contactList);
+                break;
+            case 7:
+                filterByCategory(contactList);
+                break;
+            case 8:
+                saveToFile(contactList, FILE_NAME);
+                std::cout << std::endl;
+                std::cout << "  Goodbye! Thank you for using"
+                          << std::endl;
+                std::cout << "  Contact Manager v1.0" << std::endl;
+                break;
+            default:
+                std::cout << "  Invalid choice! Enter 1-8." << std::endl;
+        }
+    } while (choice != 8);
+
+    return 0;
+}
+
+// ============================================================
+// UTILITY FUNCTION IMPLEMENTATIONS
+// ============================================================
+
+std::string categoryToString(Category cat) {
+    switch (cat) {
+        case Category::Family: return "Family";
+        case Category::Friend: return "Friend";
+        case Category::Work:   return "Work";
+        case Category::Other:  return "Other";
+        default:               return "Other";
+    }
+}
+
+Category stringToCategory(const std::string& str) {
+    if (str == "Family") return Category::Family;
+    if (str == "Friend") return Category::Friend;
+    if (str == "Work")   return Category::Work;
+    return Category::Other;
+}
+
+std::string toLower(std::string str) {
+    std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+    return str;
+}
+
+Category chooseCategory() {
+    int choice;
+    std::cout << "  Category:" << std::endl;
+    std::cout << "    1. Family" << std::endl;
+    std::cout << "    2. Friend" << std::endl;
+    std::cout << "    3. Work" << std::endl;
+    std::cout << "    4. Other" << std::endl;
+    std::cout << "  Choose (1-4): ";
+    std::cin >> choice;
+    std::cin.ignore();
+
+    switch (choice) {
+        case 1: return Category::Family;
+        case 2: return Category::Friend;
+        case 3: return Category::Work;
+        default: return Category::Other;
+    }
+}
+
+// ============================================================
+// MENU IMPLEMENTATION
+// ============================================================
+
+void displayMenu() {
+    std::cout << std::endl;
+    std::cout << "=====================================" << std::endl;
+    std::cout << "           MAIN MENU" << std::endl;
+    std::cout << "=====================================" << std::endl;
+    std::cout << "  1. Add Contact" << std::endl;
+    std::cout << "  2. Display All Contacts" << std::endl;
+    std::cout << "  3. Search Contact" << std::endl;
+    std::cout << "  4. Edit Contact" << std::endl;
+    std::cout << "  5. Delete Contact" << std::endl;
+    std::cout << "  6. Sort by Name" << std::endl;
+    std::cout << "  7. Filter by Category" << std::endl;
+    std::cout << "  8. Save & Exit" << std::endl;
+    std::cout << "=====================================" << std::endl;
+    std::cout << "  Choice: ";
+}
+
+// ============================================================
+// CRUD IMPLEMENTATIONS
+// ============================================================
+
+void addContact(std::vector<Contact>& list) {
+    Contact newContact;
+
+    std::cout << std::endl;
+    std::cout << "--- Add New Contact ---" << std::endl;
+
+    std::cout << "  Name  : ";
+    std::getline(std::cin, newContact.name);
+
+    if (newContact.name.empty()) {
+        std::cout << "  Name cannot be empty!" << std::endl;
+        return;
+    }
+
+    std::cout << "  Phone : ";
+    std::getline(std::cin, newContact.phone);
+
+    std::cout << "  Email : ";
+    std::getline(std::cin, newContact.email);
+
+    newContact.category = chooseCategory();
+
+    list.push_back(newContact);
+
+    std::cout << std::endl;
+    std::cout << "  Contact \"" << newContact.name
+              << "\" successfully added!" << std::endl;
+    std::cout << "  Total contacts: " << list.size() << std::endl;
+}
+
+void displayAllContacts(const std::vector<Contact>& list) {
+    std::cout << std::endl;
+
+    if (list.empty()) {
+        std::cout << "  No contacts saved yet." << std::endl;
+        return;
+    }
+
+    std::cout << "--- Contact List (" << list.size()
+              << " contacts) ---" << std::endl;
+    std::cout << std::left;
+    std::cout << std::setw(5)  << "No"
+              << std::setw(20) << "Name"
+              << std::setw(16) << "Phone"
+              << std::setw(25) << "Email"
+              << std::setw(12) << "Category"
+              << std::endl;
+    std::cout << std::string(78, '-') << std::endl;
+
+    for (int i = 0; i < static_cast<int>(list.size()); i++) {
+        std::cout << std::setw(5)  << (i + 1)
+                  << std::setw(20) << list[i].name
+                  << std::setw(16) << list[i].phone
+                  << std::setw(25) << list[i].email
+                  << std::setw(12) << categoryToString(list[i].category)
+                  << std::endl;
+    }
+
+    std::cout << std::string(78, '-') << std::endl;
+}
+
+void searchContact(const std::vector<Contact>& list) {
+    if (list.empty()) {
+        std::cout << "  No contacts saved yet." << std::endl;
+        return;
+    }
+
+    std::string keyword;
+    std::cout << std::endl;
+    std::cout << "--- Search Contact ---" << std::endl;
+    std::cout << "  Enter name: ";
+    std::getline(std::cin, keyword);
+
+    std::string keywordLower = toLower(keyword);
+    bool found = false;
+    int number = 1;
+
+    std::cout << std::endl;
+
+    for (int i = 0; i < static_cast<int>(list.size()); i++) {
+        if (toLower(list[i].name).find(keywordLower) != std::string::npos) {
+            if (!found) {
+                std::cout << "  Search results for \""
+                          << keyword << "\":" << std::endl;
+                std::cout << std::string(50, '-') << std::endl;
+                found = true;
+            }
+            std::cout << "  " << number << ". " << list[i].name
+                      << " | " << list[i].phone
+                      << " | " << list[i].email
+                      << " | " << categoryToString(list[i].category)
+                      << std::endl;
+            number++;
+        }
+    }
+
+    if (!found) {
+        std::cout << "  No contact found with the name \""
+                  << keyword << "\"." << std::endl;
+    }
+}
+
+void editContact(std::vector<Contact>& list) {
+    if (list.empty()) {
+        std::cout << "  No contacts saved yet." << std::endl;
+        return;
+    }
+
+    displayAllContacts(list);
+
+    int number;
+    std::cout << "  Choose the contact number to edit: ";
+    std::cin >> number;
+    std::cin.ignore();
+
+    if (number < 1 || number > static_cast<int>(list.size())) {
+        std::cout << "  Invalid number!" << std::endl;
+        return;
+    }
+
+    int idx = number - 1;
+    Contact& c = list[idx];
+
+    std::cout << std::endl;
+    std::cout << "--- Edit Contact: " << c.name << " ---" << std::endl;
+    std::cout << "  (Press Enter to keep unchanged)" << std::endl;
+
+    std::string input;
+
+    std::cout << "  Name  [" << c.name << "]: ";
+    std::getline(std::cin, input);
+    if (!input.empty()) c.name = input;
+
+    std::cout << "  Phone [" << c.phone << "]: ";
+    std::getline(std::cin, input);
+    if (!input.empty()) c.phone = input;
+
+    std::cout << "  Email [" << c.email << "]: ";
+    std::getline(std::cin, input);
+    if (!input.empty()) c.email = input;
+
+    std::cout << "  Change category? (y/n): ";
+    std::getline(std::cin, input);
+    if (input == "y" || input == "Y") {
+        c.category = chooseCategory();
+    }
+
+    std::cout << std::endl;
+    std::cout << "  Contact successfully updated!" << std::endl;
+}
+
+void deleteContact(std::vector<Contact>& list) {
+    if (list.empty()) {
+        std::cout << "  No contacts saved yet." << std::endl;
+        return;
+    }
+
+    displayAllContacts(list);
+
+    int number;
+    std::cout << "  Choose the contact number to delete: ";
+    std::cin >> number;
+    std::cin.ignore();
+
+    if (number < 1 || number > static_cast<int>(list.size())) {
+        std::cout << "  Invalid number!" << std::endl;
+        return;
+    }
+
+    int idx = number - 1;
+    std::string deleteName = list[idx].name;
+
+    std::string confirm;
+    std::cout << "  Are you sure you want to delete \"" << deleteName << "\"? (y/n): ";
+    std::getline(std::cin, confirm);
+
+    if (confirm == "y" || confirm == "Y") {
+        list.erase(list.begin() + idx);
+        std::cout << "  Contact \"" << deleteName
+                  << "\" successfully deleted." << std::endl;
+    } else {
+        std::cout << "  Deletion cancelled." << std::endl;
+    }
+}
+
+// ============================================================
+// SORT & FILTER IMPLEMENTATIONS
+// ============================================================
+
+void sortContacts(std::vector<Contact>& list) {
+    if (list.size() < 2) {
+        std::cout << "  Too few contacts to sort." << std::endl;
+        return;
+    }
+
+    // Bubble sort by name (case-insensitive)
+    for (int i = 0; i < static_cast<int>(list.size()) - 1; i++) {
+        for (int j = 0; j < static_cast<int>(list.size()) - 1 - i; j++) {
+            if (toLower(list[j].name) > toLower(list[j + 1].name)) {
+                Contact temp = list[j];
+                list[j] = list[j + 1];
+                list[j + 1] = temp;
+            }
+        }
+    }
+
+    std::cout << "  Contacts successfully sorted by name!" << std::endl;
+    displayAllContacts(list);
+}
+
+void filterByCategory(const std::vector<Contact>& list) {
+    if (list.empty()) {
+        std::cout << "  No contacts saved yet." << std::endl;
+        return;
+    }
+
+    std::cout << std::endl;
+    std::cout << "--- Filter by Category ---" << std::endl;
+    Category cat = chooseCategory();
+
+    std::cout << std::endl;
+    std::cout << "  Contacts in category "
+              << categoryToString(cat) << ":" << std::endl;
+    std::cout << std::string(50, '-') << std::endl;
+
+    int count = 0;
+    for (int i = 0; i < static_cast<int>(list.size()); i++) {
+        if (list[i].category == cat) {
+            count++;
+            std::cout << "  " << count << ". " << list[i].name
+                      << " | " << list[i].phone
+                      << " | " << list[i].email
+                      << std::endl;
+        }
+    }
+
+    if (count == 0) {
+        std::cout << "  No contacts in this category." << std::endl;
+    } else {
+        std::cout << std::string(50, '-') << std::endl;
+        std::cout << "  Total: " << count << " contacts" << std::endl;
+    }
+}
+
+// ============================================================
+// FILE I/O IMPLEMENTATIONS
+// ============================================================
+
+void saveToFile(const std::vector<Contact>& list,
+                const std::string& fileName) {
+    std::ofstream file(fileName);
+
+    if (!file.is_open()) {
+        std::cout << "  Failed to open file for saving!" << std::endl;
+        return;
+    }
+
+    for (int i = 0; i < static_cast<int>(list.size()); i++) {
+        file << list[i].name << ","
+             << list[i].phone << ","
+             << list[i].email << ","
+             << categoryToString(list[i].category)
+             << std::endl;
+    }
+
+    file.close();
+    std::cout << "  " << list.size() << " contacts successfully saved to "
+              << fileName << std::endl;
+}
+
+void loadFromFile(std::vector<Contact>& list,
+                  const std::string& fileName) {
+    std::ifstream file(fileName);
+
+    if (!file.is_open()) {
+        std::cout << "  No saved data found (a new file will be created"
+                  << " when you save)." << std::endl;
+        return;
+    }
+
+    std::string line;
+    int count = 0;
+
+    while (std::getline(file, line)) {
+        if (line.empty()) continue;
+
+        Contact c;
+        std::stringstream ss(line);
+        std::string catStr;
+
+        std::getline(ss, c.name, ',');
+        std::getline(ss, c.phone, ',');
+        std::getline(ss, c.email, ',');
+        std::getline(ss, catStr, ',');
+
+        c.category = stringToCategory(catStr);
+        list.push_back(c);
+        count++;
+    }
+
+    file.close();
+
+    if (count > 0) {
+        std::cout << "  " << count << " contacts successfully loaded from "
+                  << fileName << std::endl;
+    }
+}
+```
+
+## Example Usage Session
+
+```
+=========================================
+      CONTACT MANAGER v1.0
+=========================================
+  No saved data found (a new file will be created when you save).
+
+=====================================
+           MAIN MENU
+=====================================
+  1. Add Contact
+  2. Display All Contacts
+  3. Search Contact
+  4. Edit Contact
+  5. Delete Contact
+  6. Sort by Name
+  7. Filter by Category
+  8. Save & Exit
+=====================================
+  Choice: 1
+
+--- Add New Contact ---
+  Name  : Budi Santoso
+  Phone : 081234567890
+  Email : budi@email.com
+  Category:
+    1. Family
+    2. Friend
+    3. Work
+    4. Other
+  Choose (1-4): 2
+
+  Contact "Budi Santoso" successfully added!
+  Total contacts: 1
+
+=====================================
+           MAIN MENU
+=====================================
+  ...
+  Choice: 1
+
+--- Add New Contact ---
+  Name  : Ani Wijaya
+  Phone : 087654321098
+  Email : ani@email.com
+  Category:
+  ...
+  Choose (1-4): 1
+
+  Contact "Ani Wijaya" successfully added!
+  Total contacts: 2
+
+  ...
+  Choice: 2
+
+--- Contact List (2 contacts) ---
+No   Name                Phone           Email                    Category
+------------------------------------------------------------------------------
+1    Budi Santoso        081234567890    budi@email.com           Friend
+2    Ani Wijaya          087654321098    ani@email.com            Family
+------------------------------------------------------------------------------
+
+  ...
+  Choice: 6
+  Contacts successfully sorted by name!
+
+--- Contact List (2 contacts) ---
+No   Name                Phone           Email                    Category
+------------------------------------------------------------------------------
+1    Ani Wijaya          087654321098    ani@email.com            Family
+2    Budi Santoso        081234567890    budi@email.com           Friend
+------------------------------------------------------------------------------
+
+  ...
+  Choice: 8
+  2 contacts successfully saved to contacts.csv
+
+  Goodbye! Thank you for using
+  Contact Manager v1.0
+```
+
+## Concepts from All Units Used
+
+| Concept | Unit | Example Usage in This Project |
+|---------|------|-------------------------------|
+| `std::cout`, `std::cin` | 0 | Input/output throughout the program |
+| Variables & data types | 0 | `int choice`, `std::string name`, etc. |
+| `if/else` | 1 | Input validation, checking for empty files |
+| `switch-case` | 1 | Main menu, category conversion |
+| `do-while` loop | 2 | Main menu loop |
+| `for` loop | 2 | Iterating the contact list |
+| `while` loop | 2 | Reading file line by line |
+| `std::string` | 3 | Name, phone number, email, searching |
+| `string::find()` | 3 | Case-insensitive search |
+| Functions & prototypes | 4 | All functions clearly separated |
+| Pass by reference | 4 | `addContact()`, `editContact()`, etc. |
+| Const reference | 4 | `displayAllContacts()`, `searchContact()` |
+| `std::vector` | 5 | `std::vector<Contact> contactList` |
+| `push_back`, `erase` | 5 | Adding and deleting contacts |
+| `struct` | 6 | `struct Contact { ... }` |
+| `enum class` | 6 | `enum class Category { ... }` |
+| `std::ifstream` | 6 | Loading contacts from CSV file |
+| `std::ofstream` | 6 | Saving contacts to CSV file |
+| `std::stringstream` | 6 | Parsing CSV lines |
+
+## Extra Challenges
+
+Successfully completed this project? Outstanding! If you want to challenge yourself further, try adding these features:
+
+**Challenge 1: Multi-Criteria Sorting**
+
+Add sorting options by: name, category, or phone number. Create a menu inside the `sortContacts()` function that asks for the sorting criteria.
+
+**Challenge 2: Automatic Backup**
+
+Before saving to the main file, create a backup of the old file named `contacts_backup.csv`. This way, if something goes wrong, the old data can still be recovered.
+
+```cpp
+void backupFile(const std::string& fileName) {
+    std::ifstream src(fileName);
+    if (!src.is_open()) return;  // No old file, skip
+
+    std::ofstream dst(fileName.substr(0, fileName.find('.')) + "_backup.csv");
+    dst << src.rdbuf();  // Copy the entire file contents
+
+    src.close();
+    dst.close();
+}
+```
+
+**Challenge 3: Contact Statistics**
+
+Add a "Statistics" menu option that displays:
+- Total contacts
+- Number of contacts per category
+- Contact with the longest and shortest name
+- Percentage of contacts per category (as a simple bar chart using `#` characters)
+
+**Challenge 4: Export to Other Formats**
+
+Add an export option to a nicer text format (like a formatted table report), or a vCard (.vcf) format that can be imported into a phone.
+
+**Challenge 5: Undo Last Action**
+
+Save the last action (add/edit/delete) and provide an "Undo" option to reverse it. Hint: save a copy of the contact data before each change.
+
+:::tip
+You don't have to complete all the challenges. Pick the one that interests you the most and give it a try. Each challenge trains a different problem-solving skill!
+:::
+
+---
+
+## Congratulations! You Have Completed the Entire Curriculum!
+
+If you made it this far — **you are amazing**.
+
+Take a moment to look back. At the start of Unit 0, you may have never even written a single line of C++ code. And now? You just built a **complete application** with an interactive menu, data management, searching, sorting, and file storage. That is no small feat!
+
+Here is a summary of your journey:
+
+- **Unit 0** — You learned to greet the world with "Hello World" and understood variables
+- **Unit 1** — You taught your program to make decisions with if/else
+- **Unit 2** — You made your program repeat work with loops
+- **Unit 3** — You mastered text and strings
+- **Unit 4** — You learned to break big problems into small functions
+- **Unit 5** — You managed collections of data with arrays and vectors
+- **Unit 6** — You created structured data with struct, enum, and saved it to files
+
+Every concept you learned is a **building block** in your programming foundation. And that foundation is now solid.
+
+### What's Next?
+
+The programming world is vast, and you have just begun an exciting adventure. Here are some directions you can explore:
+
+1. **Build your own projects** — The best ideas come from problems you want to solve. Want to make a game? A calculator? A to-do list? Just start!
+2. **Learn OOP (Object-Oriented Programming)** — Classes, inheritance, polymorphism — the next level of C++
+3. **Try other languages** — Python, JavaScript, Java — with a strong C++ foundation, learning other languages becomes much easier
+4. **Join competitions** — Informatics olympiads, hackathons, or online coding challenges
+5. **Join a community** — Share knowledge and learn from other programmers
+
+Most importantly: **don't stop coding**. Like a muscle, programming skill grows stronger the more you practice.
+
+You have proven that you can learn something difficult and see it through to the end. That is an ability that will serve you anywhere, not just in programming.
+
+**Congratulations, programmer! Your journey has just begun.**

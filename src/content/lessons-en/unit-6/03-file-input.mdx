@@ -1,0 +1,771 @@
+---
+title: "Reading Files (File Input)"
+unit: 6
+lesson: 3
+description: "Learn how to read data from text files using ifstream in C++ — how to open files, read line by line, and handle file errors"
+objectives:
+  - "Understand the concept of file I/O and when to use it"
+  - "Open and close files with ifstream"
+  - "Read a file line by line with getline"
+  - "Read a file word by word and read numbers"
+  - "Handle errors: file not found"
+  - "Process file data into struct/vector"
+estimatedTime: 45
+prerequisites: ["unit-6/02-struct-function"]
+difficulty: "intermediate"
+tags: ["file-io", "ifstream", "getline", "fstream", "reading-files"]
+---
+
+# Reading Files (File Input)
+
+Until now, every time your program finishes running, all data **disappears just like that**. Variables, arrays, vectors — everything vanishes when the program closes. Run the program again, and you start from zero. Frustrating, isn't it?
+
+The solution is **file I/O** — the ability for a program to read and write data to **files** on the hard disk. With files, data is preserved even if the computer is turned off!
+
+In this lesson, we focus on **reading files** (file input). Writing files will be covered in the next lesson.
+
+## Analogy: A Notebook
+
+Imagine you have a **notebook** containing a shopping list. Every time you want to go shopping, you **open the notebook** and **read** its contents. You don't need to memorize all the items — just read from the notebook!
+
+In C++:
+- **Notebook** = a text file on the computer
+- **Opening the notebook** = opening a file with `ifstream`
+- **Reading the notebook** = extracting data from the file line by line
+- **Closing the notebook** = closing the file with `close()`
+
+Files store data **persistently** — data is not lost when the program closes. This is what makes files different from regular variables.
+
+## Required Header: `<fstream>`
+
+To work with files, you must include the `<fstream>` header:
+
+```cpp
+#include <fstream>   // For ifstream, ofstream, and fstream
+```
+
+This header provides three main classes:
+
+| Class | Purpose |
+|-------|---------|
+| `std::ifstream` | **Input** file stream — for **reading** files |
+| `std::ofstream` | **Output** file stream — for **writing** files |
+| `std::fstream` | Can read and write (rarely used by beginners) |
+
+In this lesson we focus on **`std::ifstream`** only.
+
+## Basic File Reading Pattern
+
+There are 4 main steps to reading a file:
+
+1. **Create an `ifstream` object** and open the file
+2. **Check** whether the file was successfully opened
+3. **Read** the file's contents
+4. **Close** the file
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+
+int main() {
+    // Step 1: Open the file
+    std::ifstream file("data.txt");
+
+    // Step 2: Check if the file was successfully opened
+    if (!file.is_open()) {
+        std::cout << "Error: file not found!" << std::endl;
+        return 1;
+    }
+
+    // Step 3: Read the file contents line by line
+    std::string line;
+    while (std::getline(file, line)) {
+        std::cout << line << std::endl;
+    }
+
+    // Step 4: Close the file
+    file.close();
+
+    return 0;
+}
+```
+
+Suppose the file `data.txt` contains:
+
+```
+Hello world!
+This is the second line.
+Learning C++ is fun!
+```
+
+Output:
+
+```
+Hello world!
+This is the second line.
+Learning C++ is fun!
+```
+
+:::warning
+Always check whether the file was successfully opened with `file.is_open()` before trying to read! If the file doesn't exist, the program may behave unexpectedly or crash.
+:::
+
+## Reading Line by Line with `getline`
+
+`std::getline(file, variable)` reads **one full line** (until it encounters a newline character) and stores it in a string variable. When there are no more lines (end of file), `getline` returns `false`, so the loop stops automatically.
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+
+int main() {
+    std::ifstream file("student_names.txt");
+
+    if (!file.is_open()) {
+        std::cout << "File not found!" << std::endl;
+        return 1;
+    }
+
+    std::string line;
+    int lineNumber = 1;
+
+    while (std::getline(file, line)) {
+        std::cout << lineNumber << ". " << line << std::endl;
+        lineNumber++;
+    }
+
+    file.close();
+
+    std::cout << std::endl;
+    std::cout << "Total: " << (lineNumber - 1) << " names" << std::endl;
+
+    return 0;
+}
+```
+
+Suppose the file `student_names.txt` contains:
+
+```
+Budi Santoso
+Ani Rahayu
+Citra Dewi
+Dedi Prasetyo
+Eka Putri
+```
+
+Output:
+
+```
+1. Budi Santoso
+2. Ani Rahayu
+3. Citra Dewi
+4. Dedi Prasetyo
+5. Eka Putri
+
+Total: 5 names
+```
+
+:::tip
+The pattern `while (std::getline(file, line))` is the most common way to read an entire file line by line. Memorize this pattern!
+:::
+
+## Reading Word by Word and Numbers
+
+The `>>` operator reads **one token** (word or number) from the file, automatically skipping spaces and newlines.
+
+### Reading Word by Word
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+
+int main() {
+    std::ifstream file("words.txt");
+
+    if (!file.is_open()) {
+        std::cout << "File not found!" << std::endl;
+        return 1;
+    }
+
+    std::string word;
+    int wordCount = 0;
+
+    while (file >> word) {
+        wordCount++;
+        std::cout << "Word " << wordCount << ": " << word << std::endl;
+    }
+
+    file.close();
+
+    std::cout << std::endl;
+    std::cout << "Total words: " << wordCount << std::endl;
+
+    return 0;
+}
+```
+
+Suppose the file `words.txt` contains:
+
+```
+Learning C++ is very fun
+Let's keep studying
+```
+
+Output:
+
+```
+Word 1: Learning
+Word 2: C++
+Word 3: is
+Word 4: very
+Word 5: fun
+Word 6: Let's
+Word 7: keep
+Word 8: studying
+
+Total words: 8
+```
+
+### Reading Numbers and Calculating the Average
+
+The `>>` operator can also read numbers directly into `int` or `double` variables:
+
+```cpp
+#include <iostream>
+#include <fstream>
+
+int main() {
+    std::ifstream file("grades.txt");
+
+    if (!file.is_open()) {
+        std::cout << "File not found!" << std::endl;
+        return 1;
+    }
+
+    double number;
+    double total = 0.0;
+    int count = 0;
+
+    while (file >> number) {
+        count++;
+        total = total + number;
+        std::cout << "Grade " << count << ": " << number << std::endl;
+    }
+
+    file.close();
+
+    if (count > 0) {
+        std::cout << std::endl;
+        std::cout << "Number of entries: " << count << std::endl;
+        std::cout << "Total            : " << total << std::endl;
+        std::cout << "Average          : " << (total / count) << std::endl;
+    } else {
+        std::cout << "File is empty, no numbers found." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Suppose the file `grades.txt` contains:
+
+```
+85.5
+92.0
+78.3
+88.7
+95.1
+```
+
+Output:
+
+```
+Grade 1: 85.5
+Grade 2: 92
+Grade 3: 78.3
+Grade 4: 88.7
+Grade 5: 95.1
+
+Number of entries: 5
+Total            : 439.6
+Average          : 87.92
+```
+
+:::note
+`while (file >> number)` stops automatically when it encounters data that is not a number or reaches the end of the file. So you don't need to worry about reading too much.
+:::
+
+## Reading CSV Data into a Vector of Struct
+
+A **CSV (Comma-Separated Values)** file is a common format for storing tabular data. Each row is one record, and each column is separated by a comma.
+
+Suppose the file `students.csv` contains:
+
+```
+Budi,85.5
+Ani,92.0
+Citra,78.3
+Dedi,88.7
+```
+
+To parse CSV, we read line by line with `getline`, then **split** the string using `std::stringstream` from the `<sstream>` header:
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <sstream>
+
+struct Student {
+    std::string name;
+    double grade;
+};
+
+int main() {
+    std::ifstream file("students.csv");
+
+    if (!file.is_open()) {
+        std::cout << "File not found!" << std::endl;
+        return 1;
+    }
+
+    std::vector<Student> list;
+    std::string line;
+
+    while (std::getline(file, line)) {
+        std::stringstream ss(line);
+        Student s;
+
+        // Read name (up to the comma)
+        std::getline(ss, s.name, ',');
+
+        // Read grade (until end of line)
+        std::string token;
+        std::getline(ss, token, ',');
+        s.grade = std::stod(token);
+
+        list.push_back(s);
+    }
+
+    file.close();
+
+    // Display data
+    std::cout << "=== STUDENT DATA ===" << std::endl;
+    double totalGrade = 0.0;
+
+    for (int i = 0; i < list.size(); i++) {
+        std::cout << (i + 1) << ". " << list[i].name
+                  << " | Grade: " << list[i].grade << std::endl;
+        totalGrade = totalGrade + list[i].grade;
+    }
+
+    std::cout << std::endl;
+    if (list.size() > 0) {
+        std::cout << "Average: " << (totalGrade / list.size()) << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+
+```
+=== STUDENT DATA ===
+1. Budi | Grade: 85.5
+2. Ani | Grade: 92
+3. Citra | Grade: 78.3
+4. Dedi | Grade: 88.7
+
+Average: 86.125
+```
+
+:::note
+`std::stringstream` (from the `<sstream>` header) allows us to read a string as if it were a stream. So we can use `getline` with a custom delimiter like a comma (`,`).
+:::
+
+## Full Example: CSV with 3 Columns
+
+What if the CSV has more columns? Suppose `products.csv` contains name, price, and stock:
+
+```
+2B Pencil,3000,50
+Notebook,5000,30
+Eraser,2000,40
+Ruler,4000,25
+```
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <sstream>
+
+struct Product {
+    std::string name;
+    int price;
+    int stock;
+};
+
+int main() {
+    std::ifstream file("products.csv");
+
+    if (!file.is_open()) {
+        std::cout << "File products.csv not found!" << std::endl;
+        return 1;
+    }
+
+    std::vector<Product> list;
+    std::string line;
+
+    while (std::getline(file, line)) {
+        std::stringstream ss(line);
+        std::string token;
+        Product p;
+
+        // Column 1: name
+        std::getline(ss, p.name, ',');
+
+        // Column 2: price
+        std::getline(ss, token, ',');
+        p.price = std::stoi(token);
+
+        // Column 3: stock
+        std::getline(ss, token, ',');
+        p.stock = std::stoi(token);
+
+        list.push_back(p);
+    }
+
+    file.close();
+
+    // Display data
+    std::cout << "=== PRODUCT LIST ===" << std::endl;
+    int totalInventory = 0;
+
+    for (int i = 0; i < list.size(); i++) {
+        int itemValue = list[i].price * list[i].stock;
+        totalInventory = totalInventory + itemValue;
+
+        std::cout << (i + 1) << ". " << list[i].name
+                  << " | Rp " << list[i].price
+                  << " | Stock: " << list[i].stock
+                  << " | Subtotal: Rp " << itemValue << std::endl;
+    }
+
+    std::cout << std::endl;
+    std::cout << "Total inventory value: Rp " << totalInventory << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+=== PRODUCT LIST ===
+1. 2B Pencil | Rp 3000 | Stock: 50 | Subtotal: Rp 150000
+2. Notebook | Rp 5000 | Stock: 30 | Subtotal: Rp 150000
+3. Eraser | Rp 2000 | Stock: 40 | Subtotal: Rp 80000
+4. Ruler | Rp 4000 | Stock: 25 | Subtotal: Rp 100000
+
+Total inventory value: Rp 480000
+```
+
+## Error Handling: File Not Found
+
+Always prepare your program to handle problems. The two most important checks:
+
+### 1. Check with `is_open()`
+
+```cpp
+std::ifstream file("data.txt");
+
+if (!file.is_open()) {
+    std::cout << "Error: file \"data.txt\" not found!" << std::endl;
+    return 1;  // Exit the program with an error code
+}
+```
+
+### 2. Check with `if (!file)`
+
+You can also check the file object directly — the result is the same:
+
+```cpp
+std::ifstream file("data.txt");
+
+if (!file) {
+    std::cout << "Error: failed to open file!" << std::endl;
+    return 1;
+}
+```
+
+### Example Function with Complete Error Handling
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+
+std::vector<std::string> readNameList(std::string fileName) {
+    std::vector<std::string> list;
+
+    std::ifstream file(fileName);
+
+    // Check if the file was successfully opened
+    if (!file.is_open()) {
+        std::cout << "Error: file \"" << fileName
+                  << "\" not found!" << std::endl;
+        return list;  // Return an empty vector
+    }
+
+    std::string line;
+    while (std::getline(file, line)) {
+        // Skip empty lines
+        if (line.length() == 0) {
+            continue;
+        }
+        list.push_back(line);
+    }
+
+    file.close();
+
+    // Warning if the file is empty
+    if (list.size() == 0) {
+        std::cout << "Warning: file \"" << fileName
+                  << "\" is empty!" << std::endl;
+    }
+
+    return list;
+}
+
+int main() {
+    std::cout << "--- Reading list.txt ---" << std::endl;
+    std::vector<std::string> names = readNameList("list.txt");
+
+    if (names.size() > 0) {
+        std::cout << "Successfully read " << names.size()
+                  << " names:" << std::endl;
+        for (int i = 0; i < names.size(); i++) {
+            std::cout << "  " << (i + 1) << ". " << names[i] << std::endl;
+        }
+    }
+
+    std::cout << std::endl;
+
+    std::cout << "--- Reading nonexistent.txt ---" << std::endl;
+    std::vector<std::string> data2 = readNameList("nonexistent.txt");
+
+    return 0;
+}
+```
+
+Output (if `list.txt` contains 3 names and `nonexistent.txt` does not exist):
+
+```
+--- Reading list.txt ---
+Successfully read 3 names:
+  1. Budi
+  2. Ani
+  3. Citra
+
+--- Reading nonexistent.txt ---
+Error: file "nonexistent.txt" not found!
+```
+
+:::warning
+Never assume a file definitely exists! Always check with `is_open()` and provide a clear error message so the user knows what went wrong.
+:::
+
+## Understanding `eof()` and `fail()`
+
+Besides `is_open()`, `ifstream` has several other status methods:
+
+| Method | Explanation |
+|--------|-------------|
+| `file.eof()` | `true` if the end of file has been reached (End Of File) |
+| `file.fail()` | `true` if the last operation failed (e.g., reading a number but the content is a letter) |
+| `file.good()` | `true` if everything is fine, no errors |
+| `file.is_open()` | `true` if the file was successfully opened |
+
+```cpp
+std::ifstream file("data.txt");
+
+// Read numbers
+int number;
+while (file >> number) {
+    std::cout << number << std::endl;
+}
+
+// After the loop ends, check why it stopped
+if (file.eof()) {
+    std::cout << "Done — reached the end of the file." << std::endl;
+} else if (file.fail()) {
+    std::cout << "Stopped — encountered data that is not a number." << std::endl;
+}
+```
+
+:::tip
+In practice, the patterns `while (file >> var)` and `while (std::getline(file, var))` already handle end of file automatically. You rarely need to check `eof()` manually.
+:::
+
+## Common Mistakes
+
+### 1. Forgetting to check if the file was successfully opened
+
+```cpp
+// WRONG — reading directly without checking!
+std::ifstream file("data.txt");
+std::string line;
+std::getline(file, line);  // If the file doesn't exist, the result is undefined!
+
+// CORRECT — always check first
+std::ifstream file("data.txt");
+if (!file.is_open()) {
+    std::cout << "File not found!" << std::endl;
+    return 1;
+}
+std::string line;
+std::getline(file, line);  // Safe because the file is definitely open
+```
+
+### 2. Mixing `>>` and `getline`
+
+```cpp
+// PROBLEMATIC — after >> there is a leftover newline in the buffer
+int number;
+file >> number;              // Reads the number, but the newline stays in the buffer
+std::string line;
+std::getline(file, line);  // Reads an empty string (leftover newline)!
+
+// SOLUTION — add file.ignore() after >>
+int number;
+file >> number;
+file.ignore();              // Discard the leftover newline from the buffer
+std::string line;
+std::getline(file, line);  // Now correctly reads the next line
+```
+
+### 3. Forgetting to close the file
+
+```cpp
+// NOT IDEAL — file is not explicitly closed
+std::ifstream file("data.txt");
+// ... read data ...
+// Forgot file.close()!
+
+// CORRECT — always close the file when done
+std::ifstream file("data.txt");
+// ... read data ...
+file.close();
+```
+
+:::note
+Actually, `ifstream` will automatically close the file when the variable goes out of scope (destructor). But calling `file.close()` explicitly is a **good habit** that makes the code clearer and easier to read.
+:::
+
+### 4. Wrong file path
+
+```cpp
+// The file is in the "data" folder, not in the same folder as the program
+// WRONG
+std::ifstream file("students.csv");
+
+// CORRECT — adjust the relative path
+std::ifstream file("data/students.csv");
+```
+
+:::tip
+File paths are **relative to where the program is executed**, not to the location of the `.cpp` file. Make sure you run the program from the correct folder.
+:::
+
+## Exercises
+
+**Exercise 1: Line Counter**
+
+Create a program that reads the file `notes.txt` and displays its contents with line numbers. At the end, display the total number of lines. If the file is not found, display a friendly error message.
+
+Example contents of `notes.txt`:
+
+```
+Learned structs today
+Tomorrow continue with file I/O
+Don't forget to take a break
+Have lunch first
+```
+
+Example output:
+
+```
+=== NOTE CONTENTS ===
+1. Learned structs today
+2. Tomorrow continue with file I/O
+3. Don't forget to take a break
+4. Have lunch first
+
+Total: 4 lines
+```
+
+**Exercise 2: Grade Statistics**
+
+Create a program that reads the file `exam.txt` containing numbers (one number per line), then calculate and display: the number of entries, the total, the average, the highest value, and the lowest value. Handle the cases where the file is empty or not found.
+
+Example contents of `exam.txt`:
+
+```
+78
+92
+65
+88
+71
+95
+83
+```
+
+Example output:
+
+```
+=== GRADE STATISTICS ===
+Number of entries : 7
+Total             : 572
+Average           : 81.7143
+Highest grade     : 95
+Lowest grade      : 65
+```
+
+**Exercise 3: Load Product Data**
+
+Create a program that reads the CSV file `store.csv` with the format `name,price,stock` and stores the data in a `std::vector<Product>`. Display all products in table form, calculate the total inventory value (price x stock for all products), and display the most expensive product.
+
+Example contents of `store.csv`:
+
+```
+2B Pencil,3000,50
+Notebook,5000,30
+Eraser,2000,40
+Ruler,4000,25
+Marker,7000,20
+```
+
+## Summary
+
+| Concept | Explanation | Example |
+|---------|-------------|---------|
+| **`#include <fstream>`** | Header for file I/O | Must be included to read/write files |
+| **`std::ifstream`** | Object for reading files | `std::ifstream file("data.txt");` |
+| **`is_open()`** | Check if the file was successfully opened | `if (!file.is_open()) { ... }` |
+| **`getline(file, var)`** | Read one full line | `while (std::getline(file, line))` |
+| **`file >> var`** | Read one word or number | `while (file >> number)` |
+| **`file.close()`** | Close the file when done | Always call at the end |
+| **`file.eof()`** | Check if end of file was reached | `if (file.eof()) { ... }` |
+| **`file.fail()`** | Check if the operation failed | `if (file.fail()) { ... }` |
+| **`stringstream`** | Parse a string like a stream | For splitting CSV by comma |
+| **Error handling** | Handle file not found or empty | Check `is_open()` and `size()` |
+
+Now your program can **read data from files** — data no longer has to disappear when the program closes! In the next lesson, we will learn how to **write data to files** so your program can save its work permanently.

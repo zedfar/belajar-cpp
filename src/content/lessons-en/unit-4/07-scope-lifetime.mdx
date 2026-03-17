@@ -1,0 +1,473 @@
+---
+title: "Scope & Lifetime"
+unit: 4
+lesson: 7
+description: "Understanding where variables are visible (scope) and when variables are created or destroyed (lifetime)"
+objectives:
+  - "Understand the concept of variable scope"
+  - "Distinguish between local, block, and global scope"
+  - "Understand variable lifetime in stack memory"
+  - "Use static local variables"
+  - "Avoid name shadowing and global variables"
+estimatedTime: 30
+prerequisites: ["unit-4/06-overloading"]
+difficulty: "beginner"
+tags: ["scope", "lifetime", "variabel-lokal", "variabel-global", "static", "shadowing"]
+---
+
+# Scope & Lifetime
+
+Ever played hide and seek? If you hide behind a wall, people on the other side can't see you. But if you stand in the middle of a field, everyone can see you.
+
+Variables in C++ work the same way! Every variable has a **scope** — the area of code where that variable can be "seen" and used. And every variable has a **lifetime** — when the variable is created and when it's destroyed.
+
+Understanding scope and lifetime is very important so you don't run into confusing bugs!
+
+## Local Scope: Variables Inside a Function
+
+Variables declared inside a function are called **local variables**. These variables can only be accessed within the function where they're declared:
+
+```cpp
+#include <iostream>
+
+void functionA() {
+    int x = 10;
+    std::cout << "functionA: x = " << x << std::endl;
+}
+
+void functionB() {
+    // std::cout << x;  // ERROR! x is not known here
+    int y = 20;
+    std::cout << "functionB: y = " << y << std::endl;
+}
+
+int main() {
+    functionA();
+    functionB();
+
+    // std::cout << x;  // ERROR! x is not known in main
+    // std::cout << y;  // ERROR! y is also not known in main
+
+    return 0;
+}
+```
+
+Variable `x` is only "visible" inside `functionA()`, and `y` is only visible inside `functionB()`. It's like notes in each person's notebook — you can't read notes in someone else's notebook!
+
+## Block Scope: Variables Inside `{}`
+
+Scope is actually determined by curly braces `{}`. Every `{}` block creates a new scope — including `if`, `for`, and `while` blocks:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int number = 10;
+
+    if (number > 5) {
+        int bonus = 100;  // bonus only exists inside this if block
+        std::cout << "Number: " << number << std::endl;   // OK
+        std::cout << "Bonus: " << bonus << std::endl;     // OK
+    }
+
+    // std::cout << bonus;  // ERROR! bonus is already "dead" here
+
+    for (int i = 0; i < 3; i++) {
+        int temp = i * 10;  // temp only exists inside this for loop
+        std::cout << "temp = " << temp << std::endl;
+    }
+
+    // std::cout << i;     // ERROR! i is not known outside the for loop
+    // std::cout << temp;  // ERROR! temp is not known either
+
+    return 0;
+}
+```
+
+:::tip
+The variable `i` declared inside `for (int i = 0; ...)` only lives inside that loop. Once the loop ends, `i` no longer exists. This is actually a great feature — you can reuse the name `i` in another loop without conflicts!
+:::
+
+## Example: Nested Scope
+
+Scopes can be nested. An inner scope can access variables in the outer scope, but not the other way around:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int a = 1;  // scope: all of main
+
+    {
+        int b = 2;  // scope: this block only
+        std::cout << "a = " << a << std::endl;  // OK, a is visible
+        std::cout << "b = " << b << std::endl;  // OK, b is visible
+
+        {
+            int c = 3;  // scope: this innermost block only
+            std::cout << "a = " << a << std::endl;  // OK
+            std::cout << "b = " << b << std::endl;  // OK
+            std::cout << "c = " << c << std::endl;  // OK
+        }
+
+        // std::cout << c;  // ERROR! c no longer exists
+    }
+
+    // std::cout << b;  // ERROR! b no longer exists
+    std::cout << "a = " << a << std::endl;  // OK, a still exists
+
+    return 0;
+}
+```
+
+Think of it like rooms within rooms. From the inner room, you can see outside. But from outside, you can't see into the inner room.
+
+## Global Variables: Visible Everywhere
+
+Variables declared **outside of all functions** are called **global variables**:
+
+```cpp
+#include <iostream>
+
+int score = 0;  // global variable
+
+void addScore(int points) {
+    score += points;  // can access score from here
+}
+
+void displayScore() {
+    std::cout << "Score: " << score << std::endl;  // can access it too
+}
+
+int main() {
+    addScore(10);
+    addScore(25);
+    displayScore();  // Output: Score: 35
+
+    return 0;
+}
+```
+
+Looks easy and convenient, right? But...
+
+:::warning
+**Global variables are DANGEROUS!** Why?
+
+1. **Anyone can modify them** — if there's a bug, you have to check ALL functions to find which one changed the value
+2. **Hard to track** — in large programs with hundreds of functions, it's impossible to know when and where a global variable was changed
+3. **Name conflicts** — if there's a local variable with the same name, name shadowing occurs (see below)
+4. **Hard to reuse code** — functions that depend on global variables can't easily be moved to other programs
+
+**Best practice: AVOID global variables!** Use parameters and return values instead.
+:::
+
+A better version without global variables:
+
+```cpp
+#include <iostream>
+
+void addScore(int& score, int points) {
+    score += points;
+}
+
+void displayScore(int score) {
+    std::cout << "Score: " << score << std::endl;
+}
+
+int main() {
+    int score = 0;  // local variable in main
+
+    addScore(score, 10);
+    addScore(score, 25);
+    displayScore(score);  // Output: Score: 35
+
+    return 0;
+}
+```
+
+With pass by reference, we can still modify `score` from other functions, but now it's **clear** that `score` is being sent as a parameter. Much easier to track!
+
+## Name Shadowing: Names That "Cover Up"
+
+What happens when a local variable has the same name as a variable in an outer scope?
+
+```cpp
+#include <iostream>
+
+int x = 100;  // global
+
+void shadowingExample() {
+    int x = 50;  // local — "covers" global x
+
+    std::cout << "local x: " << x << std::endl;  // 50, not 100!
+
+    {
+        int x = 25;  // block scope — covers local x
+        std::cout << "block x: " << x << std::endl;  // 25
+    }
+
+    std::cout << "local x again: " << x << std::endl;  // 50
+}
+
+int main() {
+    shadowingExample();
+    std::cout << "global x: " << x << std::endl;  // 100
+
+    return 0;
+}
+```
+
+Output:
+
+```
+local x: 50
+block x: 25
+local x again: 50
+global x: 100
+```
+
+The "closest" variable always wins. This is called **name shadowing** or **variable shadowing**.
+
+:::warning
+Name shadowing often causes confusing bugs. You think you're changing one variable, but actually a different one changes! **Avoid** using the same name for variables in different scopes.
+:::
+
+## Lifetime: When Variables Are Born and Die
+
+Every variable has a **lifetime** — the period during which it exists in memory:
+
+```cpp
+#include <iostream>
+
+void lifetimeExample() {
+    // int a is BORN here
+    int a = 10;
+    std::cout << "a is born: " << a << std::endl;
+
+    {
+        // int b is BORN here
+        int b = 20;
+        std::cout << "b is born: " << b << std::endl;
+        // int b DIES at the end of this block
+    }
+
+    std::cout << "b is dead, a is still alive: " << a << std::endl;
+    // int a DIES at the end of this function
+}
+```
+
+Local variables are stored in **stack memory**. Every time you enter a new block, variables are created on top of the stack. Every time you exit a block, variables are destroyed from the stack. This happens automatically — you don't need to delete variables manually.
+
+## Static Local Variables: Persist Across Calls
+
+There's one special type of local variable — **static local variables**. These variables remain in memory even after the function finishes:
+
+```cpp
+#include <iostream>
+
+void countCalls() {
+    static int counter = 0;  // only initialized ONCE
+    counter++;
+    std::cout << "This function has been called " << counter << " times" << std::endl;
+}
+
+int main() {
+    countCalls();  // This function has been called 1 times
+    countCalls();  // This function has been called 2 times
+    countCalls();  // This function has been called 3 times
+
+    return 0;
+}
+```
+
+Output:
+
+```
+This function has been called 1 times
+This function has been called 2 times
+This function has been called 3 times
+```
+
+Without `static`, `counter` would always start from 0 every time the function is called. With `static`, its value **persists** from one call to the next.
+
+:::note
+`static int counter = 0;` is only executed **once** — when the function is called for the first time. Subsequent calls skip this line and directly use the last value of `counter`.
+:::
+
+## Practical Example: Unique ID Generator
+
+```cpp
+#include <iostream>
+#include <string>
+
+int generateID() {
+    static int lastID = 1000;
+    lastID++;
+    return lastID;
+}
+
+void registerStudent(const std::string& name) {
+    int id = generateID();
+    std::cout << "Student registered: " << name
+              << " (ID: " << id << ")" << std::endl;
+}
+
+int main() {
+    registerStudent("Budi");    // ID: 1001
+    registerStudent("Ani");     // ID: 1002
+    registerStudent("Citra");   // ID: 1003
+    registerStudent("Deni");    // ID: 1004
+
+    return 0;
+}
+```
+
+Each student gets a unique ID because `lastID` persists across calls thanks to `static`.
+
+## Best Practice: Minimize Scope
+
+An important principle in programming: **declare variables as close as possible to where they're used** and in the **smallest scope possible**.
+
+```cpp
+// NOT GREAT: variables declared too early
+int main() {
+    int x;
+    int y;
+    int result;
+
+    // ... 50 other lines of code ...
+
+    x = 10;
+    y = 20;
+    result = x + y;
+}
+
+// BETTER: variables declared near their usage
+int main() {
+    // ... 50 other lines of code ...
+
+    int x = 10;
+    int y = 20;
+    int result = x + y;
+}
+```
+
+Why is this important?
+
+1. **Easy to read** — you immediately know what the variable is for
+2. **Safer** — the variable can't be accessed (and accidentally modified) where it shouldn't be
+3. **Compiler can optimize** — the compiler can optimize code more easily when variable scope is small
+
+## Scope & Lifetime Summary
+
+| Type | Scope | Lifetime | Example |
+|------|-------|----------|---------|
+| Local variable | Inside the function/block | From declaration to end of block | `int x = 5;` inside a function |
+| Block variable | Inside `{}` | From declaration to `}` | `int i` inside a `for` loop |
+| Global variable | Entire program | As long as the program runs | `int score = 0;` outside functions |
+| Static local | Inside the function | As long as the program runs | `static int counter = 0;` |
+
+## Complete Example: Mini Quiz Game
+
+```cpp
+#include <iostream>
+#include <string>
+
+// Function with static variable to track question numbers
+void checkAnswer(const std::string& studentAnswer,
+                const std::string& correctAnswer,
+                int& score) {
+    static int questionNumber = 0;
+    questionNumber++;
+
+    std::cout << "Question " << questionNumber << ": ";
+
+    if (studentAnswer == correctAnswer) {
+        score += 10;
+        std::cout << "CORRECT! (+10 points)" << std::endl;
+    } else {
+        std::cout << "Wrong. Answer: " << correctAnswer << std::endl;
+    }
+}
+
+void displayResults(int score, int totalQuestions) {
+    std::cout << std::endl;
+    std::cout << "========================" << std::endl;
+    std::cout << "Final score: " << score << "/" << (totalQuestions * 10) << std::endl;
+
+    // The grade variable is only needed here
+    std::string grade;
+    if (score >= 80) {
+        grade = "Outstanding!";
+    } else if (score >= 60) {
+        grade = "Good job!";
+    } else {
+        grade = "Keep studying!";
+    }
+
+    std::cout << "Rating: " << grade << std::endl;
+    std::cout << "========================" << std::endl;
+}
+
+int main() {
+    int score = 0;  // local score in main, not global!
+
+    std::cout << "=== C++ QUIZ ===" << std::endl;
+    std::cout << std::endl;
+
+    // Each call increments questionNumber in checkAnswer (static)
+    checkAnswer("cout", "cout", score);
+    checkAnswer("int", "int", score);
+    checkAnswer("==", "==", score);
+    checkAnswer("for", "while", score);
+    checkAnswer("void", "void", score);
+
+    displayResults(score, 5);
+
+    return 0;
+}
+```
+
+## Exercises
+
+**Exercise 1:** What is the output of this code? Answer without running the program, then verify:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int x = 1;
+    {
+        int x = 2;
+        {
+            int x = 3;
+            std::cout << x << std::endl;
+        }
+        std::cout << x << std::endl;
+    }
+    std::cout << x << std::endl;
+    return 0;
+}
+```
+
+**Exercise 2:** Create a function `void printMessage()` that uses a `static` variable to print a different message each time it's called: "First", "Second", "Third", and after that always "Continued".
+
+**Exercise 3:** Modify the following code so it does NOT use global variables (use parameters and return values instead):
+
+```cpp
+int total = 0;
+int dataCount = 0;
+
+void addData(int value) {
+    total += value;
+    dataCount++;
+}
+
+double average() {
+    return (double)total / dataCount;
+}
+```
+
+**Exercise 4:** Create a function `int generateSequenceNumber()` that returns the next sequential number each time it's called (1, 2, 3, ...). Use a `static` variable.
+
+Great! You now understand scope and lifetime. Now it's time to combine EVERYTHING you've learned in Unit 4 into an exciting project — **Rock Paper Scissors Game**!

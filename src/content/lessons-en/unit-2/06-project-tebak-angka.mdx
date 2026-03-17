@@ -1,0 +1,643 @@
+---
+title: "Project: Number Guessing Game"
+unit: 2
+lesson: 6
+description: "Build an exciting number guessing game using all the branching concepts from Unit 2"
+objectives:
+  - "Combine if-else, switch-case, and ternary operator in one program"
+  - "Build a program step by step"
+  - "Create an interactive and fun program"
+estimatedTime: 60
+prerequisites: ["unit-2/05-ternary-operator"]
+difficulty: "beginner"
+isProject: true
+tags: ["project", "game", "tebak-angka", "percabangan", "interactive"]
+---
+
+# Project: Number Guessing Game
+
+Congratulations! You've learned all the branching concepts in Unit 2. Now it's time to combine everything into an exciting project -- a **Number Guessing Game**!
+
+The concept is simple: the computer has a secret number, and you have to guess it. The computer will give hints about whether your guess is too high or too low. It's like playing "guess the number" with a friend at school!
+
+:::note
+In this project we're not yet using **loops**, so the player only gets a few guesses that we write manually. Later in Unit 3 (Loops), we'll upgrade this game to be much cooler with loops!
+:::
+
+## Stage 1: The Simplest Version
+
+Let's start with the most basic -- the computer has a fixed number, and the player guesses once.
+
+```cpp
+#include <iostream>
+
+int main() {
+    int secret_number = 7;
+    int guess;
+
+    std::cout << "==========================" << std::endl;
+    std::cout << "   NUMBER GUESSING GAME" << std::endl;
+    std::cout << "==========================" << std::endl;
+    std::cout << std::endl;
+
+    std::cout << "I'm thinking of a number between 1-10." << std::endl;
+    std::cout << "Take a guess: ";
+    std::cin >> guess;
+
+    if (guess == secret_number) {
+        std::cout << "CORRECT! You're awesome!" << std::endl;
+    } else {
+        std::cout << "Wrong! The correct number was " << secret_number << std::endl;
+    }
+
+    return 0;
+}
+```
+
+This is already playable, but not very exciting because:
+1. The number is always the same (7)
+2. Only one chance
+3. No hints
+
+Let's improve it step by step!
+
+## Stage 2: Add Hints
+
+Now let's give hints about whether the player's guess is **too high** or **too low**. This is where we use **if-else if**.
+
+```cpp
+#include <iostream>
+
+int main() {
+    int secret_number = 7;
+    int guess;
+
+    std::cout << "==========================" << std::endl;
+    std::cout << "   NUMBER GUESSING GAME" << std::endl;
+    std::cout << "==========================" << std::endl;
+    std::cout << std::endl;
+
+    std::cout << "I'm thinking of a number between 1-10." << std::endl;
+    std::cout << "Take a guess: ";
+    std::cin >> guess;
+
+    if (guess == secret_number) {
+        std::cout << "CORRECT! You're awesome!" << std::endl;
+    } else if (guess < secret_number) {
+        std::cout << "Too low! Try a higher number." << std::endl;
+    } else {
+        std::cout << "Too high! Try a lower number." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Now the player knows which direction their guess was off. But still only one chance... Let's add more!
+
+## Stage 3: Three Chances to Guess
+
+Since we haven't learned loops yet, we'll write the guesses several times manually. Not elegant, but it's a valid approach for now!
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    int secret_number = 7;
+    int guess;
+    bool already_correct = false;
+
+    std::cout << "==========================" << std::endl;
+    std::cout << "   NUMBER GUESSING GAME" << std::endl;
+    std::cout << "==========================" << std::endl;
+    std::cout << std::endl;
+    std::cout << "I'm thinking of a number between 1-10." << std::endl;
+    std::cout << "You have 3 chances!" << std::endl;
+    std::cout << std::endl;
+
+    // Guess 1
+    std::cout << "Guess #1: ";
+    std::cin >> guess;
+
+    if (guess == secret_number) {
+        std::cout << "CORRECT on the first guess! Amazing!" << std::endl;
+        already_correct = true;
+    } else if (guess < secret_number) {
+        std::cout << "Too low!" << std::endl;
+    } else {
+        std::cout << "Too high!" << std::endl;
+    }
+
+    // Guess 2 (only if not correct yet)
+    if (!already_correct) {
+        std::cout << "Guess #2: ";
+        std::cin >> guess;
+
+        if (guess == secret_number) {
+            std::cout << "CORRECT on the second guess! Great!" << std::endl;
+            already_correct = true;
+        } else if (guess < secret_number) {
+            std::cout << "Still too low!" << std::endl;
+        } else {
+            std::cout << "Still too high!" << std::endl;
+        }
+    }
+
+    // Guess 3 (only if not correct yet)
+    if (!already_correct) {
+        std::cout << "Guess #3 (last chance!): ";
+        std::cin >> guess;
+
+        if (guess == secret_number) {
+            std::cout << "CORRECT on the last guess! That was close!" << std::endl;
+            already_correct = true;
+        } else {
+            std::cout << "Too bad! The correct number was "
+                      << secret_number << std::endl;
+        }
+    }
+
+    // Closing message
+    std::string message = already_correct ? "Congratulations, you win!" : "Try again!";
+    std::cout << std::endl;
+    std::cout << message << std::endl;
+
+    return 0;
+}
+```
+
+See? We used the **ternary operator** for the closing message! And the `bool already_correct` variable helps us track whether the player has guessed correctly.
+
+:::tip
+Notice the pattern `if (!already_correct)` before guesses 2 and 3. This ensures that if the player already got it right, they're not asked to guess again. The `!` means "not" or "NOT" -- so `!already_correct` means "not yet correct".
+:::
+
+## Stage 4: Random Numbers
+
+To make the game not boring (the number is always 7), let's use random numbers! C++ has a way to generate random numbers.
+
+```cpp
+#include <iostream>
+#include <cstdlib>  // for rand() and srand()
+#include <ctime>    // for time()
+
+int main() {
+    // Initialize random seed based on current time
+    std::srand(std::time(0));
+
+    // Generate a random number from 1-10
+    int secret_number = std::rand() % 10 + 1;
+
+    std::cout << "A random secret number (1-10) has been chosen!" << std::endl;
+    // ... rest of the code is the same as before
+
+    return 0;
+}
+```
+
+:::note
+`std::srand(std::time(0))` sets the "seed" for random numbers based on the current time. Without this line, `std::rand()` would produce the same number every time the program runs.
+
+`std::rand() % 10 + 1` generates a number from 1-10. How it works: `rand() % 10` produces 0-9, then `+ 1` shifts it to 1-10.
+:::
+
+## Stage 5: Main Menu with Switch-Case
+
+Now let's add a menu so the player can choose a difficulty level. This is where **switch-case** comes in!
+
+```cpp
+#include <iostream>
+#include <string>
+#include <cstdlib>
+#include <ctime>
+
+int main() {
+    std::srand(std::time(0));
+
+    int menu_choice;
+    int upper_limit;
+    int num_chances;
+
+    std::cout << "==============================" << std::endl;
+    std::cout << "     NUMBER GUESSING GAME" << std::endl;
+    std::cout << "==============================" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Choose difficulty level:" << std::endl;
+    std::cout << "1. Easy    (number 1-10,  3 chances)" << std::endl;
+    std::cout << "2. Medium  (number 1-50,  5 chances)" << std::endl;
+    std::cout << "3. Hard    (number 1-100, 5 chances)" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Choice (1/2/3): ";
+    std::cin >> menu_choice;
+    std::cout << std::endl;
+
+    switch (menu_choice) {
+        case 1:
+            upper_limit = 10;
+            num_chances = 3;
+            std::cout << "Mode: EASY" << std::endl;
+            break;
+        case 2:
+            upper_limit = 50;
+            num_chances = 5;
+            std::cout << "Mode: MEDIUM" << std::endl;
+            break;
+        case 3:
+            upper_limit = 100;
+            num_chances = 5;
+            std::cout << "Mode: HARD" << std::endl;
+            break;
+        default:
+            std::cout << "Invalid choice. Using Easy mode." << std::endl;
+            upper_limit = 10;
+            num_chances = 3;
+            break;
+    }
+
+    int secret_number = std::rand() % upper_limit + 1;
+
+    std::cout << "I'm thinking of a number between 1-" << upper_limit << "." << std::endl;
+    std::cout << "You have " << num_chances << " chances!" << std::endl;
+    std::cout << std::endl;
+
+    // ... the guessing part will be combined in the final version
+
+    return 0;
+}
+```
+
+Switch-case makes the menu look clean and easy to extend with new options.
+
+## Stage 6: Input Validation
+
+Before we put it all together, there's one important thing -- **input validation**. What if the player enters a number outside the range?
+
+```cpp
+// After the player guesses
+std::cin >> guess;
+
+if (guess < 1 || guess > upper_limit) {
+    std::cout << "Hey, the number must be between 1-" << upper_limit << "!" << std::endl;
+    std::cout << "This chance doesn't count, try again." << std::endl;
+    // In the version with loops later, we can ask for input again
+    // For now, we'll just continue
+}
+```
+
+## Final Version: Complete Number Guessing Game!
+
+Here's the complete version that combines all the concepts. Read it slowly and pay attention to the comments.
+
+```cpp
+#include <iostream>
+#include <string>
+#include <cstdlib>
+#include <ctime>
+
+int main() {
+    // === SETUP ===
+    std::srand(std::time(0));
+
+    // === HEADER ===
+    std::cout << "======================================" << std::endl;
+    std::cout << "       NUMBER GUESSING GAME v1.0" << std::endl;
+    std::cout << "======================================" << std::endl;
+    std::cout << "  Welcome, Master Guesser!" << std::endl;
+    std::cout << "======================================" << std::endl;
+    std::cout << std::endl;
+
+    // === DIFFICULTY LEVEL MENU (switch-case) ===
+    int menu_choice;
+    int upper_limit;
+    std::string mode_name;
+
+    std::cout << "Choose difficulty level:" << std::endl;
+    std::cout << "  1. Easy    (number 1-10)" << std::endl;
+    std::cout << "  2. Medium  (number 1-50)" << std::endl;
+    std::cout << "  3. Hard    (number 1-100)" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Choice (1/2/3): ";
+    std::cin >> menu_choice;
+    std::cout << std::endl;
+
+    switch (menu_choice) {
+        case 1:
+            upper_limit = 10;
+            mode_name = "EASY";
+            break;
+        case 2:
+            upper_limit = 50;
+            mode_name = "MEDIUM";
+            break;
+        case 3:
+            upper_limit = 100;
+            mode_name = "HARD";
+            break;
+        default:
+            upper_limit = 10;
+            mode_name = "EASY";
+            std::cout << "Invalid choice. Using Easy mode." << std::endl;
+            break;
+    }
+
+    // Generate secret number
+    int secret_number = std::rand() % upper_limit + 1;
+
+    std::cout << "--------------------------------------" << std::endl;
+    std::cout << "Mode: " << mode_name << std::endl;
+    std::cout << "Guess a number between 1 and " << upper_limit << "." << std::endl;
+    std::cout << "You have 5 chances. Good luck!" << std::endl;
+    std::cout << "--------------------------------------" << std::endl;
+    std::cout << std::endl;
+
+    // === GAME VARIABLES ===
+    int guess;
+    bool won = false;
+    int correct_at = 0;  // stores which guess number the player got it right
+
+    // === GUESS #1 ===
+    std::cout << "[Chance 1/5] Your guess: ";
+    std::cin >> guess;
+
+    if (guess < 1 || guess > upper_limit) {
+        std::cout << "  Number out of range 1-" << upper_limit << "!" << std::endl;
+    } else if (guess == secret_number) {
+        won = true;
+        correct_at = 1;
+    } else if (guess < secret_number) {
+        std::cout << "  Too LOW! Try higher." << std::endl;
+    } else {
+        std::cout << "  Too HIGH! Try lower." << std::endl;
+    }
+
+    // === GUESS #2 ===
+    if (!won) {
+        std::cout << "[Chance 2/5] Your guess: ";
+        std::cin >> guess;
+
+        if (guess < 1 || guess > upper_limit) {
+            std::cout << "  Number out of range!" << std::endl;
+        } else if (guess == secret_number) {
+            won = true;
+            correct_at = 2;
+        } else if (guess < secret_number) {
+            std::cout << "  Too LOW!" << std::endl;
+        } else {
+            std::cout << "  Too HIGH!" << std::endl;
+        }
+    }
+
+    // === GUESS #3 ===
+    if (!won) {
+        std::cout << "[Chance 3/5] Your guess: ";
+        std::cin >> guess;
+
+        if (guess < 1 || guess > upper_limit) {
+            std::cout << "  Number out of range!" << std::endl;
+        } else if (guess == secret_number) {
+            won = true;
+            correct_at = 3;
+        } else if (guess < secret_number) {
+            std::cout << "  Too LOW!" << std::endl;
+        } else {
+            std::cout << "  Too HIGH!" << std::endl;
+        }
+    }
+
+    // === GUESS #4 ===
+    if (!won) {
+        std::cout << "[Chance 4/5] Your guess: ";
+        std::cin >> guess;
+
+        if (guess < 1 || guess > upper_limit) {
+            std::cout << "  Number out of range!" << std::endl;
+        } else if (guess == secret_number) {
+            won = true;
+            correct_at = 4;
+        } else if (guess < secret_number) {
+            std::cout << "  Too LOW! Only 1 chance left!" << std::endl;
+        } else {
+            std::cout << "  Too HIGH! Only 1 chance left!" << std::endl;
+        }
+    }
+
+    // === GUESS #5 (LAST) ===
+    if (!won) {
+        std::cout << "[Chance 5/5 - LAST!] Your guess: ";
+        std::cin >> guess;
+
+        if (guess == secret_number) {
+            won = true;
+            correct_at = 5;
+        }
+    }
+
+    // === FINAL RESULT ===
+    std::cout << std::endl;
+    std::cout << "======================================" << std::endl;
+
+    if (won) {
+        std::cout << "  CONGRATULATIONS! YOU WIN!" << std::endl;
+        std::cout << "  Secret number: " << secret_number << std::endl;
+        std::cout << "  Guessed in " << correct_at << " attempts." << std::endl;
+        std::cout << std::endl;
+
+        // Rating based on number of guesses (ternary + if-else)
+        std::string rating;
+        if (correct_at == 1) {
+            rating = "INCREDIBLE! You're a psychic!";
+        } else if (correct_at <= 3) {
+            rating = "AWESOME! You're a master guesser!";
+        } else {
+            rating = "Nice! You made it!";
+        }
+        std::cout << "  Rating: " << rating << std::endl;
+
+        // Stars based on performance (ternary operator)
+        std::string stars = (correct_at <= 2) ? "***** (5 stars)"
+                          : (correct_at <= 4) ? "***   (3 stars)"
+                          : "*     (1 star)";
+        std::cout << "  Score: " << stars << std::endl;
+
+    } else {
+        std::cout << "  GAME OVER!" << std::endl;
+        std::cout << "  The secret number was: " << secret_number << std::endl;
+        std::cout << "  Don't give up, try again!" << std::endl;
+    }
+
+    std::cout << "======================================" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Thanks for playing!" << std::endl;
+
+    return 0;
+}
+```
+
+## Code Walkthrough
+
+Let's break down the important parts of this game.
+
+### 1. Random Numbers
+
+```cpp
+std::srand(std::time(0));
+int secret_number = std::rand() % upper_limit + 1;
+```
+
+- `std::srand(std::time(0))` -- sets the random seed based on the current time. This makes the number different each time you play.
+- `std::rand() % upper_limit` -- generates a number from 0 to `upper_limit - 1`.
+- `+ 1` -- shifts the range to 1 through `upper_limit`.
+
+### 2. Switch-Case for Menu
+
+```cpp
+switch (menu_choice) {
+    case 1:
+        upper_limit = 10;
+        mode_name = "EASY";
+        break;
+    // ...
+}
+```
+
+Switch-case is used to process the menu choice. Each difficulty level sets a different `upper_limit`. This is much cleaner than if-else for menu options.
+
+### 3. `bool` Variable to Track Status
+
+```cpp
+bool won = false;
+```
+
+A `bool` variable is used to track whether the player has guessed correctly. Each guess block checks with `if (!won)` -- meaning "if not yet won, ask for another guess".
+
+### 4. If-Else for Hints
+
+```cpp
+if (guess == secret_number) {
+    won = true;
+} else if (guess < secret_number) {
+    std::cout << "Too LOW!" << std::endl;
+} else {
+    std::cout << "Too HIGH!" << std::endl;
+}
+```
+
+If-else if gives the player directional hints. These are the comparison operators (`==`, `<`, `>`) learned at the beginning of the unit.
+
+### 5. Ternary for Rating
+
+```cpp
+std::string stars = (correct_at <= 2) ? "***** (5 stars)"
+                  : (correct_at <= 4) ? "***   (3 stars)"
+                  : "*     (1 star)";
+```
+
+Here we use nested ternary as an example. In the actual code, this is still readable enough because the pattern is clear. But if you feel more comfortable, you can also use if-else.
+
+### 6. Input Validation
+
+```cpp
+if (guess < 1 || guess > upper_limit) {
+    std::cout << "Number out of range!" << std::endl;
+}
+```
+
+We check whether the player's input is valid before processing the guess. This is good practice -- always validate user input!
+
+## Sample Play Session
+
+```
+======================================
+       NUMBER GUESSING GAME v1.0
+======================================
+  Welcome, Master Guesser!
+======================================
+
+Choose difficulty level:
+  1. Easy    (number 1-10)
+  2. Medium  (number 1-50)
+  3. Hard    (number 1-100)
+
+Choice (1/2/3): 1
+
+--------------------------------------
+Mode: EASY
+Guess a number between 1 and 10.
+You have 5 chances. Good luck!
+--------------------------------------
+
+[Chance 1/5] Your guess: 5
+  Too LOW! Try higher.
+[Chance 2/5] Your guess: 8
+  Too HIGH! Try lower.
+[Chance 3/5] Your guess: 7
+
+======================================
+  CONGRATULATIONS! YOU WIN!
+  Secret number: 7
+  Guessed in 3 attempts.
+
+  Rating: AWESOME! You're a master guesser!
+  Score: ***   (3 stars)
+======================================
+
+Thanks for playing!
+```
+
+## Unit 2 Concepts Used
+
+Notice how all the concepts we learned in Unit 2 come together in one program:
+
+| Concept | Used for |
+|---------|----------|
+| Comparison operators (`==`, `<`, `>`) | Comparing the guess with the secret number |
+| If-else if | Giving hints (too high/too low/correct) |
+| Logical operators (`\|\|`, `!`) | Input validation and checking win status |
+| Switch-case | Difficulty level selection menu |
+| Ternary operator | Determining rating and stars |
+| `bool` variable | Tracking whether the player has won |
+
+## Extra Challenges
+
+Finished and want more of a challenge? Try these:
+
+**Challenge 1: Score System**
+Add a point system! For example: correct on the first guess = 100 points, second = 80 points, and so on. Display the score at the end of the game.
+
+**Challenge 2: Extra Hints**
+After the second wrong guess, give an extra hint. For example: "The secret number is odd" or "The secret number is greater than 5". Use the modulo operator (`%`) and if-else for this.
+
+**Challenge 3: Two Players**
+Turn the game into a 2-player mode. Player 1 enters the secret number (without Player 2 seeing), then Player 2 guesses. You can "clear" the screen by printing many blank lines before Player 2 guesses.
+
+**Challenge 4: Cooler Display**
+Create a more attractive ASCII art display. For example, simple emoji characters made from text when winning or losing:
+
+```
+   \(^o^)/    You Win!
+```
+
+```
+   (T_T)      Game Over...
+```
+
+**Challenge 5: Game Statistics**
+Add statistics at the end: how many guesses were too high, how many were too low, and the average difference between guesses and the secret number.
+
+:::tip
+Don't feel like you have to complete all the challenges. Pick one or two that interest you the most. What matters is that you experiment and have fun while learning!
+:::
+
+## Exercises
+
+**Exercise 1:** Type out the final version of the game above from scratch (don't copy-paste!). Retyping code helps your brain understand each line more deeply. Make sure the game runs correctly.
+
+**Exercise 2:** Modify the game so that the number range and number of chances differ for each difficulty level:
+- Easy: 1-10, 5 chances
+- Medium: 1-50, 7 chances
+- Hard: 1-100, 10 chances
+
+**Exercise 3:** Add a new feature to the game: after the game ends (win or lose), display a different message based on the difficulty mode. For example, if the player wins on Hard mode, the message should be more "wow" than winning on Easy mode.
+
+Congratulations! You've completed **Unit 2: Branching**! You can now create programs that "think" and make decisions. In the next unit, we'll learn about **loops** -- and this number guessing game will become much cooler!

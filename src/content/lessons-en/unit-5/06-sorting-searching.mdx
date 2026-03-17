@@ -1,0 +1,660 @@
+---
+title: "Sorting & Searching"
+unit: 5
+lesson: 6
+description: "Learning search algorithms (linear search, binary search) and sorting algorithms (bubble sort, selection sort, std::sort) for processing data efficiently"
+objectives:
+  - "Understand and implement linear search"
+  - "Understand and implement binary search on sorted data"
+  - "Understand and implement bubble sort"
+  - "Understand and implement selection sort"
+  - "Use std::sort() from <algorithm> for fast sorting"
+  - "Write custom comparators for std::sort()"
+  - "Choose the right algorithm based on requirements"
+estimatedTime: 40
+prerequisites: ["unit-5/05-string-array"]
+difficulty: "intermediate"
+tags: ["sorting", "searching", "linear-search", "binary-search", "bubble-sort", "selection-sort", "algorithm"]
+---
+
+# Sorting & Searching
+
+Imagine you have a list of 100 students' scores and need to find who got the highest score, or sort from best to worst for ranking. These are two of the most fundamental operations in programming: **searching** (finding data) and **sorting** (ordering data).
+
+In this lesson, we'll learn several classic algorithms that every programmer must know!
+
+## Part 1: Searching
+
+### Linear Search — Check One by One
+
+Linear search is the simplest approach: check elements **one by one** from start to end until you find it (or run out of elements).
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int linearSearch(const std::vector<int>& data, int target) {
+    for (int i = 0; i < data.size(); i++) {
+        if (data[i] == target) {
+            return i;  // Found it! Return the position
+        }
+    }
+    return -1;  // Not found
+}
+
+int main() {
+    std::vector<int> scores = {78, 92, 65, 88, 45, 95, 72, 83};
+
+    int target = 88;
+    int pos = linearSearch(scores, target);
+
+    if (pos != -1) {
+        std::cout << "Score " << target << " found at index " << pos << std::endl;
+    } else {
+        std::cout << "Score " << target << " not found" << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Score 88 found at index 3
+```
+
+**Complexity: O(n)** — in the worst case, we have to check all n elements. If there are 1,000,000 entries, that could mean 1,000,000 checks!
+
+:::note
+Linear search can be used on **unsorted data**. That's its advantage — you don't need to sort the data first.
+:::
+
+### Linear Search for Strings
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+
+int findName(const std::vector<std::string>& list, const std::string& target) {
+    for (int i = 0; i < list.size(); i++) {
+        if (list[i] == target) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int main() {
+    std::vector<std::string> students = {"Andi", "Budi", "Citra", "Dewi", "Eka"};
+
+    std::string name = "Citra";
+    int pos = findName(students, name);
+
+    if (pos != -1) {
+        std::cout << name << " found at position " << pos << std::endl;
+    } else {
+        std::cout << name << " is not in the list" << std::endl;
+    }
+
+    return 0;
+}
+```
+
+### Binary Search — Divide in Half, Find Fast
+
+Binary search is much faster, but there's a requirement: **the data must already be sorted**!
+
+The idea: compare the target with the **middle** element. If the target is smaller, search the left half. If larger, search the right half. With each step, the data to check is **cut in half**!
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int binarySearch(const std::vector<int>& data, int target) {
+    int left = 0;
+    int right = data.size() - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        if (data[mid] == target) {
+            return mid;  // Found it!
+        } else if (data[mid] < target) {
+            left = mid + 1;   // Target is to the right
+        } else {
+            right = mid - 1;  // Target is to the left
+        }
+    }
+
+    return -1;  // Not found
+}
+
+int main() {
+    // Data MUST already be sorted!
+    std::vector<int> data = {12, 25, 34, 47, 56, 63, 78, 89, 95};
+
+    int target = 63;
+    int pos = binarySearch(data, target);
+
+    if (pos != -1) {
+        std::cout << target << " found at index " << pos << std::endl;
+    } else {
+        std::cout << target << " not found" << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+
+```
+63 found at index 5
+```
+
+**Complexity: O(log n)** — for 1,000,000 entries, binary search needs at most about 20 steps! Compare that to linear search which needs 1,000,000 steps.
+
+:::tip
+The formula `mid = left + (right - left) / 2` is safer than `(left + right) / 2` because it avoids integer overflow when left and right are very large.
+:::
+
+### Binary Search Visualization
+
+Let's trace step by step searching for the number **63** in `{12, 25, 34, 47, 56, 63, 78, 89, 95}`:
+
+```
+Step 1: left=0, right=8, mid=4
+  [12, 25, 34, 47, >56<, 63, 78, 89, 95]
+  56 < 63 → search right, left = 5
+
+Step 2: left=5, right=8, mid=6
+  [               , 63, >78<, 89, 95]
+  78 > 63 → search left, right = 5
+
+Step 3: left=5, right=5, mid=5
+  [               , >63<                ]
+  63 == 63 → FOUND at index 5!
+```
+
+Only 3 steps to find among 9 elements!
+
+### When to Use Linear vs Binary Search?
+
+| Situation | Choice | Reason |
+|-----------|--------|--------|
+| Data is not sorted | Linear search | Binary search requires sorted data |
+| Small data (`<` 20 elements) | Linear search | The difference is negligible |
+| Large sorted data | Binary search | Much faster: O(log n) vs O(n) |
+| Need to search many times | Sort first, then binary search | Sort once, search many times |
+
+## Part 2: Sorting
+
+### Bubble Sort — The Simplest Algorithm
+
+Bubble sort works by **comparing two adjacent elements** and swapping them if they're in the wrong order. This process repeats until there are no more swaps.
+
+It's called "bubble" because the largest element "bubbles up" to the top (end of the array) like a bubble!
+
+```cpp
+#include <iostream>
+#include <vector>
+
+void bubbleSort(std::vector<int>& data) {
+    int n = data.size();
+
+    for (int i = 0; i < n - 1; i++) {
+        bool swapped = false;
+
+        for (int j = 0; j < n - 1 - i; j++) {
+            if (data[j] > data[j + 1]) {
+                // Swap positions
+                int temp = data[j];
+                data[j] = data[j + 1];
+                data[j + 1] = temp;
+                swapped = true;
+            }
+        }
+
+        // If no swaps occurred, the array is already sorted
+        if (!swapped) {
+            break;
+        }
+    }
+}
+
+int main() {
+    std::vector<int> scores = {64, 34, 25, 12, 22, 11, 90};
+
+    std::cout << "Before sort: ";
+    for (int n : scores) std::cout << n << " ";
+    std::cout << std::endl;
+
+    bubbleSort(scores);
+
+    std::cout << "After sort:  ";
+    for (int n : scores) std::cout << n << " ";
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Before sort: 64 34 25 12 22 11 90
+After sort:  11 12 22 25 34 64 90
+```
+
+### Bubble Sort Step-by-Step Visualization
+
+Let's see the bubble sort process on `{5, 3, 8, 1, 2}`:
+
+```
+Initial data: [5, 3, 8, 1, 2]
+
+=== Pass 1 ===
+  Compare 5 and 3 → swap!   [3, 5, 8, 1, 2]
+  Compare 5 and 8 → ok      [3, 5, 8, 1, 2]
+  Compare 8 and 1 → swap!   [3, 5, 1, 8, 2]
+  Compare 8 and 2 → swap!   [3, 5, 1, 2, 8]  ← 8 is in place!
+
+=== Pass 2 ===
+  Compare 3 and 5 → ok      [3, 5, 1, 2, 8]
+  Compare 5 and 1 → swap!   [3, 1, 5, 2, 8]
+  Compare 5 and 2 → swap!   [3, 1, 2, 5, 8]  ← 5 is in place!
+
+=== Pass 3 ===
+  Compare 3 and 1 → swap!   [1, 3, 2, 5, 8]
+  Compare 3 and 2 → swap!   [1, 2, 3, 5, 8]  ← 3 is in place!
+
+=== Pass 4 ===
+  Compare 1 and 2 → ok      [1, 2, 3, 5, 8]
+  No swaps → DONE!
+
+Result: [1, 2, 3, 5, 8]
+```
+
+You can print this process in code:
+
+```cpp
+#include <iostream>
+#include <vector>
+
+void bubbleSortVisualized(std::vector<int>& data) {
+    int n = data.size();
+
+    for (int i = 0; i < n - 1; i++) {
+        std::cout << "=== Pass " << (i + 1) << " ===" << std::endl;
+        bool swapped = false;
+
+        for (int j = 0; j < n - 1 - i; j++) {
+            std::cout << "  Compare " << data[j] << " and " << data[j + 1];
+
+            if (data[j] > data[j + 1]) {
+                int temp = data[j];
+                data[j] = data[j + 1];
+                data[j + 1] = temp;
+                swapped = true;
+                std::cout << " -> swap!  ";
+            } else {
+                std::cout << " -> ok     ";
+            }
+
+            // Display array state
+            std::cout << "[";
+            for (int k = 0; k < n; k++) {
+                if (k > 0) std::cout << ", ";
+                std::cout << data[k];
+            }
+            std::cout << "]" << std::endl;
+        }
+
+        if (!swapped) {
+            std::cout << "  No swaps -> DONE!" << std::endl;
+            break;
+        }
+        std::cout << std::endl;
+    }
+}
+
+int main() {
+    std::vector<int> data = {5, 3, 8, 1, 2};
+
+    std::cout << "Initial data: ";
+    for (int n : data) std::cout << n << " ";
+    std::cout << std::endl << std::endl;
+
+    bubbleSortVisualized(data);
+
+    std::cout << std::endl << "Result: ";
+    for (int n : data) std::cout << n << " ";
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+### Selection Sort — Find Minimum, Place at Front
+
+Selection sort works by: **find the smallest element**, place it in the first position. Then find the second smallest, place it in the second position. And so on.
+
+```cpp
+#include <iostream>
+#include <vector>
+
+void selectionSort(std::vector<int>& data) {
+    int n = data.size();
+
+    for (int i = 0; i < n - 1; i++) {
+        // Find the index of the smallest element from position i to the end
+        int idx_min = i;
+        for (int j = i + 1; j < n; j++) {
+            if (data[j] < data[idx_min]) {
+                idx_min = j;
+            }
+        }
+
+        // Swap the smallest element to position i
+        if (idx_min != i) {
+            int temp = data[i];
+            data[i] = data[idx_min];
+            data[idx_min] = temp;
+        }
+    }
+}
+
+int main() {
+    std::vector<int> scores = {78, 45, 92, 34, 88, 61};
+
+    std::cout << "Before: ";
+    for (int n : scores) std::cout << n << " ";
+    std::cout << std::endl;
+
+    selectionSort(scores);
+
+    std::cout << "After:  ";
+    for (int n : scores) std::cout << n << " ";
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Before: 78 45 92 34 88 61
+After:  34 45 61 78 88 92
+```
+
+**Complexity of Bubble Sort and Selection Sort: O(n^2)** — for large data, this is slow! But for learning sorting concepts, both are great because they're easy to understand.
+
+### `std::sort()` — Professional Sorting
+
+In production code (code that's actually used), you almost always use `std::sort()` from `<algorithm>`. It's **much faster** with a complexity of **O(n log n)**:
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+int main() {
+    std::vector<int> scores = {78, 45, 92, 34, 88, 61};
+
+    std::cout << "Before: ";
+    for (int n : scores) std::cout << n << " ";
+    std::cout << std::endl;
+
+    // Sort ascending (smallest to largest) — default
+    std::sort(scores.begin(), scores.end());
+
+    std::cout << "Ascending: ";
+    for (int n : scores) std::cout << n << " ";
+    std::cout << std::endl;
+
+    // Sort descending (largest to smallest)
+    std::sort(scores.begin(), scores.end(), std::greater<int>());
+
+    std::cout << "Descending: ";
+    for (int n : scores) std::cout << n << " ";
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Before: 78 45 92 34 88 61
+Ascending: 34 45 61 78 88 92
+Descending: 92 88 78 61 45 34
+```
+
+:::warning
+Don't forget `#include <algorithm>` to use `std::sort()`! Without this header, the code won't compile.
+:::
+
+### Custom Comparator — Sort Your Way
+
+You can create your own sorting rules with a **comparator function**. A comparator takes two elements and returns `true` if the first element should come before the second:
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+// Comparator: sort strings by length (shortest first)
+bool sortByLength(const std::string& a, const std::string& b) {
+    return a.length() < b.length();
+}
+
+// Comparator: sort numbers — even numbers first, then odd
+bool evenFirst(int a, int b) {
+    if (a % 2 == 0 && b % 2 != 0) return true;   // a even, b odd → a first
+    if (a % 2 != 0 && b % 2 == 0) return false;  // a odd, b even → b first
+    return a < b;  // both even or both odd → sort normally
+}
+
+int main() {
+    // Sort names by length
+    std::vector<std::string> names = {"Andi", "Bu", "Citra", "Dewi Sartika", "Eka"};
+
+    std::sort(names.begin(), names.end(), sortByLength);
+
+    std::cout << "Sorted by length:" << std::endl;
+    for (const std::string& n : names) {
+        std::cout << "  " << n << " (" << n.length() << " chars)" << std::endl;
+    }
+
+    // Sort numbers: even first
+    std::vector<int> numbers = {5, 2, 8, 1, 4, 7, 6, 3};
+
+    std::sort(numbers.begin(), numbers.end(), evenFirst);
+
+    std::cout << "\nEven numbers first:" << std::endl;
+    for (int a : numbers) std::cout << a << " ";
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Sorted by length:
+  Bu (2 chars)
+  Andi (4 chars)
+  Eka (3 chars)
+  Dewi Sartika (12 chars)
+  Citra (5 chars)
+
+Even numbers first:
+2 4 6 8 1 3 5 7
+```
+
+## Practical Example: Student Score Ranking
+
+Combine searching and sorting for a real-world case — creating a class ranking:
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+int main() {
+    std::vector<std::string> names = {"Andi", "Budi", "Citra", "Dewi", "Eka"};
+    std::vector<double> scores = {85.5, 92.0, 78.3, 95.7, 88.0};
+
+    // Create index array for sorting (so names and scores stay in sync)
+    std::vector<int> indices = {0, 1, 2, 3, 4};
+
+    // Sort indices by score — highest to lowest
+    std::sort(indices.begin(), indices.end(), [&](int a, int b) {
+        return scores[a] > scores[b];
+    });
+
+    // Display ranking
+    std::cout << "===== CLASS RANKING =====" << std::endl;
+    std::cout << "Rank  Name          Score" << std::endl;
+    std::cout << "-------------------------" << std::endl;
+
+    for (int i = 0; i < indices.size(); i++) {
+        int idx = indices[i];
+        std::cout << "  " << (i + 1) << ".   "
+                  << names[idx];
+
+        // Padding for alignment
+        for (int j = names[idx].length(); j < 14; j++) {
+            std::cout << " ";
+        }
+
+        std::cout << scores[idx] << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+
+```
+===== CLASS RANKING =====
+Rank  Name          Score
+-------------------------
+  1.   Dewi          95.7
+  2.   Budi          92
+  3.   Eka           88
+  4.   Andi          85.5
+  5.   Citra         78.3
+```
+
+:::note
+The example above uses a **lambda function** (`[&](int a, int b) { ... }`) as the comparator. A lambda is a shorthand way to write an unnamed function — you'll learn more about this later. For now, just understand that `[&]` means the lambda can access variables outside of itself.
+:::
+
+## Practical Example: Product Search in a Store
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+int main() {
+    std::vector<std::string> products = {"Bread", "Milk", "Eggs", "Oil", "Sugar", "Rice"};
+    std::vector<int> prices = {15000, 18000, 25000, 28000, 14000, 65000};
+
+    // Sort by price (cheapest first)
+    std::vector<int> indices = {0, 1, 2, 3, 4, 5};
+    std::sort(indices.begin(), indices.end(), [&](int a, int b) {
+        return prices[a] < prices[b];
+    });
+
+    std::cout << "=== PRODUCT LIST (Cheapest) ===" << std::endl;
+    for (int i = 0; i < indices.size(); i++) {
+        int idx = indices[i];
+        std::cout << "  " << products[idx] << " - Rp" << prices[idx] << std::endl;
+    }
+
+    // Search for a specific product
+    std::cout << std::endl;
+    std::string target = "Eggs";
+    for (int i = 0; i < products.size(); i++) {
+        if (products[i] == target) {
+            std::cout << target << " found! Price: Rp" << prices[i] << std::endl;
+            break;
+        }
+    }
+
+    return 0;
+}
+```
+
+## Sort Names Alphabetically
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+int main() {
+    std::vector<std::string> names = {"Zaki", "Andi", "Maya", "Budi", "Sari", "Dina"};
+
+    std::cout << "Before sort:" << std::endl;
+    for (const std::string& n : names) std::cout << "  " << n << std::endl;
+
+    // std::sort automatically sorts strings alphabetically
+    std::sort(names.begin(), names.end());
+
+    std::cout << "\nAfter sort (A-Z):" << std::endl;
+    for (const std::string& n : names) std::cout << "  " << n << std::endl;
+
+    // Sort Z-A
+    std::sort(names.begin(), names.end(), std::greater<std::string>());
+
+    std::cout << "\nReverse sort (Z-A):" << std::endl;
+    for (const std::string& n : names) std::cout << "  " << n << std::endl;
+
+    return 0;
+}
+```
+
+## Algorithm Comparison
+
+| Algorithm | Complexity | Stable? | When to Use |
+|-----------|-----------|---------|-------------|
+| Linear Search | O(n) | - | Unsorted data, small data |
+| Binary Search | O(log n) | - | Sorted data, many searches |
+| Bubble Sort | O(n^2) | Yes | Learning concepts, very small data |
+| Selection Sort | O(n^2) | No | Learning concepts, very small data |
+| `std::sort()` | O(n log n) | No* | **Always use this in production!** |
+
+:::tip
+For school assignments and competitions: **understand** bubble sort and selection sort to learn the concepts, but **use** `std::sort()` to solve problems. `std::sort()` has been optimized by experts and is much faster!
+:::
+
+## Exercises
+
+**Exercise 1:** Implement a linear search that returns **all positions** where the target is found (not just the first one). Use `std::vector<int>` as the return type.
+
+**Exercise 2:** Create a program that takes 10 numbers as input, then:
+- Sort from smallest to largest using bubble sort
+- After sorting, search for a specific number using binary search
+- Display the results
+
+**Exercise 3:** Create a program that stores names and scores for 5 students, then display:
+- Ranking from highest to lowest score
+- The student with the highest and lowest scores
+- The class average
+
+**Exercise 4:** Create a comparator for `std::sort()` that sorts strings by their last character. If the last characters are the same, sort alphabetically.
+
+**Exercise 5:** Implement a **descending** version of selection sort (largest to smallest) — find the **maximum** and place it at the front, instead of the minimum.

@@ -1,0 +1,408 @@
+---
+title: "File Output: Writing Files"
+unit: 6
+lesson: 4
+description: "Learn how to write data to files using ofstream — from saving program results to creating text reports"
+objectives:
+  - "Use std::ofstream to write data to a file"
+  - "Understand the difference between overwrite and append modes"
+  - "Write data with neat formatting using setw and setprecision"
+  - "Combine file input and output to process data"
+  - "Build a program that saves results to a file permanently"
+estimatedTime: 30
+prerequisites: ["unit-6/03-file-input"]
+difficulty: "beginner"
+tags: ["file-output", "ofstream", "write-file", "append", "formatting"]
+---
+
+# File Output: Writing Files
+
+In the previous lesson, you learned how to **read** data from a file. Now we learn the opposite — **writing** data to a file! This is very useful because program results can be saved permanently, not lost when the program finishes.
+
+Imagine you build a program to calculate student grades. Without file output, the results only appear on screen and disappear once the program closes. With file output, the results are saved neatly and can be opened at any time!
+
+## Writing Files with `std::ofstream`
+
+To write files, we use `std::ofstream` (output file stream) from the `<fstream>` header:
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+
+int main() {
+    // Create an ofstream object and open the file
+    std::ofstream fileOutput("message.txt");
+
+    // Check if the file was successfully opened
+    if (!fileOutput.is_open()) {
+        std::cout << "Failed to open file!" << std::endl;
+        return 1;
+    }
+
+    // Write to the file — just like cout!
+    fileOutput << "Hello! This is a message from a C++ program." << std::endl;
+    fileOutput << "Second line of the file." << std::endl;
+    fileOutput << "Numbers work too: " << 42 << std::endl;
+
+    // Close the file
+    fileOutput.close();
+
+    std::cout << "Data successfully written to message.txt!" << std::endl;
+
+    return 0;
+}
+```
+
+Contents of `message.txt` after running the program:
+
+```
+Hello! This is a message from a C++ program.
+Second line of the file.
+Numbers work too: 42
+```
+
+:::tip
+Writing to a file uses the `<<` operator — **exactly the same** as `std::cout`! The difference is that `cout` writes to the screen, while `ofstream` writes to a file. If you already know how to use `cout`, you already know how to write files!
+:::
+
+## Overwrite vs Append Mode
+
+There are two ways to write files:
+
+### Overwrite Mode (Default)
+
+By default, `ofstream` will **overwrite** the existing file contents. If the file does not exist yet, a new file will be created.
+
+```cpp
+// Every time the program runs, the contents of data.txt are completely replaced
+std::ofstream file("data.txt");
+file << "New data — the old data is gone!" << std::endl;
+file.close();
+```
+
+:::warning
+Be careful with overwrite mode! If you open a file that already contains important data, all of its contents will be **lost** and replaced with the new data. Make sure you actually intend to overwrite it.
+:::
+
+### Append Mode
+
+If you want to **add** data at the end of a file without deleting what's already there, use `std::ios::app`:
+
+```cpp
+// Data is appended at the end of the file — old data stays safe!
+std::ofstream file("log.txt", std::ios::app);
+file << "New entry added at the bottom." << std::endl;
+file.close();
+```
+
+This is very useful for creating **logs** (records of program activity):
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+
+void writeLog(const std::string& message) {
+    std::ofstream log("activity.txt", std::ios::app);
+    if (log.is_open()) {
+        log << message << std::endl;
+        log.close();
+    }
+}
+
+int main() {
+    writeLog("Program started");
+    writeLog("User login: Budi");
+    writeLog("User added data");
+    writeLog("Program finished");
+
+    std::cout << "Activity log saved!" << std::endl;
+    return 0;
+}
+```
+
+Every time the program runs, new logs are **appended** below the old ones:
+
+```
+Program started
+User login: Budi
+User added data
+Program finished
+Program started
+User login: Siti
+...
+```
+
+## Writing with Neat Formatting
+
+You can use `<iomanip>` to create neatly formatted file output, for example to make tables:
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include <string>
+
+int main() {
+    std::ofstream file("student_grades.txt");
+
+    if (!file.is_open()) {
+        std::cout << "Failed to open file!" << std::endl;
+        return 1;
+    }
+
+    // Table header
+    file << std::left;
+    file << std::setw(5)  << "No"
+         << std::setw(20) << "Name"
+         << std::setw(10) << "Grade"
+         << std::setw(10) << "Status"
+         << std::endl;
+    file << std::string(45, '-') << std::endl;
+
+    // Student data
+    std::string names[] = {"Budi", "Siti", "Andi", "Rina", "Doni"};
+    double grades[] = {85.5, 92.3, 67.8, 78.0, 55.2};
+
+    for (int i = 0; i < 5; i++) {
+        std::string status = (grades[i] >= 70.0) ? "Pass" : "Fail";
+
+        file << std::setw(5)  << (i + 1)
+             << std::setw(20) << names[i]
+             << std::setw(10) << std::fixed << std::setprecision(1) << grades[i]
+             << std::setw(10) << status
+             << std::endl;
+    }
+
+    // Average
+    double total = 0;
+    for (int i = 0; i < 5; i++) {
+        total += grades[i];
+    }
+    double average = total / 5;
+
+    file << std::string(45, '-') << std::endl;
+    file << "Average: " << std::fixed << std::setprecision(2)
+         << average << std::endl;
+
+    file.close();
+    std::cout << "Report saved to student_grades.txt" << std::endl;
+
+    return 0;
+}
+```
+
+Contents of `student_grades.txt`:
+
+```
+No   Name                Grade     Status
+---------------------------------------------
+1    Budi                85.5      Pass
+2    Siti                92.3      Pass
+3    Andi                67.8      Fail
+4    Rina                78.0      Pass
+5    Doni                55.2      Fail
+---------------------------------------------
+Average: 75.76
+```
+
+:::note
+Formatting functions like `setw`, `setprecision`, `left`, `right`, and `fixed` work exactly the same in `ofstream` and `cout`. Whatever you can format on screen, you can also format in a file!
+:::
+
+## Flush and Close
+
+When you write to a file, data is not immediately saved to disk. Data is first stored in a **buffer** (temporary memory) for efficiency. There are two ways to ensure data is truly saved:
+
+```cpp
+std::ofstream file("data.txt");
+
+file << "First line" << std::endl;  // endl also performs a flush
+file << "Second line" << std::flush;   // manual flush without a newline
+
+file.close();  // close automatically flushes all remaining data
+```
+
+- **`std::endl`** — adds a newline AND flushes the buffer
+- **`std::flush`** — flushes the buffer without a newline
+- **`close()`** — flushes all buffers then closes the file
+
+:::tip
+In most cases, just calling `close()` at the end is sufficient and everything is safe. Use manual `flush` only when you need to ensure data is saved mid-process (for example, for logs that must be real-time).
+:::
+
+## Combining Read + Write
+
+One of the most useful patterns is **reading** from one file, **processing** the data, then **writing** the results to another file:
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include <string>
+
+int main() {
+    // Open input file (contains names and raw grades)
+    std::ifstream fileInput("raw_grades.txt");
+    if (!fileInput.is_open()) {
+        std::cout << "File raw_grades.txt not found!" << std::endl;
+        return 1;
+    }
+
+    // Open output file (for the report)
+    std::ofstream fileOutput("report.txt");
+    if (!fileOutput.is_open()) {
+        std::cout << "Failed to create report file!" << std::endl;
+        return 1;
+    }
+
+    // Write report header
+    fileOutput << "========== GRADE REPORT ==========" << std::endl;
+    fileOutput << std::left;
+    fileOutput << std::setw(15) << "Name"
+               << std::setw(10) << "Grade"
+               << std::setw(10) << "Letter"
+               << std::endl;
+    fileOutput << std::string(35, '-') << std::endl;
+
+    // Read from input, process, write to output
+    std::string name;
+    double grade;
+    int studentCount = 0;
+    double totalGrade = 0;
+
+    while (fileInput >> name >> grade) {
+        // Determine letter grade
+        std::string letter;
+        if (grade >= 90) letter = "A";
+        else if (grade >= 80) letter = "B";
+        else if (grade >= 70) letter = "C";
+        else if (grade >= 60) letter = "D";
+        else letter = "E";
+
+        // Write to output file
+        fileOutput << std::setw(15) << name
+                   << std::setw(10) << std::fixed << std::setprecision(1) << grade
+                   << std::setw(10) << letter
+                   << std::endl;
+
+        totalGrade += grade;
+        studentCount++;
+    }
+
+    // Write summary
+    fileOutput << std::string(35, '-') << std::endl;
+    fileOutput << "Number of students: " << studentCount << std::endl;
+    if (studentCount > 0) {
+        fileOutput << "Average           : " << std::fixed << std::setprecision(2)
+                   << (totalGrade / studentCount) << std::endl;
+    }
+    fileOutput << "===================================" << std::endl;
+
+    fileInput.close();
+    fileOutput.close();
+
+    std::cout << "Report successfully created! Check the file report.txt" << std::endl;
+
+    return 0;
+}
+```
+
+If the file `raw_grades.txt` contains:
+
+```
+Budi 85.5
+Siti 92.0
+Andi 67.8
+Rina 78.0
+```
+
+Then the program will create `report.txt`:
+
+```
+========== GRADE REPORT ==========
+Name           Grade     Letter
+-----------------------------------
+Budi           85.5      B
+Siti           92.0      A
+Andi           67.8      D
+Rina           78.0      C
+-----------------------------------
+Number of students: 4
+Average           : 80.82
+===================================
+```
+
+## Example: Daily Log with Append
+
+Here is an example program that records a daily log — every time it runs, new entries are added without deleting the old ones:
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+
+int main() {
+    std::string activity;
+
+    std::cout << "=== DAILY JOURNAL ===" << std::endl;
+    std::cout << "What did you do today?" << std::endl;
+    std::cout << "(type 'done' to stop)" << std::endl;
+    std::cout << std::endl;
+
+    // Open file in append mode
+    std::ofstream file("daily_journal.txt", std::ios::app);
+    if (!file.is_open()) {
+        std::cout << "Failed to open file!" << std::endl;
+        return 1;
+    }
+
+    file << "--- New Entry ---" << std::endl;
+
+    int number = 1;
+    while (true) {
+        std::cout << number << ". ";
+        std::getline(std::cin, activity);
+
+        if (activity == "done") {
+            break;
+        }
+
+        file << number << ". " << activity << std::endl;
+        number++;
+    }
+
+    file << std::endl;
+    file.close();
+
+    std::cout << std::endl;
+    std::cout << "Journal saved! (" << (number - 1)
+              << " activities recorded)" << std::endl;
+
+    return 0;
+}
+```
+
+## Summary
+
+| Concept | Explanation | Example |
+|---------|------------|---------|
+| `std::ofstream` | Object for writing files | `std::ofstream f("data.txt");` |
+| Overwrite mode | Replaces file contents (default) | `std::ofstream f("data.txt");` |
+| Append mode | Adds to the end of the file | `std::ofstream f("data.txt", std::ios::app);` |
+| Operator `<<` | Writes data to a file | `f << "text" << 42;` |
+| `setw` / `setprecision` | Neat output formatting | `f << std::setw(10) << value;` |
+| `flush` | Force write buffer to disk | `f << std::flush;` |
+| `close()` | Close the file (auto-flushes) | `f.close();` |
+| `is_open()` | Check if the file was opened successfully | `if (!f.is_open()) { ... }` |
+
+## Exercises
+
+**Exercise 1:** Create a program that asks the user to enter 5 names and exam grades, then save them to a file `exam_results.txt` in a neatly formatted table.
+
+**Exercise 2:** Create a "guest book" program — every time it runs, ask the user to enter a name and message, then **append** it to the file `guest_book.txt`. Old data must not be lost!
+
+**Exercise 3:** Create a program that reads the file `shopping.txt` (containing item names and prices, one per line), then writes a file `receipt.txt` containing the shopping list with a total price at the bottom.
+
+**Exercise 4:** Create a simple log program — every user action (add data, delete data, view data) is recorded to `log.txt` in append mode. The main program can be a simple menu.

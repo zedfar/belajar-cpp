@@ -1,0 +1,359 @@
+---
+title: "std::vector — Dynamic Arrays"
+unit: 5
+lesson: 4
+description: "Introduction to std::vector in C++ — an array that can grow and shrink dynamically, complete with useful methods"
+objectives:
+  - "Understand the limitations of regular arrays (fixed size)"
+  - "Declare and use std::vector"
+  - "Add elements with push_back and insert"
+  - "Remove elements with pop_back and erase"
+  - "Use important vector methods"
+estimatedTime: 45
+prerequisites: ["unit-5/03-array-2d"]
+difficulty: "intermediate"
+tags: ["vector", "dynamic-array", "STL", "push_back", "collections"]
+---
+
+# std::vector — Dynamic Arrays
+
+Regular arrays have one major weakness: their **size is fixed**. If you create `int scores[30]`, you've reserved exactly 30 slots — no more, no less.
+
+Imagine you're building a registration app — you don't know how many participants there will be. Should you allocate 1000 slots? Wasteful! 10 slots? Too few!
+
+The solution: **`std::vector`** — an array that can grow and shrink as needed!
+
+## Analogy: An Elastic Bag
+
+A regular array is like a **fixed-size suitcase** — once full, nothing else fits. `std::vector` is like an **elastic bag** — you can keep adding things, and it stretches to accommodate!
+
+## Setup: Include Header
+
+```cpp
+#include <vector>  // required for std::vector
+#include <iostream>
+```
+
+## Declaring Vectors
+
+```cpp
+// Empty vector
+std::vector<int> numbers;
+
+// Vector with initial size (all filled with 0)
+std::vector<int> scores(5);         // {0, 0, 0, 0, 0}
+
+// Vector with size and default value
+std::vector<int> allTens(5, 10);    // {10, 10, 10, 10, 10}
+
+// Vector with direct initialization
+std::vector<int> data = {3, 1, 4, 1, 5, 9};
+
+// Vector of string
+std::vector<std::string> names = {"Andi", "Budi", "Citra"};
+```
+
+## Adding Elements: push_back
+
+`push_back()` adds an element **at the end** of the vector:
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int main() {
+    std::vector<int> numbers;
+
+    std::cout << "Initial size: " << numbers.size() << std::endl;
+
+    numbers.push_back(10);
+    numbers.push_back(20);
+    numbers.push_back(30);
+
+    std::cout << "Size after push_back: " << numbers.size() << std::endl;
+
+    for (int i = 0; i < numbers.size(); i++) {
+        std::cout << numbers[i] << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Initial size: 0
+Size after push_back: 3
+10 20 30
+```
+
+## Accessing Elements
+
+Same as regular arrays — use the index `[]`:
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int main() {
+    std::vector<std::string> fruits = {"Apple", "Mango", "Banana", "Durian"};
+
+    // Access with index
+    std::cout << fruits[0] << std::endl;  // Apple
+    std::cout << fruits[2] << std::endl;  // Banana
+
+    // Modify an element
+    fruits[1] = "Orange";
+    std::cout << fruits[1] << std::endl;  // Orange
+
+    // front() and back()
+    std::cout << "First: " << fruits.front() << std::endl;  // Apple
+    std::cout << "Last : " << fruits.back() << std::endl;   // Durian
+
+    return 0;
+}
+```
+
+:::tip
+Use `.at(i)` instead of `[i]` if you want C++ to check bounds — `.at(i)` will throw an exception if the index is out of bounds, while `[i]` will not.
+:::
+
+## Removing Elements
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int main() {
+    std::vector<int> v = {10, 20, 30, 40, 50};
+
+    // pop_back — remove the last element
+    v.pop_back();
+    // v is now: {10, 20, 30, 40}
+
+    std::cout << "After pop_back: ";
+    for (int x : v) std::cout << x << " ";
+    std::cout << std::endl;
+
+    // erase — remove element at a specific position
+    // v.begin() + 1 = position at index 1 (element 20)
+    v.erase(v.begin() + 1);
+    // v is now: {10, 30, 40}
+
+    std::cout << "After erase index 1: ";
+    for (int x : v) std::cout << x << " ";
+    std::cout << std::endl;
+
+    // clear — remove all elements
+    v.clear();
+    std::cout << "After clear, size: " << v.size() << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+After pop_back: 10 20 30 40
+After erase index 1: 10 30 40
+After clear, size: 0
+```
+
+## Important Methods
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int main() {
+    std::vector<int> v = {5, 3, 8, 1, 9, 2};
+
+    std::cout << "size()   : " << v.size() << std::endl;    // 6
+    std::cout << "empty()  : " << v.empty() << std::endl;   // 0 (false)
+    std::cout << "front()  : " << v.front() << std::endl;   // 5
+    std::cout << "back()   : " << v.back() << std::endl;    // 2
+
+    // Check if empty before accessing
+    if (!v.empty()) {
+        std::cout << "Vector is not empty, first element: " << v.front() << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+size()   : 6
+empty()  : 0
+front()  : 5
+back()   : 2
+Vector is not empty, first element: 5
+```
+
+## Example 1: Dynamic Data Input
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+
+int main() {
+    std::vector<std::string> nameList;
+    std::string input;
+
+    std::cout << "Enter names (type 'done' to stop):" << std::endl;
+
+    while (true) {
+        std::cout << "> ";
+        std::getline(std::cin, input);
+
+        if (input == "done") break;
+        if (!input.empty()) {
+            nameList.push_back(input);
+        }
+    }
+
+    std::cout << "\n=== Participant List ===" << std::endl;
+    for (int i = 0; i < nameList.size(); i++) {
+        std::cout << (i + 1) << ". " << nameList[i] << std::endl;
+    }
+    std::cout << "Total: " << nameList.size() << " people" << std::endl;
+
+    return 0;
+}
+```
+
+Example interaction:
+```
+Enter names (type 'done' to stop):
+> Andi
+> Budi
+> Citra
+> done
+
+=== Participant List ===
+1. Andi
+2. Budi
+3. Citra
+Total: 3 people
+```
+
+## Example 2: Score Statistics
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int main() {
+    std::vector<int> scores;
+    int n, x;
+
+    std::cout << "How many scores? ";
+    std::cin >> n;
+
+    for (int i = 0; i < n; i++) {
+        std::cout << "Score #" << (i + 1) << ": ";
+        std::cin >> x;
+        scores.push_back(x);
+    }
+
+    // Calculate statistics
+    int total = 0;
+    int maxVal = scores[0];
+    int minVal = scores[0];
+
+    for (int i = 0; i < scores.size(); i++) {
+        total += scores[i];
+        if (scores[i] > maxVal) maxVal = scores[i];
+        if (scores[i] < minVal) minVal = scores[i];
+    }
+
+    double average = (double)total / scores.size();
+
+    std::cout << "\n=== Statistics ===" << std::endl;
+    std::cout << "Data count : " << scores.size() << std::endl;
+    std::cout << "Total      : " << total << std::endl;
+    std::cout << "Average    : " << average << std::endl;
+    std::cout << "Highest    : " << maxVal << std::endl;
+    std::cout << "Lowest     : " << minVal << std::endl;
+
+    return 0;
+}
+```
+
+## Comparison: Array vs Vector
+
+| Feature | Regular Array | std::vector |
+|---------|------------|-------------|
+| Size | Fixed | Dynamic |
+| Declaration | `int a[5]` | `vector<int> v` |
+| Add elements | Cannot | `push_back()` |
+| Remove elements | Cannot | `pop_back()`, `erase()` |
+| Size at runtime | Must be known | Can be unknown |
+| Index access | `a[i]` | `v[i]` |
+| Memory overhead | Smaller | Slightly larger |
+| Performance | Slightly faster | Very good |
+
+:::note
+For competitive programming (IOI, ICPC), `std::vector` is almost always better than regular arrays. It's safer and more flexible!
+:::
+
+## Range-based for loop
+
+There's a cleaner way to iterate over vectors:
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int main() {
+    std::vector<int> numbers = {1, 2, 3, 4, 5};
+
+    // Range-based for loop (C++11 and above)
+    for (int x : numbers) {
+        std::cout << x * x << " ";  // square each element
+    }
+    std::cout << std::endl;
+
+    // With strings
+    std::vector<std::string> cities = {"Jakarta", "Bandung", "Surabaya"};
+    for (const std::string& c : cities) {
+        std::cout << "- " << c << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+1 4 9 16 25
+- Jakarta
+- Bandung
+- Surabaya
+```
+
+## Exercises
+
+**Exercise 1:** Create a program that asks the user to enter numbers until they enter 0. Store all numbers (except 0) in a vector, then display all numbers and their sum.
+
+**Exercise 2:** Create a shopping list program. The user can add items (push_back), remove the last item (pop_back), or view all items. Use a simple menu system.
+
+**Exercise 3:** Create a program that receives n numbers from the user, stores them in a vector, then removes all negative numbers using a loop and erase. Display the vector before and after removal.
+
+## Summary
+
+| Method | Function | Example |
+|--------|----------|---------|
+| `push_back(x)` | Add x at the end | `v.push_back(5)` |
+| `pop_back()` | Remove last element | `v.pop_back()` |
+| `size()` | Number of elements | `v.size()` |
+| `empty()` | Check if empty | `v.empty()` |
+| `front()` | First element | `v.front()` |
+| `back()` | Last element | `v.back()` |
+| `clear()` | Remove all elements | `v.clear()` |
+| `erase(it)` | Remove at iterator position | `v.erase(v.begin()+i)` |
+
+`std::vector` is one of the most important data structures in C++. Master this, and you'll be ready to tackle almost any programming problem involving data collections!

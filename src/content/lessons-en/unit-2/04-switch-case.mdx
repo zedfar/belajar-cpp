@@ -1,0 +1,399 @@
+---
+title: "Switch-Case"
+unit: 2
+lesson: 4
+description: "Create cleaner branching for multiple choices using switch-case"
+objectives:
+  - "Understand the switch-case syntax and how it works"
+  - "Use break and default correctly"
+  - "Understand fall-through behavior"
+  - "Determine when to use switch vs if-else"
+estimatedTime: 30
+prerequisites: ["unit-2/02-if-else"]
+difficulty: "beginner"
+tags: ["switch", "case", "break", "default", "percabangan", "decision"]
+---
+
+# Switch-Case
+
+Imagine you're at the school cafeteria and want to order food. If you use if-else, the code would be really long:
+
+"If you pick 1, fried rice. If you pick 2, chicken noodles. If you pick 3, meatball soup. If you pick 4, soto..."
+
+Well, **switch-case** is a cleaner way to handle situations like this -- when you're comparing **one variable** against **many specific values**.
+
+## Basic Switch-Case Syntax
+
+```cpp
+switch (expression) {
+    case value1:
+        // code if expression == value1
+        break;
+    case value2:
+        // code if expression == value2
+        break;
+    case value3:
+        // code if expression == value3
+        break;
+    default:
+        // code if no case matches
+        break;
+}
+```
+
+Think of switch like a **vending machine**. You press a number button, and the machine immediately knows which drink to dispense. No need to check one by one from the top -- it jumps straight to the matching one!
+
+## First Example: Days of the Week
+
+```cpp
+#include <iostream>
+
+int main() {
+    int day;
+    std::cout << "Enter a day number (1-7): ";
+    std::cin >> day;
+
+    switch (day) {
+        case 1:
+            std::cout << "Monday" << std::endl;
+            break;
+        case 2:
+            std::cout << "Tuesday" << std::endl;
+            break;
+        case 3:
+            std::cout << "Wednesday" << std::endl;
+            break;
+        case 4:
+            std::cout << "Thursday" << std::endl;
+            break;
+        case 5:
+            std::cout << "Friday" << std::endl;
+            break;
+        case 6:
+            std::cout << "Saturday" << std::endl;
+            break;
+        case 7:
+            std::cout << "Sunday" << std::endl;
+            break;
+        default:
+            std::cout << "Invalid day number!" << std::endl;
+            break;
+    }
+
+    return 0;
+}
+```
+
+Now imagine writing this with if-else -- it would definitely be longer and harder to read! With switch, each option is clear and organized.
+
+## The Importance of `break`
+
+`break` is like an **exit door** from the switch. Without `break`, the program will keep executing the following cases, even if they don't match. This is called **fall-through**.
+
+See what happens **without break**:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int number = 2;
+
+    switch (number) {
+        case 1:
+            std::cout << "One" << std::endl;
+        case 2:
+            std::cout << "Two" << std::endl;
+        case 3:
+            std::cout << "Three" << std::endl;
+        case 4:
+            std::cout << "Four" << std::endl;
+        default:
+            std::cout << "Default" << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+Two
+Three
+Four
+Default
+```
+
+Wait, why did everything print? Because after entering `case 2`, the program **falls through** without stopping. Like a ball rolling down stairs -- if there's no barrier, it keeps going!
+
+:::warning
+**Always put `break` in every case!** Forgetting `break` is one of the most common bugs in C++. The compiler won't give an error -- the program will still run, but the results will be wrong.
+:::
+
+## `default` -- The Safety Net
+
+`default` is the last case that runs if **no case matches**. Think of it as the "other" answer on a multiple-choice form.
+
+```cpp
+#include <iostream>
+
+int main() {
+    int choice;
+    std::cout << "Choose a drink (1-3):" << std::endl;
+    std::cout << "1. Sweet Tea" << std::endl;
+    std::cout << "2. Orange Juice" << std::endl;
+    std::cout << "3. Coffee Latte" << std::endl;
+    std::cout << "Choice: ";
+    std::cin >> choice;
+
+    switch (choice) {
+        case 1:
+            std::cout << "You ordered Sweet Tea. Price: Rp5,000" << std::endl;
+            break;
+        case 2:
+            std::cout << "You ordered Orange Juice. Price: Rp7,000" << std::endl;
+            break;
+        case 3:
+            std::cout << "You ordered Coffee Latte. Price: Rp10,000" << std::endl;
+            break;
+        default:
+            std::cout << "Choice not available. Try again!" << std::endl;
+            break;
+    }
+
+    return 0;
+}
+```
+
+:::tip
+Although `break` in `default` is technically not required (since it's already at the bottom), **make it a habit to always write `break`** in `default`. This is good practice -- if you ever add a case below default, you won't get hit by a fall-through bug.
+:::
+
+## Example: Letter Grade Conversion
+
+```cpp
+#include <iostream>
+
+int main() {
+    char grade;
+    std::cout << "Enter letter grade (A/B/C/D/E): ";
+    std::cin >> grade;
+
+    switch (grade) {
+        case 'A':
+            std::cout << "Outstanding! You've mastered the material." << std::endl;
+            break;
+        case 'B':
+            std::cout << "Great! Your understanding is solid." << std::endl;
+            break;
+        case 'C':
+            std::cout << "Fair. You still need to study harder." << std::endl;
+            break;
+        case 'D':
+            std::cout << "Poor. Let's step up the studying!" << std::endl;
+            break;
+        case 'E':
+            std::cout << "Failed. Don't give up, try again!" << std::endl;
+            break;
+        default:
+            std::cout << "Invalid grade." << std::endl;
+            break;
+    }
+
+    return 0;
+}
+```
+
+:::note
+Notice that cases for `char` use **single quotes** (`'A'`), not double quotes (`"A"`). Remember: single quotes for a single character, double quotes for strings.
+:::
+
+## Intentional Fall-Through
+
+Sometimes, fall-through is actually useful. For example, when several cases share the same action:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int day;
+    std::cout << "Enter a day number (1-7): ";
+    std::cin >> day;
+
+    switch (day) {
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+            std::cout << "Weekday/school day. Keep up the studying!" << std::endl;
+            break;
+        case 6:
+        case 7:
+            std::cout << "Weekend. Time to rest!" << std::endl;
+            break;
+        default:
+            std::cout << "Invalid day number." << std::endl;
+            break;
+    }
+
+    return 0;
+}
+```
+
+Here, cases 1 through 5 intentionally have no `break` because they all share the same action. It's like writing "Monday through Friday = school day". Clean, right?
+
+## When to Use Switch vs If-Else?
+
+This is an important question! Both can be used for branching, but each has its own strengths.
+
+**Use `switch` when:**
+- Comparing **one variable** against **several fixed values** (discrete)
+- The values being compared are `int`, `char`, or `enum`
+- There are many choices (more than 3)
+
+**Use `if-else` when:**
+- The condition involves **range comparisons** (e.g., `score >= 80`)
+- The condition involves **several different variables**
+- You need to use logical operators (`&&`, `||`)
+- Comparing `string`, `float`, or `double`
+
+## Switch Limitations
+
+There are some things switch **cannot** do:
+
+```cpp
+// CANNOT: Use float/double
+double score = 85.5;
+switch (score) {  // ERROR!
+    case 85.5: // not allowed
+        break;
+}
+
+// CANNOT: Use string
+std::string color = "red";
+switch (color) {  // ERROR!
+    case "red": // not allowed
+        break;
+}
+
+// CANNOT: Use ranges
+int age = 15;
+switch (age) {
+    case (age >= 13): // ERROR! Not a fixed value
+        break;
+}
+```
+
+For the cases above, use **if-else**.
+
+## Comparison: Switch vs If-Else
+
+Here's the same example written in two ways:
+
+**If-else version:**
+```cpp
+if (month == 1) {
+    std::cout << "January" << std::endl;
+} else if (month == 2) {
+    std::cout << "February" << std::endl;
+} else if (month == 3) {
+    std::cout << "March" << std::endl;
+} else {
+    std::cout << "Invalid month" << std::endl;
+}
+```
+
+**Switch version (cleaner):**
+```cpp
+switch (month) {
+    case 1:
+        std::cout << "January" << std::endl;
+        break;
+    case 2:
+        std::cout << "February" << std::endl;
+        break;
+    case 3:
+        std::cout << "March" << std::endl;
+        break;
+    default:
+        std::cout << "Invalid month" << std::endl;
+        break;
+}
+```
+
+For discrete choices like this, switch is easier to read and more structured.
+
+## Common Mistakes
+
+**1. Forgetting `break` -- the most classic bug:**
+```cpp
+switch (choice) {
+    case 1:
+        std::cout << "One" << std::endl;
+        // Forgot break! Program continues to case 2
+    case 2:
+        std::cout << "Two" << std::endl;
+        break;
+}
+// Input 1 will print "One" AND "Two"
+```
+
+**2. Using unsupported data types:**
+```cpp
+double price = 10.5;
+switch (price) {  // ERROR: switch can't use double
+    case 10.5:
+        break;
+}
+```
+
+**3. Forgetting curly braces `{ }` for switch:**
+```cpp
+switch choice {  // ERROR: must be switch (choice)
+    case 1:
+        break;
+}
+```
+
+**4. Using a variable as a case:**
+```cpp
+int x = 5;
+switch (number) {
+    case x:  // ERROR: case must be a constant, not a variable
+        break;
+}
+```
+
+:::tip
+Cases in switch must always be **constant values** -- numeric literals (`1`, `2`, `3`), character literals (`'A'`, `'B'`), or `const` constants. Regular variables are not allowed!
+:::
+
+## Exercises
+
+**Exercise 1:** Create a simple calculator program. The user enters two numbers and an operator (`+`, `-`, `*`, `/`). Use switch based on the operator to display the result.
+
+Example:
+```
+First number: 10
+Operator (+, -, *, /): *
+Second number: 5
+Result: 10 * 5 = 50
+```
+
+**Exercise 2:** Create a program that takes a month number (1-12) and displays the number of days in that month. Use fall-through for months that have the same number of days. (Ignore leap years for February -- just assume 28 days.)
+
+**Exercise 3:** Create a restaurant menu program with at least 5 food choices. Display the food name, price, and estimated serving time based on the user's choice.
+
+## Summary
+
+| Concept | Explanation |
+|---------|-------------|
+| `switch (expression)` | Starts a switch block, checks the value of the expression |
+| `case value:` | Matches the expression against a specific value |
+| `break;` | Exits the switch, **required** in every case |
+| `default:` | Runs if no case matches |
+| Fall-through | Program continues to the next case if there's no `break` |
+| Supported types | `int`, `char`, `enum` (not `float`, `double`, `string`) |
+| Cases must be constant | Case values must be literals or `const`, not variables |
+
+Switch-case is a powerful tool for writing clean branching code. Remember the main rule: **always use `break`**, unless you intentionally want fall-through! In the next lesson, we'll learn about the **ternary operator** -- a shorthand way to write simple if-else statements.

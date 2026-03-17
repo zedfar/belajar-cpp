@@ -1,0 +1,401 @@
+---
+title: "While Loop"
+unit: 3
+lesson: 1
+description: "Learn to repeat actions with while loops — how to make a program do something over and over as long as a condition is met"
+objectives:
+  - "Understand the concept of loops in programming"
+  - "Write while loops with correct syntax"
+  - "Use counters and update variables inside a loop"
+  - "Avoid infinite loops (never-ending loops)"
+estimatedTime: 40
+prerequisites: ["unit-2/02-if-else"]
+difficulty: "beginner"
+tags: ["while", "loop", "repetition", "iteration", "counter"]
+---
+
+# While Loop
+
+Imagine you're asked to write a program that prints "Hello!" 1000 times. Surely you wouldn't write `std::cout << "Hello!"` a thousand lines? Of course not! This is where **loops** come to the rescue.
+
+## Analogy: Keep Eating Until You're Full
+
+Try to imagine this situation at the school cafeteria:
+
+```
+While stomach is not full:
+    Take a bite of rice
+    Chew and swallow
+```
+
+You don't know exactly how many bites you'll need — it could be 10, it could be 20. The point is, you **keep eating as long as you're not full**. Once you're full, you stop. This is exactly how a `while` loop works!
+
+Other examples you often experience:
+- **While** homework isn't done, keep working on it
+- **While** phone isn't fully charged, keep charging
+- **While** you haven't reached school, keep walking
+
+## While Loop Syntax
+
+```cpp
+while (condition) {
+    // code that repeats as long as condition is true
+}
+```
+
+**The flow:**
+1. Check the `condition` inside the parentheses `()`
+2. If `true` — execute the code inside `{}`
+3. Go back to step 1 (check the condition again)
+4. If `false` — exit the loop, continue to the line after `}`
+
+```
+         +----------------+
+         | Check condition |<------+
+         +--------+-------+       |
+           true/    \false        |
+               /      \          |
+      +-------+    (exit)        |
+      | Code  |                  |
+      | block |------------------+
+      +-------+
+```
+
+## Example 1: Countdown from 10
+
+Like a rocket launch countdown!
+
+```cpp
+#include <iostream>
+
+int main() {
+    int count = 10;
+
+    std::cout << "Countdown started!" << std::endl;
+
+    while (count > 0) {
+        std::cout << count << "..." << std::endl;
+        count = count - 1;  // subtract 1 each time
+    }
+
+    std::cout << "LIFTOFF! Rocket launched!" << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Countdown started!
+10...
+9...
+8...
+7...
+6...
+5...
+4...
+3...
+2...
+1...
+LIFTOFF! Rocket launched!
+```
+
+Notice: each iteration (cycle), the variable `count` decreases by 1. When `count` becomes 0, the condition `count > 0` evaluates to `false`, and the loop stops.
+
+## Example 2: Printing Numbers 1 to 10
+
+```cpp
+#include <iostream>
+
+int main() {
+    int i = 1;
+
+    while (i <= 10) {
+        std::cout << i << " ";
+        i++;  // same as i = i + 1
+    }
+
+    std::cout << std::endl;
+    std::cout << "Done! Variable i is now: " << i << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+1 2 3 4 5 6 7 8 9 10
+Done! Variable i is now: 11
+```
+
+:::tip
+`i++` is a shorthand for writing `i = i + 1`. Likewise, `i--` is the same as `i = i - 1`. These are called **increment** and **decrement** operators. They are used very frequently in loops!
+:::
+
+Why does `i` end up being 11? Because when `i` becomes 11, the condition `i <= 10` evaluates to `false`, the loop stops, but the value of `i` remains 11.
+
+## Example 3: Sum of Numbers 1 to 100
+
+Want to add up 1 + 2 + 3 + ... + 100? Without a loop, you'd have to write an incredibly long addition. With a while loop:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int sum = 0;
+    int number = 1;
+
+    while (number <= 100) {
+        sum = sum + number;  // or: sum += number;
+        number++;
+    }
+
+    std::cout << "Sum of numbers 1 to 100 = " << sum << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Sum of numbers 1 to 100 = 5050
+```
+
+:::note
+Fun fact: Mathematician Carl Friedrich Gauss reportedly found this answer (5050) when he was still a child, without adding them one by one. But we have computers, so we can calculate it with a loop!
+:::
+
+## Updating Variables: The Key to Stopping a Loop
+
+The most important part of a while loop is **changing something** inside the loop so that the condition eventually becomes `false`. This usually involves:
+
+- **Increment:** `i++` or `i += 1`
+- **Decrement:** `i--` or `i -= 1`
+- **Other operations:** `n = n / 10`, `remaining = remaining - payment`, etc.
+
+Without updating a variable, the loop will never stop!
+
+## Danger: Infinite Loop (Never-Ending Loop)
+
+If you forget to update the variable, or the condition never becomes `false`, you get an **infinite loop** — the program runs forever without stopping!
+
+```cpp
+// DON'T TRY THIS without being ready to press Ctrl+C!
+int i = 1;
+
+while (i <= 10) {
+    std::cout << i << " ";
+    // Forgot i++! Variable i never changes
+    // i is always 1, condition is always true
+    // Loop NEVER STOPS!
+}
+```
+
+:::warning
+If your program suddenly "hangs" and doesn't respond, you most likely got caught in an infinite loop. Press **Ctrl+C** in the terminal to forcefully stop the program.
+:::
+
+How to avoid infinite loops:
+1. Make sure there's a **variable update** inside the loop
+2. Make sure the update causes the condition to **eventually become false**
+3. Check: does the variable in the condition change inside the loop?
+
+## Example 4: Counting the Number of Digits
+
+How many digits does the number 12345 have? We can count by dividing the number by 10 repeatedly until it's gone:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int number = 12345;
+    int originalNumber = number;  // save the original value
+    int digitCount = 0;
+
+    while (number > 0) {
+        number = number / 10;  // remove the last digit
+        digitCount++;
+    }
+
+    std::cout << "The number " << originalNumber << " has "
+              << digitCount << " digits." << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+The number 12345 has 5 digits.
+```
+
+How it works:
+| Iteration | number | number / 10 | digitCount |
+|-----------|--------|-------------|------------|
+| 1         | 12345  | 1234        | 1          |
+| 2         | 1234   | 123         | 2          |
+| 3         | 123    | 12          | 3          |
+| 4         | 12     | 1           | 4          |
+| 5         | 1      | 0           | 5          |
+
+When `number` becomes 0, the condition `number > 0` evaluates to `false` and the loop stops.
+
+## Example 5: Simple Input Validation
+
+While loops are very useful for making sure the user enters valid data:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int score;
+
+    std::cout << "Enter a score (0-100): ";
+    std::cin >> score;
+
+    while (score < 0 || score > 100) {
+        std::cout << "Invalid score! Must be between 0-100." << std::endl;
+        std::cout << "Enter a score again: ";
+        std::cin >> score;
+    }
+
+    std::cout << "Your score: " << score << ". Thank you!" << std::endl;
+
+    return 0;
+}
+```
+
+Output (example interaction):
+```
+Enter a score (0-100): 150
+Invalid score! Must be between 0-100.
+Enter a score again: -5
+Invalid score! Must be between 0-100.
+Enter a score again: 85
+Your score: 85. Thank you!
+```
+
+The program keeps asking for input **as long as** the entered value is invalid. Once it's valid, the loop stops.
+
+## Example 6: Printing Even Numbers
+
+```cpp
+#include <iostream>
+
+int main() {
+    int i = 2;
+
+    std::cout << "Even numbers from 2 to 20:" << std::endl;
+
+    while (i <= 20) {
+        std::cout << i << " ";
+        i += 2;  // jump by 2 each time
+    }
+
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Even numbers from 2 to 20:
+2 4 6 8 10 12 14 16 18 20
+```
+
+:::tip
+You don't always have to add 1. You can use `+= 2`, `+= 5`, `*= 2`, or any operation — as long as the loop eventually stops!
+:::
+
+## Common Mistakes
+
+### 1. Forgetting to update the variable (infinite loop)
+
+```cpp
+// WRONG — i never changes
+int i = 1;
+while (i <= 5) {
+    std::cout << i << " ";
+    // Missing: i++;
+}
+
+// CORRECT
+int i = 1;
+while (i <= 5) {
+    std::cout << i << " ";
+    i++;
+}
+```
+
+### 2. Initial condition is already false (loop never runs)
+
+```cpp
+int i = 10;
+while (i < 5) {
+    std::cout << i << " ";  // Never executed!
+    i++;
+}
+// Because 10 < 5 is false, the loop is skipped entirely
+```
+
+### 3. Off-by-one error (one number off)
+
+```cpp
+// Want to print 1 to 5, but get 1 to 4
+int i = 1;
+while (i < 5) {     // Should be i <= 5
+    std::cout << i << " ";
+    i++;
+}
+// Output: 1 2 3 4 (missing 5!)
+```
+
+:::warning
+**Off-by-one errors** are one of the most common bugs in programming. Always check: are you using `<` or `<=`? Are you starting from 0 or 1?
+:::
+
+### 4. Semicolon after `while`
+
+```cpp
+// WRONG — the semicolon makes the while loop "empty"
+int i = 1;
+while (i <= 5); {   // This empty loop = infinite loop!
+    std::cout << i << " ";
+    i++;
+}
+
+// CORRECT — no semicolon
+int i = 1;
+while (i <= 5) {
+    std::cout << i << " ";
+    i++;
+}
+```
+
+## Exercises
+
+**Exercise 1:** Create a program that prints all odd numbers from 1 to 50 using a while loop. Hint: start from `i = 1` and add 2 each iteration.
+
+**Exercise 2:** Create a program that takes a positive integer, then prints that number in reverse. Example: input `12345`, output `54321`. Hint: use `% 10` to get the last digit, and `/ 10` to remove it.
+
+**Exercise 3:** Create a program that calculates the **factorial** of a number. The factorial of n (written n!) is n x (n-1) x (n-2) x ... x 1. Example: 5! = 5 x 4 x 3 x 2 x 1 = 120.
+
+:::tip
+For Exercise 3, start with a variable `result = 1`, then multiply by a number that keeps decreasing. Remember: 0! = 1 (special case).
+:::
+
+## Summary
+
+| Concept | Explanation |
+|---------|-------------|
+| `while (condition)` | Repeat a block of code **as long as** the condition is `true` |
+| Condition checked first | The condition is checked **before** each iteration |
+| Update variable | **Required** to change something so the loop stops |
+| `i++` / `i--` | Increment / decrement — quick way to add/subtract 1 |
+| `i += n` | Add `n` to `i` each iteration |
+| Infinite loop | A loop that never stops — usually because of a forgotten variable update |
+| Ctrl+C | How to stop a program caught in an infinite loop |
+| Off-by-one | A bug caused by using `<` vs `<=` incorrectly or starting at the wrong value |
+
+Now you can make programs that repeat actions! But the while loop isn't the only way. In the next lesson, we'll learn about **for loops** — a more concise and tidy way to loop when you already know how many times to repeat.

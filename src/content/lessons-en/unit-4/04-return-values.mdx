@@ -1,0 +1,619 @@
+---
+title: "Return Values"
+unit: 4
+lesson: 4
+description: "Deep dive into how functions return values — return statements, multiple returns, predicate functions, and a recursion preview"
+objectives:
+  - "Understand how the return statement works in depth"
+  - "Use return values in variables, expressions, and output"
+  - "Create predicate functions (returning bool) for condition checking"
+  - "Apply early return for cleaner code"
+  - "Get a brief introduction to the concept of recursion"
+estimatedTime: 35
+prerequisites: ["unit-4/03-parameter-argumen"]
+difficulty: "beginner"
+tags: ["return", "return-value", "predikat", "early-return", "rekursi", "recursion"]
+---
+
+# Return Values
+
+You already know how to create functions and give them parameters. Now it's time to dive deeper into an equally important part: **return values** — how a function sends its result back to the caller. Imagine you ask your friend to calculate something: you need them to **answer** with the result, not just stay silent!
+
+## How `return` Works
+
+The `return` statement does two things at once:
+1. **Returns a value** to where the function was called
+2. **Stops** the function's execution (code after `return` will not run)
+
+```cpp
+#include <iostream>
+
+int add(int a, int b) {
+    return a + b;      // Return the sum
+    std::cout << "This line will never be executed!" << std::endl;
+}
+
+int main() {
+    int result = add(3, 7);   // result = 10
+    std::cout << "3 + 7 = " << result << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+3 + 7 = 10
+```
+
+Notice: the `std::cout` line after `return` in the `add` function **is never executed** because the function already stopped at `return`.
+
+## Return Type Must Match
+
+The value you return **must match** the declared type:
+
+```cpp
+#include <iostream>
+#include <string>
+
+// Return type: int -> must return int
+int square(int n) {
+    return n * n;   // OK, int
+}
+
+// Return type: double -> must return double
+double half(double n) {
+    return n / 2.0;   // OK, double
+}
+
+// Return type: bool -> must return true or false
+bool isPositive(int n) {
+    return n > 0;   // OK, comparison expression produces bool
+}
+
+// Return type: string -> must return string
+std::string greeting(std::string name) {
+    return "Hello, " + name + "!";   // OK, string
+}
+
+int main() {
+    std::cout << square(5) << std::endl;
+    std::cout << half(7.0) << std::endl;
+    std::cout << isPositive(10) << std::endl;
+    std::cout << greeting("Andi") << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+25
+3.5
+1
+Hello, Andi!
+```
+
+## Three Ways to Use a Return Value
+
+The value returned by a function can be used in three ways:
+
+```cpp
+#include <iostream>
+
+int timesTwo(int n) {
+    return n * 2;
+}
+
+int main() {
+    // Way 1: Store in a variable
+    int result = timesTwo(5);
+    std::cout << "Way 1: " << result << std::endl;
+
+    // Way 2: Directly in an expression
+    int total = timesTwo(3) + timesTwo(7);
+    std::cout << "Way 2: " << total << std::endl;
+
+    // Way 3: Directly in cout
+    std::cout << "Way 3: " << timesTwo(10) << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Way 1: 10
+Way 2: 20
+Way 3: 20
+```
+
+:::tip
+**When to use which approach?**
+- **Store in a variable** — when you'll use the value **more than once**
+- **Directly in an expression** — when it's just **part of a calculation**
+- **Directly in cout** — when you only want to **display it once**
+:::
+
+## Early Return vs Single Exit Point
+
+There are two styles of writing functions with multiple conditions:
+
+### Early Return — Exit as soon as the condition is met
+
+```cpp
+#include <iostream>
+#include <string>
+
+std::string classifyAge(int age) {
+    if (age < 0) return "Invalid age";
+    if (age < 5) return "Toddler";
+    if (age < 13) return "Child";
+    if (age < 18) return "Teenager";
+    if (age < 60) return "Adult";
+    return "Senior";
+}
+
+int main() {
+    std::cout << "Age 3: " << classifyAge(3) << std::endl;
+    std::cout << "Age 15: " << classifyAge(15) << std::endl;
+    std::cout << "Age 45: " << classifyAge(45) << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Age 3: Toddler
+Age 15: Teenager
+Age 45: Adult
+```
+
+### Single Exit Point — Store in a variable, return at the end
+
+```cpp
+#include <iostream>
+#include <string>
+
+std::string classifyAge(int age) {
+    std::string result;
+
+    if (age < 0) {
+        result = "Invalid age";
+    } else if (age < 5) {
+        result = "Toddler";
+    } else if (age < 13) {
+        result = "Child";
+    } else if (age < 18) {
+        result = "Teenager";
+    } else if (age < 60) {
+        result = "Adult";
+    } else {
+        result = "Senior";
+    }
+
+    return result;   // One return at the end
+}
+
+int main() {
+    std::cout << "Age 3: " << classifyAge(3) << std::endl;
+    std::cout << "Age 15: " << classifyAge(15) << std::endl;
+    std::cout << "Age 45: " << classifyAge(45) << std::endl;
+
+    return 0;
+}
+```
+
+:::note
+**Which is better?** Both are valid! Early return makes code shorter and avoids deeply nested indentation. Single exit point is easier to debug because you can print `result` before returning. For beginners, pick whichever is easiest for you to read.
+:::
+
+## Predicate Functions (Return `bool`)
+
+Functions that return `bool` are called **predicate functions**. Their names usually start with `is` — like asking "is it...?":
+
+```cpp
+#include <iostream>
+
+bool isEven(int number) {
+    return number % 2 == 0;
+}
+
+bool isPrime(int number) {
+    if (number <= 1) return false;
+
+    for (int i = 2; i < number; i++) {
+        if (number % i == 0) return false;
+    }
+
+    return true;
+}
+
+bool isLeapYear(int year) {
+    // Leap year: divisible by 400, OR
+    // divisible by 4 but NOT divisible by 100
+    return (year % 400 == 0) || (year % 4 == 0 && year % 100 != 0);
+}
+
+bool isPositive(int number) {
+    return number > 0;
+}
+
+int main() {
+    // Check even/odd
+    for (int i = 1; i <= 6; i++) {
+        std::cout << i << " even? " << (isEven(i) ? "Yes" : "No") << std::endl;
+    }
+
+    std::cout << std::endl;
+
+    // Check prime numbers
+    for (int i = 1; i <= 10; i++) {
+        if (isPrime(i)) {
+            std::cout << i << " is prime" << std::endl;
+        }
+    }
+
+    std::cout << std::endl;
+
+    // Check leap years
+    std::cout << "2024 leap year? " << (isLeapYear(2024) ? "Yes" : "No") << std::endl;
+    std::cout << "1900 leap year? " << (isLeapYear(1900) ? "Yes" : "No") << std::endl;
+    std::cout << "2000 leap year? " << (isLeapYear(2000) ? "Yes" : "No") << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+1 even? No
+2 even? Yes
+3 even? No
+4 even? Yes
+5 even? No
+6 even? Yes
+
+2 is prime
+3 is prime
+5 is prime
+7 is prime
+
+2024 leap year? Yes
+1900 leap year? No
+2000 leap year? Yes
+```
+
+:::tip
+Predicate functions are very useful because they can be used directly in `if` statements:
+```cpp
+if (isPrime(number)) {
+    std::cout << number << " is prime!" << std::endl;
+}
+```
+The code reads almost like English!
+:::
+
+## Return `std::string` — Conversion Functions
+
+Functions that return strings are very useful for converting data into human-readable text:
+
+```cpp
+#include <iostream>
+#include <string>
+
+std::string numberToGrade(int score) {
+    if (score >= 90) return "A (Excellent)";
+    if (score >= 80) return "B (Good)";
+    if (score >= 70) return "C (Fair)";
+    if (score >= 60) return "D (Poor)";
+    return "E (Very Poor)";
+}
+
+std::string dayToString(int day) {
+    if (day == 1) return "Monday";
+    if (day == 2) return "Tuesday";
+    if (day == 3) return "Wednesday";
+    if (day == 4) return "Thursday";
+    if (day == 5) return "Friday";
+    if (day == 6) return "Saturday";
+    if (day == 7) return "Sunday";
+    return "Invalid day";
+}
+
+int main() {
+    // Convert scores to grades
+    int studentScores[] = {95, 82, 67, 73, 55};
+    for (int i = 0; i < 5; i++) {
+        std::cout << "Score " << studentScores[i] << ": "
+                  << numberToGrade(studentScores[i]) << std::endl;
+    }
+
+    std::cout << std::endl;
+
+    // Convert numbers to day names
+    for (int i = 1; i <= 7; i++) {
+        std::cout << "Day " << i << ": " << dayToString(i) << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+Score 95: A (Excellent)
+Score 82: B (Good)
+Score 67: D (Poor)
+Score 73: C (Fair)
+Score 55: E (Very Poor)
+
+Day 1: Monday
+Day 2: Tuesday
+Day 3: Wednesday
+Day 4: Thursday
+Day 5: Friday
+Day 6: Saturday
+Day 7: Sunday
+```
+
+## Example: getMax of Three Numbers
+
+```cpp
+#include <iostream>
+
+int getMax(int a, int b, int c) {
+    int maxVal = a;
+
+    if (b > maxVal) {
+        maxVal = b;
+    }
+    if (c > maxVal) {
+        maxVal = c;
+    }
+
+    return maxVal;
+}
+
+int main() {
+    std::cout << "Max(3, 7, 5) = " << getMax(3, 7, 5) << std::endl;
+    std::cout << "Max(10, 2, 8) = " << getMax(10, 2, 8) << std::endl;
+    std::cout << "Max(1, 1, 9) = " << getMax(1, 1, 9) << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Max(3, 7, 5) = 7
+Max(10, 2, 8) = 10
+Max(1, 1, 9) = 9
+```
+
+## Example: Complete BMI Classification
+
+```cpp
+#include <iostream>
+#include <string>
+
+double calculateBMI(double weightKg, double heightCm);
+std::string classifyBMI(double bmi);
+void printReport(std::string name, double weight, double height);
+
+int main() {
+    printReport("Andi", 70.0, 175.0);
+    printReport("Budi", 95.0, 170.0);
+    printReport("Citra", 42.0, 160.0);
+
+    return 0;
+}
+
+double calculateBMI(double weightKg, double heightCm) {
+    double heightM = heightCm / 100.0;
+    return weightKg / (heightM * heightM);
+}
+
+std::string classifyBMI(double bmi) {
+    if (bmi < 18.5) return "Underweight";
+    if (bmi < 25.0) return "Normal";
+    if (bmi < 30.0) return "Overweight";
+    return "Obese";
+}
+
+void printReport(std::string name, double weight, double height) {
+    double bmi = calculateBMI(weight, height);
+    std::string category = classifyBMI(bmi);
+
+    std::cout << "=== BMI Report ===" << std::endl;
+    std::cout << "Name    : " << name << std::endl;
+    std::cout << "Weight  : " << weight << " kg" << std::endl;
+    std::cout << "Height  : " << height << " cm" << std::endl;
+    std::cout << "BMI     : " << bmi << std::endl;
+    std::cout << "Category: " << category << std::endl;
+    std::cout << std::endl;
+}
+```
+
+Output:
+```
+=== BMI Report ===
+Name    : Andi
+Weight  : 70 kg
+Height  : 175 cm
+BMI     : 22.8571
+Category: Normal
+
+=== BMI Report ===
+Name    : Budi
+Weight  : 95 kg
+Height  : 170 cm
+BMI     : 32.8719
+Category: Obese
+
+=== BMI Report ===
+Name    : Citra
+Weight  : 42 kg
+Height  : 160 cm
+BMI     : 16.4062
+Category: Underweight
+```
+
+## Preview: Recursion (A Function Calling Itself)
+
+Here's a concept that might sound strange: **a function can call itself!** This technique is called **recursion**. Here's a classic example — calculating factorials:
+
+```cpp
+#include <iostream>
+
+int factorial(int n) {
+    // Base case: stopping condition
+    if (n <= 1) {
+        return 1;
+    }
+
+    // Recursive case: call itself
+    return n * factorial(n - 1);
+}
+
+int main() {
+    std::cout << "5! = " << factorial(5) << std::endl;
+    std::cout << "3! = " << factorial(3) << std::endl;
+    std::cout << "1! = " << factorial(1) << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+5! = 120
+3! = 6
+1! = 1
+```
+
+**How does it work?**
+
+```
+factorial(5)
+= 5 * factorial(4)
+= 5 * 4 * factorial(3)
+= 5 * 4 * 3 * factorial(2)
+= 5 * 4 * 3 * 2 * factorial(1)
+= 5 * 4 * 3 * 2 * 1
+= 120
+```
+
+:::warning
+Recursion **must have a base case** (stopping condition)! Without a base case, the function will call itself endlessly until the program crashes. We'll learn about recursion in more depth in a later unit.
+:::
+
+## Common Mistakes
+
+### 1. Forgetting that `return` stops the function
+
+```cpp
+int calculateSomething(int x) {
+    return x * 2;
+    // All code below this will NOT be executed!
+    std::cout << "This will not appear" << std::endl;
+    return x * 3;   // Never reached
+}
+```
+
+### 2. Not all code paths have a `return`
+
+```cpp
+// WRONG — if number == 0, there's no return!
+std::string checkNumber(int number) {
+    if (number > 0) {
+        return "Positive";
+    } else if (number < 0) {
+        return "Negative";
+    }
+    // What if number == 0? No return!
+}
+
+// CORRECT — all possibilities are covered
+std::string checkNumber(int number) {
+    if (number > 0) return "Positive";
+    if (number < 0) return "Negative";
+    return "Zero";
+}
+```
+
+### 3. Ignoring the return value
+
+```cpp
+#include <iostream>
+
+int add(int a, int b) {
+    return a + b;
+}
+
+int main() {
+    // Calling the function but not storing the result
+    add(3, 5);   // The result 8 is just thrown away!
+
+    // CORRECT — store or directly use it
+    int result = add(3, 5);
+    std::cout << result << std::endl;
+
+    return 0;
+}
+```
+
+### 4. Return type doesn't match
+
+```cpp
+// WRONG — function says return int, but returns string
+// int getName() {
+//     return "Andi";   // ERROR!
+// }
+
+// CORRECT
+std::string getName() {
+    return "Andi";
+}
+```
+
+:::warning
+The C++ compiler usually gives a warning if there's a code path in a non-void function that doesn't have a `return`. **Don't ignore warnings!** Your program's behavior could be unpredictable.
+:::
+
+## Exercises
+
+**Exercise 1:** Create a function `int getMax(int a, int b)` and `int getMin(int a, int b)`, then create a function `int getRange(int a, int b, int c)` that returns the difference between the largest and smallest of three numbers. Example: `getRange(3, 9, 1)` returns `8` (because 9 - 1 = 8).
+
+**Exercise 2:** Create three predicate functions:
+- `bool isDivisibleBy(int number, int divisor)` — check if `number` is divisible by `divisor`
+- `bool isVowel(char letter)` — check if the letter is a vowel (a, i, u, e, o)
+- `bool isInRange(int number, int min, int max)` — check if `number` is between `min` and `max` (inclusive)
+
+Call all three functions with several examples and display the results.
+
+**Exercise 3:** Create a "School Grade Calculator" program with functions:
+- `double calculateAverage(int s1, int s2, int s3)` — average of 3 scores
+- `std::string determineGrade(double average)` — convert to a grade
+- `bool isPassing(double average, double passingScore)` — check if passing
+- `void printReport(std::string name, int s1, int s2, int s3)` — print a complete report
+
+Use all the functions to print reports for 2-3 students.
+
+## Summary
+
+| Concept | Description |
+|---------|-------------|
+| **`return`** | Returns a value and stops the function |
+| **Return type** | Must match the type of the value being returned |
+| **Store in variable** | `int x = function();` — to reuse later |
+| **Directly in expression** | `function() + 5` — as part of a calculation |
+| **Directly in cout** | `std::cout << function()` — display directly |
+| **Early return** | Exit the function as soon as a condition is met |
+| **Single exit point** | One `return` at the end of the function |
+| **Predicate function** | Returns `bool` — name starts with `is` |
+| **Conversion function** | Returns `std::string` — converts data to text |
+| **Recursion** | A function that calls itself (must have a base case!) |
+
+Congratulations! You've mastered the basics of functions in C++ — from creating them, to giving them parameters, to returning values. With functions, your code is cleaner, easier to read, and easier to maintain. In the upcoming lessons, we'll keep using functions constantly because functions are the **foundation** of good programming!

@@ -1,0 +1,298 @@
+---
+title: "Comments and Program Structure"
+unit: 1
+lesson: 2
+description: "Learn to write comments and understand the structure of a C++ program"
+objectives:
+  - "Write single-line and multi-line comments"
+  - "Understand when and why comments are needed"
+  - "Learn the general structure of a C++ program"
+estimatedTime: 20
+prerequisites: ["unit-1/01"]
+difficulty: "beginner"
+tags: ["comments", "structure", "basics"]
+---
+
+# Comments and Program Structure
+
+Imagine you wrote a really complicated recipe. A month later, you open it again and... you're confused. "Why did I use brown sugar instead of white sugar?" If only you had written a small note next to the recipe, it would have been much easier to understand.
+
+In programming, those "small notes" are called **comments**. And understanding how a program is **structured** will help you read and write code more quickly.
+
+## Single-Line Comments
+
+Single-line comments start with two forward slashes (`//`). All text after `//` until the end of the line is **ignored by the compiler** — meaning comments have absolutely no effect on how the program runs.
+
+```cpp
+#include <iostream>
+
+int main() {
+    // This is a comment - the compiler ignores this line
+    std::cout << "Hello!" << std::endl;  // Comments can also go at the end of a code line
+
+    // Display a second message
+    std::cout << "Happy learning C++!" << std::endl;
+
+    return 0;  // Return 0 = program succeeded
+}
+```
+
+Output:
+```
+Hello!
+Happy learning C++!
+```
+
+Notice: all the text after `//` does not appear in the output. The compiler completely ignores it.
+
+:::note
+Comments are not executed by the compiler. Comments are purely for the humans reading the code — whether that's your future self, or another programmer working on the same code.
+:::
+
+## Multi-Line Comments
+
+For comments that are long or span multiple lines, use `/*` to start and `*/` to end:
+
+```cpp
+#include <iostream>
+
+/*
+   This program displays information about the C++ lesson.
+   Created as an exercise for understanding comments
+   and the basic structure of a program.
+*/
+
+int main() {
+    std::cout << "Learning C++ comments!" << std::endl;
+    return 0;
+}
+```
+
+All text between `/*` and `*/` is ignored, no matter how many lines it spans.
+
+**When should you use which?**
+
+| Type | Syntax | Best for |
+|------|--------|----------|
+| Single-line | `// ...` | Short notes, one-line explanations |
+| Multi-line | `/* ... */` | Long explanations, documentation, disabling blocks of code |
+
+## Why Are Comments Important?
+
+You might be thinking: "If comments are ignored by the compiler, why bother writing them?" The main reasons:
+
+### 1. Documentation — Explaining "Why"
+
+Good code explains **what** it does (through clear variable/function names). Comments explain **why** the code was written a certain way.
+
+```cpp
+// Using integer because age is never a decimal
+int age = 17;
+
+// Adding 1 because arrays start from index 0
+int position = index + 1;
+```
+
+### 2. Debugging — Temporarily Disabling Code
+
+When hunting for bugs (errors), you can "disable" a line of code by turning it into a comment — without deleting it:
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Step 1" << std::endl;
+    // std::cout << "Step 2 - temporarily disabled" << std::endl;
+    std::cout << "Step 3" << std::endl;
+    return 0;
+}
+```
+
+The output only shows "Step 1" and "Step 3". The "Step 2" line is disabled without being deleted, so it can be re-enabled at any time.
+
+This is called **commenting out** — a technique that programmers use very frequently for debugging.
+
+### 3. Collaboration — Helping Your Team
+
+When working in a team (or even reading your own code after a few weeks), comments help you understand the code faster. Code without comments is like a book without chapter titles — technically readable, but requires more effort.
+
+:::tip
+**Rule of thumb:** Write comments when you feel the need to explain *why* something is done, not *what* is done. Good code already explains the "what" — comments explain the "why".
+:::
+
+## C++ Program Structure
+
+Now that we know about comments, let's look at the big picture of how C++ programs are organized. Every C++ program generally follows this structure:
+
+```cpp
+// === SECTION 1: Preprocessor Directives ===
+#include <iostream>       // Library for input/output
+#include <string>         // Library for the string type
+
+// === SECTION 2: Main Function ===
+int main() {
+    // === SECTION 3: Program Body ===
+
+    // Variable declarations
+    std::string name = "Budi";
+    int age = 16;
+
+    // Program logic
+    std::cout << "Name: " << name << std::endl;
+    std::cout << "Age: " << age << std::endl;
+
+    // End of program
+    return 0;
+}
+```
+
+### Section 1: Preprocessor Directives
+
+Lines starting with `#` are instructions for the **preprocessor** — a stage that happens before compilation. `#include` tells the compiler to include header files that contain definitions of functions/objects we need.
+
+```cpp
+#include <iostream>    // For cout, cin, endl
+#include <string>      // For the string data type
+#include <cmath>       // For math functions (sqrt, pow, etc.)
+```
+
+Preprocessor directives are always placed at the **very top** of the file.
+
+### Section 2: The `main()` Function
+
+Every C++ program must have exactly **one** `main()` function. This is the starting point of execution — the computer begins here.
+
+```cpp
+int main() {
+    // program code goes here
+    return 0;
+}
+```
+
+### Section 3: Program Body
+
+Inside `main()`, you write the instructions you want to execute. Instructions are executed **from top to bottom**, one by one, in sequence.
+
+```cpp
+int main() {
+    // Instruction 1 runs first
+    std::cout << "One" << std::endl;
+
+    // Instruction 2 runs second
+    std::cout << "Two" << std::endl;
+
+    // Instruction 3 runs third
+    std::cout << "Three" << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+One
+Two
+Three
+```
+
+Order matters! If you move the "Three" line to the top, then "Three" will appear first in the output.
+
+## Whitespace and Indentation
+
+C++ doesn't care about **whitespace** (spaces, tabs, blank lines). The following program produces the exact same output:
+
+```cpp
+#include <iostream>
+int main(){std::cout<<"Hello!"<<std::endl;return 0;}
+```
+
+But that program is **very hard to read** for humans. That's why we use **indentation** (usually 4 spaces or 1 tab) to make code neater and easier to read:
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Hello!" << std::endl;
+    return 0;
+}
+```
+
+Both programs above are identical from the compiler's perspective, but the second version is **far** easier to read. Indentation visually shows that the code inside `{}` is part of the `main()` function.
+
+:::warning
+Even though the compiler doesn't care about indentation, **programmers do**. Code without clean indentation is considered bad practice. Get in the habit of writing neat code from the start!
+:::
+
+## Full Example: A Program with Good Comments
+
+```cpp
+// Program: Digital ID Card
+// Description: Displays identity information on screen
+// Author: Beginner C++ Student
+
+#include <iostream>
+#include <string>
+
+int main() {
+    // Identity data
+    std::string name = "Rina Sari";
+    int age = 15;
+    std::string school = "State High School 1";
+    std::string hobby = "Reading and coding";
+
+    // Display the ID card
+    std::cout << "================================" << std::endl;
+    std::cout << "      DIGITAL ID CARD           " << std::endl;
+    std::cout << "================================" << std::endl;
+    std::cout << "Name    : " << name << std::endl;
+    std::cout << "Age     : " << age << " years" << std::endl;
+    std::cout << "School  : " << school << std::endl;
+    std::cout << "Hobby   : " << hobby << std::endl;
+    std::cout << "================================" << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+================================
+      DIGITAL ID CARD
+================================
+Name    : Rina Sari
+Age     : 15 years
+School  : State High School 1
+Hobby   : Reading and coding
+================================
+```
+
+Notice how the comments provide context without being excessive — just enough to clarify what each section of code does.
+
+## Exercises
+
+**Exercise 1:** Take the Hello World program from the previous lesson and add comments explaining each line:
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Hello, World!" << std::endl;
+    return 0;
+}
+```
+
+Add comments above or next to each line. Make sure the comments explain the **purpose** of the line, rather than just restating the code.
+
+**Exercise 2:** Create a program that displays a favorite poem or song lyrics (at least 4 lines). Use a multi-line comment at the beginning to explain what the program displays.
+
+## Summary
+
+- Single-line comments start with `//`
+- Multi-line comments are enclosed between `/*` and `*/`
+- Comments are **ignored** by the compiler — they're only for humans
+- Comments are useful for: documentation, debugging, and collaboration
+- C++ program structure: preprocessor directives, then `main()`, then body
+- Instructions are executed **from top to bottom**
+- Indentation makes code easier to read
+
+In the next lesson, we'll learn about **variables and data types** — how to store information in a program!

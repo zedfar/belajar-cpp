@@ -1,0 +1,813 @@
+---
+title: "Project: Star Pattern Generator"
+unit: 3
+lesson: 7
+description: "Build an interactive program that can generate various star patterns — combining all Unit 3 concepts!"
+objectives:
+  - "Combine while, for, do-while, break/continue, and nested loops in one program"
+  - "Build a program step by step from simple to complex"
+  - "Create an interactive menu with input validation"
+  - "Implement star patterns in a user-selectable program"
+estimatedTime: 60
+prerequisites: ["unit-3/06-loop-patterns"]
+difficulty: "beginner"
+isProject: true
+tags: ["project", "star-pattern", "nested-loops", "interactive"]
+---
+
+# Project: Star Pattern Generator
+
+It's project time! You've learned all the loop types in Unit 3 — `while`, `for`, `do-while`, `break`, `continue`, and nested loops. Now let's combine them all into one cool program: the **Star Pattern Generator**!
+
+This program will be a "pattern printing machine" — the user just picks a pattern type, enters the size, and the program draws it on screen. Like a photo filter app, but the terminal version!
+
+:::note
+This project is built **step by step**. Don't jump straight to the final version! Follow each stage and make sure you understand before moving on. Building programs incrementally is an important skill that professional programmers use every day.
+:::
+
+## Stage 1: One Pattern, Fixed Size
+
+Let's start with the simplest thing — a program that prints just one pattern with a fixed (hardcoded) size.
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "==========================" << std::endl;
+    std::cout << "  STAR PATTERN GENERATOR" << std::endl;
+    std::cout << "==========================" << std::endl;
+    std::cout << std::endl;
+
+    int height = 5;
+
+    std::cout << "Star Triangle Pattern:" << std::endl;
+    std::cout << std::endl;
+
+    // Upward triangle
+    for (int i = 1; i <= height; i++) {
+        for (int j = 1; j <= i; j++) {
+            std::cout << "* ";
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+**Output:**
+```
+==========================
+  STAR PATTERN GENERATOR
+==========================
+
+Star Triangle Pattern:
+
+*
+* *
+* * *
+* * * *
+* * * * *
+```
+
+Simple and working! But still rigid — the size is always 5 and there's only one pattern. Let's upgrade.
+
+## Stage 2: User Can Input the Size
+
+Now let's add user input, complete with **validation** to make sure the size makes sense.
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "==========================" << std::endl;
+    std::cout << "  STAR PATTERN GENERATOR" << std::endl;
+    std::cout << "==========================" << std::endl;
+    std::cout << std::endl;
+
+    int height;
+
+    // Input validation with do-while
+    do {
+        std::cout << "Enter pattern height (1-20): ";
+        std::cin >> height;
+
+        if (height < 1 || height > 20) {
+            std::cout << "Height must be between 1 and 20!" << std::endl;
+        }
+    } while (height < 1 || height > 20);
+
+    std::cout << std::endl;
+    std::cout << "Star Triangle Pattern (height " << height << "):" << std::endl;
+    std::cout << std::endl;
+
+    for (int i = 1; i <= height; i++) {
+        for (int j = 1; j <= i; j++) {
+            std::cout << "* ";
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Notice we use **do-while** for input validation — the program keeps asking for input until the user enters a valid number. This is one of the most common real-world uses of do-while!
+
+## Stage 3: Menu for Choosing Patterns
+
+This is where the program starts to get cool. We add a **choice menu** with **switch-case** so the user can choose from at least 4 different patterns.
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "================================" << std::endl;
+    std::cout << "   STAR PATTERN GENERATOR v3" << std::endl;
+    std::cout << "================================" << std::endl;
+    std::cout << std::endl;
+
+    // === PATTERN CHOICE MENU ===
+    int choice;
+    std::cout << "Choose a pattern type:" << std::endl;
+    std::cout << "  1. Right Triangle" << std::endl;
+    std::cout << "  2. Inverted Triangle" << std::endl;
+    std::cout << "  3. Pyramid" << std::endl;
+    std::cout << "  4. Hollow Rectangle" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Choice (1-4): ";
+    std::cin >> choice;
+
+    // === SIZE INPUT ===
+    int height;
+    do {
+        std::cout << "Enter pattern height (1-20): ";
+        std::cin >> height;
+
+        if (height < 1 || height > 20) {
+            std::cout << "Height must be between 1 and 20!" << std::endl;
+        }
+    } while (height < 1 || height > 20);
+
+    std::cout << std::endl;
+
+    // === PRINT PATTERN BASED ON CHOICE ===
+    switch (choice) {
+        case 1: {
+            // Right Triangle
+            std::cout << ">> Right Triangle (height " << height << ")" << std::endl;
+            std::cout << std::endl;
+
+            for (int i = 1; i <= height; i++) {
+                for (int j = 1; j <= i; j++) {
+                    std::cout << "* ";
+                }
+                std::cout << std::endl;
+            }
+            break;
+        }
+
+        case 2: {
+            // Inverted Triangle
+            std::cout << ">> Inverted Triangle (height " << height << ")" << std::endl;
+            std::cout << std::endl;
+
+            for (int i = 1; i <= height; i++) {
+                for (int j = 1; j <= height - i + 1; j++) {
+                    std::cout << "* ";
+                }
+                std::cout << std::endl;
+            }
+            break;
+        }
+
+        case 3: {
+            // Pyramid
+            std::cout << ">> Pyramid (height " << height << ")" << std::endl;
+            std::cout << std::endl;
+
+            for (int i = 1; i <= height; i++) {
+                // Spaces
+                for (int s = 1; s <= height - i; s++) {
+                    std::cout << " ";
+                }
+                // Stars
+                for (int b = 1; b <= 2 * i - 1; b++) {
+                    std::cout << "*";
+                }
+                std::cout << std::endl;
+            }
+            break;
+        }
+
+        case 4: {
+            // Hollow Rectangle
+            std::cout << ">> Hollow Rectangle (size " << height << "x" << height << ")" << std::endl;
+            std::cout << std::endl;
+
+            for (int i = 1; i <= height; i++) {
+                for (int j = 1; j <= height; j++) {
+                    if (i == 1 || i == height || j == 1 || j == height) {
+                        std::cout << "* ";
+                    } else {
+                        std::cout << "  ";
+                    }
+                }
+                std::cout << std::endl;
+            }
+            break;
+        }
+
+        default:
+            std::cout << "Invalid choice!" << std::endl;
+            break;
+    }
+
+    return 0;
+}
+```
+
+Now the user can choose from 4 different patterns! Each pattern lives in its own case inside the switch. Clean and easy to extend with new patterns.
+
+:::tip
+Notice the curly braces `{ }` in each `case`. This is important when you declare variables inside a case. Without `{ }`, the compiler can get confused and throw errors.
+:::
+
+## Stage 4: Loop Again — User Can Generate More
+
+This is the final stage before the complete version. We wrap the entire program in a **while loop** so the user can generate patterns multiple times without restarting the program. We also add an "Exit" option to the menu.
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "================================" << std::endl;
+    std::cout << "   STAR PATTERN GENERATOR v4" << std::endl;
+    std::cout << "================================" << std::endl;
+
+    bool running = true;
+
+    while (running) {
+        std::cout << std::endl;
+
+        // Menu
+        int choice;
+        std::cout << "Choose a pattern type:" << std::endl;
+        std::cout << "  1. Right Triangle" << std::endl;
+        std::cout << "  2. Inverted Triangle" << std::endl;
+        std::cout << "  3. Pyramid" << std::endl;
+        std::cout << "  4. Hollow Rectangle" << std::endl;
+        std::cout << "  0. Exit" << std::endl;
+        std::cout << std::endl;
+        std::cout << "Choice: ";
+        std::cin >> choice;
+
+        // Check for exit
+        if (choice == 0) {
+            running = false;
+            continue;  // jump to while condition check
+        }
+
+        // Validate choice
+        if (choice < 1 || choice > 4) {
+            std::cout << "Invalid choice! Try again." << std::endl;
+            continue;  // skip to next iteration
+        }
+
+        // Input size
+        int height;
+        do {
+            std::cout << "Enter pattern height (1-20): ";
+            std::cin >> height;
+
+            if (height < 1 || height > 20) {
+                std::cout << "Height must be between 1 and 20!" << std::endl;
+            }
+        } while (height < 1 || height > 20);
+
+        std::cout << std::endl;
+
+        // Print pattern (same as Stage 3)
+        switch (choice) {
+            case 1:
+                for (int i = 1; i <= height; i++) {
+                    for (int j = 1; j <= i; j++) {
+                        std::cout << "* ";
+                    }
+                    std::cout << std::endl;
+                }
+                break;
+
+            case 2:
+                for (int i = 1; i <= height; i++) {
+                    for (int j = 1; j <= height - i + 1; j++) {
+                        std::cout << "* ";
+                    }
+                    std::cout << std::endl;
+                }
+                break;
+
+            case 3:
+                for (int i = 1; i <= height; i++) {
+                    for (int s = 1; s <= height - i; s++) {
+                        std::cout << " ";
+                    }
+                    for (int b = 1; b <= 2 * i - 1; b++) {
+                        std::cout << "*";
+                    }
+                    std::cout << std::endl;
+                }
+                break;
+
+            case 4:
+                for (int i = 1; i <= height; i++) {
+                    for (int j = 1; j <= height; j++) {
+                        if (i == 1 || i == height || j == 1 || j == height) {
+                            std::cout << "* ";
+                        } else {
+                            std::cout << "  ";
+                        }
+                    }
+                    std::cout << std::endl;
+                }
+                break;
+        }
+    }
+
+    std::cout << std::endl;
+    std::cout << "Thank you for using the Star Pattern Generator!" << std::endl;
+
+    return 0;
+}
+```
+
+Now the program is **fully interactive**: the user can choose a pattern, enter the size, see the result, then choose again without having to restart. Notice how we use:
+- **while loop** to repeat the entire program
+- **continue** to skip to the next iteration when input is invalid
+- **do-while** to validate the size
+- **switch-case** for pattern selection
+- **nested for loops** to print each pattern
+- **bool** `running` to control when the program stops
+
+All Unit 3 concepts are here!
+
+## Final Version: Complete Star Pattern Generator!
+
+This is the final version, polished up — with a cool header, visual separators, and 6 star patterns. Read through it slowly and pay attention to each section.
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    // === PROGRAM HEADER ===
+    std::cout << "========================================" << std::endl;
+    std::cout << "      STAR PATTERN GENERATOR v1.0" << std::endl;
+    std::cout << "        Built with C++ and love" << std::endl;
+    std::cout << "========================================" << std::endl;
+
+    bool program_running = true;
+
+    // === MAIN LOOP: program keeps running until user chooses to exit ===
+    while (program_running) {
+        std::cout << std::endl;
+        std::cout << "----------------------------------------" << std::endl;
+        std::cout << "  PATTERN MENU" << std::endl;
+        std::cout << "----------------------------------------" << std::endl;
+        std::cout << "  1. Right Triangle" << std::endl;
+        std::cout << "  2. Inverted Triangle" << std::endl;
+        std::cout << "  3. Pyramid" << std::endl;
+        std::cout << "  4. Inverted Pyramid" << std::endl;
+        std::cout << "  5. Hollow Rectangle" << std::endl;
+        std::cout << "  6. Number Staircase" << std::endl;
+        std::cout << "  0. Exit Program" << std::endl;
+        std::cout << "----------------------------------------" << std::endl;
+        std::cout << std::endl;
+
+        // Menu choice input
+        int choice;
+        std::cout << "Choose a pattern (0-6): ";
+        std::cin >> choice;
+
+        // Check if user wants to exit
+        if (choice == 0) {
+            program_running = false;
+            break;  // exit the while loop
+        }
+
+        // Validate menu choice
+        if (choice < 1 || choice > 6) {
+            std::cout << std::endl;
+            std::cout << "  Choice not available! Please choose 0-6." << std::endl;
+            continue;  // go back to the start of the loop, show menu again
+        }
+
+        // === SIZE INPUT WITH VALIDATION ===
+        int height;
+        do {
+            std::cout << "Enter height/size (1-20): ";
+            std::cin >> height;
+
+            if (height < 1 || height > 20) {
+                std::cout << "  Size must be between 1 and 20. Try again!" << std::endl;
+            }
+        } while (height < 1 || height > 20);
+
+        // === PATTERN NAME FOR HEADER ===
+        std::string pattern_name;
+        switch (choice) {
+            case 1: pattern_name = "Right Triangle";     break;
+            case 2: pattern_name = "Inverted Triangle";   break;
+            case 3: pattern_name = "Pyramid";             break;
+            case 4: pattern_name = "Inverted Pyramid";    break;
+            case 5: pattern_name = "Hollow Rectangle";    break;
+            case 6: pattern_name = "Number Staircase";    break;
+        }
+
+        std::cout << std::endl;
+        std::cout << ">> " << pattern_name << " (height: " << height << ")" << std::endl;
+        std::cout << std::endl;
+
+        // === PRINT PATTERN BASED ON CHOICE ===
+        switch (choice) {
+
+            // --- PATTERN 1: Right Triangle ---
+            // *
+            // * *
+            // * * *
+            // * * * *
+            // * * * * *
+            case 1: {
+                for (int i = 1; i <= height; i++) {
+                    for (int j = 1; j <= i; j++) {
+                        std::cout << "* ";
+                    }
+                    std::cout << std::endl;
+                }
+                break;
+            }
+
+            // --- PATTERN 2: Inverted Triangle ---
+            // * * * * *
+            // * * * *
+            // * * *
+            // * *
+            // *
+            case 2: {
+                for (int i = 1; i <= height; i++) {
+                    for (int j = 1; j <= height - i + 1; j++) {
+                        std::cout << "* ";
+                    }
+                    std::cout << std::endl;
+                }
+                break;
+            }
+
+            // --- PATTERN 3: Pyramid ---
+            //     *
+            //    ***
+            //   *****
+            //  *******
+            // *********
+            case 3: {
+                for (int i = 1; i <= height; i++) {
+                    // Print leading spaces
+                    for (int s = 1; s <= height - i; s++) {
+                        std::cout << " ";
+                    }
+                    // Print stars
+                    for (int b = 1; b <= 2 * i - 1; b++) {
+                        std::cout << "*";
+                    }
+                    std::cout << std::endl;
+                }
+                break;
+            }
+
+            // --- PATTERN 4: Inverted Pyramid ---
+            // *********
+            //  *******
+            //   *****
+            //    ***
+            //     *
+            case 4: {
+                for (int i = 1; i <= height; i++) {
+                    // Print leading spaces (increasing)
+                    for (int s = 1; s < i; s++) {
+                        std::cout << " ";
+                    }
+                    // Print stars (decreasing)
+                    for (int b = 1; b <= 2 * (height - i) + 1; b++) {
+                        std::cout << "*";
+                    }
+                    std::cout << std::endl;
+                }
+                break;
+            }
+
+            // --- PATTERN 5: Hollow Rectangle ---
+            // * * * * *
+            // *       *
+            // *       *
+            // *       *
+            // * * * * *
+            case 5: {
+                for (int i = 1; i <= height; i++) {
+                    for (int j = 1; j <= height; j++) {
+                        if (i == 1 || i == height || j == 1 || j == height) {
+                            std::cout << "* ";
+                        } else {
+                            std::cout << "  ";
+                        }
+                    }
+                    std::cout << std::endl;
+                }
+                break;
+            }
+
+            // --- PATTERN 6: Number Staircase ---
+            // 1
+            // 1 2
+            // 1 2 3
+            // 1 2 3 4
+            // 1 2 3 4 5
+            case 6: {
+                for (int i = 1; i <= height; i++) {
+                    for (int j = 1; j <= i; j++) {
+                        std::cout << j << " ";
+                    }
+                    std::cout << std::endl;
+                }
+                break;
+            }
+        }
+
+        // === SEPARATOR AFTER PATTERN ===
+        std::cout << std::endl;
+        std::cout << "(Pattern printed successfully!)" << std::endl;
+
+    }  // end of while loop
+
+    // === CLOSING MESSAGE ===
+    std::cout << std::endl;
+    std::cout << "========================================" << std::endl;
+    std::cout << "  Thank you for using the" << std::endl;
+    std::cout << "  Star Pattern Generator!" << std::endl;
+    std::cout << std::endl;
+    std::cout << "  Keep practicing and creating!" << std::endl;
+    std::cout << "========================================" << std::endl;
+
+    return 0;
+}
+```
+
+## Code Explanation
+
+Let's break down the important parts of this program.
+
+### 1. Main Loop (While)
+
+```cpp
+bool program_running = true;
+
+while (program_running) {
+    // ... entire program content ...
+
+    if (choice == 0) {
+        program_running = false;
+        break;
+    }
+}
+```
+
+The entire program is wrapped in a `while` loop. As long as `program_running` is `true`, the program keeps showing the menu and accepting input. When the user chooses 0, we set it to `false` and `break`.
+
+### 2. Input Validation with Do-While
+
+```cpp
+int height;
+do {
+    std::cout << "Enter height/size (1-20): ";
+    std::cin >> height;
+
+    if (height < 1 || height > 20) {
+        std::cout << "  Size must be between 1 and 20. Try again!" << std::endl;
+    }
+} while (height < 1 || height > 20);
+```
+
+Do-while is perfect for input validation because we need to ask for input **at least once** before we can check whether it's valid.
+
+### 3. Continue to Skip Iterations
+
+```cpp
+if (choice < 1 || choice > 6) {
+    std::cout << "  Choice not available!" << std::endl;
+    continue;  // go straight back to the menu
+}
+```
+
+If the user enters an invalid choice, `continue` makes the program jump straight to the beginning of the while loop — showing the menu again without running the code below.
+
+### 4. Switch-Case for Pattern Routing
+
+```cpp
+switch (choice) {
+    case 1: { /* triangle pattern */ break; }
+    case 2: { /* inverted pattern */ break; }
+    // ...
+}
+```
+
+Switch-case acts as a "router" — directing the program to the correct pattern code based on the user's choice. Each case is wrapped in `{ }` so local variables don't clash.
+
+### 5. Nested Loops for Each Pattern
+
+Each pattern uses nested loops with different formulas:
+
+| Pattern | Stars per row | Spaces per row |
+|---------|---------------|----------------|
+| Right Triangle | `i` | - |
+| Inverted Triangle | `height - i + 1` | - |
+| Pyramid | `2 * i - 1` | `height - i` |
+| Inverted Pyramid | `2 * (height - i) + 1` | `i - 1` |
+| Hollow Rectangle | `height` (with if) | - |
+| Number Staircase | `i` (print numbers) | - |
+
+## Example Program Session
+
+```
+========================================
+      STAR PATTERN GENERATOR v1.0
+        Built with C++ and love
+========================================
+
+----------------------------------------
+  PATTERN MENU
+----------------------------------------
+  1. Right Triangle
+  2. Inverted Triangle
+  3. Pyramid
+  4. Inverted Pyramid
+  5. Hollow Rectangle
+  6. Number Staircase
+  0. Exit Program
+----------------------------------------
+
+Choose a pattern (0-6): 3
+Enter height/size (1-20): 6
+
+>> Pyramid (height: 6)
+
+     *
+    ***
+   *****
+  *******
+ *********
+***********
+
+(Pattern printed successfully!)
+
+----------------------------------------
+  PATTERN MENU
+----------------------------------------
+  ...
+
+Choose a pattern (0-6): 5
+Enter height/size (1-20): 5
+
+>> Hollow Rectangle (height: 5)
+
+* * * * *
+*       *
+*       *
+*       *
+* * * * *
+
+(Pattern printed successfully!)
+
+----------------------------------------
+  PATTERN MENU
+----------------------------------------
+  ...
+
+Choose a pattern (0-6): 0
+
+========================================
+  Thank you for using the
+  Star Pattern Generator!
+
+  Keep practicing and creating!
+========================================
+```
+
+## Unit 3 Concepts Used
+
+| Concept | Used for |
+|---------|----------|
+| `while` loop | Main loop — program keeps running until user exits |
+| `for` loop | Outer loop (rows) and inner loop (columns/characters) |
+| `do-while` | Size input validation — keep asking until valid |
+| `break` | Exit the while loop when user chooses 0, and exit from switch |
+| `continue` | Skip to the next iteration when menu choice is invalid |
+| Nested loops | Printing each star pattern (rows x columns) |
+| `switch-case` | Routing to the user's chosen pattern |
+
+## Extra Challenges
+
+Got the final version working? Try upgrading your program with these challenges!
+
+### Challenge 1: Diamond Pattern
+
+Combine a pyramid and an inverted pyramid to make a diamond:
+
+```
+    *
+   ***
+  *****
+ *******
+*********
+ *******
+  *****
+   ***
+    *
+```
+
+*Hint: print a regular pyramid, then an inverted pyramid without the first row (since the middle row is already printed).*
+
+### Challenge 2: Number Pyramid Pattern
+
+Replace stars with numbers in the pyramid:
+
+```
+    1
+   1 2 1
+  1 2 3 2 1
+ 1 2 3 4 3 2 1
+1 2 3 4 5 4 3 2 1
+```
+
+*Hint: you'll need three inner loops — spaces, ascending numbers, descending numbers.*
+
+### Challenge 3: Letter Patterns
+
+Create a pattern that forms a letter from the user's name. For example, the letter "A":
+
+```
+   *
+  * *
+ *   *
+ *****
+*     *
+*     *
+```
+
+This is a real challenge — you need to determine the star and space positions for each row. Try starting with easy letters like "T", "L", or "I".
+
+### Challenge 4: Save Statistics
+
+Add a feature that tracks and displays:
+- Total number of patterns generated
+- Which pattern was chosen most often
+- Average size used
+
+Display these statistics before the program exits.
+
+### Challenge 5: Custom Character
+
+Let the user choose a character other than stars. For example `#`, `@`, or emoji:
+
+```
+Choose pattern character: #
+
+#
+# #
+# # #
+# # # # #
+```
+
+*Hint: store the character in a `char` variable, then use that variable instead of `'*'` in all loops.*
+
+:::tip
+If you complete at least 2 extra challenges, you're doing awesome! But the most important thing isn't completing all the challenges — what matters is that you **understand** the logic behind the code and can **modify** the program however you like. That's the essence of programming: creativity without limits!
+:::
+
+## Exercises
+
+**Exercise 1:** Type the final version from scratch without looking at the code above. This is a very effective exercise — your brain will process each line deeply. Make sure all 6 patterns work correctly.
+
+**Exercise 2:** Add a new pattern to the program — **Right-Aligned Triangle**. The pattern is a triangle, but right-aligned:
+
+```
+        *
+      * *
+    * * *
+  * * * *
+* * * * *
+```
+
+You'll need to add spaces before the stars, similar to the pyramid.
+
+**Exercise 3:** Add a "Preview" feature — before printing the full-sized pattern, show a small version (height 3) as a preview. The user can confirm whether they want to continue printing at full size or switch patterns.
+
+Congratulations! You've completed **Unit 3: Loops**! You can now make programs that repeat tasks automatically, validate input, and draw cool patterns in the terminal. These skills form a very strong foundation for learning more advanced programming concepts!

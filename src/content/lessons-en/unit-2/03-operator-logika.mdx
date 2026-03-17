@@ -1,0 +1,452 @@
+---
+title: "Logical Operators"
+unit: 2
+lesson: 3
+description: "Combine multiple conditions using the logical operators AND, OR, and NOT"
+objectives:
+  - "Understand logical operators: && (AND), || (OR), ! (NOT)"
+  - "Read and create truth tables"
+  - "Combine comparison operators with logical operators"
+  - "Know the precedence order of logical operators"
+estimatedTime: 30
+prerequisites: ["unit-2/02-if-else"]
+difficulty: "beginner"
+tags: ["operator-logika", "logical-operators", "AND", "OR", "NOT", "boolean"]
+---
+
+# Logical Operators
+
+In the previous lesson, you learned to check a single condition with `if`. But in the real world, decisions often depend on **more than one condition**. For example: "You can ride this attraction if your age is above 12 **AND** your height is above 140 cm." Both conditions must be met! For that, we need **logical operators**.
+
+## Analogy: Amusement Park Entrance Gate
+
+Imagine you want to ride a roller coaster. There's a guard who checks:
+
+- **AND (&&)**: "Age over 12 AND height over 140 cm?" -- **both** must be met.
+- **OR (||)**: "Have a regular ticket OR a VIP ticket?" -- **just one** is enough.
+- **NOT (!)**: "NOT a holiday?" -- flips the condition.
+
+## The Three Logical Operators
+
+| Operator | Name | Meaning | Example |
+|----------|------|---------|---------|
+| `&&` | AND | Both conditions must be `true` | `age > 12 && height > 140` |
+| `\|\|` | OR | At least one condition is `true` | `hasTicket \|\| hasVIP` |
+| `!` | NOT | Flips the boolean value | `!raining` |
+
+## The `&&` (AND) Operator
+
+`&&` produces `true` **only if both conditions are true**. If even one is `false`, the result is `false`.
+
+### AND Truth Table
+
+| A | B | A && B |
+|---|---|--------|
+| `true` | `true` | `true` |
+| `true` | `false` | `false` |
+| `false` | `true` | `false` |
+| `false` | `false` | `false` |
+
+Easy to remember: AND is **strict** -- everything must be true.
+
+### Example: Ride Eligibility Check
+
+```cpp
+#include <iostream>
+
+int main() {
+    int age = 14;
+    int height = 145;
+
+    std::cout << "Age: " << age << " years" << std::endl;
+    std::cout << "Height: " << height << " cm" << std::endl;
+
+    if (age >= 12 && height >= 140) {
+        std::cout << "You can ride the roller coaster!" << std::endl;
+    } else {
+        std::cout << "Sorry, you can't ride yet." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+Age: 14 years
+Height: 145 cm
+You can ride the roller coaster!
+```
+
+What if age is 14 but height is 130? The result is "Sorry, you can't ride yet." because `130 >= 140` is `false`, and `true && false` = `false`.
+
+### Example: Checking a Number in a Range
+
+One of the most common uses of `&&` is **checking whether a number falls within a certain range**:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int score = 85;
+
+    // Check if score is between 80 and 89
+    if (score >= 80 && score <= 89) {
+        std::cout << "Score " << score << " is grade B." << std::endl;
+    }
+
+    // Check if body temperature is normal (36.1 - 37.2)
+    double temperature = 36.8;
+    if (temperature >= 36.1 && temperature <= 37.2) {
+        std::cout << "Body temperature is normal." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+Score 85 is grade B.
+Body temperature is normal.
+```
+
+:::warning
+Don't write `80 <= score <= 89` -- this **doesn't work** the way you'd expect in C++! The correct way is `score >= 80 && score <= 89`.
+:::
+
+## The `||` (OR) Operator
+
+`||` produces `true` **if at least one condition is true**. It's only `false` when both are `false`.
+
+### OR Truth Table
+
+| A | B | A \|\| B |
+|---|---|----------|
+| `true` | `true` | `true` |
+| `true` | `false` | `true` |
+| `false` | `true` | `true` |
+| `false` | `false` | `false` |
+
+Easy to remember: OR is **lenient** -- just one being true is enough.
+
+### Example: Check for a Day Off
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string day = "Sunday";
+
+    if (day == "Saturday" || day == "Sunday") {
+        std::cout << "Awesome, it's a day off! Time to play games." << std::endl;
+    } else {
+        std::cout << "It's a school day. Keep up the studying!" << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+Awesome, it's a day off! Time to play games.
+```
+
+### Example: Voting Eligibility Check
+
+```cpp
+#include <iostream>
+
+int main() {
+    int age = 16;
+    bool isMarried = true;
+
+    std::cout << "Age: " << age << " years" << std::endl;
+    std::cout << "Is married: " << isMarried << std::endl;
+
+    // In Indonesia, you can vote if age >= 17 OR already married
+    if (age >= 17 || isMarried) {
+        std::cout << "Eligible to vote in the election." << std::endl;
+    } else {
+        std::cout << "Not yet eligible to vote." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+Age: 16 years
+Is married: 1
+Eligible to vote in the election.
+```
+
+Even though the age is only 16 (not yet 17), because `isMarried` is `true`, `false || true` = `true`.
+
+## The `!` (NOT) Operator
+
+`!` **flips** a boolean value. `true` becomes `false`, `false` becomes `true`.
+
+### NOT Truth Table
+
+| A | !A |
+|---|----|
+| `true` | `false` |
+| `false` | `true` |
+
+### Example: Check If It's Not Raining
+
+```cpp
+#include <iostream>
+
+int main() {
+    bool raining = false;
+
+    if (!raining) {
+        std::cout << "It's not raining. Let's play soccer!" << std::endl;
+    } else {
+        std::cout << "It's raining. Let's play indoors." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+It's not raining. Let's play soccer!
+```
+
+`!false` produces `true`, so the `if` block runs.
+
+### Example: Check If Not Done Yet
+
+```cpp
+#include <iostream>
+
+int main() {
+    bool assignmentDone = false;
+    int pagesLeft = 15;
+
+    if (!assignmentDone) {
+        std::cout << "Assignment not finished yet!" << std::endl;
+        std::cout << "Still " << pagesLeft << " pages to go." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+Assignment not finished yet!
+Still 15 pages to go.
+```
+
+## Combining Multiple Operators
+
+You can combine `&&`, `||`, and `!` in a single condition:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int age = 15;
+    bool hasParentPermission = true;
+    bool isRegistered = true;
+
+    std::cout << "=== Club Registration ===" << std::endl;
+    std::cout << "Age: " << age << std::endl;
+    std::cout << "Parent permission: " << hasParentPermission << std::endl;
+    std::cout << "Registered: " << isRegistered << std::endl;
+    std::cout << std::endl;
+
+    // Can join if: (age 13-17) AND (has parent permission) AND (is registered)
+    if (age >= 13 && age <= 17 && hasParentPermission && isRegistered) {
+        std::cout << "Congratulations! You've been accepted into the club." << std::endl;
+    } else {
+        std::cout << "Sorry, requirements not met." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+=== Club Registration ===
+Age: 15
+Parent permission: 1
+Registered: 1
+
+Congratulations! You've been accepted into the club.
+```
+
+### Example: Store Discount
+
+```cpp
+#include <iostream>
+
+int main() {
+    bool isMember = false;
+    double totalPurchase = 250000;
+    bool specialDay = true;
+
+    std::cout << "Member: " << isMember << std::endl;
+    std::cout << "Total purchase: Rp" << totalPurchase << std::endl;
+    std::cout << "Special day: " << specialDay << std::endl;
+    std::cout << std::endl;
+
+    // Gets discount if: member OR (purchase >= 200000 AND special day)
+    if (isMember || (totalPurchase >= 200000 && specialDay)) {
+        std::cout << "Congratulations! You get a 20% discount!" << std::endl;
+        double discount = totalPurchase * 0.2;
+        std::cout << "You save: Rp" << discount << std::endl;
+    } else {
+        std::cout << "No discount today." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+Member: 0
+Total purchase: Rp250000
+Special day: 1
+
+Congratulations! You get a 20% discount!
+You save: Rp50000
+```
+
+## Precedence Order
+
+When combining operators, C++ has a precedence order:
+
+| Priority | Operator | Meaning |
+|----------|----------|---------|
+| 1 (highest) | `!` | NOT |
+| 2 | `&&` | AND |
+| 3 (lowest) | `\|\|` | OR |
+
+This means: `!` is processed first, then `&&`, and finally `||`.
+
+```cpp
+// Without parentheses:
+// a || b && c  is read as  a || (b && c)
+// Because && has higher priority than ||
+
+// Example:
+bool a = true;
+bool b = false;
+bool c = true;
+
+// a || b && c
+// = true || (false && true)
+// = true || false
+// = true
+```
+
+:::tip
+When in doubt, **use parentheses** to make things clear! `(a || b) && c` is different from `a || (b && c)`. Parentheses make code easier to read and help avoid bugs.
+:::
+
+## Short-Circuit Evaluation
+
+C++ has a clever feature: **short-circuit evaluation**. This means C++ can be "lazy" and stop checking early:
+
+- **AND (`&&`)**: If the first condition is `false`, the second condition is **not checked** -- because the result is guaranteed to be `false`.
+- **OR (`||`)**: If the first condition is `true`, the second condition is **not checked** -- because the result is guaranteed to be `true`.
+
+```cpp
+int x = 0;
+
+// The second condition won't be checked because the first is already false
+if (x != 0 && 10 / x > 2) {
+    std::cout << "Safe" << std::endl;
+}
+// This is useful! Without short-circuit, 10/0 would cause an error.
+```
+
+:::note
+Short-circuit evaluation isn't just about efficiency -- sometimes it **prevents errors**. In the example above, we check `x != 0` first before dividing by `x`. If `x` is zero, the division never happens thanks to short-circuit.
+:::
+
+## Common Mistakes
+
+### 1. Using `&` instead of `&&`
+
+```cpp
+// WRONG -- & is a bitwise operator (different function!)
+if (age > 12 & height > 140) { }
+
+// CORRECT -- && is the logical AND operator
+if (age > 12 && height > 140) { }
+```
+
+### 2. Using `|` instead of `||`
+
+```cpp
+// WRONG -- | is a bitwise operator
+if (day == "Saturday" | day == "Sunday") { }
+
+// CORRECT -- || is the logical OR operator
+if (day == "Saturday" || day == "Sunday") { }
+```
+
+### 3. Forgetting to repeat the variable in each comparison
+
+```cpp
+int x = 5;
+
+// WRONG -- you can't write it like this
+// if (x == 3 || 4 || 5) { }
+
+// CORRECT -- must write out each comparison fully
+if (x == 3 || x == 4 || x == 5) { }
+```
+
+### 4. Forgetting parentheses when mixing `&&` and `||`
+
+```cpp
+// This might not work as you expect
+// if (a || b && c) -- read as if (a || (b && c))
+
+// Safer and clearer with parentheses
+if ((a || b) && c) { }   // if this is what you mean
+```
+
+## Exercises
+
+**Exercise 1:** Write a program that checks whether someone can get a driver's license. Requirements: minimum age 17 AND has passed the written test (`bool passedTest`). Display "Can get a driver's license!" or "Requirements not met yet."
+
+**Exercise 2:** Write a program that checks whether a number is outside the range 1-100. Use the `||` operator to check if the number is `< 1` OR the number is `> 100`. Display "Number is out of range!" or "Number is valid."
+
+**Exercise 3:** Write a program for a bookstore discount system:
+- 30% discount if: member AND purchase `>=` Rp100,000
+- 15% discount if: member OR purchase `>=` Rp200,000
+- 0% discount if no conditions are met
+Display the total before and after the discount.
+
+:::tip
+For Exercise 3, pay attention to the order of checks! Check the largest discount condition first (30%), then the smaller one (15%). If reversed, someone who should get 30% would get 15% instead.
+:::
+
+## Summary
+
+| Concept | Explanation |
+|---------|-------------|
+| `&&` (AND) | `true` only if **both** conditions are `true` |
+| `\|\|` (OR) | `true` if **at least one** condition is `true` |
+| `!` (NOT) | Flips the value: `true` becomes `false`, `false` becomes `true` |
+| Precedence | `!` > `&&` > `\|\|` |
+| Short-circuit | `&&` stops at the first `false`, `\|\|` stops at the first `true` |
+| Range check | Use `x >= min && x <= max` |
+| Parentheses | Use `()` to clarify the order of evaluation |
+| `&&` vs `&` | `&&` is logical, `&` is bitwise -- don't mix them up! |
+
+You now have the "full arsenal" for making decisions in programs: comparison operators, if-else, and logical operators. With these three tools, your programs can handle various scenarios and make smart decisions!

@@ -1,0 +1,559 @@
+---
+title: "Struct: Creating Your Own Data Types"
+unit: 6
+lesson: 1
+description: "Introduction to structs in C++ — how to group several related pieces of data into one custom data type"
+objectives:
+  - "Understand the limitations of arrays for storing data of different types"
+  - "Create a struct with multiple fields of different types"
+  - "Access and assign struct fields using the dot operator (.)"
+  - "Initialize a struct directly"
+  - "Use arrays and vectors of struct"
+estimatedTime: 40
+prerequisites: ["unit-5/07-project-buku-nilai"]
+difficulty: "beginner"
+tags: ["struct", "custom-type", "data-grouping", "record", "vector-of-struct"]
+---
+
+# Struct: Creating Your Own Data Types
+
+You already know how to use arrays and vectors to store lots of data. But there is a big problem: **arrays can only store one data type**. What if you want to store a student's name (string), age (int), and grade (double) **together** as a single unit?
+
+Well, this is where **struct** comes to the rescue!
+
+## Analogy: Student Registration Form
+
+Imagine you are asked to fill out a **school registration form**. The form has:
+
+```
+Name  : _______________
+Age   : ___
+Class : ___
+Grade : ___
+```
+
+This form **groups several different pieces of data** into one complete sheet. You don't write the name on one piece of paper, the age on another, and the grade on yet another. Everything is **one package**.
+
+In C++, this form is a **struct**! A struct is how we create a **custom data type** that can hold multiple fields at once.
+
+Other analogies:
+- **ID card** = a struct containing name, ID number, address, date of birth
+- **Business card** = a struct containing name, title, phone number, email
+- **Receipt** = a struct containing item name, price, quantity
+
+## The Problem Without Struct
+
+Suppose you want to store data for 3 students: their names, ages, and grades. Without struct, you would need separate arrays:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    // Data scattered across separate arrays... messy!
+    std::string names[3] = {"Budi", "Ani", "Citra"};
+    int ages[3] = {15, 16, 15};
+    double grades[3] = {85.5, 92.0, 78.3};
+
+    // To display student 0's data
+    std::cout << "Name : " << names[0] << std::endl;
+    std::cout << "Age  : " << ages[0] << std::endl;
+    std::cout << "Grade: " << grades[0] << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Name : Budi
+Age  : 15
+Grade: 85.5
+```
+
+It looks fine, but there is a big problem:
+- The data **is not linked** together. You have to **remember** that `names[0]`, `ages[0]`, and `grades[0]` belong to the same person.
+- If you want to **sort** by grade, you have to move all three arrays at once. Very error-prone!
+- Imagine if the data had 10 fields... would you need 10 separate arrays?
+
+## The Solution: Struct!
+
+With struct, all related data is combined into one:
+
+```cpp
+#include <iostream>
+#include <string>
+
+struct Student {
+    std::string name;
+    int age;
+    double grade;
+};
+
+int main() {
+    Student s1;
+    s1.name = "Budi";
+    s1.age = 15;
+    s1.grade = 85.5;
+
+    std::cout << "Name : " << s1.name << std::endl;
+    std::cout << "Age  : " << s1.age << std::endl;
+    std::cout << "Grade: " << s1.grade << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Name : Budi
+Age  : 15
+Grade: 85.5
+```
+
+Now Budi's data is **one package** in the variable `s1`. Clean and impossible to mix up!
+
+## Struct Syntax
+
+Here is how to declare a struct:
+
+```cpp
+struct StructName {
+    data_type field1;
+    data_type field2;
+    data_type field3;
+    // ... you can add as many as you want
+};  // <-- DON'T FORGET the semicolon here!
+```
+
+Full example:
+
+```cpp
+struct Student {
+    std::string name;
+    int age;
+    double grade;
+};
+```
+
+:::warning
+Don't forget the **semicolon (`;`)** after the closing curly brace of a struct! This is one of the most common mistakes that causes confusing errors.
+:::
+
+## Creating Struct Variables and Accessing Fields
+
+After a struct is defined, you can create variables of that type:
+
+```cpp
+#include <iostream>
+#include <string>
+
+struct Product {
+    std::string name;
+    int price;
+    int stock;
+};
+
+int main() {
+    // Create a struct variable
+    Product item1;
+
+    // Fill in fields with the dot operator (.)
+    item1.name = "2B Pencil";
+    item1.price = 3000;
+    item1.stock = 50;
+
+    // Read fields
+    std::cout << "Product: " << item1.name << std::endl;
+    std::cout << "Price  : Rp " << item1.price << std::endl;
+    std::cout << "Stock  : " << item1.stock << " units" << std::endl;
+
+    // Modify a field
+    item1.stock = item1.stock - 1;
+    std::cout << "Stock after selling 1: " << item1.stock << " units" << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Product: 2B Pencil
+Price  : Rp 3000
+Stock  : 50 units
+Stock after selling 1: 49 units
+```
+
+:::tip
+The **dot operator (`.`)** is used to access fields within a struct. Remember the pattern: `variable.field`.
+:::
+
+## Direct Initialization
+
+Besides filling in fields one by one, you can initialize them all at once when creating the variable:
+
+```cpp
+#include <iostream>
+#include <string>
+
+struct Book {
+    std::string title;
+    std::string author;
+    int year;
+    double price;
+};
+
+int main() {
+    // Direct initialization — order matches the fields in the struct
+    Book book1 = {"Laskar Pelangi", "Andrea Hirata", 2005, 79000.0};
+
+    // Modern C++: designated initializers (C++20)
+    // Book book2 = {.title = "Bumi", .author = "Tere Liye", .year = 2014, .price = 89000.0};
+
+    // Initialization with empty braces = all fields get default values
+    Book book3 = {};  // name = "", year = 0, price = 0.0
+
+    std::cout << "Title : " << book1.title << std::endl;
+    std::cout << "Author: " << book1.author << std::endl;
+    std::cout << "Year  : " << book1.year << std::endl;
+    std::cout << "Price : Rp " << book1.price << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Title : Laskar Pelangi
+Author: Andrea Hirata
+Year  : 2005
+Price : Rp 79000
+```
+
+:::note
+When using direct initialization, the **order of values must match** the order of fields in the struct. `"Laskar Pelangi"` goes into `title`, `"Andrea Hirata"` goes into `author`, and so on.
+:::
+
+## Array of Struct
+
+You can create an array whose elements are structs! This is like having a **stack of student data forms**.
+
+```cpp
+#include <iostream>
+#include <string>
+
+struct Student {
+    std::string name;
+    int age;
+    double grade;
+};
+
+int main() {
+    // Array of struct
+    Student classroom[3] = {
+        {"Budi", 15, 85.5},
+        {"Ani", 16, 92.0},
+        {"Citra", 15, 78.3}
+    };
+
+    std::cout << "=== Student Data ===" << std::endl;
+    for (int i = 0; i < 3; i++) {
+        std::cout << "Student " << (i + 1) << ": "
+                  << classroom[i].name << " (age "
+                  << classroom[i].age << "), grade: "
+                  << classroom[i].grade << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+=== Student Data ===
+Student 1: Budi (age 15), grade: 85.5
+Student 2: Ani (age 16), grade: 92.0
+Student 3: Citra (age 15), grade: 78.3
+```
+
+## Vector of Struct (Dynamic Size)
+
+If you don't know how many entries will be added, use `std::vector` so the size can grow:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+struct Employee {
+    std::string name;
+    std::string position;
+    int salary;
+};
+
+int main() {
+    std::vector<Employee> team;
+
+    // Add data using push_back
+    team.push_back({"Andi", "Programmer", 8000000});
+    team.push_back({"Budi", "Designer", 7500000});
+    team.push_back({"Citra", "Manager", 12000000});
+
+    std::cout << "=== Team Data ===" << std::endl;
+    for (int i = 0; i < team.size(); i++) {
+        std::cout << team[i].name << " - "
+                  << team[i].position << " - Rp "
+                  << team[i].salary << std::endl;
+    }
+
+    std::cout << std::endl;
+    std::cout << "Number of team members: " << team.size() << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+=== Team Data ===
+Andi - Programmer - Rp 8000000
+Budi - Designer - Rp 7500000
+Citra - Manager - Rp 12000000
+
+Number of team members: 3
+```
+
+:::tip
+`std::vector<Student>` is far more flexible than `Student classroom[30]`. With a vector, you can `push_back()` new data at any time without worrying about running out of space!
+:::
+
+## Type Alias with `using`
+
+Sometimes struct names can get long. You can create an alias with the `using` keyword:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+struct StudentGradeData {
+    std::string name;
+    double midtermGrade;
+    double finalGrade;
+    double assignmentGrade;
+};
+
+// Create an alias for a shorter name
+using Grade = StudentGradeData;
+
+int main() {
+    // Now you can use 'Grade' instead of 'StudentGradeData'
+    Grade n1 = {"Budi", 80.0, 85.0, 90.0};
+
+    double average = (n1.midtermGrade + n1.finalGrade + n1.assignmentGrade) / 3.0;
+
+    std::cout << "Name      : " << n1.name << std::endl;
+    std::cout << "Midterm   : " << n1.midtermGrade << std::endl;
+    std::cout << "Final     : " << n1.finalGrade << std::endl;
+    std::cout << "Assignment: " << n1.assignmentGrade << std::endl;
+    std::cout << "Average   : " << average << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Name      : Budi
+Midterm   : 80
+Final     : 85
+Assignment: 90
+Average   : 85
+```
+
+## Practical Example: Library Data
+
+Let's build a more complete example — a mini library book data system:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+struct Book {
+    std::string title;
+    std::string author;
+    int year;
+    bool available;
+};
+
+int main() {
+    std::vector<Book> library = {
+        {"Laskar Pelangi", "Andrea Hirata", 2005, true},
+        {"Bumi", "Tere Liye", 2014, false},
+        {"Filosofi Teras", "Henry Manampiring", 2018, true},
+        {"Pulang", "Tere Liye", 2015, true},
+        {"Negeri 5 Menara", "Ahmad Fuadi", 2009, false}
+    };
+
+    std::cout << "=== LIBRARY CATALOG ===" << std::endl;
+    std::cout << std::endl;
+
+    for (int i = 0; i < library.size(); i++) {
+        std::cout << (i + 1) << ". " << library[i].title << std::endl;
+        std::cout << "   Author : " << library[i].author << std::endl;
+        std::cout << "   Year   : " << library[i].year << std::endl;
+        std::cout << "   Status : "
+                  << (library[i].available ? "Available" : "Borrowed")
+                  << std::endl;
+        std::cout << std::endl;
+    }
+
+    // Count available books
+    int availableCount = 0;
+    for (int i = 0; i < library.size(); i++) {
+        if (library[i].available) {
+            availableCount++;
+        }
+    }
+
+    std::cout << "Total books: " << library.size() << std::endl;
+    std::cout << "Books available: " << availableCount << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+=== LIBRARY CATALOG ===
+
+1. Laskar Pelangi
+   Author : Andrea Hirata
+   Year   : 2005
+   Status : Available
+
+2. Bumi
+   Author : Tere Liye
+   Year   : 2014
+   Status : Borrowed
+
+3. Filosofi Teras
+   Author : Henry Manampiring
+   Year   : 2018
+   Status : Available
+
+4. Pulang
+   Author : Tere Liye
+   Year   : 2015
+   Status : Available
+
+5. Negeri 5 Menara
+   Author : Ahmad Fuadi
+   Year   : 2009
+   Status : Borrowed
+
+Total books: 5
+Books available: 3
+```
+
+## Common Mistakes
+
+### 1. Forgetting the semicolon after the struct
+
+```cpp
+// WRONG — missing ; at the end!
+struct Student {
+    std::string name;
+    int age;
+}  // <-- Error! Must have ;
+
+// CORRECT
+struct Student {
+    std::string name;
+    int age;
+};  // <-- Semicolon is required!
+```
+
+### 2. Initialization order does not match
+
+```cpp
+struct Student {
+    std::string name;
+    int age;
+    double grade;
+};
+
+// WRONG — reversed order, age and name are swapped
+// Student s = {15, "Budi", 85.5};  // Error!
+
+// CORRECT — order matches: name, age, grade
+Student s = {"Budi", 15, 85.5};
+```
+
+### 3. Accessing fields without the dot operator
+
+```cpp
+Student s1 = {"Budi", 15, 85.5};
+
+// WRONG
+// std::cout << s1 << std::endl;  // Structs can't be printed directly with cout!
+
+// CORRECT — access each field individually
+std::cout << s1.name << std::endl;
+std::cout << s1.age << std::endl;
+```
+
+### 4. Defining a struct inside main
+
+```cpp
+// NOT IDEAL — a struct inside main can only be used within main
+int main() {
+    struct Student {
+        std::string name;
+    };
+}
+
+// BETTER — define the struct outside main (global)
+struct Student {
+    std::string name;
+};
+
+int main() {
+    Student s;
+}
+```
+
+:::warning
+Always define structs **outside the `main()` function** (usually above `main` or in a header file). This ensures the struct can be used anywhere in your program.
+:::
+
+## Exercises
+
+**Exercise 1:** Create a struct `Contact` that stores a name, phone number, and email. Create 3 `Contact` variables and display their data.
+
+Example output:
+```
+=== Contact List ===
+1. Andi  | 081234567890 | andi@email.com
+2. Budi  | 089876543210 | budi@email.com
+3. Citra | 082111222333 | citra@email.com
+```
+
+**Exercise 2:** Create a struct `Product` with fields for name, price, and stock. Insert 5 products into a `std::vector<Product>`, then display all products and calculate the **total inventory value** (price x stock for each product, then summed up).
+
+**Exercise 3:** Build a simple student registration program. The `Student` struct contains name, class, and average grade. Use a `while` loop to ask for user input (type "done" to stop), store entries in a `std::vector<Student>`, then display all data and find the student with the highest grade.
+
+## Summary
+
+| Concept | Explanation | Example |
+|---------|-------------|---------|
+| **struct** | A custom data type that groups multiple fields | `struct Student { ... };` |
+| **Field** | A variable inside a struct | `std::string name;` |
+| **Dot operator (`.`)** | Accesses a field from a struct variable | `s1.name` |
+| **Direct initialization** | Fills all fields at once during declaration | `Student s = {"Budi", 15, 85.5};` |
+| **Array of struct** | A regular array whose elements are structs | `Student classroom[30];` |
+| **Vector of struct** | A dynamic vector whose elements are structs | `std::vector<Student> data;` |
+| **`using` alias** | Creates an alternative name for a data type | `using Grade = StudentGradeData;` |
+
+Struct is an important foundation toward **Object-Oriented Programming** that you will learn later. In the next lesson, we will learn how to **combine structs with functions** to create more well-structured programs!

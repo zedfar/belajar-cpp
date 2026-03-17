@@ -1,0 +1,619 @@
+---
+title: "Struct & Function: Combining Data and Actions"
+unit: 6
+lesson: 2
+description: "Learn how to pass structs to functions, return structs from functions, and build simple CRUD operations with vector of struct"
+objectives:
+  - "Pass a struct to a function by value and by reference"
+  - "Return a struct from a function"
+  - "Create CRUD functions (add, display, search) for a vector of struct"
+  - "Understand nested structs"
+  - "Sort a vector of struct with a lambda comparator"
+estimatedTime: 30
+prerequisites: ["unit-6/01-struct"]
+difficulty: "beginner"
+tags: ["struct", "function", "pass-by-reference", "nested-struct", "sort", "lambda", "CRUD"]
+---
+
+# Struct & Function: Combining Data and Actions
+
+In the previous lesson, you learned how to create structs and fill them with data. But all the code was still crammed into `main()`. Now it's time to **combine structs with functions** so the code is cleaner, more modular, and reusable!
+
+## Analogy: Administrative Staff
+
+Imagine a struct as a **data form**. Now you need **staff members** who can:
+- **Display** the form contents (display function)
+- **Fill out** a new form (create/add function)
+- **Find** a specific form (search function)
+- **Sort** the stack of forms (sort function)
+
+These staff members are **functions**! They receive a form (struct), process it, and sometimes return a new form.
+
+## Passing a Struct to a Function: By Value
+
+The simplest way is to pass a struct to a function **by value** — the function receives a **copy** of the data.
+
+```cpp
+#include <iostream>
+#include <string>
+
+struct Student {
+    std::string name;
+    int age;
+    double grade;
+};
+
+void displayStudent(Student s) {
+    std::cout << "Name : " << s.name << std::endl;
+    std::cout << "Age  : " << s.age << " years" << std::endl;
+    std::cout << "Grade: " << s.grade << std::endl;
+    std::cout << std::endl;
+}
+
+int main() {
+    Student s1 = {"Budi", 15, 85.5};
+    Student s2 = {"Ani", 16, 92.0};
+
+    displayStudent(s1);
+    displayStudent(s2);
+
+    return 0;
+}
+```
+
+Output:
+```
+Name : Budi
+Age  : 15 years
+Grade: 85.5
+
+Name : Ani
+Age  : 16 years
+Grade: 92.0
+```
+
+:::note
+Because the struct is passed **by value**, the function receives a copy. If you change `s.name` inside the function, the original data in `main()` **does not change**.
+:::
+
+## Passing a Struct to a Function: By Reference
+
+If you want the function to **modify** the original data, use a **reference** (`&`):
+
+```cpp
+#include <iostream>
+#include <string>
+
+struct Student {
+    std::string name;
+    int age;
+    double grade;
+};
+
+void addBonusGrade(Student &s, double bonus) {
+    s.grade = s.grade + bonus;
+    std::cout << s.name << " received a bonus of " << bonus
+              << ", grade is now " << s.grade << std::endl;
+}
+
+void displayStudent(Student s) {
+    std::cout << s.name << " - Grade: " << s.grade << std::endl;
+}
+
+int main() {
+    Student budi = {"Budi", 15, 80.0};
+
+    std::cout << "Before bonus:" << std::endl;
+    displayStudent(budi);
+
+    std::cout << std::endl;
+    addBonusGrade(budi, 5.0);
+
+    std::cout << std::endl;
+    std::cout << "After bonus:" << std::endl;
+    displayStudent(budi);
+
+    return 0;
+}
+```
+
+Output:
+```
+Before bonus:
+Budi - Grade: 80
+
+Budi received a bonus of 5, grade is now 85
+
+After bonus:
+Budi - Grade: 85
+```
+
+Notice that Budi's grade **actually changed** in `main()` because we used a reference (`Student &s`).
+
+:::tip
+Use `Student &s` (reference) when the function needs to **modify** the struct data. Use `Student s` (by value) when the function only needs to **read** the data without modifying it.
+:::
+
+## Returning a Struct from a Function
+
+Functions can also **return** a struct. This is useful for creating a "factory" that produces new data:
+
+```cpp
+#include <iostream>
+#include <string>
+
+struct Student {
+    std::string name;
+    int age;
+    double grade;
+};
+
+Student createStudent(std::string name, int age, double grade) {
+    Student newStudent;
+    newStudent.name = name;
+    newStudent.age = age;
+    newStudent.grade = grade;
+    return newStudent;
+}
+
+void displayStudent(Student s) {
+    std::cout << s.name << " (age " << s.age
+              << "), grade: " << s.grade << std::endl;
+}
+
+int main() {
+    Student s1 = createStudent("Budi", 15, 85.5);
+    Student s2 = createStudent("Ani", 16, 92.0);
+    Student s3 = createStudent("Citra", 15, 78.3);
+
+    displayStudent(s1);
+    displayStudent(s2);
+    displayStudent(s3);
+
+    return 0;
+}
+```
+
+Output:
+```
+Budi (age 15), grade: 85.5
+Ani (age 16), grade: 92.0
+Citra (age 15), grade: 78.3
+```
+
+## Vector of Struct + CRUD Functions
+
+Now let's combine everything! Let's create functions to **add**, **display**, and **search** data inside a vector of struct:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+struct Product {
+    std::string name;
+    int price;
+    int stock;
+};
+
+void addProduct(std::vector<Product> &list, std::string name,
+                int price, int stock) {
+    Product newProduct = {name, price, stock};
+    list.push_back(newProduct);
+    std::cout << "Product \"" << name << "\" successfully added!" << std::endl;
+}
+
+void displayAll(std::vector<Product> list) {
+    std::cout << std::endl;
+    std::cout << "=== PRODUCT LIST ===" << std::endl;
+    for (int i = 0; i < list.size(); i++) {
+        std::cout << (i + 1) << ". " << list[i].name
+                  << " | Rp " << list[i].price
+                  << " | Stock: " << list[i].stock << std::endl;
+    }
+    std::cout << std::endl;
+}
+
+int findProduct(std::vector<Product> list, std::string keyword) {
+    for (int i = 0; i < list.size(); i++) {
+        if (list[i].name == keyword) {
+            return i;  // Found! Return the index
+        }
+    }
+    return -1;  // Not found
+}
+
+int main() {
+    std::vector<Product> store;
+
+    addProduct(store, "2B Pencil", 3000, 50);
+    addProduct(store, "Notebook", 5000, 30);
+    addProduct(store, "Eraser", 2000, 40);
+    addProduct(store, "Ruler", 4000, 25);
+
+    displayAll(store);
+
+    // Search for a product
+    std::string query = "Notebook";
+    int idx = findProduct(store, query);
+
+    if (idx != -1) {
+        std::cout << "\"" << query << "\" found at position " << (idx + 1) << std::endl;
+        std::cout << "Price: Rp " << store[idx].price << std::endl;
+    } else {
+        std::cout << "\"" << query << "\" not found." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+Product "2B Pencil" successfully added!
+Product "Notebook" successfully added!
+Product "Eraser" successfully added!
+Product "Ruler" successfully added!
+
+=== PRODUCT LIST ===
+1. 2B Pencil | Rp 3000 | Stock: 50
+2. Notebook | Rp 5000 | Stock: 30
+3. Eraser | Rp 2000 | Stock: 40
+4. Ruler | Rp 4000 | Stock: 25
+
+"Notebook" found at position 2
+Price: Rp 5000
+```
+
+:::note
+Notice that `addProduct` receives the vector **by reference** (`&list`) because it needs to modify the vector's contents, while `displayAll` and `findProduct` receive **by value** because they only read.
+:::
+
+## Computation Functions with Struct
+
+You can also create functions that compute something from a collection of structs:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+struct Student {
+    std::string name;
+    double grade;
+};
+
+double calculateAverage(std::vector<Student> list) {
+    if (list.size() == 0) {
+        return 0.0;
+    }
+
+    double total = 0.0;
+    for (int i = 0; i < list.size(); i++) {
+        total = total + list[i].grade;
+    }
+    return total / list.size();
+}
+
+Student findHighestGrade(std::vector<Student> list) {
+    Student best = list[0];
+    for (int i = 1; i < list.size(); i++) {
+        if (list[i].grade > best.grade) {
+            best = list[i];
+        }
+    }
+    return best;
+}
+
+int main() {
+    std::vector<Student> classroom = {
+        {"Budi", 85.5},
+        {"Ani", 92.0},
+        {"Citra", 78.3},
+        {"Dedi", 88.7},
+        {"Eka", 95.1}
+    };
+
+    double avg = calculateAverage(classroom);
+    std::cout << "Class average: " << avg << std::endl;
+
+    Student best = findHighestGrade(classroom);
+    std::cout << "Highest grade: " << best.name
+              << " (" << best.grade << ")" << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Class average: 87.92
+Highest grade: Eka (95.1)
+```
+
+## Nested Struct
+
+A struct can contain another struct! This is called a **nested struct** — very useful for complex data:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+struct Student {
+    std::string name;
+    double grade;
+};
+
+struct Classroom {
+    std::string className;
+    std::string homeroomTeacher;
+    std::vector<Student> members;
+};
+
+void displayClassroom(Classroom c) {
+    std::cout << "Class           : " << c.className << std::endl;
+    std::cout << "Homeroom Teacher: " << c.homeroomTeacher << std::endl;
+    std::cout << "Members         : " << c.members.size() << " students" << std::endl;
+    std::cout << std::endl;
+
+    for (int i = 0; i < c.members.size(); i++) {
+        std::cout << "  " << (i + 1) << ". " << c.members[i].name
+                  << " - Grade: " << c.members[i].grade << std::endl;
+    }
+}
+
+int main() {
+    Classroom scienceClass;
+    scienceClass.className = "X Science 1";
+    scienceClass.homeroomTeacher = "Ms. Sari";
+    scienceClass.members = {
+        {"Budi", 85.5},
+        {"Ani", 92.0},
+        {"Citra", 78.3}
+    };
+
+    Classroom socialClass;
+    socialClass.className = "X Social 1";
+    socialClass.homeroomTeacher = "Mr. Joko";
+    socialClass.members = {
+        {"Dedi", 80.0},
+        {"Eka", 88.5}
+    };
+
+    displayClassroom(scienceClass);
+    std::cout << std::endl;
+    displayClassroom(socialClass);
+
+    return 0;
+}
+```
+
+Output:
+```
+Class           : X Science 1
+Homeroom Teacher: Ms. Sari
+Members         : 3 students
+
+  1. Budi - Grade: 85.5
+  2. Ani - Grade: 92.0
+  3. Citra - Grade: 78.3
+
+Class           : X Social 1
+Homeroom Teacher: Mr. Joko
+Members         : 2 students
+
+  1. Dedi - Grade: 80.0
+  2. Eka - Grade: 88.5
+```
+
+## Sorting a Vector of Struct
+
+What if you want to sort student data by grade? You can use `std::sort` with a **lambda comparator**:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+struct Student {
+    std::string name;
+    double grade;
+};
+
+void displayList(std::vector<Student> list) {
+    for (int i = 0; i < list.size(); i++) {
+        std::cout << (i + 1) << ". " << list[i].name
+                  << " - " << list[i].grade << std::endl;
+    }
+    std::cout << std::endl;
+}
+
+int main() {
+    std::vector<Student> classroom = {
+        {"Budi", 85.5},
+        {"Ani", 92.0},
+        {"Citra", 78.3},
+        {"Dedi", 88.7},
+        {"Eka", 95.1}
+    };
+
+    std::cout << "=== Before sorting ===" << std::endl;
+    displayList(classroom);
+
+    // Sort by grade from HIGHEST to lowest
+    std::sort(classroom.begin(), classroom.end(),
+        [](Student a, Student b) {
+            return a.grade > b.grade;
+        }
+    );
+
+    std::cout << "=== After sorting (highest first) ===" << std::endl;
+    displayList(classroom);
+
+    // Sort by name (A-Z)
+    std::sort(classroom.begin(), classroom.end(),
+        [](Student a, Student b) {
+            return a.name < b.name;
+        }
+    );
+
+    std::cout << "=== Sorted by name (A-Z) ===" << std::endl;
+    displayList(classroom);
+
+    return 0;
+}
+```
+
+Output:
+```
+=== Before sorting ===
+1. Budi - 85.5
+2. Ani - 92.0
+3. Citra - 78.3
+4. Dedi - 88.7
+5. Eka - 95.1
+
+=== After sorting (highest first) ===
+1. Eka - 95.1
+2. Ani - 92.0
+3. Dedi - 88.7
+4. Budi - 85.5
+5. Citra - 78.3
+
+=== Sorted by name (A-Z) ===
+1. Ani - 92.0
+2. Budi - 85.5
+3. Citra - 78.3
+4. Dedi - 88.7
+5. Eka - 95.1
+```
+
+:::tip
+The lambda `[](Student a, Student b) { return a.grade > b.grade; }` means: "sort so that the one with the higher grade comes first". Change `>` to `<` if you want ascending order.
+:::
+
+## Comparison Operators for Struct (Manual)
+
+Unlike `int` or `string`, structs **cannot be directly compared** with `==` or `<`. You have to create your own function:
+
+```cpp
+#include <iostream>
+#include <string>
+
+struct Student {
+    std::string name;
+    double grade;
+};
+
+bool sameStudent(Student a, Student b) {
+    return (a.name == b.name) && (a.grade == b.grade);
+}
+
+bool hasHigherGrade(Student a, Student b) {
+    return a.grade > b.grade;
+}
+
+int main() {
+    Student s1 = {"Budi", 85.5};
+    Student s2 = {"Budi", 85.5};
+    Student s3 = {"Ani", 92.0};
+
+    if (sameStudent(s1, s2)) {
+        std::cout << "s1 and s2 are the same!" << std::endl;
+    }
+
+    if (hasHigherGrade(s3, s1)) {
+        std::cout << s3.name << "'s grade is higher than "
+                  << s1.name << "'s" << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+s1 and s2 are the same!
+Ani's grade is higher than Budi's
+```
+
+## Common Mistakes
+
+### 1. Forgetting to use reference when you want to modify data
+
+```cpp
+// WRONG — original data does not change because it's by value
+void raiseGrade(Student s, double amount) {
+    s.grade = s.grade + amount;  // Only modifies the copy!
+}
+
+// CORRECT — use reference
+void raiseGrade(Student &s, double amount) {
+    s.grade = s.grade + amount;  // Modifies the original data!
+}
+```
+
+### 2. Forgetting reference on vector in an add function
+
+```cpp
+// WRONG — push_back only affects the copy, original vector does not change
+void add(std::vector<Student> list, Student newStudent) {
+    list.push_back(newStudent);
+}
+
+// CORRECT
+void add(std::vector<Student> &list, Student newStudent) {
+    list.push_back(newStudent);
+}
+```
+
+### 3. Accessing an empty vector
+
+```cpp
+std::vector<Student> classroom;
+
+// WRONG — vector is empty, there is no element at index 0!
+// std::cout << classroom[0].name << std::endl;  // Crash!
+
+// CORRECT — check first
+if (classroom.size() > 0) {
+    std::cout << classroom[0].name << std::endl;
+}
+```
+
+:::warning
+Always check whether the vector **is not empty** before accessing its elements. Accessing an index that doesn't exist can cause the program to crash!
+:::
+
+## Exercises
+
+**Exercise 1:** Create a struct `Book` (title, author, year) and the following functions:
+- `Book createBook(string title, string author, int year)` — create and return a new Book
+- `void displayBook(Book b)` — display book info
+- `void displayAll(vector<Book> list)` — display all books with numbering
+
+Use these functions in `main()` to create and display 3 books.
+
+**Exercise 2:** Build a **product catalog** program with a struct `Product` (name, price, stock). Implement:
+- A `add` function to add a product to the vector
+- A `search` function by name
+- A `sort` function by price (cheapest to most expensive)
+- Display before and after sorting
+
+**Exercise 3:** Create a nested struct: `School` contains a school name and `vector<Classroom>`, where `Classroom` contains a class name and `vector<Student>`. Create a function `countTotalStudents(School s)` that counts the total number of students in the school.
+
+## Summary
+
+| Concept | Explanation | Example |
+|---------|-------------|---------|
+| **Pass by value** | Function receives a copy of the struct | `void display(Student s)` |
+| **Pass by reference** | Function can modify the original struct | `void modify(Student &s)` |
+| **Return struct** | Function produces a new struct | `Student create(string n, int a)` |
+| **CRUD** | Create, Read, Update, Delete — basic data operations | Add, display, search functions |
+| **Nested struct** | A struct inside a struct | `struct Classroom { vector<Student> members; };` |
+| **`std::sort` + lambda** | Sort a vector of struct | `sort(v.begin(), v.end(), [](A a, A b){...})` |
+| **Manual comparison** | Custom function to compare structs | `bool same(Student a, Student b)` |
+
+Now you can combine structs and functions to build well-structured programs. In the next lesson, we will learn how to **read files** so that data doesn't disappear when the program closes!

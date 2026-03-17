@@ -1,0 +1,309 @@
+---
+title: "Pass by Reference"
+unit: 4
+lesson: 5
+description: "Understanding the difference between pass by value and pass by reference, and when to use each"
+objectives:
+  - "Understand the difference between pass by value and pass by reference"
+  - "Use the & symbol for pass by reference"
+  - "Learn about const reference for efficiency without modifying data"
+  - "Create swap functions and functions that return multiple values"
+estimatedTime: 30
+prerequisites: ["unit-4/04-return-values"]
+difficulty: "beginner"
+tags: ["reference", "pass-by-value", "pass-by-reference", "const-reference", "fungsi"]
+---
+
+# Pass by Reference
+
+Up until now, every time you send a variable to a function, what gets sent is a **copy** of it. The function works with that copy, and the original variable outside the function doesn't change at all. This is called **pass by value**.
+
+But what if you WANT the function to change the original variable? For example, you want to make a function that swaps the contents of two variables? This is where **pass by reference** comes in!
+
+Here's an analogy: pass by value is like you photocopy your friend's homework — if you scribble on the photocopy, your friend's original homework stays clean. Pass by reference is like you directly borrow the original homework — if you scribble on it, the original also gets scribbled on!
+
+## Pass by Value: Review
+
+Take a look at this code:
+
+```cpp
+#include <iostream>
+
+void addTen(int number) {
+    number = number + 10;
+    std::cout << "Inside function: " << number << std::endl;
+}
+
+int main() {
+    int value = 5;
+
+    addTen(value);
+    std::cout << "Outside function: " << value << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Inside function: 15
+Outside function: 5
+```
+
+See? The variable `value` in `main()` is still 5! The function only changed its **copy**. Sometimes that's what we want, but sometimes it isn't.
+
+## Pass by Reference: The `&` Symbol
+
+To make a function able to change the original variable, add the `&` (ampersand) symbol after the data type in the parameter:
+
+```cpp
+#include <iostream>
+
+void addTen(int& number) {  // notice the & symbol
+    number = number + 10;
+    std::cout << "Inside function: " << number << std::endl;
+}
+
+int main() {
+    int value = 5;
+
+    addTen(value);
+    std::cout << "Outside function: " << value << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Inside function: 15
+Outside function: 15
+```
+
+Now the variable `value` in `main()` also changed! Just one character difference (`&`), but the effect is huge.
+
+:::tip
+How to read the declaration `int& number`: "number is a **reference** to an int". This means `number` is not a new variable — it is an **alias** (another name) for the variable that was passed in.
+:::
+
+## Classic Example: Swap Function
+
+One of the most classic examples of pass by reference is a function that swaps the contents of two variables:
+
+```cpp
+#include <iostream>
+
+void swap(int& a, int& b) {
+    int temp = a;
+    a = b;
+    b = temp;
+}
+
+int main() {
+    int x = 10;
+    int y = 20;
+
+    std::cout << "Before swap: x = " << x << ", y = " << y << std::endl;
+
+    swap(x, y);
+
+    std::cout << "After swap: x = " << x << ", y = " << y << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Before swap: x = 10, y = 20
+After swap: x = 20, y = 10
+```
+
+Without references, the `swap` function would be **impossible** to work! With pass by value, only the copies would be swapped, and `x` and `y` in `main()` would remain the same.
+
+:::warning
+If you try to make a `swap` function without `&`, the program will still run without errors — but the result won't be as expected. This is the kind of bug that's hard to find because **there's no error message**!
+:::
+
+## Returning Multiple Values with References
+
+A function can only `return` one value. But with references, you can "return" multiple values at once:
+
+```cpp
+#include <iostream>
+
+void findMinMax(int a, int b, int c, int& minimum, int& maximum) {
+    // Find minimum
+    minimum = a;
+    if (b < minimum) minimum = b;
+    if (c < minimum) minimum = c;
+
+    // Find maximum
+    maximum = a;
+    if (b > maximum) maximum = b;
+    if (c > maximum) maximum = c;
+}
+
+int main() {
+    int min_val, max_val;
+
+    findMinMax(15, 7, 23, min_val, max_val);
+
+    std::cout << "Minimum: " << min_val << std::endl;
+    std::cout << "Maximum: " << max_val << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Minimum: 7
+Maximum: 23
+```
+
+Notice: parameters `a`, `b`, `c` are sent by value (because the function only needs to read their values), while `minimum` and `maximum` are sent by reference (because the function needs to fill in the results).
+
+## Const Reference: Read But Don't Modify
+
+Sometimes you want to use a reference not to modify data, but for **efficiency**. For example, if you send a long `std::string`, copying it takes time and memory. With a reference, no copy occurs.
+
+But how do you say "this is a reference, but don't modify it"? Use `const`:
+
+```cpp
+#include <iostream>
+#include <string>
+
+void printGreeting(const std::string& name) {  // const reference
+    std::cout << "Hello, " << name << "! Happy learning C++!" << std::endl;
+
+    // name = "other";  // ERROR! cannot modify a const reference
+}
+
+int main() {
+    std::string student = "Budi";
+    printGreeting(student);
+
+    return 0;
+}
+```
+
+`const std::string& name` means: "send a reference (so there's no copy), but the function **promises** not to modify it."
+
+:::note
+For small data types like `int`, `double`, `bool`, `char`, pass by value is already efficient enough. Const reference is more useful for "large" data types like `std::string`, arrays, or objects that you'll learn about later.
+:::
+
+## When to Use What?
+
+Here's a simple guide:
+
+| Situation | Use | Example |
+|-----------|-----|---------|
+| Function only needs to read small values (int, double) | Pass by value | `int square(int x)` |
+| Function needs to **modify** the original variable | Pass by reference | `void swap(int& a, int& b)` |
+| Function needs to read large data without modifying | Const reference | `void print(const std::string& text)` |
+
+## Complete Example: Grading System
+
+```cpp
+#include <iostream>
+#include <string>
+
+// Const reference: read-only, large type (string)
+void displayHeader(const std::string& title) {
+    std::cout << "=========================" << std::endl;
+    std::cout << "  " << title << std::endl;
+    std::cout << "=========================" << std::endl;
+}
+
+// Reference: modifies the original variables
+void inputScores(int& midterm, int& final_exam, int& assignments) {
+    std::cout << "Enter midterm score: ";
+    std::cin >> midterm;
+    std::cout << "Enter final exam score: ";
+    std::cin >> final_exam;
+    std::cout << "Enter assignments score: ";
+    std::cin >> assignments;
+}
+
+// Pass by value: read-only, small types (int)
+double calculateAverage(int midterm, int final_exam, int assignments) {
+    return (midterm + final_exam + assignments) / 3.0;
+}
+
+// Reference: fills in the grade based on the average
+void determineGrade(double average, char& grade) {
+    if (average >= 85) {
+        grade = 'A';
+    } else if (average >= 70) {
+        grade = 'B';
+    } else if (average >= 55) {
+        grade = 'C';
+    } else {
+        grade = 'D';
+    }
+}
+
+int main() {
+    int midterm, final_exam, assignments;
+    char grade;
+
+    displayHeader("Student Grading System");
+
+    inputScores(midterm, final_exam, assignments);
+
+    double average = calculateAverage(midterm, final_exam, assignments);
+
+    determineGrade(average, grade);
+
+    std::cout << std::endl;
+    std::cout << "Average: " << average << std::endl;
+    std::cout << "Grade: " << grade << std::endl;
+
+    return 0;
+}
+```
+
+## Danger: Don't Return a Reference to a Local Variable!
+
+This is a mistake you must avoid:
+
+```cpp
+// DON'T DO THIS!
+int& danger() {
+    int number = 42;
+    return number;  // DANGER! number will be destroyed after the function ends
+}
+```
+
+The variable `number` lives inside the `danger()` function. Once the function ends, that variable is destroyed. If you return a reference to it, the reference points to "empty space" — this can cause weird bugs or crashes.
+
+:::warning
+Never return a reference to a local variable. The compiler usually gives a warning, but not always. It's like giving out the address of a house that has already been demolished — anyone who goes to that address will be confused!
+:::
+
+## Brief Look: Reference vs Pointer
+
+You may have heard about **pointers** in C++. Pointers and references have similar functions — both can let a function modify data outside of itself. The difference:
+
+- **Reference** (`&`): simpler, must be initialized, cannot be "empty"
+- **Pointer** (`*`): more flexible, can be empty (null), more complex syntax
+
+For now, references are more than sufficient. Pointers will be covered in more detail in a later unit.
+
+## Exercises
+
+**Exercise 1:** Create a function `void doubleIt(int& number)` that multiplies the variable by 2. Call it from `main()` and prove that the original variable changes.
+
+**Exercise 2:** Create a function `void sortTwo(int& a, int& b)` that ensures `a` is always less than `b`. If `a` is greater than `b`, swap their values.
+
+**Exercise 3:** Create a function `void calculateCircle(double radius, double& circumference, double& area)` that calculates both the circumference and area of a circle. Use `const double PI = 3.14159`.
+
+**Exercise 4:** Create a function `void greetStudent(const std::string& name, int age)` that prints a greeting. Explain why `name` uses const reference but `age` uses pass by value.
+
+Now you understand when and how to use references. In the next lesson, we'll learn about **function overloading** — how to create multiple functions with the same name but different parameters!

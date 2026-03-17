@@ -1,0 +1,738 @@
+---
+title: "Project: Rock Paper Scissors"
+unit: 4
+lesson: 8
+description: "Build a Rock Paper Scissors game vs computer using all function concepts from Unit 4"
+objectives:
+  - "Combine all function concepts in one complete program"
+  - "Design a program with well-organized functions"
+  - "Use pass by reference to manage scores"
+  - "Apply function overloading practically"
+  - "Write code with proper scope and no global variables"
+estimatedTime: 75
+prerequisites: ["unit-4/07-scope-lifetime"]
+difficulty: "beginner"
+isProject: true
+tags: ["project", "game", "batu-gunting-kertas", "fungsi", "overloading", "reference"]
+---
+
+# Project: Rock Paper Scissors
+
+Congratulations! You've completed all lessons in Unit 4 about functions. Now it's time to combine everything in an exciting project — a **Rock Paper Scissors** game against the computer!
+
+We'll build this game **step by step**, with each stage adding new concepts from Unit 4. At the end, you'll have a complete game with code neatly organized using functions.
+
+:::note
+This project uses nearly all the concepts you've learned in Unit 4: function declarations, parameters, return values, pass by reference, function overloading, and scope. This is an exciting "test" for all your new skills!
+:::
+
+## Function Design
+
+Before coding, let's **plan** the functions we need. This is a good habit — professional programmers always plan before writing code!
+
+| Function | Task | Parameters | Return |
+|----------|------|------------|--------|
+| `displayHeader()` | Display game title | - | void |
+| `getPlayerChoice()` | Get input from player | - | int |
+| `getComputerChoice()` | Generate random choice | - | int |
+| `choiceName()` | Convert number to name | int choice | string |
+| `determineWinner()` | Check who won | int player, int computer | int |
+| `displayResult()` | Show round result | int result, string player, string computer | void |
+| `updateScore()` | Update win/loss/draw scores | int result, int& wins, int& losses, int& draws | void |
+| `displayScore()` | Display score (overloaded) | (2 versions) | void |
+| `askPlayAgain()` | Ask to play again? | - | bool |
+
+See how each function has a clear **single task**? This is an important principle in programming — **one function, one task**.
+
+## Stage 1: Basic Structure and Input
+
+Let's start with the simplest thing — displaying a menu and getting player input:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <cstdlib>
+#include <ctime>
+
+void displayHeader() {
+    std::cout << "=================================" << std::endl;
+    std::cout << "    ROCK PAPER SCISSORS v1.0" << std::endl;
+    std::cout << "=================================" << std::endl;
+    std::cout << std::endl;
+}
+
+int getPlayerChoice() {
+    int choice;
+
+    std::cout << "Choose your move:" << std::endl;
+    std::cout << "  1. Rock" << std::endl;
+    std::cout << "  2. Scissors" << std::endl;
+    std::cout << "  3. Paper" << std::endl;
+    std::cout << "Choice (1/2/3): ";
+    std::cin >> choice;
+
+    return choice;
+}
+
+int getComputerChoice() {
+    return std::rand() % 3 + 1;  // random 1-3
+}
+
+std::string choiceName(int choice) {
+    switch (choice) {
+        case 1: return "Rock";
+        case 2: return "Scissors";
+        case 3: return "Paper";
+        default: return "???";
+    }
+}
+
+int main() {
+    std::srand(std::time(0));
+
+    displayHeader();
+
+    int player = getPlayerChoice();
+    int computer = getComputerChoice();
+
+    std::cout << std::endl;
+    std::cout << "You chose: " << choiceName(player) << std::endl;
+    std::cout << "Computer chose: " << choiceName(computer) << std::endl;
+
+    return 0;
+}
+```
+
+Example output:
+
+```
+=================================
+    ROCK PAPER SCISSORS v1.0
+=================================
+
+Choose your move:
+  1. Rock
+  2. Scissors
+  3. Paper
+Choice (1/2/3): 1
+
+You chose: Rock
+Computer chose: Scissors
+```
+
+It runs! But there's no winner determination yet. Let's add that.
+
+## Stage 2: Determine the Winner with Return Values
+
+Now let's create a function that determines who the winner is. This function **returns** an int:
+- `0` = draw
+- `1` = player wins
+- `-1` = computer wins
+
+```cpp
+int determineWinner(int player, int computer) {
+    // Draw
+    if (player == computer) {
+        return 0;
+    }
+
+    // Player wins if:
+    // Rock (1) beats Scissors (2)
+    // Scissors (2) beats Paper (3)
+    // Paper (3) beats Rock (1)
+    if ((player == 1 && computer == 2) ||
+        (player == 2 && computer == 3) ||
+        (player == 3 && computer == 1)) {
+        return 1;
+    }
+
+    // Otherwise, computer wins
+    return -1;
+}
+
+void displayResult(int result,
+                    const std::string& playerChoice,
+                    const std::string& computerChoice) {
+    std::cout << std::endl;
+    std::cout << "---------------------------------" << std::endl;
+    std::cout << "You: " << playerChoice
+              << "  vs  Computer: " << computerChoice << std::endl;
+
+    if (result == 0) {
+        std::cout << "Result: DRAW!" << std::endl;
+    } else if (result == 1) {
+        std::cout << "Result: YOU WIN!" << std::endl;
+    } else {
+        std::cout << "Result: Computer wins..." << std::endl;
+    }
+    std::cout << "---------------------------------" << std::endl;
+}
+```
+
+:::tip
+Notice the logic in `determineWinner`. We only need to check the player win condition — if it's not a draw and the player doesn't win, then the computer must have won. Simple but effective logic!
+:::
+
+Now `main()` becomes:
+
+```cpp
+int main() {
+    std::srand(std::time(0));
+
+    displayHeader();
+
+    int player = getPlayerChoice();
+    int computer = getComputerChoice();
+
+    int result = determineWinner(player, computer);
+
+    displayResult(result, choiceName(player), choiceName(computer));
+
+    return 0;
+}
+```
+
+See how clean `main()` is now! Each line does one clear thing.
+
+## Stage 3: Loop and Score with Pass by Reference
+
+Now let's add the ability to play multiple rounds with scoring. This is where **pass by reference** plays its role — the `updateScore` function needs to modify score variables that live in `main()`:
+
+```cpp
+void updateScore(int result, int& wins, int& losses, int& draws) {
+    if (result == 0) {
+        draws++;
+    } else if (result == 1) {
+        wins++;
+    } else {
+        losses++;
+    }
+}
+
+bool askPlayAgain() {
+    char answer;
+    std::cout << std::endl;
+    std::cout << "Play again? (y/n): ";
+    std::cin >> answer;
+    return (answer == 'y' || answer == 'Y');
+}
+```
+
+And `main()` now uses a `do-while` loop:
+
+```cpp
+int main() {
+    std::srand(std::time(0));
+
+    displayHeader();
+
+    int wins = 0;
+    int losses = 0;
+    int draws = 0;
+
+    do {
+        int player = getPlayerChoice();
+
+        // Validate input
+        if (player < 1 || player > 3) {
+            std::cout << "Invalid choice! Enter 1, 2, or 3." << std::endl;
+            continue;
+        }
+
+        int computer = getComputerChoice();
+        int result = determineWinner(player, computer);
+
+        displayResult(result, choiceName(player), choiceName(computer));
+
+        // Update score via reference
+        updateScore(result, wins, losses, draws);
+
+        std::cout << "Score: Wins=" << wins
+                  << " Losses=" << losses
+                  << " Draws=" << draws << std::endl;
+
+    } while (askPlayAgain());
+
+    std::cout << std::endl;
+    std::cout << "Thanks for playing!" << std::endl;
+
+    return 0;
+}
+```
+
+:::note
+Notice that the variables `player`, `computer`, and `result` are declared **inside the loop**. They are recreated each round and die at the end of each iteration — this is good scope! Meanwhile, `wins`, `losses`, and `draws` are outside the loop because they need to persist across rounds.
+:::
+
+## Stage 4: Function Overloading for Score Display
+
+Now let's apply **function overloading**! We'll create two versions of `displayScore`:
+- Short version: just wins and losses
+- Full version: wins, losses, and draws
+
+```cpp
+// Version 1: short display (after each round)
+void displayScore(int wins, int losses) {
+    std::cout << std::endl;
+    std::cout << "--- Quick Score ---" << std::endl;
+    std::cout << "Wins: " << wins << " | Losses: " << losses << std::endl;
+}
+
+// Version 2: full display (at end of game)
+void displayScore(int wins, int losses, int draws) {
+    int total = wins + losses + draws;
+
+    std::cout << std::endl;
+    std::cout << "=============================" << std::endl;
+    std::cout << "      SCOREBOARD" << std::endl;
+    std::cout << "=============================" << std::endl;
+    std::cout << "  Wins   : " << wins << std::endl;
+    std::cout << "  Losses : " << losses << std::endl;
+    std::cout << "  Draws  : " << draws << std::endl;
+    std::cout << "  Total  : " << total << " rounds" << std::endl;
+    std::cout << "=============================" << std::endl;
+
+    if (total > 0) {
+        double win_rate = (double)wins / total * 100;
+        std::cout << "  Win rate: " << win_rate << "%" << std::endl;
+        std::cout << "=============================" << std::endl;
+    }
+}
+```
+
+Now inside the loop we use the short version, and at the end of the game we use the full version:
+
+```cpp
+// Inside the loop:
+displayScore(wins, losses);  // calls the 2-parameter version
+
+// After the loop ends:
+displayScore(wins, losses, draws);  // calls the 3-parameter version
+```
+
+The compiler automatically selects the correct version based on the number of arguments!
+
+## Stage 5: Good Scope — No Global Variables
+
+In the final version, notice that we **don't use any global variables**. All data flows through parameters and return values:
+
+- `score` is stored in `main()` and sent via reference to `updateScore()`
+- Player and computer choices are created locally in each loop iteration
+- Each function only has access to the data it **needs**
+
+This makes the code safer, easier to debug, and easier to modify.
+
+## Complete Final Code
+
+Here's the complete version of the Rock Paper Scissors game! Type it out (or study each part carefully):
+
+```cpp
+#include <iostream>
+#include <string>
+#include <cstdlib>
+#include <ctime>
+
+// ============================================
+// FUNCTION DECLARATIONS (function prototypes)
+// ============================================
+void displayHeader();
+int getPlayerChoice();
+int getComputerChoice();
+std::string choiceName(int choice);
+int determineWinner(int player, int computer);
+void displayResult(int result,
+                    const std::string& playerChoice,
+                    const std::string& computerChoice);
+void updateScore(int result, int& wins, int& losses, int& draws);
+void displayScore(int wins, int losses);
+void displayScore(int wins, int losses, int draws);
+bool askPlayAgain();
+void displayClosing(int wins, int losses, int draws);
+
+// ============================================
+// MAIN FUNCTION
+// ============================================
+int main() {
+    std::srand(std::time(0));
+
+    displayHeader();
+
+    // Score stored locally in main
+    int wins = 0;
+    int losses = 0;
+    int draws = 0;
+
+    // Game loop
+    do {
+        std::cout << std::endl;
+
+        // Get player choice
+        int player = getPlayerChoice();
+
+        // Validate input
+        if (player < 1 || player > 3) {
+            std::cout << "Invalid choice! Enter 1, 2, or 3." << std::endl;
+            continue;
+        }
+
+        // Get computer choice
+        int computer = getComputerChoice();
+
+        // Determine winner
+        int result = determineWinner(player, computer);
+
+        // Display this round's result
+        displayResult(result, choiceName(player), choiceName(computer));
+
+        // Update score (pass by reference)
+        updateScore(result, wins, losses, draws);
+
+        // Display short score (overload: 2 parameters)
+        displayScore(wins, losses);
+
+    } while (askPlayAgain());
+
+    // Display full score (overload: 3 parameters)
+    displayScore(wins, losses, draws);
+
+    // Closing message
+    displayClosing(wins, losses, draws);
+
+    return 0;
+}
+
+// ============================================
+// FUNCTION IMPLEMENTATIONS
+// ============================================
+
+void displayHeader() {
+    std::cout << "========================================" << std::endl;
+    std::cout << "     ROCK  PAPER  SCISSORS  v1.0" << std::endl;
+    std::cout << "========================================" << std::endl;
+    std::cout << "  Rules:" << std::endl;
+    std::cout << "  - Rock beats Scissors" << std::endl;
+    std::cout << "  - Scissors beats Paper" << std::endl;
+    std::cout << "  - Paper beats Rock" << std::endl;
+    std::cout << "========================================" << std::endl;
+}
+
+int getPlayerChoice() {
+    int choice;
+
+    std::cout << "Choose your move:" << std::endl;
+    std::cout << "  1. Rock     [*]" << std::endl;
+    std::cout << "  2. Scissors [V]" << std::endl;
+    std::cout << "  3. Paper    [_]" << std::endl;
+    std::cout << "Choice (1/2/3): ";
+    std::cin >> choice;
+
+    return choice;
+}
+
+int getComputerChoice() {
+    return std::rand() % 3 + 1;
+}
+
+std::string choiceName(int choice) {
+    switch (choice) {
+        case 1: return "Rock";
+        case 2: return "Scissors";
+        case 3: return "Paper";
+        default: return "???";
+    }
+}
+
+int determineWinner(int player, int computer) {
+    // Return: 0 = draw, 1 = player wins, -1 = computer wins
+
+    if (player == computer) {
+        return 0;  // draw
+    }
+
+    // Player wins if:
+    // Rock (1) vs Scissors (2)
+    // Scissors (2) vs Paper (3)
+    // Paper (3) vs Rock (1)
+    if ((player == 1 && computer == 2) ||
+        (player == 2 && computer == 3) ||
+        (player == 3 && computer == 1)) {
+        return 1;  // player wins
+    }
+
+    return -1;  // computer wins
+}
+
+void displayResult(int result,
+                    const std::string& playerChoice,
+                    const std::string& computerChoice) {
+    std::cout << std::endl;
+    std::cout << "-----------------------------------------" << std::endl;
+    std::cout << "  You: " << playerChoice
+              << "  vs  Computer: " << computerChoice << std::endl;
+    std::cout << "-----------------------------------------" << std::endl;
+
+    if (result == 0) {
+        std::cout << "  Result: DRAW! Great minds think alike!" << std::endl;
+    } else if (result == 1) {
+        std::cout << "  Result: YOU WIN! Congratulations!" << std::endl;
+    } else {
+        std::cout << "  Result: Computer wins. Try again!" << std::endl;
+    }
+
+    std::cout << "-----------------------------------------" << std::endl;
+}
+
+void updateScore(int result, int& wins, int& losses, int& draws) {
+    if (result == 0) {
+        draws++;
+    } else if (result == 1) {
+        wins++;
+    } else {
+        losses++;
+    }
+}
+
+// Overload 1: short display (after each round)
+void displayScore(int wins, int losses) {
+    std::cout << "  [Score] Wins: " << wins
+              << " | Losses: " << losses << std::endl;
+}
+
+// Overload 2: full display (at end of game)
+void displayScore(int wins, int losses, int draws) {
+    int total = wins + losses + draws;
+
+    std::cout << std::endl;
+    std::cout << "========================================" << std::endl;
+    std::cout << "           FINAL SCOREBOARD" << std::endl;
+    std::cout << "========================================" << std::endl;
+    std::cout << "  Wins   : " << wins << std::endl;
+    std::cout << "  Losses : " << losses << std::endl;
+    std::cout << "  Draws  : " << draws << std::endl;
+    std::cout << "  Total  : " << total << " rounds" << std::endl;
+    std::cout << "----------------------------------------" << std::endl;
+
+    if (total > 0) {
+        double win_rate = (double)wins / total * 100;
+        std::cout << "  Win Rate: " << win_rate << "%" << std::endl;
+    }
+
+    std::cout << "========================================" << std::endl;
+}
+
+bool askPlayAgain() {
+    char answer;
+    std::cout << std::endl;
+    std::cout << "Play again? (y/n): ";
+    std::cin >> answer;
+    return (answer == 'y' || answer == 'Y');
+}
+
+void displayClosing(int wins, int losses, int draws) {
+    std::cout << std::endl;
+
+    if (wins > losses) {
+        std::cout << "You won more games! Awesome!" << std::endl;
+    } else if (losses > wins) {
+        std::cout << "Computer leads this time. Don't give up!" << std::endl;
+    } else {
+        std::cout << "It's a tie! You're evenly matched!" << std::endl;
+    }
+
+    std::cout << "Thanks for playing! See you next time!" << std::endl;
+    std::cout << std::endl;
+}
+```
+
+## Sample Play Session
+
+```
+========================================
+     ROCK  PAPER  SCISSORS  v1.0
+========================================
+  Rules:
+  - Rock beats Scissors
+  - Scissors beats Paper
+  - Paper beats Rock
+========================================
+
+Choose your move:
+  1. Rock     [*]
+  2. Scissors [V]
+  3. Paper    [_]
+Choice (1/2/3): 1
+
+-----------------------------------------
+  You: Rock  vs  Computer: Scissors
+-----------------------------------------
+  Result: YOU WIN! Congratulations!
+-----------------------------------------
+  [Score] Wins: 1 | Losses: 0
+
+Play again? (y/n): y
+
+Choose your move:
+  1. Rock     [*]
+  2. Scissors [V]
+  3. Paper    [_]
+Choice (1/2/3): 3
+
+-----------------------------------------
+  You: Paper  vs  Computer: Paper
+-----------------------------------------
+  Result: DRAW! Great minds think alike!
+-----------------------------------------
+  [Score] Wins: 1 | Losses: 0
+
+Play again? (y/n): y
+
+Choose your move:
+  1. Rock     [*]
+  2. Scissors [V]
+  3. Paper    [_]
+Choice (1/2/3): 2
+
+-----------------------------------------
+  You: Scissors  vs  Computer: Rock
+-----------------------------------------
+  Result: Computer wins. Try again!
+-----------------------------------------
+  [Score] Wins: 1 | Losses: 1
+
+Play again? (y/n): n
+
+========================================
+           FINAL SCOREBOARD
+========================================
+  Wins   : 1
+  Losses : 1
+  Draws  : 1
+  Total  : 3 rounds
+----------------------------------------
+  Win Rate: 33.3333%
+========================================
+
+It's a tie! You're evenly matched!
+Thanks for playing! See you next time!
+```
+
+## Explanation of Each Function
+
+Let's discuss why each function is separated:
+
+### `displayHeader()` — No parameters, no return
+
+This function just displays text. It doesn't need to receive any data and doesn't need to return anything. Simple, but separating it from `main()` keeps the code cleaner.
+
+### `getPlayerChoice()` — Returns int
+
+This function **returns** the player's choice as an int. All input logic is inside this function, so `main()` just receives the result.
+
+### `getComputerChoice()` — Returns int
+
+Just one line! But it's still separated because: (1) its name explains what it does, and (2) if you later want to change the algorithm (e.g., use better randomization), you only need to change it in one place.
+
+### `choiceName()` — Pass by value, returns string
+
+Receives a number (1/2/3), returns a name ("Rock"/"Scissors"/"Paper"). This is a **utility function** — a small function that's frequently used in many places.
+
+### `determineWinner()` — Pass by value, returns int
+
+Receives two choices, returns a result (-1/0/1). This is the **business logic** of the game — the rules for who wins. Separated so it's easy to test and modify.
+
+### `displayResult()` — Const reference for strings
+
+String parameters are sent with `const std::string&` — reference for efficiency (no copy), const for safety (not modified).
+
+### `updateScore()` — Pass by reference
+
+This is the function that **modifies** variables outside of itself! Parameters `wins`, `losses`, `draws` use `&` because this function needs to increment their values.
+
+### `displayScore()` — Overloaded!
+
+Two versions: (1) short with 2 parameters for after each round, (2) full with 3 parameters for the end of the game. The compiler automatically picks the right version.
+
+### `askPlayAgain()` — Returns bool
+
+Returns `true` if the player wants to play again, `false` if not. Used directly in the `while` condition.
+
+### `displayClosing()` — Pass by value
+
+Only reads the scores to display a closing message. No reference needed because it doesn't modify anything.
+
+## Unit 4 Concepts Used
+
+| Concept | Used in |
+|---------|---------|
+| Function declarations & prototypes | All functions declared above `main()` |
+| Parameters & arguments | Nearly all functions receive parameters |
+| Return values | `getPlayerChoice()`, `determineWinner()`, `choiceName()`, `askPlayAgain()` |
+| Pass by value | `int` and `double` parameters that don't need to be modified |
+| Pass by reference | `updateScore()` modifies scores via `&` |
+| Const reference | `displayResult()` receives `const std::string&` |
+| Function overloading | `displayScore()` has 2 versions |
+| Local scope | All variables are local, no global variables |
+| Block scope | `player`, `computer`, `result` only live inside the loop |
+
+## Extra Challenges
+
+Done and want more of a challenge? Try these:
+
+**Challenge 1: 2-Player Mode**
+
+Change the game to 2-player mode! Player 1 chooses first (their input is "hidden" by printing many blank lines before Player 2 chooses). Create a new function `getPlayerChoice(int playerNumber)` that receives the player number as a parameter.
+
+**Challenge 2: Best of 5**
+
+Add a "Best of 5" mode — whoever wins 3 rounds first is the overall winner. Create a function `bool hasWinner(int wins, int losses, int target)` that checks whether either player has reached the target number of wins.
+
+**Challenge 3: Win Rate Statistics**
+
+Create a function `void displayStatistics(int wins, int losses, int draws)` that shows:
+- Win rate (win percentage)
+- Lose rate (loss percentage)
+- Draw rate (draw percentage)
+- Longest streak (consecutive wins) — this requires additional tracking!
+
+**Challenge 4: Additional Choices**
+
+Add "Lizard" and "Spock" choices (the version from the TV series "The Big Bang Theory"):
+- Scissors cuts Paper
+- Paper covers Rock
+- Rock crushes Lizard
+- Lizard poisons Spock
+- Spock smashes Scissors
+- Scissors decapitates Lizard
+- Lizard eats Paper
+- Paper disproves Spock
+- Spock vaporizes Rock
+- Rock crushes Scissors
+
+You'll need to update `choiceName()`, `getPlayerChoice()`, and `determineWinner()`.
+
+**Challenge 5: Game History**
+
+Save the history of each round (who chose what, what the result was) and display it at the end. You can use arrays (which you'll learn in the next unit) or simply print directly to the screen each round.
+
+:::tip
+Don't feel like you have to complete all the challenges. Pick one or two that interest you the most. What matters is that you experiment and have fun while learning!
+:::
+
+## Exercises
+
+**Exercise 1:** Type out the complete final code above from scratch (don't copy-paste!). Make sure the game runs correctly. Typing it out helps your brain understand every line.
+
+**Exercise 2:** Add validation to `getPlayerChoice()` — if the input is not 1, 2, or 3, print an error message and ask for input again (use a loop inside the function).
+
+**Exercise 3:** Create a function `void displayAsciiArt(int choice)` that shows simple ASCII art:
+
+```
+Rock:     Scissors:     Paper:
+ ___       _   _        ___
+|   |     | | | |      |   |___
+|___|     |_|_|_|      |_______|
+```
+
+**Exercise 4:** Modify the game so that at the end it displays different messages based on win rate: below 30% "Need more practice!", 30-60% "Not bad!", above 60% "You're a pro!"
+
+Congratulations! You've completed **Unit 4: Functions**! Now you can break large programs into small, well-organized functions. This is a fundamental skill that you'll keep using in every C++ program you write going forward!

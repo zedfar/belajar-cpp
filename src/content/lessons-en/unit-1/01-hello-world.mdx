@@ -1,0 +1,239 @@
+---
+title: "Hello, World!"
+unit: 1
+lesson: 1
+description: "Write your first C++ program and understand every line of it"
+objectives:
+  - "Write and run a Hello World program"
+  - "Understand #include, main(), cout, and return"
+  - "Learn the concept of the std namespace"
+estimatedTime: 30
+prerequisites: ["unit-0/03"]
+difficulty: "beginner"
+tags: ["hello-world", "iostream", "cout", "main", "basics"]
+---
+
+# Hello, World!
+
+There's a tradition in the programming world: the first program you write in any new language should display "Hello, World!" on the screen. This tradition started with the legendary book "The C Programming Language" back in 1978. Now it's your turn to carry on the tradition!
+
+## Your First Program
+
+Here's the Hello World program in C++:
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Hello, World!" << std::endl;
+    return 0;
+}
+```
+
+Type this code in the playground, then click **Run**. You should see:
+
+```
+Hello, World!
+```
+
+Congratulations! You just wrote your first C++ program! It may look simple, but there's a lot going on behind the scenes. Let's break down **every line**.
+
+## Breaking Down Every Line
+
+### Line 1: `#include <iostream>`
+
+```cpp
+#include <iostream>
+```
+
+This line is a **preprocessor directive** — an instruction telling the compiler to "include" a header file called `iostream`. This file contains definitions for `cout` (output to screen) and `cin` (input from keyboard).
+
+Think of it this way: you want to cook, but your knife is in the drawer. `#include` is like opening the drawer and taking out the tool you need. Without `#include <iostream>`, you can't use `cout` to display text.
+
+**Key facts:**
+- `#include` always starts with the hash symbol `#`
+- `<iostream>` stands for "input/output stream" — a stream of data flowing in and out
+- The header file name is enclosed in `<` and `>` (not quotes)
+- This line does **not** end with a semicolon (`;`)
+
+### Line 3: `int main() {`
+
+```cpp
+int main() {
+```
+
+This is the **main function** — the entry point of the program. Every C++ program **must** have a `main()` function. When you run the program, the computer looks for this function and starts executing the code inside it.
+
+Think of your program as a building. `main()` is the front door — no matter how big the building is, everyone enters through the front door. Likewise, no matter how complex the code is, execution always starts from `main()`.
+
+Let's break down its parts:
+- `int` — the return type of the function (integer/whole number). `main()` returns a number to the operating system (0 means success)
+- `main` — the function name. This name **must** be `main`, you can't change it
+- `()` — parentheses for parameters (empty means it takes no parameters)
+- `{` — opening curly brace, marking the start of the function *body*
+
+### Line 4: `std::cout << "Hello, World!" << std::endl;`
+
+```cpp
+    std::cout << "Hello, World!" << std::endl;
+```
+
+This is the line that does the actual work — displaying text on screen. There's quite a lot happening here, so let's break it down piece by piece:
+
+**`std::cout`** — this is the "output stream" object. Think of `cout` like a **megaphone** — whatever you "send" to the megaphone gets heard (in this case, appears on screen). `cout` stands for "**c**haracter **out**put".
+
+**`<<`** — this is the **insertion operator** or "send to" operator. Think of it like an arrow: you're sending something TO `cout`. The arrow `<<` points to the left, toward `cout`.
+
+**`"Hello, World!"`** — this is a **string literal** — text enclosed in double quotes. Whatever is inside the quotes will be displayed exactly as you wrote it.
+
+**`<< std::endl`** — `endl` stands for "**end** **l**ine". It adds a new line after the text, like pressing Enter. Without `endl`, the next text would appear on the same line.
+
+**`;`** — the semicolon at the end of the line. In C++, **every statement must end with a semicolon**. It's like a period at the end of a sentence — it tells the compiler that this instruction is complete.
+
+:::note
+**About `std::`** — `std` stands for "standard". `std::cout` means "the cout that lives in the standard library". The `std::` prefix is called a **namespace** — C++'s way of grouping names to avoid conflicts. For now, just remember: whenever you use `cout`, `cin`, `endl`, or `string`, write `std::` in front of it.
+:::
+
+### Line 5: `return 0;`
+
+```cpp
+    return 0;
+}
+```
+
+`return 0;` tells the operating system that the program ran **successfully**. The number 0 is a universal convention for "everything went fine". If the program returns a number other than 0, it means something went wrong.
+
+Imagine you were sent to the store by a parent. When you come back, you say "Done, everything went smoothly!" — that's the equivalent of `return 0`. If you say "There was a problem, the store was closed" — that's like `return 1`.
+
+**`}`** — the closing curly brace, marking the end of the `main()` function body.
+
+## Full Visualization
+
+```cpp
+#include <iostream>     // 1. Get the tools we need (cout, endl)
+
+int main() {            // 2. Entry point of the program
+    std::cout << "Hello, World!" << std::endl;  // 3. Display text on screen
+    return 0;           // 4. Report to OS: "Success!"
+}                       // 5. End of program
+```
+
+## Hello World Variations
+
+Now try a few variations to solidify your understanding.
+
+**Displaying multiple lines:**
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Hello, World!" << std::endl;
+    std::cout << "My name is Budi." << std::endl;
+    std::cout << "I'm learning C++!" << std::endl;
+    return 0;
+}
+```
+
+Output:
+```
+Hello, World!
+My name is Budi.
+I'm learning C++!
+```
+
+**Combining text in a single `cout`:**
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Hello" << " " << "World!" << std::endl;
+    return 0;
+}
+```
+
+You can use `<<` multiple times to send several pieces of text to `cout` in a single statement.
+
+**Without `std::endl` (using `\n`):**
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "First line\n";
+    std::cout << "Second line\n";
+    return 0;
+}
+```
+
+`\n` is an **escape character** for a new line. It works similarly to `std::endl`, but is more concise. We'll discuss the differences in more detail in the input/output lesson.
+
+## Common Mistakes
+
+When writing your first program, there are some mistakes that come up frequently:
+
+**1. Forgetting the semicolon:**
+```cpp
+std::cout << "Hello" << std::endl  // ERROR: missing ';'
+```
+
+**2. Misspelling `cout`:**
+```cpp
+std::cot << "Hello" << std::endl;  // ERROR: 'cot' is not 'cout'
+```
+
+**3. Forgetting `#include <iostream>`:**
+```cpp
+int main() {
+    std::cout << "Hello" << std::endl;  // ERROR: cout is not recognized
+    return 0;
+}
+```
+
+**4. Using single quotes for strings:**
+```cpp
+std::cout << 'Hello' << std::endl;  // ERROR: single quotes are only for ONE character
+```
+
+:::tip
+If you encounter an error, don't panic. Read the error message — the compiler usually points to the problematic line. Compare your code with the correct example and look for differences.
+:::
+
+## Exercises
+
+**Exercise 1:** Modify the Hello World program to display your own name. Example expected output:
+
+```
+Hello, your-name!
+Welcome to the world of C++!
+```
+
+**Exercise 2:** Create a program that displays an introduction card like this:
+
+```
+========================
+   INTRODUCTION CARD
+========================
+Name  : [your name]
+Age   : [your age]
+Hobby : [your hobby]
+========================
+```
+
+Use `std::cout` for each line and experiment with symbols like `=`, `-`, `|` to create borders.
+
+## Summary
+
+| Element | Purpose |
+|---------|---------|
+| `#include <iostream>` | Include the input/output library |
+| `int main()` | Main function, the program's entry point |
+| `std::cout` | Object for displaying output on screen |
+| `<<` | "Send to" operator |
+| `std::endl` | Move to a new line |
+| `return 0` | Tell the OS the program succeeded |
+| `;` | Statement terminator |
+| `{ }` | Mark the start and end of a code block |
+
+You've successfully written and understood your first C++ program! In the next lesson, we'll learn about **comments** — how to add notes inside your code — and understand the **structure of a C++ program** more deeply.

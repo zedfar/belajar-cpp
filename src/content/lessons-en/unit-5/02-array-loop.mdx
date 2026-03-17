@@ -1,0 +1,527 @@
+---
+title: "Array & Loop"
+unit: 5
+lesson: 2
+description: "Combining arrays with loops — the most fundamental pattern in programming for processing lots of data at once"
+objectives:
+  - "Iterate through arrays using for loops"
+  - "Input array values from the user with cin"
+  - "Calculate averages, find max/min, and sum elements"
+  - "Perform a simple linear search"
+  - "Use range-based for loops with arrays"
+estimatedTime: 35
+prerequisites: ["unit-5/01-array-dasar"]
+difficulty: "beginner"
+tags: ["array", "loop", "iterasi", "linear-search", "range-based-for"]
+---
+
+# Array & Loop
+
+In the previous lesson, you accessed array elements one by one: `arr[0]`, `arr[1]`, `arr[2]`... If there are 100 elements, are you going to write 100 lines? Of course not!
+
+The **array + loop** combination is the most commonly used pattern in programming. Almost every program that deals with lots of data uses this pattern.
+
+## Analogy: A Teacher Grading Assignments
+
+Imagine a teacher grading 30 students' assignments. The teacher wouldn't say: "Open Andi's book... now Budi's book... now Citra's book..." one by one. The teacher would say: "**For each** assignment book in this pile, check and give a grade." That's array + loop!
+
+## Example 1: Printing All Array Elements
+
+```cpp
+#include <iostream>
+
+int main() {
+    int scores[] = {85, 90, 78, 92, 88, 76, 95};
+    int length = sizeof(scores) / sizeof(scores[0]);
+
+    std::cout << "=== Score List ===" << std::endl;
+
+    for (int i = 0; i < length; i++) {
+        std::cout << "Student " << i + 1 << ": " << scores[i] << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+=== Score List ===
+Student 1: 85
+Student 2: 90
+Student 3: 78
+Student 4: 92
+Student 5: 88
+Student 6: 76
+Student 7: 95
+```
+
+:::note
+Notice the pattern `for (int i = 0; i < length; i++)`. This is the **most standard** pattern for traversing an array. Start from index 0, continue while `i` is still `<` the array length, add 1 each iteration. Memorize this pattern!
+:::
+
+## Example 2: Input Array from User
+
+```cpp
+#include <iostream>
+
+int main() {
+    const int COUNT = 5;
+    int scores[COUNT];
+
+    std::cout << "Enter scores for " << COUNT << " students:" << std::endl;
+
+    for (int i = 0; i < COUNT; i++) {
+        std::cout << "Student " << i + 1 << ": ";
+        std::cin >> scores[i];
+    }
+
+    std::cout << std::endl;
+    std::cout << "=== Entered Scores ===" << std::endl;
+
+    for (int i = 0; i < COUNT; i++) {
+        std::cout << "Student " << i + 1 << ": " << scores[i] << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output (example input):
+```
+Enter scores for 5 students:
+Student 1: 85
+Student 2: 92
+Student 3: 78
+Student 4: 90
+Student 5: 88
+
+=== Entered Scores ===
+Student 1: 85
+Student 2: 92
+Student 3: 78
+Student 4: 90
+Student 5: 88
+```
+
+## Example 3: Calculate Total and Average
+
+```cpp
+#include <iostream>
+
+int main() {
+    int scores[] = {85, 90, 78, 92, 88};
+    int length = sizeof(scores) / sizeof(scores[0]);
+
+    int total = 0;
+
+    for (int i = 0; i < length; i++) {
+        total += scores[i];
+    }
+
+    double average = static_cast<double>(total) / length;
+
+    std::cout << "Total score   : " << total << std::endl;
+    std::cout << "Num. students : " << length << std::endl;
+    std::cout << "Average       : " << average << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Total score   : 433
+Num. students : 5
+Average       : 86.6
+```
+
+:::tip
+Use `static_cast<double>(total)` before dividing so the result is a decimal. If you just do `total / length` (int / int), the result gets truncated to an integer!
+:::
+
+## Example 4: Find Maximum and Minimum Values
+
+```cpp
+#include <iostream>
+
+int main() {
+    int temp[] = {30, 35, 28, 32, 27, 33, 31};
+    int length = sizeof(temp) / sizeof(temp[0]);
+
+    int maxVal = temp[0];  // Assume the first element is the max
+    int minVal = temp[0];  // Assume the first element is the min
+
+    for (int i = 1; i < length; i++) {
+        if (temp[i] > maxVal) {
+            maxVal = temp[i];
+        }
+        if (temp[i] < minVal) {
+            minVal = temp[i];
+        }
+    }
+
+    std::cout << "=== Weekly Temperature ===" << std::endl;
+    for (int i = 0; i < length; i++) {
+        std::cout << "Day " << i + 1 << ": " << temp[i] << " C" << std::endl;
+    }
+    std::cout << "---------------------" << std::endl;
+    std::cout << "Highest temp: " << maxVal << " C" << std::endl;
+    std::cout << "Lowest temp : " << minVal << " C" << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+=== Weekly Temperature ===
+Day 1: 30 C
+Day 2: 35 C
+Day 3: 28 C
+Day 4: 32 C
+Day 5: 27 C
+Day 6: 33 C
+Day 7: 31 C
+---------------------
+Highest temp: 35 C
+Lowest temp : 27 C
+```
+
+:::note
+Why start the loop from `i = 1` instead of `i = 0`? Because we already used `temp[0]` as the initial value for max and min. So comparisons only need to start from the second element (index 1).
+:::
+
+## Example 5: Linear Search — Find a Specific Element
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string students[] = {"Andi", "Budi", "Citra", "Dewi", "Eka"};
+    int length = sizeof(students) / sizeof(students[0]);
+
+    std::string target;
+    std::cout << "Search for student name: ";
+    std::cin >> target;
+
+    bool found = false;
+    int position = -1;
+
+    for (int i = 0; i < length; i++) {
+        if (students[i] == target) {
+            found = true;
+            position = i;
+            break;  // Found it, no need to continue
+        }
+    }
+
+    if (found) {
+        std::cout << target << " found at position " << position + 1 << std::endl;
+    } else {
+        std::cout << target << " not found!" << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output (example input "Citra"):
+```
+Search for student name: Citra
+Citra found at position 3
+```
+
+Output (example input "Fajar"):
+```
+Search for student name: Fajar
+Fajar not found!
+```
+
+## Example 6: Range-Based For Loop
+
+A modern and cleaner way to traverse arrays:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string fruits[] = {"Mango", "Orange", "Apple", "Durian", "Rambutan"};
+
+    std::cout << "=== Favorite Fruits ===" << std::endl;
+
+    // Range-based for loop — simple and elegant!
+    for (std::string f : fruits) {
+        std::cout << "- " << f << std::endl;
+    }
+
+    // Can also use auto
+    std::cout << std::endl << "=== With auto ===" << std::endl;
+    for (auto f : fruits) {
+        std::cout << "- " << f << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+=== Favorite Fruits ===
+- Mango
+- Orange
+- Apple
+- Durian
+- Rambutan
+
+=== With auto ===
+- Mango
+- Orange
+- Apple
+- Durian
+- Rambutan
+```
+
+:::tip
+`for (auto f : fruits)` reads as: "for each element `f` in `fruits`". The `auto` keyword lets the compiler automatically determine the data type. This is more practical than explicitly writing `std::string`.
+:::
+
+## Example 7: Student Report Card Program
+
+A more complete example combining many techniques:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    const int NUM_STUDENTS = 5;
+    std::string names[NUM_STUDENTS];
+    int scores[NUM_STUDENTS];
+
+    // Input data
+    std::cout << "=== INPUT STUDENT DATA ===" << std::endl;
+    for (int i = 0; i < NUM_STUDENTS; i++) {
+        std::cout << "Student " << i + 1 << " name : ";
+        std::cin >> names[i];
+        std::cout << "Student " << i + 1 << " score: ";
+        std::cin >> scores[i];
+        std::cout << std::endl;
+    }
+
+    // Calculate statistics
+    int total = 0;
+    int maxVal = scores[0];
+    int minVal = scores[0];
+    int idxMax = 0;
+    int idxMin = 0;
+
+    for (int i = 0; i < NUM_STUDENTS; i++) {
+        total += scores[i];
+        if (scores[i] > maxVal) {
+            maxVal = scores[i];
+            idxMax = i;
+        }
+        if (scores[i] < minVal) {
+            minVal = scores[i];
+            idxMin = i;
+        }
+    }
+
+    double average = static_cast<double>(total) / NUM_STUDENTS;
+
+    // Display report card
+    std::cout << "=============================" << std::endl;
+    std::cout << "      CLASS REPORT CARD" << std::endl;
+    std::cout << "=============================" << std::endl;
+
+    for (int i = 0; i < NUM_STUDENTS; i++) {
+        std::cout << names[i] << "\t: " << scores[i];
+        if (scores[i] >= 90) std::cout << " (A)";
+        else if (scores[i] >= 80) std::cout << " (B)";
+        else if (scores[i] >= 70) std::cout << " (C)";
+        else std::cout << " (D)";
+        std::cout << std::endl;
+    }
+
+    std::cout << "-----------------------------" << std::endl;
+    std::cout << "Average  : " << average << std::endl;
+    std::cout << "Highest  : " << names[idxMax] << " (" << maxVal << ")" << std::endl;
+    std::cout << "Lowest   : " << names[idxMin] << " (" << minVal << ")" << std::endl;
+
+    return 0;
+}
+```
+
+Output (example):
+```
+=== INPUT STUDENT DATA ===
+Student 1 name : Andi
+Student 1 score: 85
+
+Student 2 name : Budi
+Student 2 score: 92
+
+Student 3 name : Citra
+Student 3 score: 78
+
+Student 4 name : Dewi
+Student 4 score: 95
+
+Student 5 name : Eka
+Student 5 score: 88
+
+=============================
+      CLASS REPORT CARD
+=============================
+Andi	: 85 (B)
+Budi	: 92 (A)
+Citra	: 78 (C)
+Dewi	: 95 (A)
+Eka	: 88 (B)
+-----------------------------
+Average  : 87.6
+Highest  : Dewi (95)
+Lowest   : Citra (78)
+```
+
+## Example 8: Modifying All Elements
+
+What if the teacher wants to add a 5-point bonus to all scores?
+
+```cpp
+#include <iostream>
+
+int main() {
+    int scores[] = {75, 82, 68, 90, 71};
+    int length = sizeof(scores) / sizeof(scores[0]);
+
+    std::cout << "Before bonus:" << std::endl;
+    for (int i = 0; i < length; i++) {
+        std::cout << "Student " << i + 1 << ": " << scores[i] << std::endl;
+    }
+
+    // Add 5-point bonus
+    for (int i = 0; i < length; i++) {
+        scores[i] += 5;
+
+        // Make sure it doesn't exceed 100
+        if (scores[i] > 100) {
+            scores[i] = 100;
+        }
+    }
+
+    std::cout << std::endl << "After bonus (+5):" << std::endl;
+    for (int i = 0; i < length; i++) {
+        std::cout << "Student " << i + 1 << ": " << scores[i] << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+Before bonus:
+Student 1: 75
+Student 2: 82
+Student 3: 68
+Student 4: 90
+Student 5: 71
+
+After bonus (+5):
+Student 1: 80
+Student 2: 87
+Student 3: 73
+Student 4: 95
+Student 5: 76
+```
+
+## Common Mistakes
+
+### 1. Off-by-one in loops
+
+```cpp
+int arr[5] = {10, 20, 30, 40, 50};
+
+// WRONG — i <= 5 will access arr[5] which is out of bounds!
+for (int i = 0; i <= 5; i++) {
+    std::cout << arr[i];  // Crash when i = 5!
+}
+
+// CORRECT — i < 5 stops at arr[4]
+for (int i = 0; i < 5; i++) {
+    std::cout << arr[i];
+}
+```
+
+:::warning
+Remember the golden rule: if the index starts from 0, use `<` (not `<=`) for the condition. So `for (int i = 0; i < length; i++)`, **not** `i <= length`.
+:::
+
+### 2. Range-based for cannot modify original elements
+
+```cpp
+int numbers[] = {1, 2, 3, 4, 5};
+
+// WRONG — x is a COPY, not the original element
+for (int x : numbers) {
+    x *= 2;  // Only modifies the copy, the original array stays unchanged!
+}
+
+// CORRECT — use a reference (&) to modify the original elements
+for (int& x : numbers) {
+    x *= 2;  // Now the original array is also modified
+}
+```
+
+### 3. Forgetting to initialize the accumulator variable
+
+```cpp
+// WRONG — total is not initialized, it contains garbage!
+int total;
+for (int i = 0; i < 5; i++) {
+    total += arr[i];  // Adding to a garbage value
+}
+
+// CORRECT
+int total = 0;  // Always initialize to 0!
+for (int i = 0; i < 5; i++) {
+    total += arr[i];
+}
+```
+
+## Exercises
+
+**Exercise 1:** Create a program that asks the user to enter 7 daily temperatures. Then display:
+- All entered temperatures
+- The average temperature
+- The highest and lowest temperatures
+- How many days had a temperature above average
+
+**Exercise 2:** Create a program that stores 10 numbers in an array, then calculate and display:
+- The count of even and odd numbers
+- The total of even numbers and total of odd numbers
+
+**Exercise 3:** Create a "Price Finder" program for a store. Store 5 product names and their prices in two parallel arrays. Ask the user to enter the product name to search for, then display its price (or a "Product not found" message).
+
+:::tip
+For Exercise 1, calculate the average first, then use a second loop to count how many days had a temperature above average.
+:::
+
+## Summary
+
+| Pattern | Code | Purpose |
+|---------|------|---------|
+| Traverse array | `for (int i = 0; i < n; i++)` | Visit all elements |
+| Input array | `std::cin >> arr[i]` inside a loop | Fill array from user |
+| Total/Average | `total += arr[i]`, then `total / n` | Basic statistics |
+| Find max/min | Compare each element with current max/min | Extreme values |
+| Linear search | Loop + `if (arr[i] == target)` | Find a specific element |
+| Range-based for | `for (auto x : arr)` | Modern way to traverse arrays |
+| Modify elements | `for (int& x : arr)` with reference | Change array contents |
+| Accumulator | Variable `total = 0` before loop | Collect results |
+
+Array + loop is a combination you'll use over and over again. Master the patterns above, and you'll be ready to tackle many programming problems! Next, we'll level up to **2D arrays** — arrays inside arrays!

@@ -1,0 +1,378 @@
+---
+title: "Nested Loops"
+unit: 3
+lesson: 5
+description: "Learn to use loops inside loops to create 2-dimensional patterns like tables and grids"
+objectives:
+  - "Understand the concept of loops inside loops (nested loops)"
+  - "Distinguish the roles of the outer loop (rows) and inner loop (columns)"
+  - "Be able to manually trace through nested loop execution"
+  - "Understand the performance impact of nested loops O(n^2)"
+estimatedTime: 40
+prerequisites: ["unit-3/04-break-continue"]
+difficulty: "beginner"
+tags: ["nested-loops", "grid", "table", "repetition"]
+---
+
+# Nested Loops
+
+Imagine you're filling in the class attendance sheet. You go through each row (each student), and for each row you fill in the columns: name, date of birth, address... That's a **loop inside a loop** — or in fancy terms, a **nested loop**!
+
+Nested loops are one of the most important concepts in programming. With them, you can work with 2-dimensional data — rows and columns, like an Excel spreadsheet or a grid in a game.
+
+## Basic Concept: Loop Inside a Loop
+
+Take a look at this structure:
+
+```cpp
+#include <iostream>
+
+int main() {
+    // Outer loop: handles ROWS
+    for (int row = 1; row <= 3; row++) {
+        // Inner loop: handles COLUMNS
+        for (int col = 1; col <= 4; col++) {
+            std::cout << "* ";
+        }
+        std::cout << std::endl;  // move to next line after inner loop finishes
+    }
+
+    return 0;
+}
+```
+
+**Output:**
+```
+* * * *
+* * * *
+* * * *
+```
+
+What's happening here?
+1. The **outer loop** runs 3 times (rows 1, 2, 3)
+2. For **each** iteration of the outer loop, the **inner loop** runs 4 times (columns 1, 2, 3, 4)
+3. After the inner loop finishes, we print `endl` to move to the next line
+4. Total: 3 x 4 = 12 star prints
+
+:::tip
+Easy way to remember: **Outer loop = rows**, **Inner loop = columns** (characters per row). Every time the outer loop advances one step, the inner loop runs from the beginning again.
+:::
+
+## Tracing Execution by Hand (Trace Through)
+
+This is a really important skill! If you can "be the computer" and trace through the code in your head (or on paper), debugging becomes much easier.
+
+Let's trace a smaller nested loop:
+
+```cpp
+#include <iostream>
+
+int main() {
+    for (int i = 1; i <= 2; i++) {
+        for (int j = 1; j <= 3; j++) {
+            std::cout << "(" << i << "," << j << ") ";
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+**Output:**
+```
+(1,1) (1,2) (1,3)
+(2,1) (2,2) (2,3)
+```
+
+**Step-by-step trace:**
+
+| Step | i | j | What's printed |
+|------|---|---|---------------|
+| 1 | 1 | 1 | (1,1) |
+| 2 | 1 | 2 | (1,2) |
+| 3 | 1 | 3 | (1,3) |
+| 4 | 1 | - | endl (new line) |
+| 5 | 2 | 1 | (2,1) |
+| 6 | 2 | 2 | (2,2) |
+| 7 | 2 | 3 | (2,3) |
+| 8 | 2 | - | endl (new line) |
+
+Notice: when `i` goes from 1 to 2, `j` **starts over from 1**. The inner loop always resets every time the outer loop advances.
+
+:::note
+**Tracing tip:** Grab a piece of paper and make a table with columns for each variable. Fill in one row for each step. This is the most effective way to understand nested loops — even professional programmers still use this approach!
+:::
+
+## Example: 10x10 Multiplication Table
+
+Remember the multiplication tables often posted on classroom walls? We can make one with nested loops!
+
+```cpp
+#include <iostream>
+#include <iomanip>  // for setw (set width)
+
+int main() {
+    std::cout << "=== 10x10 MULTIPLICATION TABLE ===" << std::endl;
+    std::cout << std::endl;
+
+    // Column header
+    std::cout << "    ";  // space for the first column
+    for (int j = 1; j <= 10; j++) {
+        std::cout << std::setw(4) << j;
+    }
+    std::cout << std::endl;
+
+    // Separator line
+    std::cout << "   ";
+    for (int j = 1; j <= 10; j++) {
+        std::cout << "----";
+    }
+    std::cout << std::endl;
+
+    // Table contents
+    for (int i = 1; i <= 10; i++) {
+        std::cout << std::setw(2) << i << " |";  // row header
+        for (int j = 1; j <= 10; j++) {
+            std::cout << std::setw(4) << i * j;
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+**Output (partial):**
+```
+=== 10x10 MULTIPLICATION TABLE ===
+
+       1   2   3   4   5   6   7   8   9  10
+   ----------------------------------------
+ 1 |   1   2   3   4   5   6   7   8   9  10
+ 2 |   2   4   6   8  10  12  14  16  18  20
+ 3 |   3   6   9  12  15  18  21  24  27  30
+...
+10 |  10  20  30  40  50  60  70  80  90 100
+```
+
+Pretty cool, right? `std::setw(4)` from `<iomanip>` makes each number occupy 4 characters, so the columns are neatly aligned.
+
+## Example: Square Star Grid
+
+Want to make a box of stars? Easy!
+
+```cpp
+#include <iostream>
+
+int main() {
+    int size;
+
+    std::cout << "Enter the box size: ";
+    std::cin >> size;
+
+    for (int row = 1; row <= size; row++) {
+        for (int col = 1; col <= size; col++) {
+            std::cout << "* ";
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+**Input: 5, Output:**
+```
+* * * * *
+* * * * *
+* * * * *
+* * * * *
+* * * * *
+```
+
+## Watch Out for Performance: O(n^2)
+
+Nested loops are powerful, but there's a price to pay — **performance**.
+
+```cpp
+#include <iostream>
+
+int main() {
+    int n;
+    std::cout << "Enter n: ";
+    std::cin >> n;
+
+    int count = 0;
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            count++;
+        }
+    }
+
+    std::cout << "Total operations: " << count << std::endl;
+
+    return 0;
+}
+```
+
+| n | Total operations |
+|---|-----------------|
+| 5 | 25 |
+| 10 | 100 |
+| 100 | 10,000 |
+| 1,000 | 1,000,000 |
+| 10,000 | 100,000,000 |
+
+See the pattern? When `n` is multiplied by 10, operations are multiplied by **100** (10 squared). This is called **O(n^2)** — quadratic complexity. For small `n` it's no problem, but for large `n`... your computer could take a very long time to "think".
+
+:::warning
+Be careful with nested loops on large data. If the outer loop runs 1,000 times and the inner loop runs 1,000 times, the total is **1,000,000** operations. Three levels of nested loops? That could be **1,000,000,000** (one billion) operations. The computer could freeze!
+:::
+
+## Fun Example: ASCII Loading Bar
+
+Let's make something that looks cool — a simple loading bar!
+
+```cpp
+#include <iostream>
+#include <chrono>   // for time
+#include <thread>   // for sleep
+
+int main() {
+    int total = 20;  // loading bar length
+
+    std::cout << "Downloading file..." << std::endl;
+
+    for (int i = 0; i <= total; i++) {
+        // Calculate percentage
+        int percent = (i * 100) / total;
+
+        // Print the loading bar
+        std::cout << "\r[";  // \r = return to beginning of line
+
+        // Inner loop: print the filled portion
+        for (int j = 0; j < i; j++) {
+            std::cout << "#";
+        }
+
+        // Second inner loop: print the empty portion
+        for (int j = i; j < total; j++) {
+            std::cout << " ";
+        }
+
+        std::cout << "] " << percent << "%";
+        std::cout.flush();  // force display now
+
+        // Wait a moment so the animation is visible
+        std::this_thread::sleep_for(std::chrono::milliseconds(150));
+    }
+
+    std::cout << std::endl;
+    std::cout << "Download complete!" << std::endl;
+
+    return 0;
+}
+```
+
+**Animation in terminal:**
+```
+[##########          ] 50%
+```
+
+Here we use **two inner loops**: one to print `#` (the filled portion) and one to print spaces (the empty portion). The `\r` character moves the cursor back to the beginning of the line, making the loading bar "move" in place.
+
+:::note
+`std::this_thread::sleep_for` requires `#include <chrono>` and `#include <thread>`. This is a modern C++ feature that makes the program "sleep" briefly. Without this delay, the loading bar would finish too fast to see!
+:::
+
+## Break in Nested Loops
+
+Remember `break`? In nested loops, `break` only stops the **innermost** loop where it's located. The outer loop keeps running!
+
+```cpp
+#include <iostream>
+
+int main() {
+    for (int i = 1; i <= 3; i++) {
+        std::cout << "Row " << i << ": ";
+
+        for (int j = 1; j <= 5; j++) {
+            if (j == 4) {
+                break;  // only exits the inner loop!
+            }
+            std::cout << j << " ";
+        }
+
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+**Output:**
+```
+Row 1: 1 2 3
+Row 2: 1 2 3
+Row 3: 1 2 3
+```
+
+Even though the inner loop should run up to `j == 5`, `break` stops it at `j == 4`. But the outer loop (i) still runs 3 times.
+
+:::warning
+If you want to exit **both** loops at once, `break` alone isn't enough. You need an extra trick, like using a `bool` variable:
+
+```cpp
+bool done = false;
+for (int i = 0; i < 10 && !done; i++) {
+    for (int j = 0; j < 10; j++) {
+        if (/* some condition */) {
+            done = true;
+            break;  // exit inner loop
+        }
+    }
+    // done == true, so outer loop also stops
+}
+```
+:::
+
+## Summary
+
+| Concept | Explanation |
+|---------|------------|
+| Nested loop | A loop inside a loop — for working with 2D data |
+| Outer loop | Controls **rows** |
+| Inner loop | Controls **columns** (characters per row) |
+| Inner loop reset | The inner loop starts over every time the outer loop advances |
+| O(n^2) | Nested loop = operations multiply, watch out for performance |
+| `break` in nested loops | Only stops the **innermost** loop |
+
+## Exercises
+
+**Exercise 1:** Create a program that prints a number grid like this (5x5):
+
+```
+1 2 3 4 5
+1 2 3 4 5
+1 2 3 4 5
+1 2 3 4 5
+1 2 3 4 5
+```
+
+**Exercise 2:** Modify Exercise 1 so that the numbers in each row start from the row number:
+
+```
+1 2 3 4 5
+2 3 4 5 6
+3 4 5 6 7
+4 5 6 7 8
+5 6 7 8 9
+```
+
+*Hint: column value = `i + j - 1`*
+
+**Exercise 3:** Create a program that prints a multiplication table based on user input. If the user inputs 5, print a 5x5 table. If they input 7, print a 7x7 table.
+
+**Exercise 4:** Create a "coordinate search" program — the user enters a number, and the program searches for that number in a multiplication grid, then prints the coordinates `(row, column)` where the number is found. Use `break` to stop after finding the first one.

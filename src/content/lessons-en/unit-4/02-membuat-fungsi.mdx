@@ -1,0 +1,628 @@
+---
+title: "Creating Functions"
+unit: 4
+lesson: 2
+description: "Learn to write C++ functions from scratch — from syntax, return types, prototypes, to best practices"
+objectives:
+  - "Write C++ functions with various return types"
+  - "Understand and use function prototypes (forward declarations)"
+  - "Organize code with prototypes above main and definitions below main"
+  - "Apply the single responsibility principle to functions"
+estimatedTime: 40
+prerequisites: ["unit-4/01-apa-itu-fungsi"]
+difficulty: "beginner"
+tags: ["fungsi", "function", "prototype", "forward-declaration", "return-type", "single-responsibility"]
+---
+
+# Creating Functions
+
+In the previous lesson, you learned **what functions are** and why they're important. Now it's time to learn **how to create your own functions** from scratch! We'll cover the complete syntax, various return types, and how to organize your code neatly.
+
+## Complete Syntax for Creating a Function
+
+Here's the basic template for creating a function:
+
+```cpp
+return_type functionName(param_type1 param1, param_type2 param2) {
+    // code to execute
+    return value; // for non-void functions
+}
+```
+
+Let's create your first function from scratch:
+
+```cpp
+#include <iostream>
+
+// Function that adds two numbers
+int add(int a, int b) {
+    int result = a + b;
+    return result;
+}
+
+int main() {
+    int sum = add(3, 7);
+    std::cout << "3 + 7 = " << sum << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+3 + 7 = 10
+```
+
+## Return Type: What Gets Returned?
+
+The return type determines **what data type** the function returns. Here are the most commonly used ones:
+
+### `int` — Returns an integer
+
+```cpp
+#include <iostream>
+
+int calculateSquarePerimeter(int side) {
+    return side * 4;
+}
+
+int main() {
+    std::cout << "Perimeter of square with side 5: " << calculateSquarePerimeter(5) << std::endl;
+    std::cout << "Perimeter of square with side 12: " << calculateSquarePerimeter(12) << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Perimeter of square with side 5: 20
+Perimeter of square with side 12: 48
+```
+
+### `double` — Returns a decimal number
+
+```cpp
+#include <iostream>
+
+double calculateCirclePerimeter(double radius) {
+    return 2 * 3.14159 * radius;
+}
+
+double calculateCircleArea(double radius) {
+    return 3.14159 * radius * radius;
+}
+
+int main() {
+    double r = 7.0;
+
+    std::cout << "Radius: " << r << std::endl;
+    std::cout << "Perimeter: " << calculateCirclePerimeter(r) << std::endl;
+    std::cout << "Area: " << calculateCircleArea(r) << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Radius: 7
+Perimeter: 43.9823
+Area: 153.938
+```
+
+### `bool` — Returns true or false
+
+```cpp
+#include <iostream>
+
+bool isEven(int number) {
+    return number % 2 == 0;
+}
+
+int main() {
+    std::cout << "4 even? " << isEven(4) << std::endl;
+    std::cout << "7 even? " << isEven(7) << std::endl;
+
+    if (isEven(10)) {
+        std::cout << "10 is indeed even!" << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+4 even? 1
+7 even? 0
+10 is indeed even!
+```
+
+### `std::string` — Returns text
+
+```cpp
+#include <iostream>
+#include <string>
+
+std::string getGrade(int score) {
+    if (score >= 90) {
+        return "A";
+    } else if (score >= 80) {
+        return "B";
+    } else if (score >= 70) {
+        return "C";
+    } else if (score >= 60) {
+        return "D";
+    } else {
+        return "E";
+    }
+}
+
+int main() {
+    int andiScore = 85;
+    int budiScore = 72;
+
+    std::cout << "Andi: " << andiScore << " -> Grade " << getGrade(andiScore) << std::endl;
+    std::cout << "Budi: " << budiScore << " -> Grade " << getGrade(budiScore) << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Andi: 85 -> Grade B
+Budi: 72 -> Grade C
+```
+
+### `void` — Returns nothing
+
+```cpp
+#include <iostream>
+
+void printMenu() {
+    std::cout << "=== MAIN MENU ===" << std::endl;
+    std::cout << "1. Start Game" << std::endl;
+    std::cout << "2. Settings" << std::endl;
+    std::cout << "3. Exit" << std::endl;
+    std::cout << "==================" << std::endl;
+}
+
+int main() {
+    printMenu();
+    return 0;
+}
+```
+
+Output:
+```
+=== MAIN MENU ===
+1. Start Game
+2. Settings
+3. Exit
+==================
+```
+
+## Function Prototype (Forward Declaration)
+
+As your program gets bigger, you'll want to arrange your code so that `main()` is at the **top** (so it's easy to find), and the function definitions are at the **bottom**. The problem is, the compiler reads from top to bottom — if a function hasn't been declared when it's called, the compiler will throw an error!
+
+The solution: **function prototype** (or forward declaration).
+
+```cpp
+#include <iostream>
+
+// PROTOTYPE — declaration above main
+double celsiusToFahrenheit(double celsius);
+double fahrenheitToCelsius(double fahrenheit);
+void printResult(double celsius, double fahrenheit);
+
+int main() {
+    double tempC = 100.0;
+    double tempF = celsiusToFahrenheit(tempC);
+
+    printResult(tempC, tempF);
+
+    double tempF2 = 72.0;
+    double tempC2 = fahrenheitToCelsius(tempF2);
+
+    printResult(tempC2, tempF2);
+
+    return 0;
+}
+
+// DEFINITION — below main
+double celsiusToFahrenheit(double celsius) {
+    return (celsius * 9.0 / 5.0) + 32.0;
+}
+
+double fahrenheitToCelsius(double fahrenheit) {
+    return (fahrenheit - 32.0) * 5.0 / 9.0;
+}
+
+void printResult(double celsius, double fahrenheit) {
+    std::cout << celsius << " C = " << fahrenheit << " F" << std::endl;
+}
+```
+
+Output:
+```
+100 C = 212 F
+22.2222 C = 72 F
+```
+
+:::note
+**Recommended pattern:**
+1. `#include` at the very top
+2. **Prototype** all functions after includes
+3. **`main()`** in the middle
+4. **Definitions** of functions below main
+
+This pattern makes `main()` easy to find and the code more organized.
+:::
+
+### Why Are Prototypes Needed?
+
+Without prototypes, you'd have to write all functions **above** `main()`. This is still okay for small programs, but if you have 20-30 functions, you'd have to scroll way down to find `main()`. Prototypes solve this problem.
+
+```cpp
+// WITHOUT prototype — all functions must be above main
+// (possible, but messy for large programs)
+
+void functionA() { /* ... */ }
+void functionB() { /* ... */ }
+void functionC() { /* ... */ }
+// ... 20 more functions ...
+
+int main() {
+    // main is buried at the bottom
+}
+```
+
+```cpp
+// WITH prototype — main at the top, clean!
+
+void functionA();
+void functionB();
+void functionC();
+
+int main() {
+    // main is easy to find
+}
+
+void functionA() { /* ... */ }
+void functionB() { /* ... */ }
+void functionC() { /* ... */ }
+```
+
+## Complete Example: Check Prime Number
+
+Here's a fun example — checking whether a number is prime:
+
+```cpp
+#include <iostream>
+
+bool isPrime(int number);
+void checkAndPrint(int number);
+
+int main() {
+    checkAndPrint(2);
+    checkAndPrint(7);
+    checkAndPrint(10);
+    checkAndPrint(13);
+    checkAndPrint(1);
+
+    return 0;
+}
+
+bool isPrime(int number) {
+    if (number <= 1) {
+        return false;
+    }
+
+    for (int i = 2; i < number; i++) {
+        if (number % i == 0) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+void checkAndPrint(int number) {
+    if (isPrime(number)) {
+        std::cout << number << " is a prime number" << std::endl;
+    } else {
+        std::cout << number << " is not a prime number" << std::endl;
+    }
+}
+```
+
+Output:
+```
+2 is a prime number
+7 is a prime number
+10 is not a prime number
+13 is a prime number
+1 is not a prime number
+```
+
+## Complete Example: Simple Calculator
+
+```cpp
+#include <iostream>
+
+double add(double a, double b);
+double subtract(double a, double b);
+double multiply(double a, double b);
+double divide(double a, double b);
+void printResult(std::string operation, double a, double b, double result);
+
+int main() {
+    double x = 15.0;
+    double y = 4.0;
+
+    printResult("Addition", x, y, add(x, y));
+    printResult("Subtraction", x, y, subtract(x, y));
+    printResult("Multiplication", x, y, multiply(x, y));
+    printResult("Division", x, y, divide(x, y));
+
+    return 0;
+}
+
+double add(double a, double b) {
+    return a + b;
+}
+
+double subtract(double a, double b) {
+    return a - b;
+}
+
+double multiply(double a, double b) {
+    return a * b;
+}
+
+double divide(double a, double b) {
+    if (b == 0) {
+        std::cout << "Error: cannot divide by zero!" << std::endl;
+        return 0;
+    }
+    return a / b;
+}
+
+void printResult(std::string operation, double a, double b, double result) {
+    std::cout << operation << ": " << a << " and " << b << " = " << result << std::endl;
+}
+```
+
+Output:
+```
+Addition: 15 and 4 = 19
+Subtraction: 15 and 4 = 11
+Multiplication: 15 and 4 = 60
+Division: 15 and 4 = 3.75
+```
+
+## Debugging Tip: Print Values Before Return
+
+When your function produces the wrong value, the quickest way to debug is to print the value before returning:
+
+```cpp
+#include <iostream>
+
+double calculateDiscount(double price, double discountPercent) {
+    double discount = price * discountPercent / 100.0;
+    double finalPrice = price - discount;
+
+    // Debug: print to verify the calculation is correct
+    std::cout << "[DEBUG] Original price: " << price << std::endl;
+    std::cout << "[DEBUG] Discount " << discountPercent << "%: " << discount << std::endl;
+    std::cout << "[DEBUG] Final price: " << finalPrice << std::endl;
+
+    return finalPrice;
+}
+
+int main() {
+    double pay = calculateDiscount(100000, 15);
+    std::cout << "Amount to pay: $" << pay << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+[DEBUG] Original price: 100000
+[DEBUG] Discount 15%: 15000
+[DEBUG] Final price: 85000
+Amount to pay: $85000
+```
+
+:::tip
+After you find the bug, don't forget to **delete or comment out** the debug lines! You don't want users seeing `[DEBUG]` messages in your final program.
+:::
+
+## Best Practice: One Function = One Task
+
+The **Single Responsibility** principle — each function should ideally only do **one thing**. Don't create a function that "does everything" but becomes hard to understand.
+
+```cpp
+// NOT GREAT — one function doing too much
+void processScore(int score) {
+    // Calculate grade
+    std::string grade;
+    if (score >= 90) grade = "A";
+    else if (score >= 80) grade = "B";
+    else grade = "C";
+
+    // Print header
+    std::cout << "==================" << std::endl;
+    std::cout << "  STUDENT REPORT" << std::endl;
+    std::cout << "==================" << std::endl;
+
+    // Print results
+    std::cout << "Score: " << score << std::endl;
+    std::cout << "Grade: " << grade << std::endl;
+
+    // Print message
+    if (score >= 75) {
+        std::cout << "Status: PASS" << std::endl;
+    } else {
+        std::cout << "Status: FAIL" << std::endl;
+    }
+}
+```
+
+```cpp
+// BETTER — each function has one clear task
+
+#include <iostream>
+#include <string>
+
+std::string getGrade(int score);
+bool isPassing(int score, int passingGrade);
+void printLine();
+void printReport(int score);
+
+int main() {
+    printReport(85);
+    std::cout << std::endl;
+    printReport(60);
+
+    return 0;
+}
+
+std::string getGrade(int score) {
+    if (score >= 90) return "A";
+    else if (score >= 80) return "B";
+    else if (score >= 70) return "C";
+    else if (score >= 60) return "D";
+    else return "E";
+}
+
+bool isPassing(int score, int passingGrade) {
+    return score >= passingGrade;
+}
+
+void printLine() {
+    std::cout << "==================" << std::endl;
+}
+
+void printReport(int score) {
+    printLine();
+    std::cout << "  STUDENT REPORT" << std::endl;
+    printLine();
+    std::cout << "Score: " << score << std::endl;
+    std::cout << "Grade: " << getGrade(score) << std::endl;
+
+    if (isPassing(score, 75)) {
+        std::cout << "Status: PASS" << std::endl;
+    } else {
+        std::cout << "Status: FAIL" << std::endl;
+    }
+    printLine();
+}
+```
+
+Output:
+```
+==================
+  STUDENT REPORT
+==================
+Score: 85
+Grade: B
+Status: PASS
+==================
+
+==================
+  STUDENT REPORT
+==================
+Score: 60
+Grade: D
+Status: FAIL
+==================
+```
+
+## Common Mistakes
+
+### 1. Prototype doesn't match the definition
+
+```cpp
+// Prototype
+int calculate(int a, int b);
+
+// Definition — ERROR! Parameters differ from prototype
+int calculate(int a, double b) {
+    return a + b;
+}
+```
+
+:::warning
+The prototype and definition must be **exactly the same** — return type, function name, number and types of parameters. If they differ, the compiler will be confused!
+:::
+
+### 2. Forgetting the semicolon in the prototype
+
+```cpp
+// WRONG — missing semicolon
+int add(int a, int b)
+
+// CORRECT
+int add(int a, int b);
+```
+
+### 3. Return type doesn't match
+
+```cpp
+// WRONG — says return int but returns string
+int getName() {
+    return "Andi"; // ERROR!
+}
+
+// CORRECT
+std::string getName() {
+    return "Andi";
+}
+```
+
+### 4. Calling a function without parentheses
+
+```cpp
+// WRONG — without () it's not calling the function!
+printMenu;
+
+// CORRECT
+printMenu();
+```
+
+## Exercises
+
+**Exercise 1:** Create a function `double calculateBMI(double weightKg, double heightM)` that calculates Body Mass Index using the formula: weight / (height * height). Call this function with several sample data points and display the results.
+
+**Exercise 2:** Create a program with prototypes above `main` and definitions below `main` that has the following functions:
+- `int rectangleArea(int length, int width)`
+- `int rectanglePerimeter(int length, int width)`
+- `void printInfo(int length, int width)`
+
+The `printInfo` function should call both other functions and display the results.
+
+**Exercise 3:** Create a "Temperature Converter" program with functions:
+- `double celsiusToFahrenheit(double c)`
+- `double celsiusToKelvin(double c)`
+- `void printAllConversions(double celsius)`
+
+Call `printAllConversions` for temperatures of 0, 37, and 100 degrees Celsius.
+
+## Summary
+
+| Concept | Description |
+|---------|-------------|
+| **Return type** | The data type returned: `int`, `double`, `bool`, `std::string`, `void` |
+| **Prototype** | Function declaration above `main` ending with `;` |
+| **Definition** | Complete function body below `main` |
+| **Organization pattern** | Includes, prototypes, `main()`, definitions |
+| **Single Responsibility** | Each function should ideally do only one task |
+| **Debug tip** | Print values before `return` to verify calculations are correct |
+
+Now you can create your own functions with various return types! But our functions aren't very flexible yet — what if we want a function that can accept different inputs? In the next lesson, we'll dive deeper into **parameters and arguments**!

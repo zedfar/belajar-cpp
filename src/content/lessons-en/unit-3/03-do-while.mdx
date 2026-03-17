@@ -1,0 +1,416 @@
+---
+title: "Do-While Loop"
+unit: 3
+lesson: 3
+description: "Learn about the do-while loop — a loop that always executes at least once before checking the condition"
+objectives:
+  - "Understand the difference between do-while and while loops"
+  - "Write do-while loops with correct syntax"
+  - "Know when to use do-while (especially for input validation)"
+  - "Create a simple menu program with do-while"
+estimatedTime: 20
+prerequisites: ["unit-3/02-for-loop"]
+difficulty: "beginner"
+tags: ["do-while", "loop", "repetition", "menu", "input-validation"]
+---
+
+# Do-While Loop
+
+You already know the `while` loop and the `for` loop. Now there's one more member of the loop family: the **do-while loop**. The difference? Do-while **always runs its code at least once**, and only then checks the condition.
+
+## Analogy: Try First, Then Judge
+
+Imagine you're at the school cafeteria trying a new dish:
+
+```
+DO:
+    Try one bite of the new food
+WHILE the food tastes good
+```
+
+You **have to try first** at least once — you can't say it's good or bad before tasting it, right? Only after trying do you decide: keep eating or stop.
+
+Compare with a while loop:
+```
+WHILE the food tastes good:
+    Eat one bite
+```
+
+With while, you check first before eating. But... how can you know if it's good before trying?
+
+## Do-While Syntax
+
+```cpp
+do {
+    // code that repeats
+} while (condition);
+```
+
+**Note:** there's a **semicolon `;`** after `while (condition)`! This is different from a regular while loop.
+
+**The flow:**
+1. Execute the code inside `do { ... }`
+2. Check the `condition` in `while`
+3. If `true` — go back to step 1
+4. If `false` — exit the loop
+
+```
+      +-----------+
+      |  Code     |<------+
+      |  block    |       |
+      +-----+-----+      |
+            v             |
+      +-----------+       |
+      |Check cond.|       |
+      +-----+-----+      |
+       true/  \false      |
+           /    \         |
+          +------+    (exit)
+```
+
+## Example 1: Difference Between While vs Do-While
+
+This is the clearest example to see the difference:
+
+```cpp
+#include <iostream>
+
+int main() {
+    // WHILE loop — condition is checked FIRST
+    std::cout << "=== While Loop ===" << std::endl;
+    int a = 10;
+    while (a < 5) {
+        std::cout << "a = " << a << std::endl;
+        a++;
+    }
+    std::cout << "(No output — condition was immediately false)" << std::endl;
+
+    std::cout << std::endl;
+
+    // DO-WHILE loop — code runs FIRST
+    std::cout << "=== Do-While Loop ===" << std::endl;
+    int b = 10;
+    do {
+        std::cout << "b = " << b << std::endl;
+        b++;
+    } while (b < 5);
+    std::cout << "(Ran once even though condition is false)" << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+=== While Loop ===
+(No output — condition was immediately false)
+
+=== Do-While Loop ===
+b = 10
+(Ran once even though condition is false)
+```
+
+See? The while loop doesn't print anything because `10 < 5` is immediately `false`. But do-while still runs the code block **once** before checking the condition.
+
+## Example 2: Input Validation from the User
+
+This is the **most common** use of do-while. You want to ask the user to enter a number, and if it's wrong, ask again:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int score;
+
+    do {
+        std::cout << "Enter a score (0-100): ";
+        std::cin >> score;
+
+        if (score < 0 || score > 100) {
+            std::cout << "Invalid score! Try again." << std::endl;
+        }
+    } while (score < 0 || score > 100);
+
+    std::cout << "Your score: " << score << ". Thank you!" << std::endl;
+
+    return 0;
+}
+```
+
+Output (example interaction):
+```
+Enter a score (0-100): 150
+Invalid score! Try again.
+Enter a score (0-100): -10
+Invalid score! Try again.
+Enter a score (0-100): 85
+Your score: 85. Thank you!
+```
+
+:::note
+Compare this with the while loop version from the previous lesson — there we had to write `std::cin` **twice** (once before the loop, once inside). With do-while, we only need it **once** because the code always runs first before checking.
+:::
+
+## Example 3: Simple Menu Program
+
+Do-while is perfect for making programs with menus that keep repeating until the user chooses to exit:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int choice;
+
+    do {
+        std::cout << std::endl;
+        std::cout << "===== SIMPLE CALCULATOR =====" << std::endl;
+        std::cout << "1. Addition" << std::endl;
+        std::cout << "2. Subtraction" << std::endl;
+        std::cout << "3. Multiplication" << std::endl;
+        std::cout << "4. Division" << std::endl;
+        std::cout << "0. Exit" << std::endl;
+        std::cout << "Your choice: ";
+        std::cin >> choice;
+
+        if (choice == 1) {
+            int a, b;
+            std::cout << "Enter two numbers: ";
+            std::cin >> a >> b;
+            std::cout << "Result: " << a << " + " << b << " = " << a + b << std::endl;
+        } else if (choice == 2) {
+            int a, b;
+            std::cout << "Enter two numbers: ";
+            std::cin >> a >> b;
+            std::cout << "Result: " << a << " - " << b << " = " << a - b << std::endl;
+        } else if (choice == 3) {
+            int a, b;
+            std::cout << "Enter two numbers: ";
+            std::cin >> a >> b;
+            std::cout << "Result: " << a << " x " << b << " = " << a * b << std::endl;
+        } else if (choice == 4) {
+            int a, b;
+            std::cout << "Enter two numbers: ";
+            std::cin >> a >> b;
+            if (b != 0) {
+                std::cout << "Result: " << a << " / " << b << " = " << a / b << std::endl;
+            } else {
+                std::cout << "Error: cannot divide by zero!" << std::endl;
+            }
+        } else if (choice != 0) {
+            std::cout << "Invalid choice!" << std::endl;
+        }
+    } while (choice != 0);
+
+    std::cout << "Thank you! See you later!" << std::endl;
+
+    return 0;
+}
+```
+
+Output (example interaction):
+```
+===== SIMPLE CALCULATOR =====
+1. Addition
+2. Subtraction
+3. Multiplication
+4. Division
+0. Exit
+Your choice: 1
+Enter two numbers: 15 8
+Result: 15 + 8 = 23
+
+===== SIMPLE CALCULATOR =====
+1. Addition
+2. Subtraction
+3. Multiplication
+4. Division
+0. Exit
+Your choice: 3
+Enter two numbers: 6 7
+Result: 6 x 7 = 42
+
+===== SIMPLE CALCULATOR =====
+1. Addition
+2. Subtraction
+3. Multiplication
+4. Division
+0. Exit
+Your choice: 0
+Thank you! See you later!
+```
+
+:::tip
+The pattern of "display menu, get input, process, repeat until exit" is very common in many programs. Do-while is very natural for this pattern because the menu must be displayed at least once.
+:::
+
+## Example 4: Guess the Number
+
+A simple game where the user has to guess a secret number:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int secret = 42;  // the number to guess
+    int guess;
+    int attempts = 0;
+
+    std::cout << "=== GUESS THE NUMBER (1-100) ===" << std::endl;
+
+    do {
+        std::cout << "Your guess: ";
+        std::cin >> guess;
+        attempts++;
+
+        if (guess < secret) {
+            std::cout << "Too low! Try again." << std::endl;
+        } else if (guess > secret) {
+            std::cout << "Too high! Try again." << std::endl;
+        }
+    } while (guess != secret);
+
+    std::cout << "CORRECT! You guessed it in "
+              << attempts << " attempts!" << std::endl;
+
+    return 0;
+}
+```
+
+Output (example interaction):
+```
+=== GUESS THE NUMBER (1-100) ===
+Your guess: 50
+Too high! Try again.
+Your guess: 25
+Too low! Try again.
+Your guess: 42
+CORRECT! You guessed it in 3 attempts!
+```
+
+## Example 5: Password Prompt
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string password;
+    std::string correctPassword = "secret123";
+    int remaining = 3;
+
+    do {
+        std::cout << "Enter password (" << remaining << " attempts left): ";
+        std::cin >> password;
+        remaining--;
+
+        if (password != correctPassword && remaining > 0) {
+            std::cout << "Wrong password!" << std::endl;
+        }
+    } while (password != correctPassword && remaining > 0);
+
+    if (password == correctPassword) {
+        std::cout << "Access granted! Welcome." << std::endl;
+    } else {
+        std::cout << "Access denied! Too many attempts." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output (example interaction):
+```
+Enter password (3 attempts left): abc
+Wrong password!
+Enter password (2 attempts left): secret123
+Access granted! Welcome.
+```
+
+## Common Mistakes
+
+### 1. Forgetting the semicolon after `while`
+
+```cpp
+// WRONG — will cause a compile error
+do {
+    std::cout << "Hello" << std::endl;
+} while (condition)   // Missing semicolon!
+
+// CORRECT — note the semicolon at the end
+do {
+    std::cout << "Hello" << std::endl;
+} while (condition);  // Semicolon is required!
+```
+
+:::warning
+Forgetting the semicolon `;` after `while(condition)` in a do-while is a very common mistake. The compiler will give an error that can sometimes be confusing. Always remember: do-while **needs a semicolon** at the end!
+:::
+
+### 2. Using do-while when a regular while would suffice
+
+```cpp
+// No need for do-while when you can use while
+// LESS APPROPRIATE
+int i = 1;
+do {
+    std::cout << i << " ";
+    i++;
+} while (i <= 5);
+
+// MORE APPROPRIATE — use for since the iteration count is clear
+for (int i = 1; i <= 5; i++) {
+    std::cout << i << " ";
+}
+```
+
+### 3. Reversed condition
+
+```cpp
+// WRONG — the loop stops immediately because the condition is wrong
+int score;
+do {
+    std::cout << "Enter a score (0-100): ";
+    std::cin >> score;
+} while (score >= 0 && score <= 100);  // Should be INVALID!
+
+// CORRECT — repeat WHILE input is INVALID
+do {
+    std::cout << "Enter a score (0-100): ";
+    std::cin >> score;
+} while (score < 0 || score > 100);  // Repeat if out of range
+```
+
+## When to Use Do-While?
+
+Use do-while when:
+1. **Input validation** — you must get input first before you can check it
+2. **Program menus** — the menu must be displayed at least once
+3. **Game loops** — the game must run at least one round
+4. **User confirmation** — ask "Continue?" after finishing
+
+Don't use do-while when:
+1. You know how many times the loop should run (use `for`)
+2. There's a chance the loop doesn't need to run at all (use `while`)
+
+## Exercises
+
+**Exercise 1:** Create a program that keeps asking the user to enter positive numbers. Each number is added to a running total. The program stops when the user enters 0 (zero), then displays the total sum. Use do-while.
+
+**Exercise 2:** Create a "Mini Quiz" program with 3 multiple-choice questions. For each question, use do-while so the user must answer A, B, C, or D. If they enter a different letter, ask again. At the end, display the total score.
+
+:::tip
+For Exercise 2, you can use the `char` type to store the user's answer, and check whether the answer is 'A', 'B', 'C', or 'D'.
+:::
+
+## Summary
+
+| Concept | Explanation |
+|---------|-------------|
+| `do { ... } while (condition);` | Run the code first, then check the condition |
+| At least once | The code inside `do` is **guaranteed** to run at least once |
+| Semicolon | A `;` is **required** after `while(condition)` |
+| Input validation | The most common use case for do-while |
+| Program menus | Great fit because the menu must be displayed at least once |
+| While vs do-while | While: check first, do-while: run first |
+
+Now you know all three types of loops in C++! But there are two important statements that can control the flow of loops more precisely: **break** and **continue**. Let's learn about them in the next lesson!

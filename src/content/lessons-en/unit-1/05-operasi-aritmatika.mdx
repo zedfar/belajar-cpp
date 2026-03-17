@@ -1,0 +1,373 @@
+---
+title: "Arithmetic Operations"
+unit: 1
+lesson: 5
+description: "Learn basic math operations and operator precedence rules in C++"
+objectives:
+  - "Use arithmetic operators: +, -, *, /, %"
+  - "Understand integer division and modulo"
+  - "Learn operator precedence"
+estimatedTime: 30
+prerequisites: ["unit-1/04"]
+difficulty: "beginner"
+tags: ["arithmetic", "operators", "math", "modulo", "precedence"]
+---
+
+# Arithmetic Operations
+
+Computers are fundamentally very fast calculating machines — the word "computer" itself comes from "to compute" (to calculate). So it's only natural that C++ has strong math capabilities. In this lesson, we'll learn the basic arithmetic operators that you'll use in almost every program.
+
+## Basic Arithmetic Operators
+
+C++ provides five basic arithmetic operators:
+
+| Operator | Name | Example | Result |
+|----------|------|---------|--------|
+| `+` | Addition | `5 + 3` | `8` |
+| `-` | Subtraction | `10 - 4` | `6` |
+| `*` | Multiplication | `6 * 7` | `42` |
+| `/` | Division | `15 / 3` | `5` |
+| `%` | Modulo (remainder) | `17 % 5` | `2` |
+
+Let's go through each one with code examples you can run.
+
+### Addition (`+`) and Subtraction (`-`)
+
+```cpp
+#include <iostream>
+
+int main() {
+    int a = 15;
+    int b = 7;
+
+    int sum = a + b;
+    int difference = a - b;
+
+    std::cout << a << " + " << b << " = " << sum << std::endl;
+    std::cout << a << " - " << b << " = " << difference << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+15 + 7 = 22
+15 - 7 = 8
+```
+
+No surprises here — exactly the same as the math you already know.
+
+### Multiplication (`*`)
+
+In math we use `x` or `.` for multiplication. In C++ (and almost all programming languages), we use the **asterisk** (`*`):
+
+```cpp
+#include <iostream>
+
+int main() {
+    int length = 8;
+    int width = 5;
+    int area = length * width;
+
+    std::cout << "Area of the rectangle: " << area << " cm2" << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Area of the rectangle: 40 cm2
+```
+
+### Division (`/`)
+
+This is where things get interesting. Division in C++ behaves **differently** depending on the data types:
+
+```cpp
+#include <iostream>
+
+int main() {
+    // Integer division (whole numbers)
+    int a = 7;
+    int b = 2;
+    std::cout << "7 / 2 = " << a / b << std::endl;
+
+    // Double division (decimal numbers)
+    double c = 7.0;
+    double d = 2.0;
+    std::cout << "7.0 / 2.0 = " << c / d << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+7 / 2 = 3
+7.0 / 2.0 = 3.5
+```
+
+Wait — `7 / 2 = 3`? Not 3.5?
+
+:::warning
+**Integer Division Trap!** When both operands are `int`, C++ performs **integer division** — the result is truncated (not rounded), and the decimal part is discarded. `7 / 2` produces `3`, not `3.5`. This is one of the most common "gotchas" for C++ beginners!
+:::
+
+**How to get a decimal result:**
+
+```cpp
+// Option 1: Use the double type
+double result1 = 7.0 / 2.0;    // 3.5
+
+// Option 2: Cast one of the operands to double
+int x = 7, y = 2;
+double result2 = (double)x / y;  // 3.5
+
+// Option 3: At least one operand must be double
+double result3 = 7.0 / 2;       // 3.5
+double result4 = 7 / 2.0;       // 3.5
+```
+
+As long as **at least one** of the two numbers is a `double`, the result will be a `double` as well.
+
+### Modulo (`%`) — Remainder
+
+The modulo operator returns the **remainder** of a division. This might sound unfamiliar, but it's actually used very frequently in programming.
+
+Think of it this way: you have 17 cookies and want to divide them equally among 5 people.
+- Each person gets: `17 / 5 = 3` cookies (integer division)
+- Cookies left over: `17 % 5 = 2` cookies
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "17 % 5 = " << 17 % 5 << std::endl;  // 2
+    std::cout << "10 % 3 = " << 10 % 3 << std::endl;  // 1
+    std::cout << "20 % 4 = " << 20 % 4 << std::endl;  // 0 (evenly divisible)
+    std::cout << "7 % 10 = " << 7 % 10 << std::endl;  // 7
+
+    return 0;
+}
+```
+
+Output:
+```
+17 % 5 = 2
+10 % 3 = 1
+20 % 4 = 0
+7 % 10 = 7
+```
+
+**Common uses of modulo:**
+
+1. **Check odd/even:** `number % 2` — if the result is 0, it's even; if 1, it's odd
+2. **Check multiples:** `number % 3 == 0` — true if the number is a multiple of 3
+3. **Limit a range:** `number % 12` — result is always 0-11 (useful for hours)
+4. **Get the last digit:** `number % 10` — gives the ones digit
+
+```cpp
+#include <iostream>
+
+int main() {
+    int number = 17;
+
+    if (number % 2 == 0) {
+        std::cout << number << " is even" << std::endl;
+    } else {
+        std::cout << number << " is odd" << std::endl;
+    }
+
+    std::cout << "The last digit of " << number << " is " << number % 10 << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+17 is odd
+The last digit of 17 is 7
+```
+
+:::note
+The `%` operator can only be used with **integers** (`int`). You cannot do `7.5 % 2` — that will produce an error.
+:::
+
+## Operator Precedence (Priority)
+
+Just like in math, C++ has rules for the order of operations. Multiplication and division are performed **before** addition and subtraction:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int result1 = 2 + 3 * 4;     // 2 + 12 = 14 (not 20!)
+    int result2 = (2 + 3) * 4;   // 5 * 4 = 20 (using parentheses)
+
+    std::cout << "2 + 3 * 4 = " << result1 << std::endl;
+    std::cout << "(2 + 3) * 4 = " << result2 << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+2 + 3 * 4 = 14
+(2 + 3) * 4 = 20
+```
+
+### Precedence Table (Simplified)
+
+| Priority | Operators | Example |
+|----------|-----------|---------|
+| 1 (highest) | `()` (parentheses) | `(2 + 3)` |
+| 2 | `*`, `/`, `%` | `4 * 5`, `10 / 2`, `7 % 3` |
+| 3 (lowest) | `+`, `-` | `3 + 4`, `8 - 2` |
+
+Operators with equal precedence are evaluated **from left to right**:
+
+```cpp
+int result = 20 / 4 * 2;  // (20 / 4) * 2 = 5 * 2 = 10
+```
+
+:::tip
+**Practical tip:** If you're unsure about the order of operations, **use parentheses**. Parentheses make code clearer and prevent bugs. There's nothing wrong with writing `(a * b) + c` even though the result is the same without parentheses — clarity is more important than brevity.
+:::
+
+## Operations with Variables
+
+Of course, arithmetic operators can be used with variables, not just literal numbers:
+
+```cpp
+#include <iostream>
+
+int main() {
+    double price = 25000;
+    int quantity = 3;
+    double discount = 0.1;  // 10%
+
+    double subtotal = price * quantity;
+    double savings = subtotal * discount;
+    double total = subtotal - savings;
+
+    std::cout << "Unit price  : Rp " << price << std::endl;
+    std::cout << "Quantity    : " << quantity << std::endl;
+    std::cout << "Subtotal    : Rp " << subtotal << std::endl;
+    std::cout << "Discount(10%): Rp " << savings << std::endl;
+    std::cout << "Total       : Rp " << total << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Unit price  : Rp 25000
+Quantity    : 3
+Subtotal    : Rp 75000
+Discount(10%): Rp 7500
+Total       : Rp 67500
+```
+
+## Compound Assignment Operators
+
+C++ has shortcuts for a common operation — modifying a variable based on its current value:
+
+```cpp
+int score = 100;
+
+score = score + 10;   // Long form
+score += 10;          // Short form (same result)
+
+score = score - 5;    // Long form
+score -= 5;           // Short form
+```
+
+| Operator | Meaning | Example | Equivalent to |
+|----------|---------|---------|--------------|
+| `+=` | Add and assign | `x += 5` | `x = x + 5` |
+| `-=` | Subtract and assign | `x -= 3` | `x = x - 3` |
+| `*=` | Multiply and assign | `x *= 2` | `x = x * 2` |
+| `/=` | Divide and assign | `x /= 4` | `x = x / 4` |
+| `%=` | Modulo and assign | `x %= 3` | `x = x % 3` |
+
+And there are two special operators that are used very frequently:
+
+```cpp
+int counter = 0;
+
+counter++;    // Increment: counter = counter + 1 (now 1)
+counter++;    // Increment again (now 2)
+counter--;    // Decrement: counter = counter - 1 (now 1)
+```
+
+`++` (increment) and `--` (decrement) increase or decrease a variable by 1. By the way, this is where the name **C++** comes from — "C plus 1".
+
+## Full Program: Math Formula Calculator
+
+```cpp
+#include <iostream>
+
+int main() {
+    // Calculate area and circumference of a circle
+    double pi = 3.14159;
+    double radius;
+
+    std::cout << "Enter the radius of the circle: ";
+    std::cin >> radius;
+
+    double area = pi * radius * radius;
+    double circumference = 2 * pi * radius;
+
+    std::cout << "\nResults:" << std::endl;
+    std::cout << "Radius        : " << radius << std::endl;
+    std::cout << "Area          : " << area << std::endl;
+    std::cout << "Circumference : " << circumference << std::endl;
+
+    return 0;
+}
+```
+
+Example interaction:
+```
+Enter the radius of the circle: 7
+
+Results:
+Radius        : 7
+Area          : 153.938
+Circumference : 43.9823
+```
+
+## Exercises
+
+**Exercise:** Create a program that takes the length and width of a rectangle as input, then calculates and displays its **area** and **perimeter**.
+
+Formulas:
+- Area = length x width
+- Perimeter = 2 x (length + width)
+
+Expected interaction example:
+```
+Enter length: 10
+Enter width: 5
+
+Rectangle area: 50
+Rectangle perimeter: 30
+```
+
+**Bonus challenge:** Modify your program to also calculate the diagonal length. Formula: diagonal = square root of (length^2 + width^2). Hint: use `#include <cmath>` and the `sqrt()` function.
+
+## Summary
+
+- Arithmetic operators: `+`, `-`, `*`, `/`, `%`
+- **Integer division** truncates the decimal: `7 / 2 = 3`
+- **Modulo** (`%`) returns the remainder: `17 % 5 = 2`
+- Precedence: parentheses `>` multiplication/division/modulo `>` addition/subtraction
+- Compound operators: `+=`, `-=`, `*=`, `/=`, `%=`
+- Increment (`++`) and decrement (`--`) add/subtract 1
+
+In the next lesson, we'll learn about **strings** in more depth — not just displaying them, but manipulating them too!

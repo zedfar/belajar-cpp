@@ -1,0 +1,498 @@
+---
+title: "Parameters & Arguments"
+unit: 4
+lesson: 3
+description: "Understanding the difference between parameters and arguments, multiple parameters, default values, and passing by value"
+objectives:
+  - "Distinguish between parameters (in the definition) and arguments (when calling)"
+  - "Use multiple parameters with different types"
+  - "Use default parameter values"
+  - "Understand the concept of passing by value"
+  - "Avoid common mistakes related to parameters"
+estimatedTime: 35
+prerequisites: ["unit-4/02-membuat-fungsi"]
+difficulty: "beginner"
+tags: ["parameter", "argumen", "argument", "default-parameter", "pass-by-value", "overloading"]
+---
+
+# Parameters & Arguments
+
+If a function is like a cooking recipe, then **parameters** are the **list of ingredients** needed, and **arguments** are the **actual ingredients** you provide when cooking. Let's learn more!
+
+## Parameters vs Arguments — What's the Difference?
+
+Many people (even professional programmers!) often treat these as the same thing. But technically, they're different:
+
+```cpp
+#include <iostream>
+
+//              parameter (in the definition)
+//              vvvvvvvvvvvvvvvv
+void greet(std::string name) {
+    std::cout << "Hello, " << name << "!" << std::endl;
+}
+
+int main() {
+    //      argument (when calling)
+    //      vvvvvvv
+    greet("Andi");
+    greet("Budi");
+
+    return 0;
+}
+```
+
+Output:
+```
+Hello, Andi!
+Hello, Budi!
+```
+
+| Term | When | Example |
+|------|------|---------|
+| **Parameter** | When **creating** the function (in the definition/prototype) | `std::string name` |
+| **Argument** | When **calling** the function | `"Andi"`, `"Budi"` |
+
+:::tip
+An easy way to remember: **Parameters** are in the function's **Pattern** (definition). **Arguments** are the **Actual** values when calling. Both start with P and A!
+:::
+
+## Multiple Parameters
+
+Functions can accept **more than one** parameter. Separate them with commas:
+
+```cpp
+#include <iostream>
+
+int calculateRectangleArea(int length, int width) {
+    return length * width;
+}
+
+double calculateVolume(double length, double width, double height) {
+    return length * width * height;
+}
+
+int main() {
+    int area = calculateRectangleArea(10, 5);
+    std::cout << "Rectangle area: " << area << std::endl;
+
+    double volume = calculateVolume(3.0, 4.0, 5.0);
+    std::cout << "Box volume: " << volume << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Rectangle area: 50
+Box volume: 60
+```
+
+### Parameters with Different Types
+
+Parameters don't have to be the same type:
+
+```cpp
+#include <iostream>
+#include <string>
+
+void printStudentInfo(std::string name, int age, double averageScore) {
+    std::cout << "Name: " << name << std::endl;
+    std::cout << "Age: " << age << " years" << std::endl;
+    std::cout << "Average score: " << averageScore << std::endl;
+    std::cout << "---" << std::endl;
+}
+
+int main() {
+    printStudentInfo("Andi", 15, 87.5);
+    printStudentInfo("Budi", 14, 92.3);
+    printStudentInfo("Citra", 16, 78.0);
+
+    return 0;
+}
+```
+
+Output:
+```
+Name: Andi
+Age: 15 years
+Average score: 87.5
+---
+Name: Budi
+Age: 14 years
+Average score: 92.3
+---
+Name: Citra
+Age: 16 years
+Average score: 78
+---
+```
+
+:::warning
+**The order of arguments must match the order of parameters!** If the first parameter is `std::string` and the second is `int`, then the first argument must be a string and the second must be an int. Wrong order = wrong result or error!
+:::
+
+## Example: BMI Calculator
+
+```cpp
+#include <iostream>
+#include <string>
+
+double calculateBMI(double weightKg, double heightCm);
+std::string bmiCategory(double bmi);
+void printBMIResult(std::string name, double weight, double height);
+
+int main() {
+    printBMIResult("Andi", 65.0, 170.0);
+    printBMIResult("Budi", 90.0, 165.0);
+    printBMIResult("Citra", 45.0, 155.0);
+
+    return 0;
+}
+
+double calculateBMI(double weightKg, double heightCm) {
+    double heightM = heightCm / 100.0;
+    return weightKg / (heightM * heightM);
+}
+
+std::string bmiCategory(double bmi) {
+    if (bmi < 18.5) {
+        return "Underweight";
+    } else if (bmi < 25.0) {
+        return "Normal";
+    } else if (bmi < 30.0) {
+        return "Overweight";
+    } else {
+        return "Obese";
+    }
+}
+
+void printBMIResult(std::string name, double weight, double height) {
+    double bmi = calculateBMI(weight, height);
+    std::cout << name << ": BMI = " << bmi
+              << " (" << bmiCategory(bmi) << ")" << std::endl;
+}
+```
+
+Output:
+```
+Andi: BMI = 22.4913 (Normal)
+Budi: BMI = 33.0579 (Obese)
+Citra: BMI = 18.7285 (Normal)
+```
+
+## Default Parameter Values
+
+Sometimes you want a parameter to have a **default value** that is used if the caller doesn't provide an argument. C++ supports this!
+
+```cpp
+#include <iostream>
+#include <string>
+
+void greet(std::string name = "Friend") {
+    std::cout << "Hello, " << name << "! Welcome!" << std::endl;
+}
+
+int main() {
+    greet("Andi");    // Uses argument "Andi"
+    greet("Budi");    // Uses argument "Budi"
+    greet();          // Uses default "Friend"
+
+    return 0;
+}
+```
+
+Output:
+```
+Hello, Andi! Welcome!
+Hello, Budi! Welcome!
+Hello, Friend! Welcome!
+```
+
+### Multiple Default Parameters
+
+If there are several parameters with defaults, **defaults must go from right to left**:
+
+```cpp
+#include <iostream>
+#include <string>
+
+void printMessage(std::string message, int repeat = 1, std::string suffix = "!") {
+    for (int i = 0; i < repeat; i++) {
+        std::cout << message << suffix << std::endl;
+    }
+}
+
+int main() {
+    printMessage("Hello");              // repeat=1, suffix="!"
+    printMessage("Keep going", 3);      // suffix="!"
+    printMessage("Yes", 2, "!!!");      // all specified
+
+    return 0;
+}
+```
+
+Output:
+```
+Hello!
+Keep going!
+Keep going!
+Keep going!
+Yes!!!
+Yes!!!
+```
+
+:::note
+**Important rule:** Default parameters must start from the **rightmost** parameter. You cannot give a default to a middle parameter without giving defaults to the parameters after it.
+:::
+
+```cpp
+// WRONG — default in the middle without default on the right
+// void function(int a, int b = 5, int c) { }
+
+// CORRECT — defaults from right
+void function(int a, int b = 5, int c = 10) { }
+```
+
+### Example: Calculate Discount
+
+```cpp
+#include <iostream>
+
+double calculatePrice(double price, double discountPercent = 0, double tax = 10.0) {
+    double deduction = price * discountPercent / 100.0;
+    double afterDiscount = price - deduction;
+    double totalTax = afterDiscount * tax / 100.0;
+    return afterDiscount + totalTax;
+}
+
+int main() {
+    // No discount, default 10% tax
+    std::cout << "Price $100 (no discount): $"
+              << calculatePrice(100) << std::endl;
+
+    // 20% discount, default 10% tax
+    std::cout << "Price $100 (20% discount): $"
+              << calculatePrice(100, 20) << std::endl;
+
+    // 20% discount, 5% tax
+    std::cout << "Price $100 (20% discount, 5% tax): $"
+              << calculatePrice(100, 20, 5) << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Price $100 (no discount): $110
+Price $100 (20% discount): $88
+Price $100 (20% discount, 5% tax): $84
+```
+
+## Passing by Value — A Copy Is Made!
+
+This is a very important concept: when you pass an argument to a function, C++ creates a **copy** of that value. This means changes inside the function **do not affect** the original variable!
+
+```cpp
+#include <iostream>
+
+void tryToChange(int number) {
+    std::cout << "Inside function (before): " << number << std::endl;
+    number = 999;  // Changing the COPY, not the original!
+    std::cout << "Inside function (after): " << number << std::endl;
+}
+
+int main() {
+    int x = 42;
+    std::cout << "Before calling function: " << x << std::endl;
+
+    tryToChange(x);
+
+    std::cout << "After calling function: " << x << std::endl;
+    // x is still 42! It hasn't changed!
+
+    return 0;
+}
+```
+
+Output:
+```
+Before calling function: 42
+Inside function (before): 42
+Inside function (after): 999
+After calling function: 42
+```
+
+Notice: even though `number` was changed to 999 inside the function, `x` in `main` is still 42! This is because `number` is only a **copy** of `x`.
+
+:::tip
+Think of it this way: you photocopy your friend's homework, then scribble on the **photocopy**. Your friend's original homework stays clean!
+:::
+
+### Visualizing Pass by Value
+
+```
+main():
+  x = 42    --- copy -->  tryToChange():
+  x = 42                    number = 42
+  (unchanged)                number = 999
+                             (only the copy changes)
+```
+
+## Overloading Preview
+
+C++ has a cool feature: you can create **multiple functions with the same name** but **different parameters**. This is called **function overloading**:
+
+```cpp
+#include <iostream>
+
+// Version 1: area of a square (1 parameter)
+int calculateArea(int side) {
+    return side * side;
+}
+
+// Version 2: area of a rectangle (2 parameters)
+int calculateArea(int length, int width) {
+    return length * width;
+}
+
+// Version 3: area of a circle (1 double parameter)
+double calculateArea(double radius) {
+    return 3.14159 * radius * radius;
+}
+
+int main() {
+    std::cout << "Square area (5): " << calculateArea(5) << std::endl;
+    std::cout << "Rectangle area (4, 6): " << calculateArea(4, 6) << std::endl;
+    std::cout << "Circle area (7.0): " << calculateArea(7.0) << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Square area (5): 25
+Rectangle area (4, 6): 24
+Circle area (7.0): 153.938
+```
+
+The compiler knows which version to call based on the **number and type of arguments** you provide. We'll cover this in more depth in a later lesson!
+
+## Common Mistakes
+
+### 1. Wrong argument order
+
+```cpp
+void printInfo(std::string name, int age) {
+    std::cout << name << " is " << age << " years old" << std::endl;
+}
+
+int main() {
+    // WRONG — reversed order! Compiler may error or produce weird results
+    // printInfo(15, "Andi");
+
+    // CORRECT
+    printInfo("Andi", 15);
+
+    return 0;
+}
+```
+
+### 2. Wrong number of arguments
+
+```cpp
+int add(int a, int b) {
+    return a + b;
+}
+
+int main() {
+    // WRONG — too many arguments
+    // int result = add(1, 2, 3);
+
+    // WRONG — too few arguments
+    // int result = add(1);
+
+    // CORRECT
+    int result = add(1, 2);
+
+    return 0;
+}
+```
+
+### 3. Forgetting that pass by value creates a copy
+
+```cpp
+void addOne(int number) {
+    number = number + 1;
+    // This only changes the COPY!
+}
+
+int main() {
+    int x = 5;
+    addOne(x);
+    // x is still 5, not 6!
+
+    // Solution: use a return value
+    // int addOne(int number) { return number + 1; }
+    // x = addOne(x);
+
+    return 0;
+}
+```
+
+### 4. Default parameter in the wrong place
+
+```cpp
+// WRONG — default on the left without default on the right
+// void function(int a = 5, int b) { }
+
+// CORRECT
+void function(int a, int b = 5) { }
+```
+
+:::warning
+If you use separate prototype and definition, **the default value should only be written in the prototype**, not in the definition!
+```cpp
+// Prototype — default value goes here
+void greet(std::string name = "Friend");
+
+// Definition — WITHOUT default value
+void greet(std::string name) {
+    std::cout << "Hello, " << name << "!" << std::endl;
+}
+```
+:::
+
+## Exercises
+
+**Exercise 1:** Create a function `double calculateDiscount(double price, double percent = 10)` that returns the price after discount. Call it with:
+- `calculateDiscount(50000)` — default 10% discount
+- `calculateDiscount(50000, 25)` — 25% discount
+- `calculateDiscount(200000, 50)` — 50% discount
+
+**Exercise 2:** Create a program with the following functions:
+- `double calculateTriangleArea(double base, double height)`
+- `double calculateTrapezoidArea(double topSide, double bottomSide, double height)`
+- `void printShape(std::string name, double area)`
+
+Call each function and display the results in a neat format.
+
+**Exercise 3:** Create a function `void printTable(int start, int end, int step = 1)` that prints numbers from `start` to `end` with spacing of `step`. Example:
+- `printTable(1, 10)` prints: 1 2 3 4 5 6 7 8 9 10
+- `printTable(0, 20, 5)` prints: 0 5 10 15 20
+
+## Summary
+
+| Concept | Description |
+|---------|-------------|
+| **Parameter** | Variable in the function **definition** — a "placeholder" for ingredients |
+| **Argument** | The actual value given when **calling** the function |
+| **Multiple parameters** | Separated by commas, order and types must match |
+| **Default parameter** | Default value if no argument is given, must go from right |
+| **Pass by value** | C++ creates a copy — changes in the function don't affect the original |
+| **Function overloading** | Multiple functions with the same name, different parameters |
+
+Now you understand how to give "ingredients" to functions. But how does a function "send back" its result? In the next lesson, we'll dive deeper into **return values** — how functions send values back to their callers!

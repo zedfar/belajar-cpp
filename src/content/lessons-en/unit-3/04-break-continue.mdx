@@ -1,0 +1,494 @@
+---
+title: "Break & Continue"
+unit: 3
+lesson: 4
+description: "Control loop flow with break (exit the loop) and continue (skip to the next iteration)"
+objectives:
+  - "Understand how break exits a loop completely"
+  - "Understand how continue skips one iteration"
+  - "Know when using break and continue is appropriate"
+  - "Understand break behavior in nested loops"
+estimatedTime: 25
+prerequisites: ["unit-3/03-do-while"]
+difficulty: "beginner"
+tags: ["break", "continue", "loop-control", "nested-loop", "repetition"]
+---
+
+# Break & Continue
+
+You already know how to make loops that run from start to finish. But sometimes, you need more control:
+- **"Stop! I already found what I was looking for, no need to check the rest."** — use `break`
+- **"Skip this one, move on to the next."** — use `continue`
+
+## Analogy: Searching for a Book in the Library
+
+Imagine you're in the school library, browsing the shelves one by one:
+
+**Break** — "Find the Physics book"
+```
+Check shelf 1: Mathematics -> not it, continue
+Check shelf 2: Indonesian Language -> not it, continue
+Check shelf 3: Physics -> FOUND IT! Stop searching (break)
+(Shelves 4, 5, 6, ... don't need to be checked anymore)
+```
+
+**Continue** — "Take all books EXCEPT damaged ones"
+```
+Check shelf 1: good condition -> take it
+Check shelf 2: DAMAGED -> skip, move to next (continue)
+Check shelf 3: good condition -> take it
+Check shelf 4: DAMAGED -> skip, move to next (continue)
+Check shelf 5: good condition -> take it
+```
+
+## The `break` Statement
+
+`break` immediately **stops the loop** and continues to the code after the loop.
+
+```cpp
+for (int i = 0; i < 100; i++) {
+    if (someCondition) {
+        break;  // Exit the loop NOW!
+    }
+    // other code
+}
+// Program continues here after break
+```
+
+### Example 1: Find the First Number Divisible by 7
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Finding the first number above 100 divisible by 7..." << std::endl;
+
+    for (int i = 101; i < 200; i++) {
+        if (i % 7 == 0) {
+            std::cout << "Found it! The number is: " << i << std::endl;
+            break;  // Already found, no need to check the rest
+        }
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+Finding the first number above 100 divisible by 7...
+Found it! The number is: 105
+```
+
+Without `break`, the loop would keep running up to 199 — even though we only need the **first** number. With `break`, as soon as 105 is found, the loop stops immediately. Efficient!
+
+### Example 2: Search for a Name in a "Database"
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string names[] = {"Andi", "Budi", "Citra", "Dewi", "Eka", "Fajar"};
+    int count = 6;
+    std::string target = "Dewi";
+    bool found = false;
+
+    for (int i = 0; i < count; i++) {
+        std::cout << "Checking: " << names[i] << std::endl;
+        if (names[i] == target) {
+            std::cout << target << " found at position " << i << "!" << std::endl;
+            found = true;
+            break;
+        }
+    }
+
+    if (!found) {
+        std::cout << target << " not found." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+Checking: Andi
+Checking: Budi
+Checking: Citra
+Checking: Dewi
+Dewi found at position 3!
+```
+
+Notice: "Eka" and "Fajar" don't need to be checked because `break` stops the loop as soon as "Dewi" is found.
+
+### Example 3: Break in a While Loop
+
+`break` can also be used in while and do-while loops, not just for:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int number;
+
+    std::cout << "Enter numbers (type -1 to stop):" << std::endl;
+
+    int total = 0;
+    int count = 0;
+
+    while (true) {  // Loop "forever"
+        std::cout << "> ";
+        std::cin >> number;
+
+        if (number == -1) {
+            break;  // Exit the loop
+        }
+
+        total += number;
+        count++;
+    }
+
+    if (count > 0) {
+        std::cout << "Total: " << total << std::endl;
+        std::cout << "Average: " << total / count << std::endl;
+    } else {
+        std::cout << "No numbers were entered." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output (example interaction):
+```
+Enter numbers (type -1 to stop):
+> 10
+> 20
+> 30
+> -1
+Total: 60
+Average: 20
+```
+
+:::note
+The `while (true)` pattern with `break` inside is quite commonly used. The loop runs "forever" until a certain condition is met and `break` is called. But don't overuse it — if you can use a regular while condition, that's clearer.
+:::
+
+## The `continue` Statement
+
+`continue` **skips the rest of the code** in the current iteration and jumps straight to the next iteration.
+
+```cpp
+for (int i = 0; i < 10; i++) {
+    if (someCondition) {
+        continue;  // Skip to the next iteration
+    }
+    // this code is NOT executed if continue was triggered
+}
+```
+
+### Example 4: Print Only Odd Numbers
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Odd numbers from 1-20:" << std::endl;
+
+    for (int i = 1; i <= 20; i++) {
+        if (i % 2 == 0) {
+            continue;  // Skip even numbers
+        }
+        std::cout << i << " ";
+    }
+
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Odd numbers from 1-20:
+1 3 5 7 9 11 13 15 17 19
+```
+
+Every time `i` is even, `continue` skips `std::cout` and goes straight to the next iteration.
+
+### Example 5: Skip Negative Numbers
+
+```cpp
+#include <iostream>
+
+int main() {
+    int data[] = {5, -3, 8, -1, 12, -7, 3, 9};
+    int size = 8;
+    int total = 0;
+
+    std::cout << "Data: ";
+    for (int i = 0; i < size; i++) {
+        std::cout << data[i] << " ";
+    }
+    std::cout << std::endl;
+
+    std::cout << "Summing only positive numbers..." << std::endl;
+
+    for (int i = 0; i < size; i++) {
+        if (data[i] < 0) {
+            std::cout << "  Skip " << data[i] << " (negative)" << std::endl;
+            continue;
+        }
+        total += data[i];
+        std::cout << "  Add " << data[i] << " -> total = " << total << std::endl;
+    }
+
+    std::cout << "Total of positive numbers: " << total << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Data: 5 -3 8 -1 12 -7 3 9
+Summing only positive numbers...
+  Add 5 -> total = 5
+  Skip -3 (negative)
+  Add 8 -> total = 13
+  Skip -1 (negative)
+  Add 12 -> total = 25
+  Skip -7 (negative)
+  Add 3 -> total = 28
+  Add 9 -> total = 37
+Total of positive numbers: 37
+```
+
+### Example 6: Skip Certain Numbers
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Numbers 1-15 (skip multiples of 3):" << std::endl;
+
+    for (int i = 1; i <= 15; i++) {
+        if (i % 3 == 0) {
+            continue;
+        }
+        std::cout << i << " ";
+    }
+
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Numbers 1-15 (skip multiples of 3):
+1 2 4 5 7 8 10 11 13 14
+```
+
+## Nested Loop + Break
+
+This is important: **`break` only exits the innermost loop** it's in, not all loops at once.
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "=== Nested Loop with Break ===" << std::endl;
+
+    for (int i = 1; i <= 3; i++) {
+        std::cout << "Outer loop i = " << i << std::endl;
+
+        for (int j = 1; j <= 5; j++) {
+            if (j == 3) {
+                std::cout << "  break at j = 3!" << std::endl;
+                break;  // Only exits the INNER loop (j)
+            }
+            std::cout << "  j = " << j << std::endl;
+        }
+        // Outer loop (i) continues!
+    }
+
+    std::cout << "Done!" << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+=== Nested Loop with Break ===
+Outer loop i = 1
+  j = 1
+  j = 2
+  break at j = 3!
+Outer loop i = 2
+  j = 1
+  j = 2
+  break at j = 3!
+Outer loop i = 3
+  j = 1
+  j = 2
+  break at j = 3!
+Done!
+```
+
+See: `break` only stops the `j` loop (inner), but the `i` loop (outer) still runs 3 times.
+
+:::warning
+If you want to exit **all** nested loops at once, `break` alone isn't enough. You can use a flag variable (boolean) to signal that all loops should stop, or use `return` if you want to exit the function entirely.
+:::
+
+### Example 7: Finding a Pair of Numbers
+
+Find two numbers from an array that add up to 10:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int numbers[] = {2, 7, 4, 8, 3, 6};
+    int size = 6;
+    bool found = false;
+
+    for (int i = 0; i < size && !found; i++) {
+        for (int j = i + 1; j < size; j++) {
+            if (numbers[i] + numbers[j] == 10) {
+                std::cout << "Pair found: "
+                          << numbers[i] << " + " << numbers[j]
+                          << " = 10" << std::endl;
+                found = true;
+                break;  // Exit the inner loop
+            }
+        }
+        // Outer loop also stops because !found becomes false
+    }
+
+    if (!found) {
+        std::cout << "No pair adds up to 10." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+Pair found: 2 + 8 = 10
+```
+
+:::tip
+Notice the trick: we add `&& !found` to the outer loop's condition. So when `found` becomes `true`, the outer loop also stops. This is a common way to "break out of nested loops".
+:::
+
+## Use Sparingly
+
+`break` and `continue` are certainly useful, but don't overdo it. Too many `break` and `continue` statements can make code hard to read — people have to trace many paths to understand the program flow.
+
+```cpp
+// LESS IDEAL — too many continues, hard to read
+for (int i = 0; i < 100; i++) {
+    if (condition1) continue;
+    if (condition2) continue;
+    if (condition3) continue;
+    if (condition4) break;
+    // main code
+}
+
+// BETTER — combine conditions
+for (int i = 0; i < 100; i++) {
+    if (!condition1 && !condition2 && !condition3) {
+        if (condition4) break;
+        // main code
+    }
+}
+```
+
+:::note
+There's no hard rule about this. What matters is that your code is **easy to read and understand**. If `break` or `continue` makes the code clearer, go ahead and use it. If it makes things confusing, find another way.
+:::
+
+## Common Mistakes
+
+### 1. Forgetting that `break` only exits the innermost loop
+
+```cpp
+// WRONG — thinking break exits all loops
+for (int i = 0; i < 5; i++) {
+    for (int j = 0; j < 5; j++) {
+        if (j == 2) break;  // Only exits the j loop!
+    }
+    // The i loop still runs!
+}
+```
+
+### 2. `continue` in a while loop — watch out for infinite loops!
+
+```cpp
+// WRONG — i is never updated because continue skips past i++
+int i = 0;
+while (i < 10) {
+    if (i == 5) {
+        continue;  // Jumps to condition check, i stays 5 forever!
+    }
+    std::cout << i << " ";
+    i++;
+}
+
+// CORRECT — update i BEFORE continue
+int i = 0;
+while (i < 10) {
+    if (i == 5) {
+        i++;       // Update first!
+        continue;
+    }
+    std::cout << i << " ";
+    i++;
+}
+```
+
+:::warning
+This is a common trap! In a `for` loop, `continue` immediately runs the **update** part (`i++`), so it's safe. But in a `while` loop, `continue` jumps straight to the **condition check** — if the update is below `continue`, it won't be executed!
+:::
+
+### 3. Using break/continue outside a loop
+
+```cpp
+// ERROR — break and continue can only be used inside a loop
+int x = 5;
+if (x > 3) {
+    break;  // Error! This is not inside a loop
+}
+```
+
+## Exercises
+
+**Exercise 1:** Create a program that asks the user to enter numbers one by one. The program stops (break) when the user enters 0. At the end, display how many numbers were entered (not counting 0), as well as the largest and smallest numbers.
+
+**Exercise 2:** Create a program that prints all numbers from 1 to 50, but **skips** (continue) numbers that are multiples of both 3 AND 5 (i.e., multiples of 15). Skipped output: 15, 30, 45.
+
+**Exercise 3:** Create a simple "Word Search" program. Store 10 fruit names in an array. Ask the user to enter the name of a fruit to search for. Use a loop with break to search. Display whether the fruit was found and at what position.
+
+:::tip
+For Exercise 1, you can use `while (true)` with `break` when the user enters 0. Initialize the largest number with a very small value and the smallest with a very large value.
+:::
+
+## Summary
+
+| Concept | Explanation |
+|---------|-------------|
+| `break` | Exit the loop **completely**, continue to code after the loop |
+| `continue` | Skip the **rest of this iteration**, move to the next iteration |
+| `break` in nested loops | Only exits the **innermost** loop |
+| `continue` in for loops | Safe — goes straight to the update part (`i++`) |
+| `continue` in while loops | Be careful — make sure the variable update isn't skipped |
+| `while (true)` + `break` | Common pattern for loops with a stop condition in the middle |
+| Use sparingly | Too many break/continue can make code hard to read |
+
+Congratulations! You've mastered all types of loops in C++ along with how to control them. With the combination of `for`, `while`, `do-while`, `break`, and `continue`, you can make programs that perform repetitive tasks flexibly and efficiently!

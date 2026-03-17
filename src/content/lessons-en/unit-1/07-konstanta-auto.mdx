@@ -1,0 +1,270 @@
+---
+title: "Constants and Auto"
+unit: 1
+lesson: 7
+description: "Learn about const, constexpr, and the auto keyword for variable declarations"
+objectives:
+  - "Understand when and why to use const"
+  - "Learn about constexpr for compile-time known values"
+  - "Use auto to let the compiler determine the type"
+estimatedTime: 20
+prerequisites: ["unit-1/06"]
+difficulty: "beginner"
+tags: ["const", "constexpr", "auto", "constants", "type-inference"]
+---
+
+# Constants and Auto
+
+In previous lessons, we learned that variables can have their values changed at any time. But what if there's a value that **shouldn't** change? The value of Pi is always 3.14159..., the number of days in a week is always 7, and the speed of light never changes. For cases like these, C++ provides **constants**.
+
+On the other hand, sometimes it feels tedious to write out long type names. Modern C++ has the `auto` keyword that makes life easier.
+
+## `const` — Values That Cannot Change
+
+Add the keyword `const` before the data type to create a variable that **cannot be changed** after initialization:
+
+```cpp
+#include <iostream>
+
+int main() {
+    const double PI = 3.14159265;
+    const int DAYS_IN_WEEK = 7;
+    const std::string SCHOOL_NAME = "State High School 1";
+
+    std::cout << "PI = " << PI << std::endl;
+    std::cout << "Days in a week: " << DAYS_IN_WEEK << std::endl;
+    std::cout << "School: " << SCHOOL_NAME << std::endl;
+
+    return 0;
+}
+```
+
+Think of `const` like a **permanently printed label** — once written, it can't be erased or changed. Compare that to a regular variable, which is like a **sticker label** — it can be peeled off and replaced at any time.
+
+### What Happens If You Try to Change a `const`?
+
+```cpp
+const double PI = 3.14159;
+PI = 3.14;  // ERROR! Assignment of read-only variable 'PI'
+```
+
+The compiler will reject this code and produce an error. This is a safety feature — it protects values that shouldn't change from accidental modification.
+
+### Naming Convention for Constants
+
+Notice in the example above, constant names are written in **ALL CAPS** with **underscores** separating words (`DAYS_IN_WEEK`). This is a common convention so that anyone reading the code can immediately tell it's a constant, not a regular variable.
+
+```cpp
+// Constants - ALL CAPS
+const double SPEED_OF_LIGHT = 299792458.0;  // m/s
+const int MAX_SCORE = 100;
+const double GRAVITY = 9.8;  // m/s^2
+
+// Regular variables - camelCase or snake_case
+double speed = 0.0;
+int score = 0;
+```
+
+## When to Use `const`?
+
+Use `const` when:
+
+1. **Math/physics values:** PI, gravity, speed of light
+2. **Limits/boundaries:** max score, max name length, number of attempts
+3. **Fixed configuration:** app name, version, URL
+4. **Values computed once that don't change:**
+
+```cpp
+#include <iostream>
+
+int main() {
+    double radius;
+    std::cout << "Enter radius: ";
+    std::cin >> radius;
+
+    const double PI = 3.14159265;
+    const double area = PI * radius * radius;  // Computed once, won't change
+
+    std::cout << "Circle area: " << area << std::endl;
+
+    return 0;
+}
+```
+
+:::tip
+**Rule of thumb:** If a variable doesn't need to change after being assigned a value, add `const`. This makes code safer (prevents bugs) and easier to understand (readers know this value stays the same).
+:::
+
+## `constexpr` — Computed at Compile Time
+
+`constexpr` is similar to `const`, but stricter: the value must be **known at compile time** (before the program runs).
+
+```cpp
+constexpr double PI = 3.14159265;          // OK - value is already known
+constexpr int MAX_LEVEL = 50;              // OK
+constexpr int AREA = 10 * 20;             // OK - can be computed at compile time
+```
+
+The difference from `const`:
+
+```cpp
+int radius;
+std::cin >> radius;
+
+const double area = 3.14 * radius * radius;      // OK - const can come from input
+// constexpr double area = 3.14 * radius * radius; // ERROR - constexpr needs a compile-time value
+```
+
+`const` can be filled from user input (runtime), but `constexpr` must be computable without running the program.
+
+**When to use `constexpr`?**
+
+For values that are truly constant and known from the start — mathematical constants, fixed array sizes, configuration values that never change.
+
+:::note
+For beginners, just use `const` for now. `constexpr` becomes more useful when you start writing more advanced code. The important thing right now: understand the concept that some values should never change.
+:::
+
+## `auto` — Let the Compiler Guess the Type
+
+C++11 introduced the `auto` keyword, which allows the compiler to **determine the data type automatically** based on the assigned value:
+
+```cpp
+auto age = 17;           // Compiler knows this is int
+auto height = 170.5;     // Compiler knows this is double
+auto name = std::string("Budi");  // Compiler knows this is string
+auto active = true;      // Compiler knows this is bool
+```
+
+The compiler looks at the value on the right side of `=` and automatically determines the appropriate type.
+
+### When Is `auto` Useful?
+
+**1. Long type names:**
+
+When the data type is already clear from context and writing it explicitly just adds noise:
+
+```cpp
+// Without auto - long and repetitive type name
+std::string::size_type length = word.length();
+
+// With auto - more concise
+auto length = word.length();
+```
+
+**2. When the type is obvious from the value:**
+
+```cpp
+auto pi = 3.14159;     // Obviously double
+auto count = 42;       // Obviously int
+```
+
+### When NOT to Use `auto`?
+
+**1. When the type isn't clear:**
+
+```cpp
+auto x = 5;      // int? short? long? — not clear to the reader
+int age = 5;     // Much clearer: this is an age, of type integer
+```
+
+**2. When you want a specific type:**
+
+```cpp
+auto price = 100;       // This becomes int, but maybe you wanted double
+double price = 100.0;   // Explicit: this is a price in decimal
+```
+
+**3. Declaration without initialization:**
+
+```cpp
+auto x;    // ERROR! Compiler doesn't know the type because there's no value
+int x;     // OK (though you should ideally initialize it)
+```
+
+:::tip
+**Rule for beginners:** Write data types explicitly while learning. This helps you understand data types better. Use `auto` gradually once you're comfortable and the data type is already obvious from context.
+:::
+
+## Combining `const` and `auto`
+
+You can combine both:
+
+```cpp
+const auto PI = 3.14159;       // const double, type inferred automatically
+const auto MAX_NAME = 50;     // const int, type inferred automatically
+```
+
+## Full Program: Temperature Conversion
+
+```cpp
+#include <iostream>
+
+int main() {
+    // Constants for the conversion formula
+    const double CONVERSION_FACTOR = 9.0 / 5.0;
+    const int FAHRENHEIT_OFFSET = 32;
+
+    // User input
+    double celsius;
+    std::cout << "Enter temperature in Celsius: ";
+    std::cin >> celsius;
+
+    // Calculate conversion (results are const because they won't change)
+    const double fahrenheit = (celsius * CONVERSION_FACTOR) + FAHRENHEIT_OFFSET;
+    const double kelvin = celsius + 273.15;
+
+    // Display results
+    std::cout << "\nConversion Results:" << std::endl;
+    std::cout << celsius << " C = " << fahrenheit << " F" << std::endl;
+    std::cout << celsius << " C = " << kelvin << " K" << std::endl;
+
+    return 0;
+}
+```
+
+Example interaction:
+```
+Enter temperature in Celsius: 100
+
+Conversion Results:
+100 C = 212 F
+100 C = 373.15 K
+```
+
+Notice how `CONVERSION_FACTOR` and `FAHRENHEIT_OFFSET` are made constants because their values are fixed, while `celsius` is a regular variable because its value comes from user input. `fahrenheit` and `kelvin` are also made `const` because once calculated, they won't be changed again.
+
+## Exercises
+
+Create a program that calculates the area and circumference of a circle. Use `const` for PI and result variables that don't change:
+
+```cpp
+#include <iostream>
+
+int main() {
+    // Declare PI as a constant
+    // Ask for radius input from the user
+    // Calculate area (PI * r * r) and circumference (2 * PI * r)
+    // Display results
+
+    return 0;
+}
+```
+
+**Extra challenge:** Identify which variables in programs from previous lessons should have been `const` (for example, the PI we once wrote as a regular variable), and change them to `const`.
+
+## Summary
+
+| Keyword | Meaning | Example |
+|---------|---------|---------|
+| `const` | Value cannot change after initialization | `const double PI = 3.14;` |
+| `constexpr` | Value must be known at compile time | `constexpr int MAX = 100;` |
+| `auto` | Compiler determines the type automatically | `auto x = 42;` |
+
+- **`const`** protects values from accidental changes
+- **`constexpr`** is for truly compile-time constants
+- **`auto`** reduces the need to write long/obvious type names
+- Constant names are generally written in **ALL_CAPS**
+- For beginners: use `const` liberally, `auto` conservatively
+
+In the next lesson — the final lesson of Unit 1 — we'll build a **Simple Calculator Project** that combines everything we've learned!

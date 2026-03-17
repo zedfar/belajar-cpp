@@ -1,0 +1,1026 @@
+---
+title: "Project: Student Gradebook"
+unit: 5
+lesson: 7
+description: "Building a complete student grade management program using all Unit 5 concepts: vector, string, sorting, searching, and functions"
+objectives:
+  - "Combine all Unit 5 concepts into one complete program"
+  - "Use vector<string> and vector<double> to store student data"
+  - "Apply sorting to create rankings"
+  - "Apply linear search to find students"
+  - "Calculate statistics: average, highest, lowest"
+  - "Build an interactive menu with separate functions"
+  - "Format table output with setw from <iomanip>"
+estimatedTime: 90
+prerequisites: ["unit-5/06-sorting-searching"]
+difficulty: "beginner"
+isProject: true
+tags: ["project", "buku-nilai", "vector", "string", "sorting", "searching", "fungsi", "iomanip"]
+---
+
+# Project: Student Gradebook
+
+Welcome to the final project of Unit 5! You've learned about arrays, vectors, strings, sorting, and searching. Now it's time to combine **everything** into one real, useful program — a **Student Gradebook**!
+
+This program will be able to:
+- Add student data (name & score)
+- Display all data in a neat table
+- Calculate statistics (average, highest, lowest)
+- Create rankings based on scores
+- Search for students by name
+- Interactive menu that's easy to use
+
+We'll build it **step by step**, adding features one at a time. Ready? Let's go!
+
+:::note
+This project integrates concepts from Unit 4 (functions) and Unit 5 (arrays, vectors, strings, sorting, searching). Each feature uses a separate function to keep the code well-organized!
+:::
+
+## Function Design
+
+Before we start coding, let's plan the functions we'll need:
+
+| Function | Task | Unit 5 Concept |
+|----------|------|----------------|
+| `addStudent()` | Input name & score | vector, getline, push_back |
+| `displayAll()` | Display data table | vector, loop, setw |
+| `calculateAverage()` | Calculate average score | vector, loop, accumulation |
+| `findHighestIndex()` | Find max score | vector, linear search |
+| `findLowestIndex()` | Find min score | vector, linear search |
+| `displayStatistics()` | Display all statistics | combination of above functions |
+| `displayRanking()` | Sort & display ranking | sorting, indices |
+| `searchStudent()` | Search by name | linear search, string |
+| `displayMenu()` | Display menu options | output |
+
+## Stage 1: Input Name & Score
+
+We start with the most basic thing — storing student names and scores:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+void addStudent(std::vector<std::string>& student_names,
+                std::vector<double>& student_scores) {
+    std::string name;
+    double score;
+
+    std::cout << "Enter student name: ";
+    std::getline(std::cin, name);
+
+    std::cout << "Enter score for " << name << ": ";
+    std::cin >> score;
+    std::cin.ignore();  // Discard newline so next getline works correctly
+
+    student_names.push_back(name);
+    student_scores.push_back(score);
+
+    std::cout << "Data for " << name << " successfully added!" << std::endl;
+}
+
+int main() {
+    std::vector<std::string> student_names;
+    std::vector<double> student_scores;
+
+    // Add 3 students for testing
+    for (int i = 0; i < 3; i++) {
+        std::cout << "\n--- Student #" << (i + 1) << " ---" << std::endl;
+        addStudent(student_names, student_scores);
+    }
+
+    // Simple display
+    std::cout << "\n=== Student Data ===" << std::endl;
+    for (int i = 0; i < student_names.size(); i++) {
+        std::cout << student_names[i] << ": " << student_scores[i] << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Example output:
+
+```
+--- Student #1 ---
+Enter student name: Andi Pratama
+Enter score for Andi Pratama: 85.5
+Data for Andi Pratama successfully added!
+
+--- Student #2 ---
+Enter student name: Budi Santoso
+Enter score for Budi Santoso: 92
+Data for Budi Santoso successfully added!
+
+--- Student #3 ---
+Enter student name: Citra Dewi
+Enter score for Citra Dewi: 78.3
+Data for Citra Dewi successfully added!
+
+=== Student Data ===
+Andi Pratama: 85.5
+Budi Santoso: 92
+Citra Dewi: 78.3
+```
+
+:::warning
+Notice `std::cin.ignore()` after `std::cin >> score`! This is important because after reading a number, the newline character is still in the buffer. Without `ignore()`, the next `getline()` would read an empty string.
+:::
+
+## Stage 2: Display a Neat Table with `setw`
+
+Now let's make a professional-looking display using `std::setw()` from `<iomanip>`:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+#include <iomanip>
+
+void displayAll(const std::vector<std::string>& student_names,
+                const std::vector<double>& student_scores) {
+    if (student_names.empty()) {
+        std::cout << "No student data yet." << std::endl;
+        return;
+    }
+
+    std::cout << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << "            STUDENT SCORE LIST" << std::endl;
+    std::cout << "============================================" << std::endl;
+
+    // Table header
+    std::cout << std::left
+              << std::setw(5) << "No"
+              << std::setw(22) << "Name"
+              << std::right
+              << std::setw(8) << "Score"
+              << std::endl;
+    std::cout << "--------------------------------------------" << std::endl;
+
+    // Table contents
+    for (int i = 0; i < student_names.size(); i++) {
+        std::cout << std::left
+                  << std::setw(5) << (i + 1)
+                  << std::setw(22) << student_names[i]
+                  << std::right
+                  << std::setw(8) << std::fixed << std::setprecision(1)
+                  << student_scores[i]
+                  << std::endl;
+    }
+
+    std::cout << "--------------------------------------------" << std::endl;
+    std::cout << "Total: " << student_names.size() << " students" << std::endl;
+    std::cout << "============================================" << std::endl;
+}
+```
+
+Example output:
+
+```
+============================================
+            STUDENT SCORE LIST
+============================================
+No   Name                     Score
+--------------------------------------------
+1    Andi Pratama               85.5
+2    Budi Santoso               92.0
+3    Citra Dewi                 78.3
+4    Dewi Lestari               95.7
+5    Eka Putra                  88.0
+--------------------------------------------
+Total: 5 students
+============================================
+```
+
+:::tip
+`std::setw(n)` sets the column width, `std::left` aligns left, `std::right` aligns right, `std::fixed` and `std::setprecision(1)` set the decimal format. All from `<iomanip>`!
+:::
+
+## Stage 3: Calculate Statistics
+
+Now let's add functions to calculate statistics:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+#include <iomanip>
+
+double calculateAverage(const std::vector<double>& student_scores) {
+    if (student_scores.empty()) return 0.0;
+
+    double total = 0;
+    for (double n : student_scores) {
+        total += n;
+    }
+    return total / student_scores.size();
+}
+
+int findHighestIndex(const std::vector<double>& student_scores) {
+    if (student_scores.empty()) return -1;
+
+    int idx_max = 0;
+    for (int i = 1; i < student_scores.size(); i++) {
+        if (student_scores[i] > student_scores[idx_max]) {
+            idx_max = i;
+        }
+    }
+    return idx_max;
+}
+
+int findLowestIndex(const std::vector<double>& student_scores) {
+    if (student_scores.empty()) return -1;
+
+    int idx_min = 0;
+    for (int i = 1; i < student_scores.size(); i++) {
+        if (student_scores[i] < student_scores[idx_min]) {
+            idx_min = i;
+        }
+    }
+    return idx_min;
+}
+
+int countPassing(const std::vector<double>& student_scores, double passing_threshold) {
+    int count = 0;
+    for (double n : student_scores) {
+        if (n >= passing_threshold) {
+            count++;
+        }
+    }
+    return count;
+}
+
+void displayStatistics(const std::vector<std::string>& student_names,
+                       const std::vector<double>& student_scores) {
+    if (student_names.empty()) {
+        std::cout << "No student data yet." << std::endl;
+        return;
+    }
+
+    double average = calculateAverage(student_scores);
+    int idx_max = findHighestIndex(student_scores);
+    int idx_min = findLowestIndex(student_scores);
+    double passing_threshold = 75.0;
+    int passed = countPassing(student_scores, passing_threshold);
+    int failed = student_names.size() - passed;
+
+    std::cout << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << "             CLASS STATISTICS" << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << std::fixed << std::setprecision(1);
+    std::cout << "  Number of students : " << student_names.size() << std::endl;
+    std::cout << "  Average            : " << average << std::endl;
+    std::cout << "  Highest score      : " << student_scores[idx_max]
+              << " (" << student_names[idx_max] << ")" << std::endl;
+    std::cout << "  Lowest score       : " << student_scores[idx_min]
+              << " (" << student_names[idx_min] << ")" << std::endl;
+    std::cout << "  Passing threshold  : " << passing_threshold << std::endl;
+    std::cout << "  Passed             : " << passed << " students" << std::endl;
+    std::cout << "  Failed             : " << failed << " students" << std::endl;
+    std::cout << "============================================" << std::endl;
+}
+```
+
+Example output:
+
+```
+============================================
+             CLASS STATISTICS
+============================================
+  Number of students : 5
+  Average            : 87.9
+  Highest score      : 95.7 (Dewi Lestari)
+  Lowest score       : 78.3 (Citra Dewi)
+  Passing threshold  : 75.0
+  Passed             : 5 students
+  Failed             : 0 students
+============================================
+```
+
+## Stage 4: Ranking (Sort by Score)
+
+We use the **index sort** technique so the original data positions don't change:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <iomanip>
+
+void displayRanking(const std::vector<std::string>& student_names,
+                    const std::vector<double>& student_scores) {
+    if (student_names.empty()) {
+        std::cout << "No student data yet." << std::endl;
+        return;
+    }
+
+    // Create index vector
+    std::vector<int> indices;
+    for (int i = 0; i < student_names.size(); i++) {
+        indices.push_back(i);
+    }
+
+    // Sort indices by score — highest first
+    for (int i = 0; i < indices.size() - 1; i++) {
+        for (int j = 0; j < indices.size() - 1 - i; j++) {
+            if (student_scores[indices[j]] < student_scores[indices[j + 1]]) {
+                int temp = indices[j];
+                indices[j] = indices[j + 1];
+                indices[j + 1] = temp;
+            }
+        }
+    }
+
+    std::cout << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << "              CLASS RANKING" << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << std::left
+              << std::setw(7) << "Rank"
+              << std::setw(22) << "Name"
+              << std::right
+              << std::setw(8) << "Score"
+              << std::endl;
+    std::cout << "--------------------------------------------" << std::endl;
+
+    for (int i = 0; i < indices.size(); i++) {
+        int idx = indices[i];
+        std::string rank_str = std::to_string(i + 1) + ".";
+
+        std::cout << std::left
+                  << std::setw(7) << rank_str
+                  << std::setw(22) << student_names[idx]
+                  << std::right
+                  << std::setw(8) << std::fixed << std::setprecision(1)
+                  << student_scores[idx]
+                  << std::endl;
+    }
+
+    std::cout << "============================================" << std::endl;
+}
+```
+
+Example output:
+
+```
+============================================
+              CLASS RANKING
+============================================
+Rank   Name                     Score
+--------------------------------------------
+1.     Dewi Lestari              95.7
+2.     Budi Santoso              92.0
+3.     Eka Putra                 88.0
+4.     Andi Pratama              85.5
+5.     Citra Dewi                78.3
+============================================
+```
+
+## Stage 5: Search Student by Name
+
+We implement linear search to find students by name:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+#include <iomanip>
+#include <cctype>
+
+// Helper function: convert string to lowercase for comparison
+std::string toLower(const std::string& s) {
+    std::string result = s;
+    for (int i = 0; i < result.length(); i++) {
+        result[i] = std::tolower(result[i]);
+    }
+    return result;
+}
+
+void searchStudent(const std::vector<std::string>& student_names,
+                   const std::vector<double>& student_scores) {
+    if (student_names.empty()) {
+        std::cout << "No student data yet." << std::endl;
+        return;
+    }
+
+    std::string query;
+    std::cout << "Enter the name to search: ";
+    std::getline(std::cin, query);
+
+    std::string query_lower = toLower(query);
+    bool found = false;
+
+    std::cout << std::endl;
+    std::cout << "Search results for \"" << query << "\":" << std::endl;
+    std::cout << "--------------------------------------------" << std::endl;
+
+    for (int i = 0; i < student_names.size(); i++) {
+        // Substring search (case-insensitive)
+        std::string name_lower = toLower(student_names[i]);
+        if (name_lower.find(query_lower) != std::string::npos) {
+            std::cout << "  " << student_names[i] << " - Score: "
+                      << std::fixed << std::setprecision(1)
+                      << student_scores[i] << std::endl;
+            found = true;
+        }
+    }
+
+    if (!found) {
+        std::cout << "  No student found with name \"" << query << "\"" << std::endl;
+    }
+    std::cout << "--------------------------------------------" << std::endl;
+}
+```
+
+Example output:
+
+```
+Enter the name to search: dewi
+
+Search results for "dewi":
+--------------------------------------------
+  Citra Dewi - Score: 78.3
+  Dewi Lestari - Score: 95.7
+--------------------------------------------
+```
+
+:::tip
+This search is **case-insensitive** (doesn't care about uppercase/lowercase) and supports **partial matching** (typing "dewi" will find both "Citra Dewi" and "Dewi Lestari"). This makes the program more user-friendly!
+:::
+
+## Stage 6: Interactive Menu
+
+Now let's combine everything with a menu that makes it easy for the user:
+
+```cpp
+void displayMenu() {
+    std::cout << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << "         STUDENT GRADEBOOK v1.0" << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << "  1. Add student data" << std::endl;
+    std::cout << "  2. Display all data" << std::endl;
+    std::cout << "  3. Class statistics" << std::endl;
+    std::cout << "  4. Class ranking" << std::endl;
+    std::cout << "  5. Search student" << std::endl;
+    std::cout << "  0. Exit" << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << "  Choice: ";
+}
+```
+
+And `main()` becomes:
+
+```cpp
+int main() {
+    std::vector<std::string> student_names;
+    std::vector<double> student_scores;
+
+    int choice;
+
+    do {
+        displayMenu();
+        std::cin >> choice;
+        std::cin.ignore();  // Discard newline
+
+        switch (choice) {
+            case 1:
+                addStudent(student_names, student_scores);
+                break;
+            case 2:
+                displayAll(student_names, student_scores);
+                break;
+            case 3:
+                displayStatistics(student_names, student_scores);
+                break;
+            case 4:
+                displayRanking(student_names, student_scores);
+                break;
+            case 5:
+                searchStudent(student_names, student_scores);
+                break;
+            case 0:
+                std::cout << "\nThank you! See you later!" << std::endl;
+                break;
+            default:
+                std::cout << "\nInvalid choice. Try again." << std::endl;
+        }
+
+    } while (choice != 0);
+
+    return 0;
+}
+```
+
+## Complete Final Code
+
+Here's the final code that combines all stages! Type it out and study each part carefully:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+#include <iomanip>
+#include <cctype>
+
+// ============================================
+// FUNCTION DECLARATIONS
+// ============================================
+void displayMenu();
+void addStudent(std::vector<std::string>& student_names,
+                std::vector<double>& student_scores);
+void displayAll(const std::vector<std::string>& student_names,
+                const std::vector<double>& student_scores);
+double calculateAverage(const std::vector<double>& student_scores);
+int findHighestIndex(const std::vector<double>& student_scores);
+int findLowestIndex(const std::vector<double>& student_scores);
+int countPassing(const std::vector<double>& student_scores, double passing_threshold);
+void displayStatistics(const std::vector<std::string>& student_names,
+                       const std::vector<double>& student_scores);
+void displayRanking(const std::vector<std::string>& student_names,
+                    const std::vector<double>& student_scores);
+std::string toLower(const std::string& s);
+void searchStudent(const std::vector<std::string>& student_names,
+                   const std::vector<double>& student_scores);
+
+// ============================================
+// MAIN FUNCTION
+// ============================================
+int main() {
+    std::vector<std::string> student_names;
+    std::vector<double> student_scores;
+
+    int choice;
+
+    do {
+        displayMenu();
+        std::cin >> choice;
+        std::cin.ignore();
+
+        switch (choice) {
+            case 1:
+                addStudent(student_names, student_scores);
+                break;
+            case 2:
+                displayAll(student_names, student_scores);
+                break;
+            case 3:
+                displayStatistics(student_names, student_scores);
+                break;
+            case 4:
+                displayRanking(student_names, student_scores);
+                break;
+            case 5:
+                searchStudent(student_names, student_scores);
+                break;
+            case 0:
+                std::cout << std::endl;
+                std::cout << "Thank you for using the Student Gradebook!" << std::endl;
+                std::cout << "See you later!" << std::endl;
+                break;
+            default:
+                std::cout << std::endl;
+                std::cout << "Invalid choice. Enter a number 0-5." << std::endl;
+        }
+
+    } while (choice != 0);
+
+    return 0;
+}
+
+// ============================================
+// FUNCTION IMPLEMENTATIONS
+// ============================================
+
+void displayMenu() {
+    std::cout << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << "         STUDENT GRADEBOOK v1.0" << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << "  1. Add student data" << std::endl;
+    std::cout << "  2. Display all data" << std::endl;
+    std::cout << "  3. Class statistics" << std::endl;
+    std::cout << "  4. Class ranking" << std::endl;
+    std::cout << "  5. Search student" << std::endl;
+    std::cout << "  0. Exit" << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << "  Choice: ";
+}
+
+void addStudent(std::vector<std::string>& student_names,
+                std::vector<double>& student_scores) {
+    std::string name;
+    double score;
+
+    std::cout << std::endl;
+    std::cout << "--- Add Student Data ---" << std::endl;
+    std::cout << "Student name : ";
+    std::getline(std::cin, name);
+
+    // Validate name is not empty
+    if (name.empty()) {
+        std::cout << "Name cannot be empty!" << std::endl;
+        return;
+    }
+
+    std::cout << "Score        : ";
+    std::cin >> score;
+    std::cin.ignore();
+
+    // Validate score
+    if (score < 0 || score > 100) {
+        std::cout << "Score must be between 0 and 100!" << std::endl;
+        return;
+    }
+
+    student_names.push_back(name);
+    student_scores.push_back(score);
+
+    std::cout << "Data for " << name << " (score: "
+              << std::fixed << std::setprecision(1) << score
+              << ") successfully added!" << std::endl;
+}
+
+void displayAll(const std::vector<std::string>& student_names,
+                const std::vector<double>& student_scores) {
+    if (student_names.empty()) {
+        std::cout << std::endl;
+        std::cout << "No student data yet. Add some using menu 1." << std::endl;
+        return;
+    }
+
+    std::cout << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << "            STUDENT SCORE LIST" << std::endl;
+    std::cout << "============================================" << std::endl;
+
+    std::cout << std::left
+              << std::setw(5) << "No"
+              << std::setw(22) << "Name"
+              << std::right
+              << std::setw(8) << "Score"
+              << std::endl;
+    std::cout << "--------------------------------------------" << std::endl;
+
+    for (int i = 0; i < student_names.size(); i++) {
+        std::cout << std::left
+                  << std::setw(5) << (i + 1)
+                  << std::setw(22) << student_names[i]
+                  << std::right
+                  << std::setw(8) << std::fixed << std::setprecision(1)
+                  << student_scores[i]
+                  << std::endl;
+    }
+
+    std::cout << "--------------------------------------------" << std::endl;
+    std::cout << "Total: " << student_names.size() << " students" << std::endl;
+    std::cout << "============================================" << std::endl;
+}
+
+double calculateAverage(const std::vector<double>& student_scores) {
+    if (student_scores.empty()) return 0.0;
+
+    double total = 0.0;
+    for (double n : student_scores) {
+        total += n;
+    }
+    return total / student_scores.size();
+}
+
+int findHighestIndex(const std::vector<double>& student_scores) {
+    if (student_scores.empty()) return -1;
+
+    int idx_max = 0;
+    for (int i = 1; i < student_scores.size(); i++) {
+        if (student_scores[i] > student_scores[idx_max]) {
+            idx_max = i;
+        }
+    }
+    return idx_max;
+}
+
+int findLowestIndex(const std::vector<double>& student_scores) {
+    if (student_scores.empty()) return -1;
+
+    int idx_min = 0;
+    for (int i = 1; i < student_scores.size(); i++) {
+        if (student_scores[i] < student_scores[idx_min]) {
+            idx_min = i;
+        }
+    }
+    return idx_min;
+}
+
+int countPassing(const std::vector<double>& student_scores, double passing_threshold) {
+    int count = 0;
+    for (double n : student_scores) {
+        if (n >= passing_threshold) {
+            count++;
+        }
+    }
+    return count;
+}
+
+void displayStatistics(const std::vector<std::string>& student_names,
+                       const std::vector<double>& student_scores) {
+    if (student_names.empty()) {
+        std::cout << std::endl;
+        std::cout << "No student data yet. Add some using menu 1." << std::endl;
+        return;
+    }
+
+    double average = calculateAverage(student_scores);
+    int idx_max = findHighestIndex(student_scores);
+    int idx_min = findLowestIndex(student_scores);
+    double passing_threshold = 75.0;
+    int passed = countPassing(student_scores, passing_threshold);
+    int failed = student_names.size() - passed;
+
+    std::cout << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << "             CLASS STATISTICS" << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << std::fixed << std::setprecision(1);
+    std::cout << "  Number of students : " << student_names.size() << std::endl;
+    std::cout << "  Class average      : " << average << std::endl;
+    std::cout << "  Highest score      : " << student_scores[idx_max]
+              << " (" << student_names[idx_max] << ")" << std::endl;
+    std::cout << "  Lowest score       : " << student_scores[idx_min]
+              << " (" << student_names[idx_min] << ")" << std::endl;
+    std::cout << "--------------------------------------------" << std::endl;
+    std::cout << "  Passing threshold  : " << passing_threshold << std::endl;
+    std::cout << "  Passed             : " << passed << " students" << std::endl;
+    std::cout << "  Failed             : " << failed << " students" << std::endl;
+    std::cout << "============================================" << std::endl;
+}
+
+void displayRanking(const std::vector<std::string>& student_names,
+                    const std::vector<double>& student_scores) {
+    if (student_names.empty()) {
+        std::cout << std::endl;
+        std::cout << "No student data yet. Add some using menu 1." << std::endl;
+        return;
+    }
+
+    // Create index vector for sorting
+    std::vector<int> indices;
+    for (int i = 0; i < student_names.size(); i++) {
+        indices.push_back(i);
+    }
+
+    // Bubble sort indices by score (highest first)
+    for (int i = 0; i < indices.size() - 1; i++) {
+        for (int j = 0; j < indices.size() - 1 - i; j++) {
+            if (student_scores[indices[j]] < student_scores[indices[j + 1]]) {
+                int temp = indices[j];
+                indices[j] = indices[j + 1];
+                indices[j + 1] = temp;
+            }
+        }
+    }
+
+    std::cout << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << "              CLASS RANKING" << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << std::left
+              << std::setw(7) << "Rank"
+              << std::setw(22) << "Name"
+              << std::right
+              << std::setw(8) << "Score"
+              << std::endl;
+    std::cout << "--------------------------------------------" << std::endl;
+
+    for (int i = 0; i < indices.size(); i++) {
+        int idx = indices[i];
+        std::string rank_str = std::to_string(i + 1) + ".";
+
+        std::cout << std::left
+                  << std::setw(7) << rank_str
+                  << std::setw(22) << student_names[idx]
+                  << std::right
+                  << std::setw(8) << std::fixed << std::setprecision(1)
+                  << student_scores[idx]
+                  << std::endl;
+    }
+
+    std::cout << "--------------------------------------------" << std::endl;
+
+    // Display average below ranking
+    double average = calculateAverage(student_scores);
+    std::cout << "  Class average: " << std::fixed << std::setprecision(1)
+              << average << std::endl;
+    std::cout << "============================================" << std::endl;
+}
+
+std::string toLower(const std::string& s) {
+    std::string result = s;
+    for (int i = 0; i < result.length(); i++) {
+        result[i] = std::tolower(result[i]);
+    }
+    return result;
+}
+
+void searchStudent(const std::vector<std::string>& student_names,
+                   const std::vector<double>& student_scores) {
+    if (student_names.empty()) {
+        std::cout << std::endl;
+        std::cout << "No student data yet. Add some using menu 1." << std::endl;
+        return;
+    }
+
+    std::string query;
+    std::cout << std::endl;
+    std::cout << "--- Search Student ---" << std::endl;
+    std::cout << "Enter name: ";
+    std::getline(std::cin, query);
+
+    if (query.empty()) {
+        std::cout << "Search query cannot be empty!" << std::endl;
+        return;
+    }
+
+    std::string query_lower = toLower(query);
+    bool found = false;
+    int result_count = 0;
+
+    std::cout << std::endl;
+    std::cout << "Search results for \"" << query << "\":" << std::endl;
+    std::cout << "--------------------------------------------" << std::endl;
+
+    for (int i = 0; i < student_names.size(); i++) {
+        std::string name_lower = toLower(student_names[i]);
+
+        if (name_lower.find(query_lower) != std::string::npos) {
+            result_count++;
+            std::cout << "  " << result_count << ". "
+                      << student_names[i] << " - Score: "
+                      << std::fixed << std::setprecision(1)
+                      << student_scores[i] << std::endl;
+            found = true;
+        }
+    }
+
+    if (!found) {
+        std::cout << "  No student found with name \"" << query << "\"" << std::endl;
+    } else {
+        std::cout << "  (" << result_count << " results found)" << std::endl;
+    }
+    std::cout << "--------------------------------------------" << std::endl;
+}
+```
+
+## Example Usage Session
+
+```
+============================================
+         STUDENT GRADEBOOK v1.0
+============================================
+  1. Add student data
+  2. Display all data
+  3. Class statistics
+  4. Class ranking
+  5. Search student
+  0. Exit
+============================================
+  Choice: 1
+
+--- Add Student Data ---
+Student name : Andi Pratama
+Score        : 85.5
+Data for Andi Pratama (score: 85.5) successfully added!
+
+============================================
+         STUDENT GRADEBOOK v1.0
+============================================
+  Choice: 1
+
+--- Add Student Data ---
+Student name : Budi Santoso
+Score        : 92
+Data for Budi Santoso (score: 92.0) successfully added!
+
+============================================
+         STUDENT GRADEBOOK v1.0
+============================================
+  Choice: 1
+
+--- Add Student Data ---
+Student name : Citra Dewi
+Score        : 78.3
+Data for Citra Dewi (score: 78.3) successfully added!
+
+============================================
+         STUDENT GRADEBOOK v1.0
+============================================
+  Choice: 4
+
+============================================
+              CLASS RANKING
+============================================
+Rank   Name                     Score
+--------------------------------------------
+1.     Budi Santoso              92.0
+2.     Andi Pratama              85.5
+3.     Citra Dewi                78.3
+--------------------------------------------
+  Class average: 85.3
+============================================
+
+============================================
+         STUDENT GRADEBOOK v1.0
+============================================
+  Choice: 5
+
+--- Search Student ---
+Enter name: dewi
+
+Search results for "dewi":
+--------------------------------------------
+  1. Citra Dewi - Score: 78.3
+  (1 results found)
+--------------------------------------------
+
+============================================
+         STUDENT GRADEBOOK v1.0
+============================================
+  Choice: 0
+
+Thank you for using the Student Gradebook!
+See you later!
+```
+
+## Concepts Used
+
+| Concept | Used In |
+|---------|---------|
+| `std::vector<std::string>` | Storing student names |
+| `std::vector<double>` | Storing student scores |
+| `push_back()` | Adding new data |
+| `std::getline()` | Input names with spaces |
+| `std::setw()`, `std::left`, `std::right` | Neat table formatting |
+| `std::fixed`, `std::setprecision()` | Decimal number formatting |
+| Linear search | Finding students by name |
+| Bubble sort (via indices) | Ranking by score |
+| `std::string::find()` | Substring search |
+| `std::tolower()` | Case-insensitive search |
+| Pass by reference (`&`) | Adding data to vectors |
+| Const reference (`const &`) | Reading data without modifying |
+| Separate functions | Each feature has its own function |
+
+## Extra Challenges
+
+Got the program above running? Try these challenges to enhance your program!
+
+**Challenge 1: Export to Text Format**
+
+Create a function `void exportData(...)` that displays all data in a format that can be copy-pasted to a text file:
+
+```
+STUDENT SCORE REPORT
+Date: [display date]
+
+No | Name             | Score | Status
+1  | Andi Pratama     | 85.5  | PASS
+2  | Budi Santoso     | 92.0  | PASS
+3  | Citra Dewi       | 78.3  | PASS
+
+Average: 85.3
+Highest: 92.0 (Budi Santoso)
+Lowest: 78.3 (Citra Dewi)
+```
+
+**Challenge 2: Filter by Minimum Score**
+
+Create a function that displays only students with scores above a certain threshold. Ask the user to enter the score threshold, then display the students who meet the criteria.
+
+**Challenge 3: Edit Student Score**
+
+Add a new menu item "Edit student score". The user enters the student's name, the program finds and displays the old score, then asks for the new score. Update the score in the vector.
+
+**Challenge 4: Delete Student Data**
+
+Add a menu item "Delete student data". Use the `erase()` method from vector to remove the element at a specific index. Don't forget to delete from both vectors (names and scores)!
+
+**Challenge 5: Multiple Subjects**
+
+Modify the program so each student can have scores for several subjects (Math, Language, Science). Use `std::vector<std::vector<double>>` to store multi-dimensional scores.
+
+:::tip
+Don't feel like you have to complete all challenges at once. Pick the one that interests you most, finish it, then move on to the next. Every challenge you complete adds to your programming skills!
+:::
+
+## Exercises
+
+**Exercise 1:** Retype the complete final code above from scratch without copy-pasting. Make sure all menu items work correctly.
+
+**Exercise 2:** Add a feature to display how many students got an A (90-100), B (80-89), C (70-79), D (60-69), and E (below 60).
+
+**Exercise 3:** Modify the `searchStudent()` function to also display the found student's rank (their position among all students).
+
+**Exercise 4:** Add validation so you cannot add a student with a name that already exists (no duplicates).
+
+Congratulations! You've completed **Unit 5: Arrays & Data**! Now you can store, process, sort, and search data using vectors and strings. This is an important foundation for larger and more complex programs in the future!

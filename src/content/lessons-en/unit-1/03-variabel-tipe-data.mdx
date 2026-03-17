@@ -1,0 +1,356 @@
+---
+title: "Variables and Data Types"
+unit: 1
+lesson: 3
+description: "Learn about variables as data containers and the various data types in C++"
+objectives:
+  - "Understand the concept of variables and how to declare them"
+  - "Learn the basic data types: int, double, char, string, bool"
+  - "Be able to initialize and use variables in a program"
+estimatedTime: 45
+prerequisites: ["unit-1/02"]
+difficulty: "beginner"
+tags: ["variables", "data-types", "int", "double", "string", "bool", "char"]
+---
+
+# Variables and Data Types
+
+Up to now, our programs have only displayed pre-determined (hardcoded) text. But useful programs need to be able to **store** and **process** data — usernames, game scores, room temperatures, and so on. For that, we need **variables**.
+
+## What Is a Variable?
+
+Think of a variable as a **labeled storage box**. Each box:
+- Has a **name** (the label on the outside) — so you know which box contains what
+- Has a **type** (the size and shape of the box) — determines what can be stored inside
+- Has **contents** (the stored value) — the data inside the box
+
+```
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   age       │    │   name      │    │   height    │
+│  ┌───────┐  │    │  ┌───────┐  │    │  ┌───────┐  │
+│  │  17   │  │    │  │"Budi" │  │    │  │ 170.5 │  │
+│  └───────┘  │    │  └───────┘  │    │  └───────┘  │
+│  type: int  │    │ type:string │    │ type:double │
+└─────────────┘    └─────────────┘    └─────────────┘
+```
+
+## Declaring Variables
+
+To create a variable in C++, you need to specify the **data type** and **variable name**:
+
+```cpp
+data_type variable_name;
+```
+
+Examples:
+
+```cpp
+int age;           // Create a box called "age" for whole numbers
+double height;     // Create a box called "height" for decimal numbers
+std::string name;  // Create a box called "name" for text
+```
+
+This is called a **declaration** — you're telling the compiler: "I need a box to store this kind of data."
+
+## Initializing Variables
+
+After creating the box, you need to **fill it** with a value. This is called **initialization**:
+
+```cpp
+int age = 17;                    // Declaration + initialization at once
+double height = 170.5;
+std::string name = "Budi";
+```
+
+You can also separate the declaration and initialization:
+
+```cpp
+int age;        // Declare first
+age = 17;       // Fill it in later
+```
+
+But generally, it's better to initialize right at declaration to avoid bugs.
+
+:::warning
+Using a variable that hasn't been initialized is **undefined behavior** — its value could be anything (garbage from memory). Always give variables an initial value!
+
+```cpp
+int x;                      // Not initialized — DANGEROUS
+std::cout << x << std::endl; // Could display a random number!
+```
+:::
+
+## Basic Data Types
+
+C++ has several basic data types. Here are the most commonly used:
+
+### `int` — Integers
+
+For storing whole numbers with no decimals: ...-3, -2, -1, 0, 1, 2, 3...
+
+```cpp
+int age = 17;
+int temperature = -5;
+int score = 100;
+int population = 270000000;  // 270 million
+```
+
+| Property | Details |
+|----------|---------|
+| Size | Usually 4 bytes (32 bits) |
+| Range | -2,147,483,648 to 2,147,483,647 (roughly -2 billion to +2 billion) |
+| Examples | `0`, `42`, `-100`, `2024` |
+
+### `double` — Decimal Numbers
+
+For storing numbers with a decimal point:
+
+```cpp
+double height = 170.5;
+double pi = 3.14159;
+double temperature = -12.8;
+double price = 25000.0;    // Even if it's a whole number, use .0 for double type
+```
+
+| Property | Details |
+|----------|---------|
+| Size | 8 bytes (64 bits) |
+| Precision | About 15-16 significant digits |
+| Examples | `3.14`, `-0.5`, `100.0`, `0.001` |
+
+:::note
+There's also a `float` type that's similar to `double` but has lower precision (about 7 digits). For beginners, just use `double` — it's more accurate and more commonly used.
+:::
+
+### `char` — Single Character
+
+For storing **one** character. Its value is enclosed in **single** quotes (not double):
+
+```cpp
+char letter = 'A';
+char digit = '7';
+char symbol = '@';
+char space = ' ';
+```
+
+| Property | Details |
+|----------|---------|
+| Size | 1 byte (8 bits) |
+| Range | ASCII characters (letters, digits, symbols) |
+| Examples | `'a'`, `'Z'`, `'5'`, `'#'`, `' '` |
+
+Important: `char` uses **single** quotes (`'A'`), while `string` uses **double** quotes (`"A"`). They are different!
+
+### `std::string` — Text/Character Sequence
+
+For storing text consisting of zero or more characters:
+
+```cpp
+#include <string>  // Don't forget to include this!
+
+std::string name = "Rina Sari";
+std::string city = "Jakarta";
+std::string empty = "";        // An empty string is valid too
+std::string greeting = "Hello, world!";
+```
+
+| Property | Details |
+|----------|---------|
+| Size | Dynamic (adjusts to the text length) |
+| Examples | `"Hello"`, `"C++"`, `""`, `"One two three"` |
+
+:::warning
+`string` requires `#include <string>` at the top of the file. Some compilers include it automatically through `<iostream>`, but don't rely on this — always include it explicitly to be safe.
+:::
+
+### `bool` — Boolean (True/False)
+
+For storing truth values — can only be `true` or `false`:
+
+```cpp
+bool hasGraduated = true;
+bool isRaining = false;
+bool isStudent = true;
+```
+
+| Property | Details |
+|----------|---------|
+| Size | 1 byte |
+| Values | Only `true` (1) or `false` (0) |
+
+`bool` will be very useful when we learn branching (if/else) in Unit 2.
+
+## Data Type Summary Table
+
+| Type | For | Example Values | Size |
+|------|-----|---------------|------|
+| `int` | Whole numbers | `42`, `-7`, `0` | 4 bytes |
+| `double` | Decimal numbers | `3.14`, `-0.5` | 8 bytes |
+| `char` | Single character | `'A'`, `'9'`, `'@'` | 1 byte |
+| `std::string` | Text | `"Hello"`, `"C++"` | Dynamic |
+| `bool` | True/false | `true`, `false` | 1 byte |
+
+## Naming Convention (Naming Rules)
+
+Variable names in C++ must follow these rules:
+
+**Required rules:**
+- Can only contain letters, digits, and underscores (`_`)
+- Cannot start with a digit
+- Cannot use C++ keywords (`int`, `return`, `if`, etc.)
+- Case-sensitive: `age`, `Age`, and `AGE` are different variables!
+
+**Conventions (best practices):**
+- Use **descriptive** names: `age` is better than `a`
+- Use **camelCase**: `studentCount`, `averageScore`
+- Or **snake_case**: `student_count`, `average_score`
+- Pick one style and be consistent!
+
+```cpp
+// Good - clear and descriptive
+int studentAge = 15;
+double examScore = 87.5;
+std::string fullName = "Ahmad Fauzi";
+
+// Bad - confusing
+int x = 15;          // What is x?
+double n = 87.5;     // What does n stand for?
+std::string s = "Ahmad Fauzi";  // s?
+```
+
+## Changing Variable Values
+
+Once declared, a variable's value can be changed at any time (except `const`, which we'll cover later):
+
+```cpp
+#include <iostream>
+
+int main() {
+    int score = 0;
+    std::cout << "Initial score: " << score << std::endl;
+
+    score = 10;  // Change the value
+    std::cout << "Score after round 1: " << score << std::endl;
+
+    score = 25;  // Change again
+    std::cout << "Score after round 2: " << score << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Initial score: 0
+Score after round 1: 10
+Score after round 2: 25
+```
+
+Notice: when changing the value, you **don't need** to write the data type again. `score = 10;` is enough — you don't need `int score = 10;` because the variable was already declared earlier.
+
+## Full Program: All Data Types
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    // Declare various data types
+    std::string name = "Rina";
+    int age = 16;
+    double height = 162.5;
+    char bloodType = 'O';
+    bool inHighSchool = true;
+
+    // Display all data
+    std::cout << "=== Personal Data ===" << std::endl;
+    std::cout << "Name       : " << name << std::endl;
+    std::cout << "Age        : " << age << " years" << std::endl;
+    std::cout << "Height     : " << height << " cm" << std::endl;
+    std::cout << "Blood Type : " << bloodType << std::endl;
+    std::cout << "In High School: " << inHighSchool << std::endl;  // 1 = true
+
+    return 0;
+}
+```
+
+Output:
+```
+=== Personal Data ===
+Name       : Rina
+Age        : 16 years
+Height     : 162.5 cm
+Blood Type : O
+In High School: 1
+```
+
+:::note
+Notice that `bool` displays `1` (not `true`). By default, `std::cout` displays booleans as numbers — `1` for `true`, `0` for `false`. This is normal and we'll discuss it further later.
+:::
+
+## Common Mistakes
+
+**1. Mismatched data types:**
+```cpp
+int age = 17.5;      // 17.5 gets truncated to 17 (the decimal part is lost!)
+```
+
+**2. Declaring a variable twice:**
+```cpp
+int score = 10;
+int score = 20;  // ERROR: a variable named 'score' already exists
+```
+
+**3. Using a variable before declaring it:**
+```cpp
+std::cout << age;  // ERROR: 'age' has not been declared
+int age = 17;
+```
+
+**4. Variable name starting with a digit:**
+```cpp
+int 2ndPlace = 2;   // ERROR: name cannot start with a digit
+int secondPlace = 2; // OK
+```
+
+## Exercises
+
+Create a program that declares variables to store personal data, then displays them on screen. Use at least 5 variables with different data types:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    // Declare the following variables and fill with your own data:
+    // - Full name (string)
+    // - Age (int)
+    // - Height in cm (double)
+    // - First name initial (char)
+    // - Whether you like programming (bool)
+
+    // Display all data on screen
+
+    return 0;
+}
+```
+
+Expected output example:
+```
+Name     : Ahmad Fauzi
+Age      : 15 years
+Height   : 165.3 cm
+Initial  : A
+Likes programming: 1
+```
+
+## Summary
+
+- A **variable** is a place to store data, with a name, type, and value
+- **Declaration**: `type name;` — creates a variable
+- **Initialization**: `type name = value;` — creates and fills a variable
+- **Basic data types**: `int` (integer), `double` (decimal), `char` (character), `std::string` (text), `bool` (true/false)
+- Variable names should be descriptive and follow naming conventions
+- Always initialize variables at declaration
+
+In the next lesson, we'll learn about **input and output** — how a program communicates with the user!

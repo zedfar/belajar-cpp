@@ -1,0 +1,330 @@
+---
+title: "Ternary Operator"
+unit: 2
+lesson: 5
+description: "Write simple conditional branches in one line using the ternary operator"
+objectives:
+  - "Understand the ternary operator syntax"
+  - "Use ternary for simple assignments"
+  - "Know when to use and not use the ternary operator"
+estimatedTime: 15
+prerequisites: ["unit-2/02-if-else"]
+difficulty: "beginner"
+tags: ["ternary", "operator", "conditional", "shorthand", "percabangan"]
+---
+
+# Ternary Operator
+
+Have you ever sent a short text message? Instead of writing a long paragraph, you get straight to the point. Well, the **ternary operator** is like the "short text" version of if-else. While if-else needs several lines, ternary can do it in **just one line**!
+
+## Ternary Syntax
+
+```
+condition ? value_if_true : value_if_false
+```
+
+That's it! Three parts, separated by `?` and `:`. That's why it's called **ternary** (meaning "three parts").
+
+How to read it: **"If the condition is true, the result is this. If false, the result is that."**
+
+## First Example: Odd or Even
+
+**If-else version (4 lines):**
+```cpp
+#include <iostream>
+
+int main() {
+    int number = 7;
+    std::string result;
+
+    if (number % 2 == 0) {
+        result = "Even";
+    } else {
+        result = "Odd";
+    }
+
+    std::cout << number << " is an " << result << " number" << std::endl;
+    return 0;
+}
+```
+
+**Ternary version (1 line):**
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    int number = 7;
+    std::string result = (number % 2 == 0) ? "Even" : "Odd";
+
+    std::cout << number << " is an " << result << " number" << std::endl;
+    return 0;
+}
+```
+
+Much more concise, right? One line directly determines the value of `result` based on the condition.
+
+## Example: Finding the Maximum Value
+
+```cpp
+#include <iostream>
+
+int main() {
+    int a = 15;
+    int b = 23;
+
+    int maxVal = (a > b) ? a : b;
+
+    std::cout << "Largest value: " << maxVal << std::endl;
+    return 0;
+}
+```
+
+Output:
+```
+Largest value: 23
+```
+
+The ternary here works like: "If `a` is greater than `b`, take `a`. Otherwise, take `b`."
+
+## Example: Finding the Minimum Value
+
+```cpp
+#include <iostream>
+
+int main() {
+    int x = 42;
+    int y = 17;
+
+    int minimum = (x < y) ? x : y;
+
+    std::cout << "Smallest value: " << minimum << std::endl;
+    return 0;
+}
+```
+
+Output:
+```
+Smallest value: 17
+```
+
+## Example: Pass/Fail Status
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    int score;
+    std::cout << "Enter exam score: ";
+    std::cin >> score;
+
+    std::string status = (score >= 75) ? "PASSED" : "FAILED";
+
+    std::cout << "Status: " << status << std::endl;
+    return 0;
+}
+```
+
+Short, clear, and easy to read. One line directly determines pass or fail.
+
+## Ternary Directly in `cout`
+
+You can even use ternary directly inside `cout` without storing it in a variable:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int age;
+    std::cout << "How old are you? ";
+    std::cin >> age;
+
+    std::cout << "You " << ((age >= 17) ? "can" : "cannot yet")
+              << " get a driver's license." << std::endl;
+
+    return 0;
+}
+```
+
+:::note
+Notice the **extra parentheses** around the ternary when used inside `cout`. This is important so the compiler doesn't get confused between the `<<` operator and the ternary. Make it a habit to wrap ternary with parentheses `( )` when using it inside larger expressions.
+:::
+
+## Comparison: If-Else vs Ternary
+
+Here are some side-by-side examples to see the difference:
+
+**Example 1: Discount**
+
+```cpp
+// If-else
+int price = 50000;
+int discount;
+if (price > 100000) {
+    discount = 10;
+} else {
+    discount = 0;
+}
+
+// Ternary
+int price = 50000;
+int discount = (price > 100000) ? 10 : 0;
+```
+
+**Example 2: Greeting**
+
+```cpp
+// If-else
+std::string greeting;
+if (hour < 12) {
+    greeting = "Good Morning";
+} else {
+    greeting = "Good Afternoon";
+}
+
+// Ternary
+std::string greeting = (hour < 12) ? "Good Morning" : "Good Afternoon";
+```
+
+**Example 3: Absolute value**
+
+```cpp
+// If-else
+int value = -5;
+int absolute;
+if (value < 0) {
+    absolute = -value;
+} else {
+    absolute = value;
+}
+
+// Ternary
+int value = -5;
+int absolute = (value < 0) ? -value : value;
+```
+
+## When to Use Ternary?
+
+:::tip
+**Use ternary when:**
+- You only need to **choose one of two values**
+- The logic is **simple and readable** in one line
+- Used for **assignment** (storing a value in a variable)
+
+**Don't use ternary when:**
+- There are **many conditions** (use if-else if or switch)
+- The action **isn't an assignment** but running lengthy code
+- The logic is already **complex** -- better to use regular if-else for readability
+:::
+
+## Don't Do This: Nested Ternary
+
+Technically, you can nest ternary inside ternary. But **don't**!
+
+```cpp
+// DON'T DO THIS - hard to read!
+std::string grade = (score >= 90) ? "A"
+                  : (score >= 80) ? "B"
+                  : (score >= 70) ? "C"
+                  : (score >= 60) ? "D"
+                  : "E";
+```
+
+The code above is technically correct, but imagine your friend reading this -- they'd be confused! For cases like this, use regular if-else if:
+
+```cpp
+// MUCH BETTER - clear and easy to read
+std::string grade;
+if (score >= 90) {
+    grade = "A";
+} else if (score >= 80) {
+    grade = "B";
+} else if (score >= 70) {
+    grade = "C";
+} else if (score >= 60) {
+    grade = "D";
+} else {
+    grade = "E";
+}
+```
+
+:::warning
+**The golden rule of ternary:** If you need to think for more than 3 seconds to understand a ternary, that's a sign you should use regular if-else instead. Code that's easy to read is far more important than code that's short.
+:::
+
+## Complete Example: Leap Year Check (Simple)
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    int year;
+    std::cout << "Enter a year: ";
+    std::cin >> year;
+
+    // Simple version: only check divisible by 4
+    std::string status = (year % 4 == 0) ? "Leap Year" : "Not a Leap Year";
+
+    std::cout << "Year " << year << " is a " << status << std::endl;
+
+    return 0;
+}
+```
+
+## Common Mistakes
+
+**1. Forgetting parentheses when using inside `cout`:**
+```cpp
+// WRONG - compiler gets confused
+std::cout << number % 2 == 0 ? "Even" : "Odd" << std::endl;
+
+// CORRECT - wrap with parentheses
+std::cout << ((number % 2 == 0) ? "Even" : "Odd") << std::endl;
+```
+
+**2. Mismatched data types between true and false:**
+```cpp
+// PROBLEMATIC - one is int, one is string
+auto result = (condition) ? 42 : "forty-two";  // ERROR!
+```
+
+Both sides of the ternary (`?` and `:`) must produce **the same data type** or types that can be converted to each other.
+
+**3. Using ternary to perform actions instead of producing values:**
+```cpp
+// NOT IDEAL - ternary isn't meant for this
+(score > 100) ? std::cout << "Bonus!" : std::cout << "Normal";
+
+// BETTER - use if-else
+if (score > 100) {
+    std::cout << "Bonus!" << std::endl;
+} else {
+    std::cout << "Normal" << std::endl;
+}
+```
+
+Ternary is designed to **produce values**, not to execute commands. Although the example above works, if-else is more appropriate for cases like that.
+
+## Exercises
+
+**Exercise 1:** Write a program that asks the user to enter a temperature in Celsius, then display whether water is "Freezing" (below 0) or "Not Freezing" using the ternary operator.
+
+**Exercise 2:** Write a program that asks for two numbers from the user, then display which one is larger. Use the ternary operator. Also handle the case where both numbers are equal (you may use an additional if for this case).
+
+**Exercise 3:** Write a program that asks for an exam score (0-100), then determine whether the student gets a "Passed" (`>=` 75) or "Not Passed" rating using the ternary operator. Also display a different motivational message for each rating.
+
+## Summary
+
+| Concept | Explanation |
+|---------|-------------|
+| `condition ? a : b` | If condition is true, result is `a`. If false, result is `b` |
+| Main use | Simple assignment based on a condition |
+| Advantage | Concise, one line for simple logic |
+| Disadvantage | Hard to read if the logic is complex |
+| Nested ternary | Avoid! Use if-else if instead |
+| Data types | Both sides (`?` and `:`) must be the same/compatible type |
+| Inside `cout` | Wrap with extra parentheses `(( ))` |
+
+The ternary operator is a useful "shortcut" for simple branching. Remember: use it wisely -- when in doubt, just use regular if-else. Next, we'll combine everything we've learned in Unit 2 into an **exciting project: a Number Guessing Game**!
