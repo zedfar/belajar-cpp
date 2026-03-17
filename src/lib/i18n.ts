@@ -28,7 +28,7 @@ export const uiStrings = {
       objectives: 'Tujuan Pembelajaran',
       tableOfContents: 'Daftar Isi',
       markComplete: 'Tandai Selesai',
-      completed: '✓ Selesai',
+      completed: 'Selesai',
       startLesson: 'Mulai Pelajaran',
     },
     code: {
