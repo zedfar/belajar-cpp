@@ -51,7 +51,7 @@ const copyButtonTransformer = {
 }
 
 export default defineConfig({
-  site: 'https://belajar-cpp.vercel.app',
+  site: 'https://belajar-cpp.varnimyr.my.id',
   adapter: vercel(),
 
   vite: {
