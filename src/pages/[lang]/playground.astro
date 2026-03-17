@@ -12,10 +12,38 @@ const { lang } = Astro.params as { lang: Language }
 const defaultCode = t(lang, 'playground.defaultCode')
 
 const snippets = [
-  { label: 'Hello World', code: '#include <iostream>\n\nint main() {\n    std::cout << "Hello, World!" << std::endl;\n    return 0;\n}' },
-  { label: 'Input/Output', code: '#include <iostream>\nusing namespace std;\n\nint main() {\n    string nama;\n    cout << "Siapa namamu? ";\n    cin >> nama;\n    cout << "Halo, " << nama << "!" << endl;\n    return 0;\n}' },
-  { label: 'For Loop', code: '#include <iostream>\nusing namespace std;\n\nint main() {\n    for (int i = 1; i <= 10; i++) {\n        cout << i << " ";\n    }\n    cout << endl;\n    return 0;\n}' },
-  { label: 'Array', code: '#include <iostream>\nusing namespace std;\n\nint main() {\n    int angka[] = {5, 3, 8, 1, 9};\n    int n = sizeof(angka) / sizeof(angka[0]);\n    \n    for (int i = 0; i < n; i++) {\n        cout << angka[i] << " ";\n    }\n    cout << endl;\n    return 0;\n}' },
+  {
+    label: 'Hello World',
+    code: '#include <iostream>\n\nint main() {\n    std::cout << "Halo, Dunia!" << std::endl;\n    return 0;\n}',
+  },
+  {
+    label: lang === 'id' ? 'Input & Output' : 'Input & Output',
+    code: '#include <iostream>\n#include <string>\n\nint main() {\n    std::string nama;\n    std::cout << "Siapa namamu? ";\n    std::cin >> nama;\n    std::cout << "Halo, " << nama << "!" << std::endl;\n    return 0;\n}',
+  },
+  {
+    label: 'If-Else',
+    code: '#include <iostream>\n\nint main() {\n    int nilai = 85;\n\n    if (nilai >= 90) {\n        std::cout << "Grade: A" << std::endl;\n    } else if (nilai >= 80) {\n        std::cout << "Grade: B" << std::endl;\n    } else if (nilai >= 70) {\n        std::cout << "Grade: C" << std::endl;\n    } else {\n        std::cout << "Grade: D" << std::endl;\n    }\n\n    return 0;\n}',
+  },
+  {
+    label: 'For Loop',
+    code: '#include <iostream>\n\nint main() {\n    // Hitung jumlah 1 sampai 10\n    int jumlah = 0;\n    for (int i = 1; i <= 10; i++) {\n        jumlah += i;\n        std::cout << i << " ";\n    }\n    std::cout << std::endl;\n    std::cout << "Jumlah: " << jumlah << std::endl;\n    return 0;\n}',
+  },
+  {
+    label: 'While Loop',
+    code: '#include <iostream>\n\nint main() {\n    int n = 1;\n    while (n <= 5) {\n        std::cout << n << " x " << n << " = " << n * n << std::endl;\n        n++;\n    }\n    return 0;\n}',
+  },
+  {
+    label: lang === 'id' ? 'Fungsi' : 'Function',
+    code: '#include <iostream>\n\nint tambah(int a, int b) {\n    return a + b;\n}\n\nbool adalahGenap(int n) {\n    return n % 2 == 0;\n}\n\nint main() {\n    std::cout << "3 + 5 = " << tambah(3, 5) << std::endl;\n    std::cout << "7 genap? " << adalahGenap(7) << std::endl;\n    std::cout << "8 genap? " << adalahGenap(8) << std::endl;\n    return 0;\n}',
+  },
+  {
+    label: 'Array',
+    code: '#include <iostream>\n\nint main() {\n    int nilai[] = {85, 92, 78, 95, 88};\n    int n = sizeof(nilai) / sizeof(nilai[0]);\n    int jumlah = 0;\n\n    for (int i = 0; i < n; i++) {\n        jumlah += nilai[i];\n    }\n\n    double rata = (double)jumlah / n;\n    std::cout << "Rata-rata: " << rata << std::endl;\n    return 0;\n}',
+  },
+  {
+    label: 'String',
+    code: '#include <iostream>\n#include <string>\n\nint main() {\n    std::string nama = "Belajar C++";\n    std::cout << "Teks    : " << nama << std::endl;\n    std::cout << "Panjang : " << nama.length() << std::endl;\n    std::cout << "Huruf ke-0: " << nama[0] << std::endl;\n\n    std::string sapaan = "Halo, " + nama + "!";\n    std::cout << sapaan << std::endl;\n    return 0;\n}',
+  },
 ]
 ---
 <PageLayout title={t(lang, 'playground.title')} description={t(lang, 'playground.description')} lang={lang}>
