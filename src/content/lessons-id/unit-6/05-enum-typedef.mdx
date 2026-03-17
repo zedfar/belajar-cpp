@@ -1,0 +1,467 @@
+---
+title: "Enum & Type Alias"
+unit: 6
+lesson: 5
+description: "Belajar membuat tipe data kustom dengan enum class dan menyederhanakan nama tipe dengan type alias"
+objectives:
+  - "Memahami masalah magic numbers dan cara mengatasinya dengan enum"
+  - "Menggunakan enum class (scoped enum) untuk membuat tipe data enumerasi"
+  - "Menggunakan enum dengan switch-case"
+  - "Memberikan nilai eksplisit pada enum"
+  - "Membuat type alias dengan using dan memahami perbedaannya dengan typedef"
+estimatedTime: 25
+prerequisites: ["unit-6/04-file-output"]
+difficulty: "beginner"
+tags: ["enum", "enum-class", "typedef", "using", "type-alias"]
+---
+
+# Enum & Type Alias
+
+Pernahkah kamu menulis kode seperti ini?
+
+```cpp
+int hari = 3;  // 3 itu hari apa?? Rabu? Kamis?
+int status = 0; // 0 artinya apa? Gagal? Belum mulai?
+```
+
+Angka-angka seperti `3` dan `0` di atas disebut **magic numbers** — angka yang punya arti tersembunyi tapi tidak jelas dari kodenya. Ini membuat kode susah dibaca dan rawan bug.
+
+Di lesson ini, kamu akan belajar dua fitur C++ yang membuat kode lebih jelas dan rapi: **enum** (enumerasi) dan **type alias**.
+
+## Masalah Magic Numbers
+
+Lihat contoh ini — kode yang penuh magic numbers:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int statusPesanan = 2;
+
+    if (statusPesanan == 0) {
+        std::cout << "Pesanan pending" << std::endl;
+    } else if (statusPesanan == 1) {
+        std::cout << "Pesanan diproses" << std::endl;
+    } else if (statusPesanan == 2) {
+        std::cout << "Pesanan selesai" << std::endl;
+    } else if (statusPesanan == 3) {
+        std::cout << "Pesanan dibatalkan" << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Masalahnya:
+- Kamu harus **mengingat** arti setiap angka (0=pending, 1=proses, dst)
+- Bagaimana kalau tidak sengaja menulis `statusPesanan = 5`? Tidak ada error, tapi program jadi salah
+- Orang lain yang baca kodenya akan bingung
+
+**Enum** hadir untuk mengatasi masalah ini!
+
+## Enum Class: Tipe Enumerasi Modern
+
+`enum class` memungkinkan kamu membuat tipe data sendiri dengan nilai-nilai yang sudah ditentukan:
+
+```cpp
+#include <iostream>
+
+// Definisi enum class
+enum class StatusPesanan {
+    Pending,
+    Diproses,
+    Selesai,
+    Dibatalkan
+};
+
+int main() {
+    StatusPesanan status = StatusPesanan::Selesai;
+
+    if (status == StatusPesanan::Pending) {
+        std::cout << "Pesanan pending" << std::endl;
+    } else if (status == StatusPesanan::Diproses) {
+        std::cout << "Pesanan diproses" << std::endl;
+    } else if (status == StatusPesanan::Selesai) {
+        std::cout << "Pesanan selesai" << std::endl;
+    } else if (status == StatusPesanan::Dibatalkan) {
+        std::cout << "Pesanan dibatalkan" << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Sekarang kodenya **jelas sekali**! Tidak perlu mengingat angka-angka — cukup baca nama nilainya.
+
+:::tip
+Perhatikan sintaks `StatusPesanan::Selesai` — kamu harus menyebutkan nama enum-nya dulu, baru nama nilainya. Ini yang disebut **scoped** (memiliki scope/cakupan). Ini mencegah konflik nama antar enum yang berbeda.
+:::
+
+## Enum untuk Hari dalam Seminggu
+
+Ini contoh klasik penggunaan enum:
+
+```cpp
+#include <iostream>
+
+enum class Hari {
+    Senin,
+    Selasa,
+    Rabu,
+    Kamis,
+    Jumat,
+    Sabtu,
+    Minggu
+};
+
+void tampilkanHari(Hari hari) {
+    switch (hari) {
+        case Hari::Senin:  std::cout << "Senin";  break;
+        case Hari::Selasa: std::cout << "Selasa"; break;
+        case Hari::Rabu:   std::cout << "Rabu";   break;
+        case Hari::Kamis:  std::cout << "Kamis";  break;
+        case Hari::Jumat:  std::cout << "Jumat";  break;
+        case Hari::Sabtu:  std::cout << "Sabtu";  break;
+        case Hari::Minggu: std::cout << "Minggu"; break;
+    }
+}
+
+bool adalahHariKerja(Hari hari) {
+    return hari != Hari::Sabtu && hari != Hari::Minggu;
+}
+
+int main() {
+    Hari hariIni = Hari::Rabu;
+
+    std::cout << "Hari ini: ";
+    tampilkanHari(hariIni);
+    std::cout << std::endl;
+
+    if (adalahHariKerja(hariIni)) {
+        std::cout << "Ini hari kerja, semangat sekolah!" << std::endl;
+    } else {
+        std::cout << "Ini hari libur, selamat bersantai!" << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Hari ini: Rabu
+Ini hari kerja, semangat sekolah!
+```
+
+:::note
+Enum dan `switch-case` adalah pasangan yang sempurna! Setiap nilai enum punya satu case yang menanganinya. Kalau kamu lupa menangani satu nilai, beberapa compiler bahkan akan memberi peringatan.
+:::
+
+## Kenapa `enum class` Lebih Baik dari `enum` Biasa?
+
+C++ punya dua jenis enum. Yang lama (`enum`) dan yang modern (`enum class`). Selalu gunakan `enum class`!
+
+```cpp
+// enum biasa (HINDARI) - nilainya "bocor" ke luar
+enum Warna { Merah, Hijau, Biru };
+enum Lampu { Merah, Kuning, Hijau };  // ERROR! Merah dan Hijau sudah ada!
+
+// enum class (GUNAKAN INI) - nilainya terisolasi
+enum class Warna { Merah, Hijau, Biru };
+enum class Lampu { Merah, Kuning, Hijau };  // OK! Warna::Merah dan Lampu::Merah berbeda
+
+Warna w = Warna::Merah;
+Lampu l = Lampu::Merah;
+// w == l;  // ERROR! Tidak bisa dibandingkan — tipe berbeda (ini bagus!)
+```
+
+Keunggulan `enum class`:
+1. **Tidak ada konflik nama** — `Warna::Merah` dan `Lampu::Merah` bisa hidup berdampingan
+2. **Tidak bisa dicampur** — tidak bisa membandingkan `Warna` dengan `Lampu` secara tidak sengaja
+3. **Tidak otomatis jadi int** — mencegah bug akibat konversi implisit
+
+## Enum dengan Nilai Eksplisit
+
+Secara default, enum dimulai dari 0 dan naik satu-satu. Tapi kamu bisa menentukan nilainya sendiri:
+
+```cpp
+#include <iostream>
+
+enum class Status {
+    Lulus = 1,
+    Tidak_Lulus = 0,
+    Pending = 2
+};
+
+enum class HttpCode {
+    OK = 200,
+    NotFound = 404,
+    ServerError = 500
+};
+
+int main() {
+    Status hasil = Status::Lulus;
+
+    // Untuk mendapatkan nilai int-nya, perlu static_cast
+    std::cout << "Kode status: " << static_cast<int>(hasil) << std::endl;
+
+    HttpCode response = HttpCode::NotFound;
+    std::cout << "HTTP: " << static_cast<int>(response) << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Kode status: 1
+HTTP: 404
+```
+
+:::note
+Dengan `enum class`, kamu perlu `static_cast<int>()` untuk mengubah enum ke angka. Ini memang disengaja — supaya konversi enum ke int harus **eksplisit** dan tidak terjadi secara tidak sengaja.
+:::
+
+## Contoh Praktis: Sistem Pesanan
+
+Berikut contoh yang lebih lengkap — enum digunakan untuk mengelola status pesanan:
+
+```cpp
+#include <iostream>
+#include <string>
+
+enum class StatusPesanan {
+    Pending,
+    Diproses,
+    Dikirim,
+    Selesai,
+    Dibatalkan
+};
+
+enum class Kategori {
+    Elektronik,
+    Makanan,
+    Pakaian,
+    Buku
+};
+
+std::string getStatusText(StatusPesanan status) {
+    switch (status) {
+        case StatusPesanan::Pending:    return "Menunggu konfirmasi";
+        case StatusPesanan::Diproses:   return "Sedang diproses";
+        case StatusPesanan::Dikirim:    return "Dalam pengiriman";
+        case StatusPesanan::Selesai:    return "Pesanan selesai";
+        case StatusPesanan::Dibatalkan: return "Dibatalkan";
+        default:                        return "Tidak diketahui";
+    }
+}
+
+std::string getKategoriText(Kategori kat) {
+    switch (kat) {
+        case Kategori::Elektronik: return "Elektronik";
+        case Kategori::Makanan:    return "Makanan";
+        case Kategori::Pakaian:    return "Pakaian";
+        case Kategori::Buku:       return "Buku";
+        default:                   return "Lainnya";
+    }
+}
+
+int main() {
+    std::string namaBarang = "Laptop Asus";
+    Kategori kategori = Kategori::Elektronik;
+    StatusPesanan status = StatusPesanan::Pending;
+
+    std::cout << "=== Detail Pesanan ===" << std::endl;
+    std::cout << "Barang   : " << namaBarang << std::endl;
+    std::cout << "Kategori : " << getKategoriText(kategori) << std::endl;
+    std::cout << "Status   : " << getStatusText(status) << std::endl;
+
+    // Update status
+    status = StatusPesanan::Diproses;
+    std::cout << "\n[Update] Status: " << getStatusText(status) << std::endl;
+
+    status = StatusPesanan::Dikirim;
+    std::cout << "[Update] Status: " << getStatusText(status) << std::endl;
+
+    status = StatusPesanan::Selesai;
+    std::cout << "[Update] Status: " << getStatusText(status) << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+=== Detail Pesanan ===
+Barang   : Laptop Asus
+Kategori : Elektronik
+Status   : Menunggu konfirmasi
+
+[Update] Status: Sedang diproses
+[Update] Status: Dalam pengiriman
+[Update] Status: Pesanan selesai
+```
+
+## Type Alias dengan `using`
+
+Kadang nama tipe di C++ bisa panjang dan membingungkan. **Type alias** memungkinkan kamu memberi nama pendek yang lebih bermakna:
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+
+// Membuat alias — nama baru untuk tipe yang sudah ada
+using NilaiSiswa = double;
+using DaftarNama = std::vector<std::string>;
+using DaftarNilai = std::vector<double>;
+
+// Fungsi jadi lebih mudah dibaca!
+double hitungRataRata(const DaftarNilai& nilai) {
+    double total = 0;
+    for (const NilaiSiswa& n : nilai) {
+        total += n;
+    }
+    return total / nilai.size();
+}
+
+int main() {
+    DaftarNama siswa = {"Budi", "Siti", "Andi"};
+    DaftarNilai nilai = {85.5, 92.0, 78.3};
+
+    std::cout << "Rata-rata: " << hitungRataRata(nilai) << std::endl;
+
+    return 0;
+}
+```
+
+Tanpa alias, kode di atas akan menggunakan `std::vector<std::string>` dan `std::vector<double>` di mana-mana — lebih panjang dan kurang jelas artinya.
+
+:::tip
+Type alias tidak membuat tipe baru — ini hanya memberi **nama lain** untuk tipe yang sudah ada. `NilaiSiswa` dan `double` adalah tipe yang sama persis, hanya namanya yang berbeda. Keuntungannya adalah kode jadi lebih mudah dibaca dan dipahami.
+:::
+
+## `typedef` vs `using`
+
+`typedef` adalah cara lama untuk membuat type alias (sebelum C++11). `using` adalah cara modern yang lebih direkomendasikan:
+
+```cpp
+// Cara lama (typedef) — masih valid tapi kurang direkomendasikan
+typedef double NilaiSiswa;
+typedef std::vector<std::string> DaftarNama;
+
+// Cara modern (using) — lebih jelas dan konsisten
+using NilaiSiswa = double;
+using DaftarNama = std::vector<std::string>;
+```
+
+Kenapa `using` lebih baik?
+1. **Lebih mudah dibaca** — format `using NamaBaru = TipeLama` mirip assignment, lebih natural
+2. **Lebih konsisten** — `typedef` punya urutan yang membingungkan untuk tipe kompleks
+3. **Lebih powerful** — `using` bisa digunakan untuk template alias (konsep lanjutan)
+
+:::note
+Kamu mungkin masih menemukan `typedef` di kode lama atau di buku-buku C++ yang lebih tua. Tidak apa-apa — `typedef` masih valid dan berfungsi. Tapi untuk kode baru, selalu gunakan `using`.
+:::
+
+## Kombinasi Enum dan Type Alias
+
+Enum dan type alias bisa digunakan bersama untuk membuat kode yang sangat rapi:
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+
+enum class Arah {
+    Utara,
+    Selatan,
+    Timur,
+    Barat
+};
+
+// Type alias untuk memperjelas kode
+using Koordinat = int;
+using Langkah = int;
+
+struct Posisi {
+    Koordinat x;
+    Koordinat y;
+};
+
+void bergerak(Posisi& pos, Arah arah, Langkah jarak) {
+    switch (arah) {
+        case Arah::Utara:  pos.y += jarak; break;
+        case Arah::Selatan: pos.y -= jarak; break;
+        case Arah::Timur:  pos.x += jarak; break;
+        case Arah::Barat:  pos.x -= jarak; break;
+    }
+}
+
+std::string namaArah(Arah arah) {
+    switch (arah) {
+        case Arah::Utara:  return "Utara";
+        case Arah::Selatan: return "Selatan";
+        case Arah::Timur:  return "Timur";
+        case Arah::Barat:  return "Barat";
+        default:           return "?";
+    }
+}
+
+int main() {
+    Posisi pemain = {0, 0};
+
+    std::cout << "=== Petualangan Sederhana ===" << std::endl;
+    std::cout << "Posisi awal: (" << pemain.x << ", " << pemain.y << ")" << std::endl;
+
+    // Bergerak
+    bergerak(pemain, Arah::Utara, 3);
+    std::cout << "Bergerak ke Utara 3 langkah -> ("
+              << pemain.x << ", " << pemain.y << ")" << std::endl;
+
+    bergerak(pemain, Arah::Timur, 5);
+    std::cout << "Bergerak ke Timur 5 langkah -> ("
+              << pemain.x << ", " << pemain.y << ")" << std::endl;
+
+    bergerak(pemain, Arah::Selatan, 1);
+    std::cout << "Bergerak ke Selatan 1 langkah -> ("
+              << pemain.x << ", " << pemain.y << ")" << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+=== Petualangan Sederhana ===
+Posisi awal: (0, 0)
+Bergerak ke Utara 3 langkah -> (0, 3)
+Bergerak ke Timur 5 langkah -> (5, 3)
+Bergerak ke Selatan 1 langkah -> (5, 2)
+```
+
+## Ringkasan
+
+| Konsep | Penjelasan | Contoh |
+|--------|-----------|--------|
+| Magic numbers | Angka tanpa arti jelas (hindari!) | `if (status == 2)` |
+| `enum class` | Tipe enumerasi modern (scoped) | `enum class Hari { Senin, Selasa };` |
+| Akses nilai enum | Pakai `NamaEnum::Nilai` | `Hari::Senin` |
+| Nilai eksplisit | Tentukan nilai angka enum | `enum class S { OK=200 };` |
+| `static_cast<int>` | Konversi enum ke int | `static_cast<int>(Hari::Senin)` |
+| `using` | Type alias modern | `using Skor = double;` |
+| `typedef` | Type alias lama | `typedef double Skor;` |
+
+## Latihan
+
+**Latihan 1:** Buat `enum class Warna` dengan nilai `Merah`, `Hijau`, `Biru`, `Kuning`, dan `Putih`. Buat fungsi `std::string namaWarna(Warna w)` yang mengembalikan nama warnanya sebagai string. Tampilkan semua warna menggunakan loop.
+
+**Latihan 2:** Buat sistem pemesanan makanan sederhana. Gunakan `enum class Ukuran { Kecil, Sedang, Besar }` dan `enum class Minuman { Teh, Kopi, Jus, Air }`. Hitung harga berdasarkan pilihan (Kecil=Rp5000, Sedang=Rp8000, Besar=Rp12000).
+
+**Latihan 3:** Buat `enum class Bulan` untuk 12 bulan. Buat fungsi yang menerima `Bulan` dan mengembalikan jumlah hari di bulan tersebut (abaikan tahun kabisat). Buat juga fungsi yang mengembalikan nama musim (Hujan/Kemarau) berdasarkan bulan.
+
+**Latihan 4:** Gunakan type alias untuk memperjelas program kalkulator. Buat `using Angka = double;` dan `using Operasi = char;`. Refactor kalkulator sederhana menggunakan alias-alias ini supaya kodenya lebih bermakna.

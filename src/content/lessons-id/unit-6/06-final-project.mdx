@@ -1,0 +1,1265 @@
+---
+title: "Final Project: Manajemen Kontak"
+unit: 6
+lesson: 6
+description: "Project penutup kurikulum — bangun aplikasi manajemen kontak lengkap yang mengintegrasikan semua konsep dari Unit 0 hingga Unit 6"
+objectives:
+  - "Mengintegrasikan semua konsep C++ dari Unit 0 hingga Unit 6 dalam satu program"
+  - "Membangun aplikasi CRUD lengkap dengan penyimpanan file"
+  - "Menggunakan struct, enum, vector, fungsi, dan file I/O secara bersamaan"
+  - "Menulis kode yang terorganisir, well-commented, dan mudah dipelihara"
+  - "Menyelesaikan project akhir dengan bangga!"
+estimatedTime: 120
+prerequisites: ["unit-6/05-enum-typedef"]
+difficulty: "intermediate"
+isProject: true
+tags: ["project", "final-project", "manajemen-kontak", "crud", "struct", "enum", "file-io", "vector"]
+---
+
+# Final Project: Manajemen Kontak
+
+Selamat datang di **project terakhir** dalam perjalanan belajar C++ kamu! Ini bukan sekadar project biasa — ini adalah **puncak dari seluruh kurikulum**. Di sini, kamu akan menggunakan **semua** yang sudah dipelajari dari Unit 0 hingga Unit 6 untuk membangun satu aplikasi yang utuh dan berguna.
+
+Kita akan membuat **Aplikasi Manajemen Kontak** — program yang bisa menyimpan, mencari, mengedit, dan menghapus data kontak, dengan penyimpanan permanen ke file. Seperti buku telepon digital versimu sendiri!
+
+:::note
+Ini adalah project yang cukup besar. Jangan panik! Kita akan membangunnya **tahap demi tahap**, mulai dari yang paling sederhana. Setiap tahap menambahkan fitur baru, dan di setiap tahap kamu akan melihat konsep-konsep yang sudah kamu kuasai dari unit-unit sebelumnya bekerja sama.
+:::
+
+## Konsep yang Diintegrasikan
+
+Sebelum mulai coding, lihat betapa banyak yang sudah kamu pelajari — dan semuanya akan digunakan di project ini:
+
+| Unit | Konsep | Digunakan Untuk |
+|------|--------|----------------|
+| Unit 0 | Variabel, tipe data, input/output | Input data kontak, menampilkan menu |
+| Unit 1 | Kondisi (if/else, switch) | Menu pilihan, validasi input, filter |
+| Unit 2 | Loop (while, for, do-while) | Menu berulang, iterasi kontak |
+| Unit 3 | String | Nama, nomor HP, email, pencarian |
+| Unit 4 | Fungsi | Organisasi kode, setiap fitur = satu fungsi |
+| Unit 5 | Array/Vector | Menyimpan daftar kontak |
+| Unit 6 | Struct | Data kontak terstruktur |
+| Unit 6 | File I/O | Simpan dan muat kontak dari file |
+| Unit 6 | Enum | Kategori kontak |
+
+Menakjubkan, kan? Semua ilmu itu sekarang jadi satu program yang utuh!
+
+## Desain Program
+
+### Struct dan Enum
+
+```cpp
+// Kategori kontak
+enum class Kategori {
+    Keluarga,
+    Teman,
+    Kerja,
+    Lainnya
+};
+
+// Data satu kontak
+struct Kontak {
+    std::string nama;
+    std::string nomorHp;
+    std::string email;
+    Kategori kategori;
+};
+```
+
+### Fungsi-fungsi yang Dibutuhkan
+
+| Fungsi | Tugas |
+|--------|-------|
+| `tampilkanMenu()` | Tampilkan menu utama |
+| `tambahKontak()` | Input dan tambah kontak baru |
+| `tampilkanSemuaKontak()` | Tampilkan semua kontak dalam tabel |
+| `cariKontak()` | Cari kontak berdasarkan nama |
+| `editKontak()` | Edit data kontak yang ada |
+| `hapusKontak()` | Hapus kontak dari daftar |
+| `sortKontak()` | Urutkan kontak berdasarkan nama |
+| `filterByKategori()` | Tampilkan kontak dari kategori tertentu |
+| `simpanKeFile()` | Simpan semua kontak ke file CSV |
+| `muatDariFile()` | Muat kontak dari file CSV saat program mulai |
+| `kategoriToString()` | Konversi enum Kategori ke string |
+| `stringToKategori()` | Konversi string ke enum Kategori |
+
+## Tahap 1: Struktur Dasar dan Menu
+
+Kita mulai dengan kerangka program — struct, enum, dan menu utama:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+enum class Kategori {
+    Keluarga,
+    Teman,
+    Kerja,
+    Lainnya
+};
+
+struct Kontak {
+    std::string nama;
+    std::string nomorHp;
+    std::string email;
+    Kategori kategori;
+};
+
+// Konversi kategori ke string
+std::string kategoriToString(Kategori kat) {
+    switch (kat) {
+        case Kategori::Keluarga: return "Keluarga";
+        case Kategori::Teman:    return "Teman";
+        case Kategori::Kerja:    return "Kerja";
+        case Kategori::Lainnya:  return "Lainnya";
+        default:                 return "Lainnya";
+    }
+}
+
+void tampilkanMenu() {
+    std::cout << std::endl;
+    std::cout << "=====================================" << std::endl;
+    std::cout << "      MANAJEMEN KONTAK v1.0" << std::endl;
+    std::cout << "=====================================" << std::endl;
+    std::cout << "  1. Tambah Kontak" << std::endl;
+    std::cout << "  2. Tampilkan Semua Kontak" << std::endl;
+    std::cout << "  3. Cari Kontak" << std::endl;
+    std::cout << "  4. Edit Kontak" << std::endl;
+    std::cout << "  5. Hapus Kontak" << std::endl;
+    std::cout << "  6. Sort by Nama" << std::endl;
+    std::cout << "  7. Filter by Kategori" << std::endl;
+    std::cout << "  8. Simpan & Keluar" << std::endl;
+    std::cout << "=====================================" << std::endl;
+    std::cout << "  Pilihan: ";
+}
+
+int main() {
+    std::vector<Kontak> daftarKontak;
+    int pilihan;
+
+    do {
+        tampilkanMenu();
+        std::cin >> pilihan;
+        std::cin.ignore();  // Buang newline setelah cin >>
+
+        switch (pilihan) {
+            case 1:
+                std::cout << "[Tambah kontak - belum diimplementasi]" << std::endl;
+                break;
+            case 2:
+                std::cout << "[Tampilkan kontak - belum diimplementasi]" << std::endl;
+                break;
+            // ... case 3-7
+            case 8:
+                std::cout << "Menyimpan dan keluar..." << std::endl;
+                break;
+            default:
+                std::cout << "Pilihan tidak valid!" << std::endl;
+        }
+    } while (pilihan != 8);
+
+    return 0;
+}
+```
+
+Kerangka dasar sudah jadi! Sekarang kita isi fitur-fiturnya satu per satu.
+
+## Tahap 2: Tambah dan Tampilkan Kontak
+
+### Fungsi Tambah Kontak
+
+```cpp
+Kategori pilihKategori() {
+    int pil;
+    std::cout << "  Kategori:" << std::endl;
+    std::cout << "    1. Keluarga" << std::endl;
+    std::cout << "    2. Teman" << std::endl;
+    std::cout << "    3. Kerja" << std::endl;
+    std::cout << "    4. Lainnya" << std::endl;
+    std::cout << "  Pilih (1-4): ";
+    std::cin >> pil;
+    std::cin.ignore();
+
+    switch (pil) {
+        case 1: return Kategori::Keluarga;
+        case 2: return Kategori::Teman;
+        case 3: return Kategori::Kerja;
+        default: return Kategori::Lainnya;
+    }
+}
+
+void tambahKontak(std::vector<Kontak>& daftar) {
+    Kontak baru;
+
+    std::cout << std::endl;
+    std::cout << "--- Tambah Kontak Baru ---" << std::endl;
+
+    std::cout << "  Nama     : ";
+    std::getline(std::cin, baru.nama);
+
+    std::cout << "  Nomor HP : ";
+    std::getline(std::cin, baru.nomorHp);
+
+    std::cout << "  Email    : ";
+    std::getline(std::cin, baru.email);
+
+    baru.kategori = pilihKategori();
+
+    daftar.push_back(baru);
+
+    std::cout << std::endl;
+    std::cout << "  Kontak \"" << baru.nama << "\" berhasil ditambahkan!" << std::endl;
+}
+```
+
+### Fungsi Tampilkan Semua Kontak
+
+```cpp
+#include <iomanip>  // Tambahkan di atas
+
+void tampilkanSemuaKontak(const std::vector<Kontak>& daftar) {
+    std::cout << std::endl;
+
+    if (daftar.empty()) {
+        std::cout << "  Belum ada kontak tersimpan." << std::endl;
+        return;
+    }
+
+    std::cout << "--- Daftar Kontak (" << daftar.size() << " kontak) ---" << std::endl;
+    std::cout << std::left;
+    std::cout << std::setw(5)  << "No"
+              << std::setw(20) << "Nama"
+              << std::setw(16) << "Nomor HP"
+              << std::setw(25) << "Email"
+              << std::setw(12) << "Kategori"
+              << std::endl;
+    std::cout << std::string(78, '-') << std::endl;
+
+    for (int i = 0; i < static_cast<int>(daftar.size()); i++) {
+        std::cout << std::setw(5)  << (i + 1)
+                  << std::setw(20) << daftar[i].nama
+                  << std::setw(16) << daftar[i].nomorHp
+                  << std::setw(25) << daftar[i].email
+                  << std::setw(12) << kategoriToString(daftar[i].kategori)
+                  << std::endl;
+    }
+
+    std::cout << std::string(78, '-') << std::endl;
+}
+```
+
+Sekarang update `main()` untuk memanggil fungsi-fungsi ini:
+
+```cpp
+case 1:
+    tambahKontak(daftarKontak);
+    break;
+case 2:
+    tampilkanSemuaKontak(daftarKontak);
+    break;
+```
+
+:::tip
+Perhatikan bahwa `tambahKontak` menerima vector by **reference** (`&`) karena perlu menambah data, sedangkan `tampilkanSemuaKontak` menerima **const reference** (`const &`) karena hanya membaca. Ini praktik baik yang kamu pelajari di Unit 4!
+:::
+
+## Tahap 3: Cari Kontak (Case-Insensitive)
+
+Untuk pencarian yang nyaman, kita buat case-insensitive — "budi", "BUDI", dan "Budi" semua dianggap sama:
+
+```cpp
+#include <algorithm>  // Tambahkan di atas untuk std::transform
+
+// Fungsi helper: ubah string ke huruf kecil
+std::string toLower(std::string str) {
+    std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+    return str;
+}
+
+void cariKontak(const std::vector<Kontak>& daftar) {
+    if (daftar.empty()) {
+        std::cout << "  Belum ada kontak tersimpan." << std::endl;
+        return;
+    }
+
+    std::string keyword;
+    std::cout << std::endl;
+    std::cout << "--- Cari Kontak ---" << std::endl;
+    std::cout << "  Masukkan nama: ";
+    std::getline(std::cin, keyword);
+
+    std::string keywordLower = toLower(keyword);
+    bool ditemukan = false;
+    int nomor = 1;
+
+    std::cout << std::endl;
+
+    for (int i = 0; i < static_cast<int>(daftar.size()); i++) {
+        // Cek apakah keyword ada di dalam nama (case-insensitive)
+        if (toLower(daftar[i].nama).find(keywordLower) != std::string::npos) {
+            if (!ditemukan) {
+                std::cout << "  Hasil pencarian:" << std::endl;
+                ditemukan = true;
+            }
+            std::cout << "  " << nomor << ". " << daftar[i].nama
+                      << " | " << daftar[i].nomorHp
+                      << " | " << daftar[i].email
+                      << " | " << kategoriToString(daftar[i].kategori)
+                      << std::endl;
+            nomor++;
+        }
+    }
+
+    if (!ditemukan) {
+        std::cout << "  Tidak ditemukan kontak dengan nama \""
+                  << keyword << "\"." << std::endl;
+    }
+}
+```
+
+:::note
+`std::string::find()` mengembalikan posisi substring yang ditemukan. Kalau tidak ditemukan, mengembalikan `std::string::npos`. Jadi `!= std::string::npos` artinya "substring ditemukan". Ini cara standar untuk mencari teks di dalam string C++.
+:::
+
+## Tahap 4: Edit dan Hapus Kontak
+
+### Edit Kontak
+
+```cpp
+void editKontak(std::vector<Kontak>& daftar) {
+    if (daftar.empty()) {
+        std::cout << "  Belum ada kontak tersimpan." << std::endl;
+        return;
+    }
+
+    tampilkanSemuaKontak(daftar);
+
+    int nomor;
+    std::cout << "  Pilih nomor kontak yang ingin diedit: ";
+    std::cin >> nomor;
+    std::cin.ignore();
+
+    if (nomor < 1 || nomor > static_cast<int>(daftar.size())) {
+        std::cout << "  Nomor tidak valid!" << std::endl;
+        return;
+    }
+
+    int idx = nomor - 1;  // Konversi ke index (mulai dari 0)
+    Kontak& k = daftar[idx];  // Reference ke kontak yang diedit
+
+    std::cout << std::endl;
+    std::cout << "--- Edit Kontak: " << k.nama << " ---" << std::endl;
+    std::cout << "  (Tekan Enter untuk tidak mengubah)" << std::endl;
+
+    std::string input;
+
+    std::cout << "  Nama [" << k.nama << "]: ";
+    std::getline(std::cin, input);
+    if (!input.empty()) k.nama = input;
+
+    std::cout << "  Nomor HP [" << k.nomorHp << "]: ";
+    std::getline(std::cin, input);
+    if (!input.empty()) k.nomorHp = input;
+
+    std::cout << "  Email [" << k.email << "]: ";
+    std::getline(std::cin, input);
+    if (!input.empty()) k.email = input;
+
+    std::cout << "  Ubah kategori? (y/n): ";
+    std::getline(std::cin, input);
+    if (input == "y" || input == "Y") {
+        k.kategori = pilihKategori();
+    }
+
+    std::cout << "  Kontak berhasil diupdate!" << std::endl;
+}
+```
+
+### Hapus Kontak
+
+```cpp
+void hapusKontak(std::vector<Kontak>& daftar) {
+    if (daftar.empty()) {
+        std::cout << "  Belum ada kontak tersimpan." << std::endl;
+        return;
+    }
+
+    tampilkanSemuaKontak(daftar);
+
+    int nomor;
+    std::cout << "  Pilih nomor kontak yang ingin dihapus: ";
+    std::cin >> nomor;
+    std::cin.ignore();
+
+    if (nomor < 1 || nomor > static_cast<int>(daftar.size())) {
+        std::cout << "  Nomor tidak valid!" << std::endl;
+        return;
+    }
+
+    int idx = nomor - 1;
+    std::string namaHapus = daftar[idx].nama;
+
+    // Konfirmasi
+    std::string konfirmasi;
+    std::cout << "  Yakin hapus \"" << namaHapus << "\"? (y/n): ";
+    std::getline(std::cin, konfirmasi);
+
+    if (konfirmasi == "y" || konfirmasi == "Y") {
+        daftar.erase(daftar.begin() + idx);
+        std::cout << "  Kontak \"" << namaHapus << "\" berhasil dihapus." << std::endl;
+    } else {
+        std::cout << "  Penghapusan dibatalkan." << std::endl;
+    }
+}
+```
+
+:::warning
+Fungsi `erase` menghapus elemen dari vector dan menggeser semua elemen setelahnya. Untuk daftar kontak yang kecil (ratusan atau ribuan), ini tidak masalah. Tapi untuk data yang sangat besar, ada struktur data lain yang lebih efisien.
+:::
+
+## Tahap 5: Sort dan Filter
+
+### Sort by Nama
+
+```cpp
+void sortKontak(std::vector<Kontak>& daftar) {
+    if (daftar.size() < 2) {
+        std::cout << "  Kontak terlalu sedikit untuk di-sort." << std::endl;
+        return;
+    }
+
+    // Bubble sort berdasarkan nama (case-insensitive)
+    for (int i = 0; i < static_cast<int>(daftar.size()) - 1; i++) {
+        for (int j = 0; j < static_cast<int>(daftar.size()) - 1 - i; j++) {
+            if (toLower(daftar[j].nama) > toLower(daftar[j + 1].nama)) {
+                // Tukar posisi
+                Kontak temp = daftar[j];
+                daftar[j] = daftar[j + 1];
+                daftar[j + 1] = temp;
+            }
+        }
+    }
+
+    std::cout << "  Kontak berhasil diurutkan berdasarkan nama!" << std::endl;
+    tampilkanSemuaKontak(daftar);
+}
+```
+
+### Filter by Kategori
+
+```cpp
+void filterByKategori(const std::vector<Kontak>& daftar) {
+    if (daftar.empty()) {
+        std::cout << "  Belum ada kontak tersimpan." << std::endl;
+        return;
+    }
+
+    std::cout << std::endl;
+    std::cout << "--- Filter Kategori ---" << std::endl;
+    Kategori kat = pilihKategori();
+
+    std::cout << std::endl;
+    std::cout << "  Kontak kategori " << kategoriToString(kat) << ":" << std::endl;
+    std::cout << std::string(50, '-') << std::endl;
+
+    int count = 0;
+    for (int i = 0; i < static_cast<int>(daftar.size()); i++) {
+        if (daftar[i].kategori == kat) {
+            count++;
+            std::cout << "  " << count << ". " << daftar[i].nama
+                      << " | " << daftar[i].nomorHp
+                      << " | " << daftar[i].email
+                      << std::endl;
+        }
+    }
+
+    if (count == 0) {
+        std::cout << "  Tidak ada kontak di kategori ini." << std::endl;
+    } else {
+        std::cout << std::string(50, '-') << std::endl;
+        std::cout << "  Total: " << count << " kontak" << std::endl;
+    }
+}
+```
+
+## Tahap 6: Simpan dan Muat File (CSV)
+
+Ini bagian yang membuat data kontak **permanen** — tersimpan meskipun program ditutup!
+
+Kita menggunakan format **CSV** (Comma-Separated Values) karena sederhana dan bisa dibuka dengan program lain seperti Excel:
+
+### Simpan ke File
+
+```cpp
+#include <fstream>  // Tambahkan di atas
+
+void simpanKeFile(const std::vector<Kontak>& daftar,
+                  const std::string& namaFile) {
+    std::ofstream file(namaFile);
+
+    if (!file.is_open()) {
+        std::cout << "  Gagal membuka file untuk menyimpan!" << std::endl;
+        return;
+    }
+
+    // Tulis setiap kontak sebagai satu baris CSV
+    for (int i = 0; i < static_cast<int>(daftar.size()); i++) {
+        file << daftar[i].nama << ","
+             << daftar[i].nomorHp << ","
+             << daftar[i].email << ","
+             << kategoriToString(daftar[i].kategori)
+             << std::endl;
+    }
+
+    file.close();
+    std::cout << "  " << daftar.size() << " kontak berhasil disimpan ke "
+              << namaFile << std::endl;
+}
+```
+
+### Muat dari File
+
+```cpp
+#include <sstream>  // Tambahkan di atas untuk std::getline dengan delimiter
+
+Kategori stringToKategori(const std::string& str) {
+    if (str == "Keluarga") return Kategori::Keluarga;
+    if (str == "Teman")    return Kategori::Teman;
+    if (str == "Kerja")    return Kategori::Kerja;
+    return Kategori::Lainnya;
+}
+
+void muatDariFile(std::vector<Kontak>& daftar,
+                  const std::string& namaFile) {
+    std::ifstream file(namaFile);
+
+    if (!file.is_open()) {
+        // File belum ada — bukan error, mungkin pertama kali dijalankan
+        std::cout << "  Belum ada data tersimpan (file baru akan dibuat saat simpan)."
+                  << std::endl;
+        return;
+    }
+
+    std::string baris;
+    int count = 0;
+
+    while (std::getline(file, baris)) {
+        if (baris.empty()) continue;  // Skip baris kosong
+
+        // Parse CSV: nama,nomorHp,email,kategori
+        Kontak k;
+        std::stringstream ss(baris);
+        std::string katStr;
+
+        std::getline(ss, k.nama, ',');
+        std::getline(ss, k.nomorHp, ',');
+        std::getline(ss, k.email, ',');
+        std::getline(ss, katStr, ',');
+
+        k.kategori = stringToKategori(katStr);
+
+        daftar.push_back(k);
+        count++;
+    }
+
+    file.close();
+
+    if (count > 0) {
+        std::cout << "  " << count << " kontak berhasil dimuat dari "
+                  << namaFile << std::endl;
+    }
+}
+```
+
+:::tip
+Format CSV yang kita gunakan sederhana: setiap baris adalah satu kontak, dan field dipisahkan dengan koma. Ini cukup untuk project kita. Perlu diingat bahwa kalau nama kontak mengandung koma, format ini bisa bermasalah — di dunia nyata, CSV yang benar menggunakan tanda kutip untuk menangani kasus itu.
+:::
+
+## Kode Final Lengkap
+
+Ini dia kode lengkap Aplikasi Manajemen Kontak! Semua tahap digabungkan menjadi satu program yang siap dijalankan:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+#include <fstream>
+#include <sstream>
+#include <iomanip>
+#include <algorithm>
+
+// ============================================================
+// ENUM & STRUCT
+// ============================================================
+
+enum class Kategori {
+    Keluarga,
+    Teman,
+    Kerja,
+    Lainnya
+};
+
+struct Kontak {
+    std::string nama;
+    std::string nomorHp;
+    std::string email;
+    Kategori kategori;
+};
+
+// ============================================================
+// KONSTANTA
+// ============================================================
+
+const std::string NAMA_FILE = "kontak.csv";
+
+// ============================================================
+// DEKLARASI FUNGSI
+// ============================================================
+
+// Utilitas
+std::string kategoriToString(Kategori kat);
+Kategori stringToKategori(const std::string& str);
+std::string toLower(std::string str);
+Kategori pilihKategori();
+
+// Menu
+void tampilkanMenu();
+
+// CRUD
+void tambahKontak(std::vector<Kontak>& daftar);
+void tampilkanSemuaKontak(const std::vector<Kontak>& daftar);
+void cariKontak(const std::vector<Kontak>& daftar);
+void editKontak(std::vector<Kontak>& daftar);
+void hapusKontak(std::vector<Kontak>& daftar);
+
+// Sort & Filter
+void sortKontak(std::vector<Kontak>& daftar);
+void filterByKategori(const std::vector<Kontak>& daftar);
+
+// File I/O
+void simpanKeFile(const std::vector<Kontak>& daftar, const std::string& namaFile);
+void muatDariFile(std::vector<Kontak>& daftar, const std::string& namaFile);
+
+// ============================================================
+// FUNGSI MAIN
+// ============================================================
+
+int main() {
+    std::vector<Kontak> daftarKontak;
+
+    // Muat data dari file saat program mulai
+    std::cout << "=========================================" << std::endl;
+    std::cout << "      MANAJEMEN KONTAK v1.0" << std::endl;
+    std::cout << "=========================================" << std::endl;
+    muatDariFile(daftarKontak, NAMA_FILE);
+
+    int pilihan;
+
+    do {
+        tampilkanMenu();
+        std::cin >> pilihan;
+        std::cin.ignore();  // Buang newline sisa dari cin >>
+
+        switch (pilihan) {
+            case 1:
+                tambahKontak(daftarKontak);
+                break;
+            case 2:
+                tampilkanSemuaKontak(daftarKontak);
+                break;
+            case 3:
+                cariKontak(daftarKontak);
+                break;
+            case 4:
+                editKontak(daftarKontak);
+                break;
+            case 5:
+                hapusKontak(daftarKontak);
+                break;
+            case 6:
+                sortKontak(daftarKontak);
+                break;
+            case 7:
+                filterByKategori(daftarKontak);
+                break;
+            case 8:
+                simpanKeFile(daftarKontak, NAMA_FILE);
+                std::cout << std::endl;
+                std::cout << "  Sampai jumpa! Terima kasih sudah menggunakan"
+                          << std::endl;
+                std::cout << "  Manajemen Kontak v1.0" << std::endl;
+                break;
+            default:
+                std::cout << "  Pilihan tidak valid! Masukkan 1-8." << std::endl;
+        }
+    } while (pilihan != 8);
+
+    return 0;
+}
+
+// ============================================================
+// IMPLEMENTASI FUNGSI UTILITAS
+// ============================================================
+
+std::string kategoriToString(Kategori kat) {
+    switch (kat) {
+        case Kategori::Keluarga: return "Keluarga";
+        case Kategori::Teman:    return "Teman";
+        case Kategori::Kerja:    return "Kerja";
+        case Kategori::Lainnya:  return "Lainnya";
+        default:                 return "Lainnya";
+    }
+}
+
+Kategori stringToKategori(const std::string& str) {
+    if (str == "Keluarga") return Kategori::Keluarga;
+    if (str == "Teman")    return Kategori::Teman;
+    if (str == "Kerja")    return Kategori::Kerja;
+    return Kategori::Lainnya;
+}
+
+std::string toLower(std::string str) {
+    std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+    return str;
+}
+
+Kategori pilihKategori() {
+    int pil;
+    std::cout << "  Kategori:" << std::endl;
+    std::cout << "    1. Keluarga" << std::endl;
+    std::cout << "    2. Teman" << std::endl;
+    std::cout << "    3. Kerja" << std::endl;
+    std::cout << "    4. Lainnya" << std::endl;
+    std::cout << "  Pilih (1-4): ";
+    std::cin >> pil;
+    std::cin.ignore();
+
+    switch (pil) {
+        case 1: return Kategori::Keluarga;
+        case 2: return Kategori::Teman;
+        case 3: return Kategori::Kerja;
+        default: return Kategori::Lainnya;
+    }
+}
+
+// ============================================================
+// IMPLEMENTASI MENU
+// ============================================================
+
+void tampilkanMenu() {
+    std::cout << std::endl;
+    std::cout << "=====================================" << std::endl;
+    std::cout << "           MENU UTAMA" << std::endl;
+    std::cout << "=====================================" << std::endl;
+    std::cout << "  1. Tambah Kontak" << std::endl;
+    std::cout << "  2. Tampilkan Semua Kontak" << std::endl;
+    std::cout << "  3. Cari Kontak" << std::endl;
+    std::cout << "  4. Edit Kontak" << std::endl;
+    std::cout << "  5. Hapus Kontak" << std::endl;
+    std::cout << "  6. Sort by Nama" << std::endl;
+    std::cout << "  7. Filter by Kategori" << std::endl;
+    std::cout << "  8. Simpan & Keluar" << std::endl;
+    std::cout << "=====================================" << std::endl;
+    std::cout << "  Pilihan: ";
+}
+
+// ============================================================
+// IMPLEMENTASI CRUD
+// ============================================================
+
+void tambahKontak(std::vector<Kontak>& daftar) {
+    Kontak baru;
+
+    std::cout << std::endl;
+    std::cout << "--- Tambah Kontak Baru ---" << std::endl;
+
+    std::cout << "  Nama     : ";
+    std::getline(std::cin, baru.nama);
+
+    if (baru.nama.empty()) {
+        std::cout << "  Nama tidak boleh kosong!" << std::endl;
+        return;
+    }
+
+    std::cout << "  Nomor HP : ";
+    std::getline(std::cin, baru.nomorHp);
+
+    std::cout << "  Email    : ";
+    std::getline(std::cin, baru.email);
+
+    baru.kategori = pilihKategori();
+
+    daftar.push_back(baru);
+
+    std::cout << std::endl;
+    std::cout << "  Kontak \"" << baru.nama
+              << "\" berhasil ditambahkan!" << std::endl;
+    std::cout << "  Total kontak: " << daftar.size() << std::endl;
+}
+
+void tampilkanSemuaKontak(const std::vector<Kontak>& daftar) {
+    std::cout << std::endl;
+
+    if (daftar.empty()) {
+        std::cout << "  Belum ada kontak tersimpan." << std::endl;
+        return;
+    }
+
+    std::cout << "--- Daftar Kontak (" << daftar.size()
+              << " kontak) ---" << std::endl;
+    std::cout << std::left;
+    std::cout << std::setw(5)  << "No"
+              << std::setw(20) << "Nama"
+              << std::setw(16) << "Nomor HP"
+              << std::setw(25) << "Email"
+              << std::setw(12) << "Kategori"
+              << std::endl;
+    std::cout << std::string(78, '-') << std::endl;
+
+    for (int i = 0; i < static_cast<int>(daftar.size()); i++) {
+        std::cout << std::setw(5)  << (i + 1)
+                  << std::setw(20) << daftar[i].nama
+                  << std::setw(16) << daftar[i].nomorHp
+                  << std::setw(25) << daftar[i].email
+                  << std::setw(12) << kategoriToString(daftar[i].kategori)
+                  << std::endl;
+    }
+
+    std::cout << std::string(78, '-') << std::endl;
+}
+
+void cariKontak(const std::vector<Kontak>& daftar) {
+    if (daftar.empty()) {
+        std::cout << "  Belum ada kontak tersimpan." << std::endl;
+        return;
+    }
+
+    std::string keyword;
+    std::cout << std::endl;
+    std::cout << "--- Cari Kontak ---" << std::endl;
+    std::cout << "  Masukkan nama: ";
+    std::getline(std::cin, keyword);
+
+    std::string keywordLower = toLower(keyword);
+    bool ditemukan = false;
+    int nomor = 1;
+
+    std::cout << std::endl;
+
+    for (int i = 0; i < static_cast<int>(daftar.size()); i++) {
+        if (toLower(daftar[i].nama).find(keywordLower) != std::string::npos) {
+            if (!ditemukan) {
+                std::cout << "  Hasil pencarian untuk \""
+                          << keyword << "\":" << std::endl;
+                std::cout << std::string(50, '-') << std::endl;
+                ditemukan = true;
+            }
+            std::cout << "  " << nomor << ". " << daftar[i].nama
+                      << " | " << daftar[i].nomorHp
+                      << " | " << daftar[i].email
+                      << " | " << kategoriToString(daftar[i].kategori)
+                      << std::endl;
+            nomor++;
+        }
+    }
+
+    if (!ditemukan) {
+        std::cout << "  Tidak ditemukan kontak dengan nama \""
+                  << keyword << "\"." << std::endl;
+    }
+}
+
+void editKontak(std::vector<Kontak>& daftar) {
+    if (daftar.empty()) {
+        std::cout << "  Belum ada kontak tersimpan." << std::endl;
+        return;
+    }
+
+    tampilkanSemuaKontak(daftar);
+
+    int nomor;
+    std::cout << "  Pilih nomor kontak yang ingin diedit: ";
+    std::cin >> nomor;
+    std::cin.ignore();
+
+    if (nomor < 1 || nomor > static_cast<int>(daftar.size())) {
+        std::cout << "  Nomor tidak valid!" << std::endl;
+        return;
+    }
+
+    int idx = nomor - 1;
+    Kontak& k = daftar[idx];
+
+    std::cout << std::endl;
+    std::cout << "--- Edit Kontak: " << k.nama << " ---" << std::endl;
+    std::cout << "  (Tekan Enter untuk tidak mengubah)" << std::endl;
+
+    std::string input;
+
+    std::cout << "  Nama     [" << k.nama << "]: ";
+    std::getline(std::cin, input);
+    if (!input.empty()) k.nama = input;
+
+    std::cout << "  Nomor HP [" << k.nomorHp << "]: ";
+    std::getline(std::cin, input);
+    if (!input.empty()) k.nomorHp = input;
+
+    std::cout << "  Email    [" << k.email << "]: ";
+    std::getline(std::cin, input);
+    if (!input.empty()) k.email = input;
+
+    std::cout << "  Ubah kategori? (y/n): ";
+    std::getline(std::cin, input);
+    if (input == "y" || input == "Y") {
+        k.kategori = pilihKategori();
+    }
+
+    std::cout << std::endl;
+    std::cout << "  Kontak berhasil diupdate!" << std::endl;
+}
+
+void hapusKontak(std::vector<Kontak>& daftar) {
+    if (daftar.empty()) {
+        std::cout << "  Belum ada kontak tersimpan." << std::endl;
+        return;
+    }
+
+    tampilkanSemuaKontak(daftar);
+
+    int nomor;
+    std::cout << "  Pilih nomor kontak yang ingin dihapus: ";
+    std::cin >> nomor;
+    std::cin.ignore();
+
+    if (nomor < 1 || nomor > static_cast<int>(daftar.size())) {
+        std::cout << "  Nomor tidak valid!" << std::endl;
+        return;
+    }
+
+    int idx = nomor - 1;
+    std::string namaHapus = daftar[idx].nama;
+
+    std::string konfirmasi;
+    std::cout << "  Yakin hapus \"" << namaHapus << "\"? (y/n): ";
+    std::getline(std::cin, konfirmasi);
+
+    if (konfirmasi == "y" || konfirmasi == "Y") {
+        daftar.erase(daftar.begin() + idx);
+        std::cout << "  Kontak \"" << namaHapus
+                  << "\" berhasil dihapus." << std::endl;
+    } else {
+        std::cout << "  Penghapusan dibatalkan." << std::endl;
+    }
+}
+
+// ============================================================
+// IMPLEMENTASI SORT & FILTER
+// ============================================================
+
+void sortKontak(std::vector<Kontak>& daftar) {
+    if (daftar.size() < 2) {
+        std::cout << "  Kontak terlalu sedikit untuk di-sort." << std::endl;
+        return;
+    }
+
+    // Bubble sort berdasarkan nama (case-insensitive)
+    for (int i = 0; i < static_cast<int>(daftar.size()) - 1; i++) {
+        for (int j = 0; j < static_cast<int>(daftar.size()) - 1 - i; j++) {
+            if (toLower(daftar[j].nama) > toLower(daftar[j + 1].nama)) {
+                Kontak temp = daftar[j];
+                daftar[j] = daftar[j + 1];
+                daftar[j + 1] = temp;
+            }
+        }
+    }
+
+    std::cout << "  Kontak berhasil diurutkan berdasarkan nama!" << std::endl;
+    tampilkanSemuaKontak(daftar);
+}
+
+void filterByKategori(const std::vector<Kontak>& daftar) {
+    if (daftar.empty()) {
+        std::cout << "  Belum ada kontak tersimpan." << std::endl;
+        return;
+    }
+
+    std::cout << std::endl;
+    std::cout << "--- Filter Kategori ---" << std::endl;
+    Kategori kat = pilihKategori();
+
+    std::cout << std::endl;
+    std::cout << "  Kontak kategori "
+              << kategoriToString(kat) << ":" << std::endl;
+    std::cout << std::string(50, '-') << std::endl;
+
+    int count = 0;
+    for (int i = 0; i < static_cast<int>(daftar.size()); i++) {
+        if (daftar[i].kategori == kat) {
+            count++;
+            std::cout << "  " << count << ". " << daftar[i].nama
+                      << " | " << daftar[i].nomorHp
+                      << " | " << daftar[i].email
+                      << std::endl;
+        }
+    }
+
+    if (count == 0) {
+        std::cout << "  Tidak ada kontak di kategori ini." << std::endl;
+    } else {
+        std::cout << std::string(50, '-') << std::endl;
+        std::cout << "  Total: " << count << " kontak" << std::endl;
+    }
+}
+
+// ============================================================
+// IMPLEMENTASI FILE I/O
+// ============================================================
+
+void simpanKeFile(const std::vector<Kontak>& daftar,
+                  const std::string& namaFile) {
+    std::ofstream file(namaFile);
+
+    if (!file.is_open()) {
+        std::cout << "  Gagal membuka file untuk menyimpan!" << std::endl;
+        return;
+    }
+
+    for (int i = 0; i < static_cast<int>(daftar.size()); i++) {
+        file << daftar[i].nama << ","
+             << daftar[i].nomorHp << ","
+             << daftar[i].email << ","
+             << kategoriToString(daftar[i].kategori)
+             << std::endl;
+    }
+
+    file.close();
+    std::cout << "  " << daftar.size() << " kontak berhasil disimpan ke "
+              << namaFile << std::endl;
+}
+
+void muatDariFile(std::vector<Kontak>& daftar,
+                  const std::string& namaFile) {
+    std::ifstream file(namaFile);
+
+    if (!file.is_open()) {
+        std::cout << "  Belum ada data tersimpan (file baru akan dibuat"
+                  << " saat simpan)." << std::endl;
+        return;
+    }
+
+    std::string baris;
+    int count = 0;
+
+    while (std::getline(file, baris)) {
+        if (baris.empty()) continue;
+
+        Kontak k;
+        std::stringstream ss(baris);
+        std::string katStr;
+
+        std::getline(ss, k.nama, ',');
+        std::getline(ss, k.nomorHp, ',');
+        std::getline(ss, k.email, ',');
+        std::getline(ss, katStr, ',');
+
+        k.kategori = stringToKategori(katStr);
+        daftar.push_back(k);
+        count++;
+    }
+
+    file.close();
+
+    if (count > 0) {
+        std::cout << "  " << count << " kontak berhasil dimuat dari "
+                  << namaFile << std::endl;
+    }
+}
+```
+
+## Contoh Sesi Penggunaan
+
+```
+=========================================
+      MANAJEMEN KONTAK v1.0
+=========================================
+  Belum ada data tersimpan (file baru akan dibuat saat simpan).
+
+=====================================
+           MENU UTAMA
+=====================================
+  1. Tambah Kontak
+  2. Tampilkan Semua Kontak
+  3. Cari Kontak
+  4. Edit Kontak
+  5. Hapus Kontak
+  6. Sort by Nama
+  7. Filter by Kategori
+  8. Simpan & Keluar
+=====================================
+  Pilihan: 1
+
+--- Tambah Kontak Baru ---
+  Nama     : Budi Santoso
+  Nomor HP : 081234567890
+  Email    : budi@email.com
+  Kategori:
+    1. Keluarga
+    2. Teman
+    3. Kerja
+    4. Lainnya
+  Pilih (1-4): 2
+
+  Kontak "Budi Santoso" berhasil ditambahkan!
+  Total kontak: 1
+
+=====================================
+           MENU UTAMA
+=====================================
+  ...
+  Pilihan: 1
+
+--- Tambah Kontak Baru ---
+  Nama     : Ani Wijaya
+  Nomor HP : 087654321098
+  Email    : ani@email.com
+  Kategori:
+  ...
+  Pilih (1-4): 1
+
+  Kontak "Ani Wijaya" berhasil ditambahkan!
+  Total kontak: 2
+
+  ...
+  Pilihan: 2
+
+--- Daftar Kontak (2 kontak) ---
+No   Nama                Nomor HP        Email                    Kategori
+------------------------------------------------------------------------------
+1    Budi Santoso        081234567890    budi@email.com           Teman
+2    Ani Wijaya          087654321098    ani@email.com            Keluarga
+------------------------------------------------------------------------------
+
+  ...
+  Pilihan: 6
+  Kontak berhasil diurutkan berdasarkan nama!
+
+--- Daftar Kontak (2 kontak) ---
+No   Nama                Nomor HP        Email                    Kategori
+------------------------------------------------------------------------------
+1    Ani Wijaya          087654321098    ani@email.com            Keluarga
+2    Budi Santoso        081234567890    budi@email.com           Teman
+------------------------------------------------------------------------------
+
+  ...
+  Pilihan: 8
+  2 kontak berhasil disimpan ke kontak.csv
+
+  Sampai jumpa! Terima kasih sudah menggunakan
+  Manajemen Kontak v1.0
+```
+
+## Konsep dari Semua Unit yang Digunakan
+
+| Konsep | Unit | Contoh Penggunaan di Project |
+|--------|------|------------------------------|
+| `std::cout`, `std::cin` | 0 | Input/output di seluruh program |
+| Variabel & tipe data | 0 | `int pilihan`, `std::string nama`, dll |
+| `if/else` | 1 | Validasi input, cek file kosong |
+| `switch-case` | 1 | Menu utama, konversi kategori |
+| `do-while` loop | 2 | Loop menu utama |
+| `for` loop | 2 | Iterasi daftar kontak |
+| `while` loop | 2 | Baca file baris per baris |
+| `std::string` | 3 | Nama, nomor HP, email, pencarian |
+| `string::find()` | 3 | Pencarian case-insensitive |
+| Fungsi & prototype | 4 | Semua fungsi terpisah dengan jelas |
+| Pass by reference | 4 | `tambahKontak()`, `editKontak()`, dll |
+| Const reference | 4 | `tampilkanSemuaKontak()`, `cariKontak()` |
+| `std::vector` | 5 | `std::vector<Kontak> daftarKontak` |
+| `push_back`, `erase` | 5 | Tambah dan hapus kontak |
+| `struct` | 6 | `struct Kontak { ... }` |
+| `enum class` | 6 | `enum class Kategori { ... }` |
+| `std::ifstream` | 6 | Muat kontak dari file CSV |
+| `std::ofstream` | 6 | Simpan kontak ke file CSV |
+| `std::stringstream` | 6 | Parse baris CSV |
+
+## Tantangan Ekstra
+
+Sudah berhasil membuat project ini? Luar biasa! Kalau kamu mau menantang diri sendiri lebih jauh, coba tambahkan fitur-fitur ini:
+
+**Tantangan 1: Sorting Multi-Kriteria**
+
+Tambahkan pilihan sort berdasarkan: nama, kategori, atau nomor HP. Buat menu di dalam fungsi `sortKontak()` yang menanyakan kriteria sorting.
+
+**Tantangan 2: Backup Otomatis**
+
+Sebelum menyimpan ke file utama, buat backup file lama dengan nama `kontak_backup.csv`. Jadi kalau ada masalah, data lama masih bisa dikembalikan.
+
+```cpp
+void backupFile(const std::string& namaFile) {
+    std::ifstream src(namaFile);
+    if (!src.is_open()) return;  // Tidak ada file lama, skip
+
+    std::ofstream dst(namaFile.substr(0, namaFile.find('.')) + "_backup.csv");
+    dst << src.rdbuf();  // Copy seluruh isi file
+
+    src.close();
+    dst.close();
+}
+```
+
+**Tantangan 3: Statistik Kontak**
+
+Tambahkan menu "Statistik" yang menampilkan:
+- Total kontak
+- Jumlah kontak per kategori
+- Kontak dengan nama terpanjang dan terpendek
+- Persentase kontak per kategori (dalam bentuk bar chart sederhana dengan karakter `#`)
+
+**Tantangan 4: Export ke Format Lain**
+
+Tambahkan opsi export ke format teks yang lebih rapi (seperti laporan berformat tabel), atau format vCard (.vcf) yang bisa diimport ke HP.
+
+**Tantangan 5: Undo Terakhir**
+
+Simpan aksi terakhir (tambah/edit/hapus) dan berikan opsi "Undo" untuk membatalkannya. Hint: simpan salinan data kontak sebelum setiap perubahan.
+
+:::tip
+Kamu tidak harus menyelesaikan semua tantangan. Pilih yang paling menarik dan coba kerjakan. Setiap tantangan melatih kemampuan problem-solving yang berbeda!
+:::
+
+---
+
+## Selamat! Kamu Telah Menyelesaikan Seluruh Kurikulum!
+
+Kalau kamu sampai di titik ini — **kamu luar biasa**.
+
+Coba lihat ke belakang sebentar. Di awal Unit 0, kamu mungkin bahkan belum pernah menulis satu baris kode C++. Sekarang? Kamu baru saja membangun **aplikasi lengkap** dengan menu interaktif, pengelolaan data, pencarian, pengurutan, dan penyimpanan ke file. Itu bukan hal kecil!
+
+Ini adalah rangkuman perjalananmu:
+
+- **Unit 0** — Kamu belajar menyapa dunia dengan "Hello World" dan memahami variabel
+- **Unit 1** — Kamu mengajarkan programmu untuk mengambil keputusan dengan if/else
+- **Unit 2** — Kamu membuat programmu bisa mengulang pekerjaan dengan loop
+- **Unit 3** — Kamu menguasai teks dan string
+- **Unit 4** — Kamu belajar memecah masalah besar menjadi fungsi-fungsi kecil
+- **Unit 5** — Kamu mengelola kumpulan data dengan array dan vector
+- **Unit 6** — Kamu membuat data terstruktur dengan struct, enum, dan menyimpannya ke file
+
+Setiap konsep yang kamu pelajari adalah **batu bata** yang membangun fondasi programming-mu. Dan fondasi itu sekarang sudah kokoh.
+
+### Apa Selanjutnya?
+
+Dunia programming sangat luas, dan kamu baru saja memulai petualangan yang seru. Beberapa arah yang bisa kamu eksplorasi:
+
+1. **Buat project sendiri** — Ide terbaik datang dari masalah yang ingin kamu selesaikan. Mau buat game? Kalkulator? To-do list? Mulai saja!
+2. **Pelajari OOP (Object-Oriented Programming)** — Class, inheritance, polymorphism — level berikutnya dari C++
+3. **Coba bahasa lain** — Python, JavaScript, Java — dengan fondasi C++ yang kuat, belajar bahasa lain jadi jauh lebih mudah
+4. **Ikut kompetisi** — Olimpiade informatika, hackathon, atau coding challenge online
+5. **Bergabung dengan komunitas** — Berbagi ilmu dan belajar dari programmer lain
+
+Yang paling penting: **jangan berhenti coding**. Seperti otot, skill programming semakin kuat kalau terus dilatih.
+
+Kamu sudah membuktikan bahwa kamu bisa belajar hal yang sulit dan menyelesaikannya sampai akhir. Itu adalah kemampuan yang akan berguna di mana pun, bukan hanya di programming.
+
+**Selamat, programmer! Perjalananmu baru dimulai.**

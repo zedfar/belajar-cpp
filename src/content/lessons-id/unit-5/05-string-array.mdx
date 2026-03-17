@@ -1,0 +1,586 @@
+---
+title: "String sebagai Array Karakter"
+unit: 5
+lesson: 5
+description: "Memahami string sebagai sequence of characters, mengakses karakter individual, menggunakan method string penting, dan mengolah teks dengan loop"
+objectives:
+  - "Memahami bahwa std::string adalah kumpulan (sequence) karakter"
+  - "Mengakses karakter individual dengan indeks dan method at()"
+  - "Menggunakan method string penting: length(), substr(), find(), replace()"
+  - "Mengkonversi huruf besar/kecil dengan toupper() dan tolower()"
+  - "Mengiterasi karakter string dengan loop"
+  - "Menggunakan std::vector<std::string> untuk menyimpan banyak string"
+  - "Membaca input string dengan spasi menggunakan std::getline()"
+estimatedTime: 25
+prerequisites: ["unit-5/04-vector"]
+difficulty: "beginner"
+tags: ["string", "array-karakter", "method-string", "iterasi", "getline", "palindrom"]
+---
+
+# String sebagai Array Karakter
+
+Kamu sudah kenal `std::string` sejak Unit 1 untuk menyimpan teks. Tapi tahukah kamu bahwa di balik layar, string sebenarnya adalah **kumpulan (array) karakter**? Setiap huruf, angka, spasi, bahkan tanda baca dalam string punya **posisi (indeks)** masing-masing.
+
+Di lesson ini, kita akan membedah string lebih dalam dan belajar banyak trik keren untuk mengolah teks!
+
+## String = Sequence of Characters
+
+`std::string` menyimpan karakter-karakter secara berurutan, mirip seperti `std::vector<char>`. Setiap karakter punya indeks yang dimulai dari **0**:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string nama = "Budi";
+
+    // Indeks:  0='B'  1='u'  2='d'  3='i'
+
+    std::cout << "String: " << nama << std::endl;
+    std::cout << "Panjang: " << nama.length() << std::endl;
+    std::cout << "Karakter pertama: " << nama[0] << std::endl;
+    std::cout << "Karakter terakhir: " << nama[3] << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+String: Budi
+Panjang: 4
+Karakter pertama: B
+Karakter terakhir: i
+```
+
+:::note
+Ingat, indeks selalu dimulai dari **0**, bukan 1! Jadi string `"Budi"` punya indeks 0 sampai 3 (panjang - 1).
+:::
+
+## Akses Karakter: `[]` vs `at()`
+
+Ada dua cara mengakses karakter individual:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string kata = "Halo";
+
+    // Cara 1: operator [] — cepat, tapi tidak ada pengecekan batas
+    char c1 = kata[0];   // 'H'
+    char c2 = kata[2];   // 'l'
+
+    // Cara 2: method at() — lebih aman, ada pengecekan batas
+    char c3 = kata.at(0);  // 'H'
+    char c4 = kata.at(3);  // 'o'
+
+    std::cout << c1 << c2 << c3 << c4 << std::endl;
+
+    // kata.at(10);  // ERROR! Akan throw exception karena indeks di luar batas
+    // kata[10];     // BAHAYA! Tidak error tapi hasilnya sampah (undefined behavior)
+
+    return 0;
+}
+```
+
+:::tip
+Gunakan `at()` saat kamu tidak yakin apakah indeks valid. Gunakan `[]` saat kamu sudah pasti indeksnya aman (misalnya di dalam loop yang terkontrol). `at()` sedikit lebih lambat karena ada pengecekan, tapi jauh lebih aman!
+:::
+
+## Method String Penting
+
+`std::string` punya banyak method bawaan yang sangat berguna. Ini yang paling sering dipakai:
+
+### `length()` dan `size()`
+
+Keduanya mengembalikan jumlah karakter dalam string. Fungsinya identik:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string pesan = "Selamat pagi!";
+
+    std::cout << "length(): " << pesan.length() << std::endl;  // 13
+    std::cout << "size(): " << pesan.size() << std::endl;      // 13
+    // Keduanya sama — pakai yang mana saja!
+
+    std::string kosong = "";
+    std::cout << "String kosong: " << kosong.length() << std::endl;  // 0
+
+    return 0;
+}
+```
+
+### `substr()` — Ambil Potongan String
+
+`substr(posisi, panjang)` mengembalikan sebagian string:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string kalimat = "Belajar C++ itu seru!";
+
+    std::string kata1 = kalimat.substr(0, 7);    // "Belajar"
+    std::string kata2 = kalimat.substr(8, 3);    // "C++"
+    std::string sisa = kalimat.substr(12);        // "itu seru!" (sampai akhir)
+
+    std::cout << kata1 << std::endl;
+    std::cout << kata2 << std::endl;
+    std::cout << sisa << std::endl;
+
+    return 0;
+}
+```
+
+### `find()` — Cari Teks dalam String
+
+`find()` mengembalikan posisi pertama di mana teks ditemukan. Kalau tidak ditemukan, hasilnya `std::string::npos`:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string kalimat = "Saya suka makan nasi goreng";
+
+    size_t pos1 = kalimat.find("makan");
+    if (pos1 != std::string::npos) {
+        std::cout << "'makan' ditemukan di posisi: " << pos1 << std::endl;  // 10
+    }
+
+    size_t pos2 = kalimat.find("pizza");
+    if (pos2 == std::string::npos) {
+        std::cout << "'pizza' tidak ditemukan" << std::endl;
+    }
+
+    // Cari karakter tunggal
+    size_t pos3 = kalimat.find('a');
+    std::cout << "'a' pertama di posisi: " << pos3 << std::endl;  // 1
+
+    return 0;
+}
+```
+
+### `replace()` dan `append()`
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    // replace(posisi, panjang, string_baru)
+    std::string salam = "Halo Dunia!";
+    salam.replace(5, 5, "Indonesia");  // Ganti "Dunia" dengan "Indonesia"
+    std::cout << salam << std::endl;   // "Halo Indonesia!"
+
+    // append() — tambahkan di akhir
+    std::string nama = "Budi";
+    nama.append(" Santoso");
+    std::cout << nama << std::endl;  // "Budi Santoso"
+
+    // Bisa juga pakai operator +=
+    std::string hobi = "Coding";
+    hobi += " C++";
+    std::cout << hobi << std::endl;  // "Coding C++"
+
+    return 0;
+}
+```
+
+## Konversi Huruf Besar/Kecil
+
+Fungsi `toupper()` dan `tolower()` dari header `<cctype>` bekerja pada **satu karakter**. Untuk mengkonversi seluruh string, kita pakai loop:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <cctype>
+
+int main() {
+    std::string pesan = "Halo Dunia!";
+
+    // Konversi ke huruf besar
+    std::string upper = pesan;
+    for (int i = 0; i < upper.length(); i++) {
+        upper[i] = std::toupper(upper[i]);
+    }
+    std::cout << "UPPER: " << upper << std::endl;  // "HALO DUNIA!"
+
+    // Konversi ke huruf kecil
+    std::string lower = pesan;
+    for (int i = 0; i < lower.length(); i++) {
+        lower[i] = std::tolower(lower[i]);
+    }
+    std::cout << "lower: " << lower << std::endl;  // "halo dunia!"
+
+    return 0;
+}
+```
+
+:::note
+`toupper()` dan `tolower()` hanya mengubah huruf (a-z, A-Z). Karakter lain seperti angka, spasi, dan tanda baca tidak berubah.
+:::
+
+## Iterasi Karakter dengan Loop
+
+Salah satu hal paling powerful yang bisa kamu lakukan dengan string adalah **menelusuri setiap karakter satu per satu** menggunakan loop:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string kata = "Programming";
+
+    // Cara 1: for loop dengan indeks
+    std::cout << "Karakter satu per satu: ";
+    for (int i = 0; i < kata.length(); i++) {
+        std::cout << kata[i] << " ";
+    }
+    std::cout << std::endl;
+
+    // Cara 2: range-based for loop (lebih modern)
+    std::cout << "Dengan range-for: ";
+    for (char c : kata) {
+        std::cout << c << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Karakter satu per satu: P r o g r a m m i n g
+Dengan range-for: P r o g r a m m i n g
+```
+
+### Contoh: Hitung Frekuensi Huruf
+
+```cpp
+#include <iostream>
+#include <string>
+#include <cctype>
+
+int main() {
+    std::string teks = "Belajar Programming";
+
+    int jumlah_vokal = 0;
+    int jumlah_konsonan = 0;
+    int jumlah_spasi = 0;
+
+    for (char c : teks) {
+        char lower = std::tolower(c);
+
+        if (lower == 'a' || lower == 'i' || lower == 'u' ||
+            lower == 'e' || lower == 'o') {
+            jumlah_vokal++;
+        } else if (std::isalpha(c)) {
+            jumlah_konsonan++;
+        } else if (c == ' ') {
+            jumlah_spasi++;
+        }
+    }
+
+    std::cout << "Teks: \"" << teks << "\"" << std::endl;
+    std::cout << "Vokal: " << jumlah_vokal << std::endl;
+    std::cout << "Konsonan: " << jumlah_konsonan << std::endl;
+    std::cout << "Spasi: " << jumlah_spasi << std::endl;
+
+    return 0;
+}
+```
+
+## Cek Palindrom
+
+Palindrom adalah kata/kalimat yang sama jika dibaca dari depan maupun belakang (contoh: "katak", "level"). Ini contoh klasik pengolahan string:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <cctype>
+
+bool isPalindrom(const std::string& kata) {
+    int kiri = 0;
+    int kanan = kata.length() - 1;
+
+    while (kiri < kanan) {
+        if (std::tolower(kata[kiri]) != std::tolower(kata[kanan])) {
+            return false;
+        }
+        kiri++;
+        kanan--;
+    }
+    return true;
+}
+
+int main() {
+    std::string kata1 = "katak";
+    std::string kata2 = "Level";
+    std::string kata3 = "Halo";
+
+    std::cout << kata1 << " palindrom? "
+              << (isPalindrom(kata1) ? "Ya" : "Tidak") << std::endl;
+    std::cout << kata2 << " palindrom? "
+              << (isPalindrom(kata2) ? "Ya" : "Tidak") << std::endl;
+    std::cout << kata3 << " palindrom? "
+              << (isPalindrom(kata3) ? "Ya" : "Tidak") << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+katak palindrom? Ya
+Level palindrom? Ya
+Halo palindrom? Tidak
+```
+
+:::tip
+Teknik "dua pointer" (satu dari kiri, satu dari kanan) adalah pola yang sangat umum dalam pemrograman. Kamu akan sering menemuinya di berbagai problem!
+:::
+
+## Reverse String
+
+Membalik urutan karakter dalam string:
+
+```cpp
+#include <iostream>
+#include <string>
+
+std::string reverseString(const std::string& input) {
+    std::string hasil = "";
+    for (int i = input.length() - 1; i >= 0; i--) {
+        hasil += input[i];
+    }
+    return hasil;
+}
+
+int main() {
+    std::string asli = "Hello World";
+    std::string terbalik = reverseString(asli);
+
+    std::cout << "Asli:     " << asli << std::endl;
+    std::cout << "Terbalik: " << terbalik << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Asli:     Hello World
+Terbalik: dlroW olleH
+```
+
+## Title Case Converter
+
+Mengubah huruf pertama setiap kata menjadi huruf besar:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <cctype>
+
+std::string toTitleCase(const std::string& input) {
+    std::string hasil = input;
+    bool awal_kata = true;
+
+    for (int i = 0; i < hasil.length(); i++) {
+        if (awal_kata && std::isalpha(hasil[i])) {
+            hasil[i] = std::toupper(hasil[i]);
+            awal_kata = false;
+        } else if (hasil[i] == ' ') {
+            awal_kata = true;
+        } else {
+            hasil[i] = std::tolower(hasil[i]);
+        }
+    }
+
+    return hasil;
+}
+
+int main() {
+    std::string judul = "bELAJAR c++ UNTUK pemula";
+    std::cout << "Sebelum: " << judul << std::endl;
+    std::cout << "Sesudah: " << toTitleCase(judul) << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Sebelum: bELAJAR c++ UNTUK pemula
+Sesudah: Belajar C++ Untuk Pemula
+```
+
+## Anagram Checker Sederhana
+
+Dua kata disebut **anagram** jika terdiri dari huruf-huruf yang sama dengan jumlah yang sama (contoh: "listen" dan "silent"). Berikut cara sederhana mengeceknya:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <cctype>
+#include <algorithm>
+
+bool isAnagram(std::string a, std::string b) {
+    // Hapus spasi dan ubah ke lowercase
+    std::string cleanA = "";
+    std::string cleanB = "";
+
+    for (char c : a) {
+        if (std::isalpha(c)) {
+            cleanA += std::tolower(c);
+        }
+    }
+    for (char c : b) {
+        if (std::isalpha(c)) {
+            cleanB += std::tolower(c);
+        }
+    }
+
+    // Kalau panjangnya beda, pasti bukan anagram
+    if (cleanA.length() != cleanB.length()) {
+        return false;
+    }
+
+    // Sort kedua string lalu bandingkan
+    std::sort(cleanA.begin(), cleanA.end());
+    std::sort(cleanB.begin(), cleanB.end());
+
+    return cleanA == cleanB;
+}
+
+int main() {
+    std::cout << "listen & silent: "
+              << (isAnagram("listen", "silent") ? "Anagram!" : "Bukan") << std::endl;
+    std::cout << "hello & world: "
+              << (isAnagram("hello", "world") ? "Anagram!" : "Bukan") << std::endl;
+    std::cout << "Dormitory & Dirty Room: "
+              << (isAnagram("Dormitory", "Dirty Room") ? "Anagram!" : "Bukan") << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+listen & silent: Anagram!
+hello & world: Bukan
+Dormitory & Dirty Room: Anagram!
+```
+
+## Vector of Strings
+
+Kamu bisa menyimpan banyak string dalam `std::vector<std::string>`:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+int main() {
+    std::vector<std::string> buah = {"Apel", "Jeruk", "Mangga", "Durian", "Rambutan"};
+
+    // Tampilkan semua
+    std::cout << "Daftar buah:" << std::endl;
+    for (int i = 0; i < buah.size(); i++) {
+        std::cout << "  " << (i + 1) << ". " << buah[i] << std::endl;
+    }
+
+    // Tambah buah baru
+    buah.push_back("Semangka");
+    std::cout << "\nSetelah ditambah: " << buah.size() << " buah" << std::endl;
+
+    // Cari buah
+    std::string cari = "Mangga";
+    for (int i = 0; i < buah.size(); i++) {
+        if (buah[i] == cari) {
+            std::cout << cari << " ditemukan di posisi " << i << std::endl;
+            break;
+        }
+    }
+
+    return 0;
+}
+```
+
+## Input String dengan Spasi: `std::getline()`
+
+`std::cin >>` berhenti membaca saat menemui spasi. Untuk membaca satu baris penuh (termasuk spasi), gunakan `std::getline()`:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string nama_lengkap;
+    std::string alamat;
+
+    std::cout << "Masukkan nama lengkap: ";
+    std::getline(std::cin, nama_lengkap);
+
+    std::cout << "Masukkan alamat: ";
+    std::getline(std::cin, alamat);
+
+    std::cout << std::endl;
+    std::cout << "Nama: " << nama_lengkap << std::endl;
+    std::cout << "Alamat: " << alamat << std::endl;
+
+    return 0;
+}
+```
+
+```
+Masukkan nama lengkap: Budi Santoso
+Masukkan alamat: Jl. Merdeka No. 17 Jakarta
+
+Nama: Budi Santoso
+Alamat: Jl. Merdeka No. 17 Jakarta
+```
+
+:::warning
+Hati-hati saat mencampur `std::cin >>` dengan `std::getline()`! Setelah `cin >>`, karakter newline (`\n`) masih tertinggal di buffer. Kamu perlu menambahkan `std::cin.ignore()` sebelum `getline()`:
+
+```cpp
+int umur;
+std::cout << "Umur: ";
+std::cin >> umur;
+
+std::cin.ignore();  // Buang newline yang tertinggal!
+
+std::string nama;
+std::cout << "Nama: ";
+std::getline(std::cin, nama);
+```
+
+Tanpa `cin.ignore()`, `getline()` akan langsung membaca newline kosong dan nama akan kosong!
+:::
+
+## Latihan
+
+**Latihan 1:** Buat program yang menerima input sebuah kata, lalu menghitung berapa jumlah huruf vokal dan konsonan di dalamnya.
+
+**Latihan 2:** Buat fungsi `bool isPalindrom(std::string kata)` yang mengecek apakah sebuah kata adalah palindrom. Coba test dengan kata: "racecar", "madam", "hello", "katak".
+
+**Latihan 3:** Buat program yang menerima input sebuah kalimat, lalu menampilkan kalimat tersebut dalam keadaan terbalik (setiap kata dibalik, bukan urutan katanya). Contoh: "Halo Dunia" menjadi "olaH ainuD".
+
+**Latihan 4:** Buat program yang menyimpan 5 nama teman dalam `std::vector<std::string>`, lalu tampilkan semua nama yang panjangnya lebih dari 4 huruf.
+
+**Latihan 5:** Buat program **password strength checker** yang mengecek apakah password memenuhi syarat: minimal 8 karakter, mengandung huruf besar, huruf kecil, dan angka. Gunakan `std::isdigit()`, `std::isupper()`, `std::islower()` dari `<cctype>`.

@@ -1,0 +1,770 @@
+---
+title: "Membaca File (File Input)"
+unit: 6
+lesson: 3
+description: "Belajar membaca data dari file teks menggunakan ifstream di C++ — cara membuka file, membaca baris demi baris, dan menangani error file"
+objectives:
+  - "Memahami konsep file I/O dan kapan menggunakannya"
+  - "Membuka dan menutup file dengan ifstream"
+  - "Membaca file baris per baris dengan getline"
+  - "Membaca file kata per kata dan angka"
+  - "Menangani error: file tidak ditemukan"
+  - "Memproses data file ke dalam struct/vector"
+estimatedTime: 45
+prerequisites: ["unit-6/02-struct-function"]
+difficulty: "intermediate"
+tags: ["file-io", "ifstream", "getline", "fstream", "membaca-file"]
+---
+
+# Membaca File (File Input)
+
+Selama ini, setiap kali programmu selesai dijalankan, semua data **hilang begitu saja**. Variabel, array, vector — semuanya lenyap saat program ditutup. Jalankan program lagi, mulai dari nol. Frustasi, bukan?
+
+Solusinya adalah **file I/O** — kemampuan program untuk membaca dan menulis data ke **file** di hard disk. Dengan file, data tetap tersimpan meskipun komputer dimatikan!
+
+Di pelajaran ini, kita fokus pada **membaca file** (file input). Menulis file akan dibahas di pelajaran berikutnya.
+
+## Analogi: Buku Catatan
+
+Bayangkan kamu punya **buku catatan** berisi daftar belanjaan. Setiap kali mau belanja, kamu **buka buku** dan **baca** isinya. Kamu tidak perlu menghafalkan semua item — cukup baca dari buku!
+
+Dalam C++:
+- **Buku catatan** = file teks di komputer
+- **Membuka buku** = membuka file dengan `ifstream`
+- **Membaca isi buku** = mengambil data dari file baris per baris
+- **Menutup buku** = menutup file dengan `close()`
+
+File menyimpan data secara **persisten** — data tidak hilang meskipun program ditutup. Inilah yang membedakan file dari variabel biasa.
+
+## Header yang Dibutuhkan: `<fstream>`
+
+Untuk bekerja dengan file, kamu harus meng-include header `<fstream>`:
+
+```cpp
+#include <fstream>   // Untuk ifstream, ofstream, dan fstream
+```
+
+Header ini menyediakan tiga class utama:
+
+| Class | Kegunaan |
+|-------|----------|
+| `std::ifstream` | **Input** file stream — untuk **membaca** file |
+| `std::ofstream` | **Output** file stream — untuk **menulis** file |
+| `std::fstream` | Bisa baca dan tulis (jarang dipakai pemula) |
+
+Di pelajaran ini kita fokus pada **`std::ifstream`** saja.
+
+## Pola Dasar Membaca File
+
+Ada 4 langkah utama untuk membaca file:
+
+1. **Buat objek `ifstream`** dan buka file
+2. **Cek** apakah file berhasil dibuka
+3. **Baca** isi file
+4. **Tutup** file
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+
+int main() {
+    // Langkah 1: Buka file
+    std::ifstream file("data.txt");
+
+    // Langkah 2: Cek apakah file berhasil dibuka
+    if (!file.is_open()) {
+        std::cout << "Error: file tidak ditemukan!" << std::endl;
+        return 1;
+    }
+
+    // Langkah 3: Baca isi file baris per baris
+    std::string baris;
+    while (std::getline(file, baris)) {
+        std::cout << baris << std::endl;
+    }
+
+    // Langkah 4: Tutup file
+    file.close();
+
+    return 0;
+}
+```
+
+Misalnya file `data.txt` berisi:
+
+```
+Halo dunia!
+Ini baris kedua.
+Belajar C++ itu seru!
+```
+
+Output:
+
+```
+Halo dunia!
+Ini baris kedua.
+Belajar C++ itu seru!
+```
+
+:::warning
+Selalu cek apakah file berhasil dibuka dengan `file.is_open()` sebelum mencoba membaca! Kalau file tidak ada, program bisa berperilaku aneh atau crash.
+:::
+
+## Membaca Baris per Baris dengan `getline`
+
+`std::getline(file, variabel)` membaca **satu baris penuh** (sampai ketemu karakter newline) dan menyimpannya ke variabel string. Saat sudah tidak ada baris lagi (akhir file), `getline` mengembalikan `false`, sehingga loop berhenti otomatis.
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+
+int main() {
+    std::ifstream file("nama_siswa.txt");
+
+    if (!file.is_open()) {
+        std::cout << "File tidak ditemukan!" << std::endl;
+        return 1;
+    }
+
+    std::string baris;
+    int nomorUrut = 1;
+
+    while (std::getline(file, baris)) {
+        std::cout << nomorUrut << ". " << baris << std::endl;
+        nomorUrut++;
+    }
+
+    file.close();
+
+    std::cout << std::endl;
+    std::cout << "Total: " << (nomorUrut - 1) << " nama" << std::endl;
+
+    return 0;
+}
+```
+
+Misalnya file `nama_siswa.txt` berisi:
+
+```
+Budi Santoso
+Ani Rahayu
+Citra Dewi
+Dedi Prasetyo
+Eka Putri
+```
+
+Output:
+
+```
+1. Budi Santoso
+2. Ani Rahayu
+3. Citra Dewi
+4. Dedi Prasetyo
+5. Eka Putri
+
+Total: 5 nama
+```
+
+:::tip
+Pola `while (std::getline(file, baris))` adalah cara paling umum untuk membaca seluruh isi file baris per baris. Hafalkan pola ini!
+:::
+
+## Membaca Kata per Kata dan Angka
+
+Operator `>>` membaca **satu token** (kata atau angka) dari file, melewati spasi dan newline secara otomatis.
+
+### Membaca Kata per Kata
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+
+int main() {
+    std::ifstream file("kata.txt");
+
+    if (!file.is_open()) {
+        std::cout << "File tidak ditemukan!" << std::endl;
+        return 1;
+    }
+
+    std::string kata;
+    int jumlahKata = 0;
+
+    while (file >> kata) {
+        jumlahKata++;
+        std::cout << "Kata " << jumlahKata << ": " << kata << std::endl;
+    }
+
+    file.close();
+
+    std::cout << std::endl;
+    std::cout << "Total kata: " << jumlahKata << std::endl;
+
+    return 0;
+}
+```
+
+Misalnya file `kata.txt` berisi:
+
+```
+Belajar C++ sangat menyenangkan
+Ayo semangat belajar
+```
+
+Output:
+
+```
+Kata 1: Belajar
+Kata 2: C++
+Kata 3: sangat
+Kata 4: menyenangkan
+Kata 5: Ayo
+Kata 6: semangat
+Kata 7: belajar
+
+Total kata: 7
+```
+
+### Membaca Angka dan Menghitung Rata-rata
+
+Operator `>>` juga bisa langsung membaca angka ke variabel bertipe `int` atau `double`:
+
+```cpp
+#include <iostream>
+#include <fstream>
+
+int main() {
+    std::ifstream file("nilai.txt");
+
+    if (!file.is_open()) {
+        std::cout << "File tidak ditemukan!" << std::endl;
+        return 1;
+    }
+
+    double angka;
+    double total = 0.0;
+    int jumlah = 0;
+
+    while (file >> angka) {
+        jumlah++;
+        total = total + angka;
+        std::cout << "Nilai " << jumlah << ": " << angka << std::endl;
+    }
+
+    file.close();
+
+    if (jumlah > 0) {
+        std::cout << std::endl;
+        std::cout << "Jumlah data: " << jumlah << std::endl;
+        std::cout << "Total      : " << total << std::endl;
+        std::cout << "Rata-rata  : " << (total / jumlah) << std::endl;
+    } else {
+        std::cout << "File kosong, tidak ada angka." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Misalnya file `nilai.txt` berisi:
+
+```
+85.5
+92.0
+78.3
+88.7
+95.1
+```
+
+Output:
+
+```
+Nilai 1: 85.5
+Nilai 2: 92
+Nilai 3: 78.3
+Nilai 4: 88.7
+Nilai 5: 95.1
+
+Jumlah data: 5
+Total      : 439.6
+Rata-rata  : 87.92
+```
+
+:::note
+`while (file >> angka)` berhenti otomatis kalau ketemu data yang bukan angka atau sudah sampai akhir file. Jadi kamu tidak perlu khawatir membaca terlalu banyak.
+:::
+
+## Membaca Data CSV ke Vector of Struct
+
+File **CSV (Comma-Separated Values)** adalah format umum untuk menyimpan data tabel. Setiap baris adalah satu record, dan setiap kolom dipisahkan koma.
+
+Misalnya file `siswa.csv` berisi:
+
+```
+Budi,85.5
+Ani,92.0
+Citra,78.3
+Dedi,88.7
+```
+
+Untuk mem-parse CSV, kita baca baris per baris dengan `getline`, lalu **pecah** string menggunakan `std::stringstream` dari header `<sstream>`:
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <sstream>
+
+struct Siswa {
+    std::string nama;
+    double nilai;
+};
+
+int main() {
+    std::ifstream file("siswa.csv");
+
+    if (!file.is_open()) {
+        std::cout << "File tidak ditemukan!" << std::endl;
+        return 1;
+    }
+
+    std::vector<Siswa> daftar;
+    std::string baris;
+
+    while (std::getline(file, baris)) {
+        std::stringstream ss(baris);
+        Siswa s;
+
+        // Baca nama (sampai koma)
+        std::getline(ss, s.nama, ',');
+
+        // Baca nilai (sampai akhir baris)
+        std::string token;
+        std::getline(ss, token, ',');
+        s.nilai = std::stod(token);
+
+        daftar.push_back(s);
+    }
+
+    file.close();
+
+    // Tampilkan data
+    std::cout << "=== DATA SISWA ===" << std::endl;
+    double totalNilai = 0.0;
+
+    for (int i = 0; i < daftar.size(); i++) {
+        std::cout << (i + 1) << ". " << daftar[i].nama
+                  << " | Nilai: " << daftar[i].nilai << std::endl;
+        totalNilai = totalNilai + daftar[i].nilai;
+    }
+
+    std::cout << std::endl;
+    if (daftar.size() > 0) {
+        std::cout << "Rata-rata: " << (totalNilai / daftar.size()) << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+
+```
+=== DATA SISWA ===
+1. Budi | Nilai: 85.5
+2. Ani | Nilai: 92
+3. Citra | Nilai: 78.3
+4. Dedi | Nilai: 88.7
+
+Rata-rata: 86.125
+```
+
+:::note
+`std::stringstream` (dari header `<sstream>`) memungkinkan kita membaca string seolah-olah itu adalah stream. Jadi kita bisa pakai `getline` dengan delimiter kustom seperti koma (`,`).
+:::
+
+## Contoh Lengkap: CSV dengan 3 Kolom
+
+Bagaimana kalau CSV punya lebih banyak kolom? Misalnya `produk.csv` berisi nama, harga, dan stok:
+
+```
+Pensil 2B,3000,50
+Buku Tulis,5000,30
+Penghapus,2000,40
+Penggaris,4000,25
+```
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <sstream>
+
+struct Produk {
+    std::string nama;
+    int harga;
+    int stok;
+};
+
+int main() {
+    std::ifstream file("produk.csv");
+
+    if (!file.is_open()) {
+        std::cout << "File produk.csv tidak ditemukan!" << std::endl;
+        return 1;
+    }
+
+    std::vector<Produk> daftar;
+    std::string baris;
+
+    while (std::getline(file, baris)) {
+        std::stringstream ss(baris);
+        std::string token;
+        Produk p;
+
+        // Kolom 1: nama
+        std::getline(ss, p.nama, ',');
+
+        // Kolom 2: harga
+        std::getline(ss, token, ',');
+        p.harga = std::stoi(token);
+
+        // Kolom 3: stok
+        std::getline(ss, token, ',');
+        p.stok = std::stoi(token);
+
+        daftar.push_back(p);
+    }
+
+    file.close();
+
+    // Tampilkan data
+    std::cout << "=== DAFTAR PRODUK ===" << std::endl;
+    int totalInventory = 0;
+
+    for (int i = 0; i < daftar.size(); i++) {
+        int nilaiItem = daftar[i].harga * daftar[i].stok;
+        totalInventory = totalInventory + nilaiItem;
+
+        std::cout << (i + 1) << ". " << daftar[i].nama
+                  << " | Rp " << daftar[i].harga
+                  << " | Stok: " << daftar[i].stok
+                  << " | Subtotal: Rp " << nilaiItem << std::endl;
+    }
+
+    std::cout << std::endl;
+    std::cout << "Total nilai inventory: Rp " << totalInventory << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+=== DAFTAR PRODUK ===
+1. Pensil 2B | Rp 3000 | Stok: 50 | Subtotal: Rp 150000
+2. Buku Tulis | Rp 5000 | Stok: 30 | Subtotal: Rp 150000
+3. Penghapus | Rp 2000 | Stok: 40 | Subtotal: Rp 80000
+4. Penggaris | Rp 4000 | Stok: 25 | Subtotal: Rp 100000
+
+Total nilai inventory: Rp 480000
+```
+
+## Error Handling: File Tidak Ditemukan
+
+Selalu siapkan program untuk menghadapi masalah. Dua pengecekan paling penting:
+
+### 1. Cek dengan `is_open()`
+
+```cpp
+std::ifstream file("data.txt");
+
+if (!file.is_open()) {
+    std::cout << "Error: file \"data.txt\" tidak ditemukan!" << std::endl;
+    return 1;  // Keluar dari program dengan kode error
+}
+```
+
+### 2. Cek dengan `if (!file)`
+
+Kamu juga bisa langsung cek objek file — hasilnya sama:
+
+```cpp
+std::ifstream file("data.txt");
+
+if (!file) {
+    std::cout << "Error: gagal membuka file!" << std::endl;
+    return 1;
+}
+```
+
+### Contoh Fungsi dengan Error Handling Lengkap
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+
+std::vector<std::string> bacaDaftarNama(std::string namaFile) {
+    std::vector<std::string> daftar;
+
+    std::ifstream file(namaFile);
+
+    // Cek apakah file berhasil dibuka
+    if (!file.is_open()) {
+        std::cout << "Error: file \"" << namaFile
+                  << "\" tidak ditemukan!" << std::endl;
+        return daftar;  // Return vector kosong
+    }
+
+    std::string baris;
+    while (std::getline(file, baris)) {
+        // Skip baris kosong
+        if (baris.length() == 0) {
+            continue;
+        }
+        daftar.push_back(baris);
+    }
+
+    file.close();
+
+    // Peringatan jika file kosong
+    if (daftar.size() == 0) {
+        std::cout << "Peringatan: file \"" << namaFile
+                  << "\" kosong!" << std::endl;
+    }
+
+    return daftar;
+}
+
+int main() {
+    std::cout << "--- Membaca daftar.txt ---" << std::endl;
+    std::vector<std::string> nama = bacaDaftarNama("daftar.txt");
+
+    if (nama.size() > 0) {
+        std::cout << "Berhasil membaca " << nama.size()
+                  << " nama:" << std::endl;
+        for (int i = 0; i < nama.size(); i++) {
+            std::cout << "  " << (i + 1) << ". " << nama[i] << std::endl;
+        }
+    }
+
+    std::cout << std::endl;
+
+    std::cout << "--- Membaca tidakada.txt ---" << std::endl;
+    std::vector<std::string> data2 = bacaDaftarNama("tidakada.txt");
+
+    return 0;
+}
+```
+
+Output (jika `daftar.txt` berisi 3 nama, `tidakada.txt` tidak ada):
+
+```
+--- Membaca daftar.txt ---
+Berhasil membaca 3 nama:
+  1. Budi
+  2. Ani
+  3. Citra
+
+--- Membaca tidakada.txt ---
+Error: file "tidakada.txt" tidak ditemukan!
+```
+
+:::warning
+Jangan pernah asumsikan file pasti ada! Selalu cek dengan `is_open()` dan berikan pesan error yang jelas supaya pengguna tahu apa yang salah.
+:::
+
+## Mengenal `eof()` dan `fail()`
+
+Selain `is_open()`, `ifstream` punya beberapa method status lain:
+
+| Method | Penjelasan |
+|--------|------------|
+| `file.eof()` | `true` jika sudah sampai akhir file (End Of File) |
+| `file.fail()` | `true` jika operasi terakhir gagal (misalnya baca angka tapi isinya huruf) |
+| `file.good()` | `true` jika semua baik-baik saja, tidak ada error |
+| `file.is_open()` | `true` jika file berhasil dibuka |
+
+```cpp
+std::ifstream file("data.txt");
+
+// Baca angka-angka
+int angka;
+while (file >> angka) {
+    std::cout << angka << std::endl;
+}
+
+// Setelah loop selesai, cek kenapa berhenti
+if (file.eof()) {
+    std::cout << "Selesai — sudah sampai akhir file." << std::endl;
+} else if (file.fail()) {
+    std::cout << "Berhenti — menemukan data yang bukan angka." << std::endl;
+}
+```
+
+:::tip
+Dalam praktiknya, pola `while (file >> var)` dan `while (std::getline(file, var))` sudah menangani akhir file secara otomatis. Kamu jarang perlu mengecek `eof()` secara manual.
+:::
+
+## Kesalahan Umum
+
+### 1. Lupa cek apakah file berhasil dibuka
+
+```cpp
+// SALAH — langsung baca tanpa cek!
+std::ifstream file("data.txt");
+std::string baris;
+std::getline(file, baris);  // Kalau file tidak ada, hasilnya tidak terdefinisi!
+
+// BENAR — selalu cek dulu
+std::ifstream file("data.txt");
+if (!file.is_open()) {
+    std::cout << "File tidak ditemukan!" << std::endl;
+    return 1;
+}
+std::string baris;
+std::getline(file, baris);  // Aman karena file pasti terbuka
+```
+
+### 2. Mencampur `>>` dan `getline`
+
+```cpp
+// BERMASALAH — setelah >> ada newline tersisa di buffer
+int angka;
+file >> angka;              // Baca angka, tapi newline masih di buffer
+std::string baris;
+std::getline(file, baris);  // Membaca string kosong (sisa newline)!
+
+// SOLUSI — tambahkan file.ignore() setelah >>
+int angka;
+file >> angka;
+file.ignore();              // Buang sisa newline dari buffer
+std::string baris;
+std::getline(file, baris);  // Sekarang membaca baris berikutnya dengan benar
+```
+
+### 3. Lupa menutup file
+
+```cpp
+// KURANG TEPAT — file tidak ditutup secara eksplisit
+std::ifstream file("data.txt");
+// ... baca data ...
+// Lupa file.close()!
+
+// BENAR — selalu tutup file setelah selesai
+std::ifstream file("data.txt");
+// ... baca data ...
+file.close();
+```
+
+:::note
+Sebenarnya, `ifstream` akan otomatis menutup file saat variabelnya keluar dari scope (destructor). Tapi memanggil `file.close()` secara eksplisit adalah **kebiasaan baik** yang membuat kode lebih jelas dan mudah dibaca.
+:::
+
+### 4. Path file yang salah
+
+```cpp
+// File ada di folder "data", bukan di folder yang sama dengan program
+// SALAH
+std::ifstream file("siswa.csv");
+
+// BENAR — sesuaikan path relatif
+std::ifstream file("data/siswa.csv");
+```
+
+:::tip
+Path file bersifat **relatif terhadap lokasi eksekusi program**, bukan lokasi file `.cpp`. Pastikan kamu menjalankan program dari folder yang benar.
+:::
+
+## Latihan
+
+**Latihan 1: Penghitung Baris**
+
+Buat program yang membaca file `catatan.txt` dan menampilkan isinya dengan nomor urut. Di akhir, tampilkan total jumlah baris. Jika file tidak ditemukan, tampilkan pesan error yang ramah.
+
+Contoh isi `catatan.txt`:
+
+```
+Belajar struct hari ini
+Besok lanjut file I/O
+Jangan lupa istirahat
+Makan siang dulu
+```
+
+Contoh output:
+
+```
+=== ISI CATATAN ===
+1. Belajar struct hari ini
+2. Besok lanjut file I/O
+3. Jangan lupa istirahat
+4. Makan siang dulu
+
+Total: 4 baris
+```
+
+**Latihan 2: Statistik Nilai**
+
+Buat program yang membaca file `ujian.txt` berisi angka-angka (satu angka per baris), lalu hitung dan tampilkan: jumlah data, total, rata-rata, nilai tertinggi, dan nilai terendah. Tangani kasus file kosong dan file tidak ditemukan.
+
+Contoh isi `ujian.txt`:
+
+```
+78
+92
+65
+88
+71
+95
+83
+```
+
+Contoh output:
+
+```
+=== STATISTIK NILAI ===
+Jumlah data   : 7
+Total         : 572
+Rata-rata     : 81.7143
+Nilai tertinggi: 95
+Nilai terendah : 65
+```
+
+**Latihan 3: Load Data Produk**
+
+Buat program yang membaca file CSV `toko.csv` dengan format `nama,harga,stok` dan simpan ke `std::vector<Produk>`. Tampilkan semua produk dalam bentuk tabel, hitung total nilai inventory (harga x stok untuk semua produk), dan tampilkan produk termahal.
+
+Contoh isi `toko.csv`:
+
+```
+Pensil 2B,3000,50
+Buku Tulis,5000,30
+Penghapus,2000,40
+Penggaris,4000,25
+Spidol,7000,20
+```
+
+## Ringkasan
+
+| Konsep | Penjelasan | Contoh |
+|--------|------------|--------|
+| **`#include <fstream>`** | Header untuk file I/O | Wajib di-include untuk baca/tulis file |
+| **`std::ifstream`** | Objek untuk membaca file | `std::ifstream file("data.txt");` |
+| **`is_open()`** | Cek apakah file berhasil dibuka | `if (!file.is_open()) { ... }` |
+| **`getline(file, var)`** | Baca satu baris penuh | `while (std::getline(file, baris))` |
+| **`file >> var`** | Baca satu kata atau angka | `while (file >> angka)` |
+| **`file.close()`** | Tutup file setelah selesai | Selalu panggil di akhir |
+| **`file.eof()`** | Cek apakah sudah akhir file | `if (file.eof()) { ... }` |
+| **`file.fail()`** | Cek apakah operasi gagal | `if (file.fail()) { ... }` |
+| **`stringstream`** | Parse string seperti stream | Untuk memecah CSV berdasarkan koma |
+| **Error handling** | Tangani file tidak ada atau kosong | Cek `is_open()` dan `size()` |
+
+Sekarang programmu bisa **membaca data dari file** — data tidak perlu hilang lagi saat program ditutup! Di pelajaran berikutnya, kita akan belajar **menulis data ke file** supaya program bisa menyimpan hasil kerjanya secara permanen.

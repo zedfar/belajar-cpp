@@ -1,0 +1,359 @@
+---
+title: "std::vector — Array Dinamis"
+unit: 5
+lesson: 4
+description: "Mengenal std::vector di C++ — array yang bisa bertambah dan berkurang ukurannya secara dinamis, dilengkapi method-method yang berguna"
+objectives:
+  - "Memahami keterbatasan array biasa (ukuran tetap)"
+  - "Mendeklarasikan dan menggunakan std::vector"
+  - "Menambah elemen dengan push_back dan insert"
+  - "Menghapus elemen dengan pop_back dan erase"
+  - "Menggunakan method-method vector yang penting"
+estimatedTime: 45
+prerequisites: ["unit-5/03-array-2d"]
+difficulty: "intermediate"
+tags: ["vector", "dynamic-array", "STL", "push_back", "collections"]
+---
+
+# std::vector — Array Dinamis
+
+Array biasa punya satu kelemahan besar: **ukurannya tetap**. Kalau kamu buat `int nilai[30]`, artinya kamu sudah memblok 30 tempat — tidak bisa lebih, tidak bisa kurang.
+
+Bayangkan kamu bikin aplikasi pendaftaran — kamu tidak tahu akan ada berapa peserta. Apakah kamu alokasi 1000 slot? Pemborosan! 10 slot? Terlalu sedikit!
+
+Solusinya: **`std::vector`** — array yang bisa tumbuh dan menyusut sesuai kebutuhan!
+
+## Analogi: Tas yang Elastis
+
+Array biasa itu seperti **koper ukuran fixed** — kalau penuh, tidak bisa muat lagi. `std::vector` itu seperti **tas kresek elastis** — bisa diisi terus sampai sebesar yang kamu mau!
+
+## Setup: Include Header
+
+```cpp
+#include <vector>  // wajib untuk std::vector
+#include <iostream>
+```
+
+## Deklarasi vector
+
+```cpp
+// Vector kosong
+std::vector<int> angka;
+
+// Vector dengan ukuran awal (semua diisi 0)
+std::vector<int> nilai(5);         // {0, 0, 0, 0, 0}
+
+// Vector dengan ukuran dan nilai default
+std::vector<int> semua10(5, 10);   // {10, 10, 10, 10, 10}
+
+// Vector dengan inisialisasi langsung
+std::vector<int> data = {3, 1, 4, 1, 5, 9};
+
+// Vector of string
+std::vector<std::string> nama = {"Andi", "Budi", "Citra"};
+```
+
+## Menambah Elemen: push_back
+
+`push_back()` menambah elemen **di akhir** vector:
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int main() {
+    std::vector<int> angka;
+
+    std::cout << "Ukuran awal: " << angka.size() << std::endl;
+
+    angka.push_back(10);
+    angka.push_back(20);
+    angka.push_back(30);
+
+    std::cout << "Ukuran setelah push_back: " << angka.size() << std::endl;
+
+    for (int i = 0; i < angka.size(); i++) {
+        std::cout << angka[i] << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Ukuran awal: 0
+Ukuran setelah push_back: 3
+10 20 30
+```
+
+## Mengakses Elemen
+
+Sama seperti array biasa — pakai index `[]`:
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int main() {
+    std::vector<std::string> buah = {"Apel", "Mangga", "Pisang", "Durian"};
+
+    // Akses dengan index
+    std::cout << buah[0] << std::endl;  // Apel
+    std::cout << buah[2] << std::endl;  // Pisang
+
+    // Ubah elemen
+    buah[1] = "Jeruk";
+    std::cout << buah[1] << std::endl;  // Jeruk
+
+    // front() dan back()
+    std::cout << "Pertama : " << buah.front() << std::endl;  // Apel
+    std::cout << "Terakhir: " << buah.back() << std::endl;   // Durian
+
+    return 0;
+}
+```
+
+:::tip
+Gunakan `.at(i)` daripada `[i]` jika kamu ingin C++ mengecek batas — `.at(i)` akan melempar exception kalau index di luar batas, sedangkan `[i]` tidak.
+:::
+
+## Menghapus Elemen
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int main() {
+    std::vector<int> v = {10, 20, 30, 40, 50};
+
+    // pop_back — hapus elemen terakhir
+    v.pop_back();
+    // v sekarang: {10, 20, 30, 40}
+
+    std::cout << "Setelah pop_back: ";
+    for (int x : v) std::cout << x << " ";
+    std::cout << std::endl;
+
+    // erase — hapus elemen di posisi tertentu
+    // v.begin() + 1 = posisi index ke-1 (elemen 20)
+    v.erase(v.begin() + 1);
+    // v sekarang: {10, 30, 40}
+
+    std::cout << "Setelah erase index 1: ";
+    for (int x : v) std::cout << x << " ";
+    std::cout << std::endl;
+
+    // clear — hapus semua elemen
+    v.clear();
+    std::cout << "Setelah clear, size: " << v.size() << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Setelah pop_back: 10 20 30 40
+Setelah erase index 1: 10 30 40
+Setelah clear, size: 0
+```
+
+## Method-method Penting
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int main() {
+    std::vector<int> v = {5, 3, 8, 1, 9, 2};
+
+    std::cout << "size()   : " << v.size() << std::endl;    // 6
+    std::cout << "empty()  : " << v.empty() << std::endl;   // 0 (false)
+    std::cout << "front()  : " << v.front() << std::endl;   // 5
+    std::cout << "back()   : " << v.back() << std::endl;    // 2
+
+    // Cek apakah kosong sebelum akses
+    if (!v.empty()) {
+        std::cout << "Vector tidak kosong, elemen pertama: " << v.front() << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+size()   : 6
+empty()  : 0
+front()  : 5
+back()   : 2
+Vector tidak kosong, elemen pertama: 5
+```
+
+## Contoh 1: Input Data Dinamis
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+
+int main() {
+    std::vector<std::string> daftarNama;
+    std::string input;
+
+    std::cout << "Masukkan nama (ketik 'selesai' untuk berhenti):" << std::endl;
+
+    while (true) {
+        std::cout << "> ";
+        std::getline(std::cin, input);
+
+        if (input == "selesai") break;
+        if (!input.empty()) {
+            daftarNama.push_back(input);
+        }
+    }
+
+    std::cout << "\n=== Daftar Peserta ===" << std::endl;
+    for (int i = 0; i < daftarNama.size(); i++) {
+        std::cout << (i + 1) << ". " << daftarNama[i] << std::endl;
+    }
+    std::cout << "Total: " << daftarNama.size() << " orang" << std::endl;
+
+    return 0;
+}
+```
+
+Contoh interaksi:
+```
+Masukkan nama (ketik 'selesai' untuk berhenti):
+> Andi
+> Budi
+> Citra
+> selesai
+
+=== Daftar Peserta ===
+1. Andi
+2. Budi
+3. Citra
+Total: 3 orang
+```
+
+## Contoh 2: Statistik Nilai
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int main() {
+    std::vector<int> nilai;
+    int n, x;
+
+    std::cout << "Berapa banyak nilai? ";
+    std::cin >> n;
+
+    for (int i = 0; i < n; i++) {
+        std::cout << "Nilai ke-" << (i + 1) << ": ";
+        std::cin >> x;
+        nilai.push_back(x);
+    }
+
+    // Hitung statistik
+    int total = 0;
+    int maks = nilai[0];
+    int mins = nilai[0];
+
+    for (int i = 0; i < nilai.size(); i++) {
+        total += nilai[i];
+        if (nilai[i] > maks) maks = nilai[i];
+        if (nilai[i] < mins) mins = nilai[i];
+    }
+
+    double rataRata = (double)total / nilai.size();
+
+    std::cout << "\n=== Statistik ===" << std::endl;
+    std::cout << "Jumlah data : " << nilai.size() << std::endl;
+    std::cout << "Total       : " << total << std::endl;
+    std::cout << "Rata-rata   : " << rataRata << std::endl;
+    std::cout << "Tertinggi   : " << maks << std::endl;
+    std::cout << "Terendah    : " << mins << std::endl;
+
+    return 0;
+}
+```
+
+## Perbandingan: Array vs Vector
+
+| Fitur | Array Biasa | std::vector |
+|-------|------------|-------------|
+| Ukuran | Tetap (fixed) | Dinamis |
+| Deklarasi | `int a[5]` | `vector<int> v` |
+| Tambah elemen | ❌ Tidak bisa | ✅ `push_back()` |
+| Hapus elemen | ❌ Tidak bisa | ✅ `pop_back()`, `erase()` |
+| Ukuran saat runtime | ❌ Harus diketahui | ✅ Bisa tidak tahu |
+| Akses dengan index | ✅ `a[i]` | ✅ `v[i]` |
+| Overhead memori | Lebih kecil | Sedikit lebih besar |
+| Performa | Sedikit lebih cepat | Sangat baik |
+
+:::note
+Untuk pemrograman kompetitif (OSN, ICPC), `std::vector` hampir selalu lebih baik daripada array biasa. Lebih aman dan lebih fleksibel!
+:::
+
+## Range-based for loop
+
+Ada cara lebih bersih untuk iterasi vector:
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int main() {
+    std::vector<int> angka = {1, 2, 3, 4, 5};
+
+    // Range-based for loop (C++11 ke atas)
+    for (int x : angka) {
+        std::cout << x * x << " ";  // kuadrat setiap elemen
+    }
+    std::cout << std::endl;
+
+    // Dengan string
+    std::vector<std::string> kota = {"Jakarta", "Bandung", "Surabaya"};
+    for (const std::string& k : kota) {
+        std::cout << "- " << k << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+1 4 9 16 25
+- Jakarta
+- Bandung
+- Surabaya
+```
+
+## Latihan
+
+**Latihan 1:** Buat program yang meminta user memasukkan angka sampai mereka memasukkan 0. Simpan semua angka (kecuali 0) ke vector, lalu tampilkan seluruh angka dan jumlahnya.
+
+**Latihan 2:** Buat program daftar belanja. User bisa menambahkan item (push_back), menghapus item terakhir (pop_back), atau melihat semua item. Gunakan menu pilihan sederhana.
+
+**Latihan 3:** Buat program yang menerima n angka dari user, simpan di vector, lalu hapus semua angka yang bernilai negatif menggunakan loop dan erase. Tampilkan vector sebelum dan sesudah penghapusan.
+
+## Ringkasan
+
+| Method | Fungsi | Contoh |
+|--------|--------|--------|
+| `push_back(x)` | Tambah x di akhir | `v.push_back(5)` |
+| `pop_back()` | Hapus elemen terakhir | `v.pop_back()` |
+| `size()` | Jumlah elemen | `v.size()` |
+| `empty()` | Cek apakah kosong | `v.empty()` |
+| `front()` | Elemen pertama | `v.front()` |
+| `back()` | Elemen terakhir | `v.back()` |
+| `clear()` | Hapus semua elemen | `v.clear()` |
+| `erase(it)` | Hapus di posisi iterator | `v.erase(v.begin()+i)` |
+
+`std::vector` adalah salah satu struktur data paling penting dalam C++. Kuasai ini, dan kamu siap menghadapi hampir semua masalah pemrograman yang melibatkan koleksi data!

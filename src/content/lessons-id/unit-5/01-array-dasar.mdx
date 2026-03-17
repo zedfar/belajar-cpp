@@ -1,0 +1,410 @@
+---
+title: "Array Dasar"
+unit: 5
+lesson: 1
+description: "Mengenal array — cara menyimpan banyak data bertipe sama dalam satu variabel, lengkap dengan cara deklarasi, akses elemen, dan aturan indexing"
+objectives:
+  - "Memahami konsep array sebagai kumpulan data bertipe sama"
+  - "Mendeklarasikan dan menginisialisasi array"
+  - "Mengakses elemen array menggunakan index (mulai dari 0)"
+  - "Menghitung panjang array dengan sizeof"
+  - "Menghindari out-of-bounds access"
+estimatedTime: 40
+prerequisites: ["unit-4/04-return-values"]
+difficulty: "beginner"
+tags: ["array", "indexing", "data", "koleksi", "sizeof"]
+---
+
+# Array Dasar
+
+Sampai sekarang, setiap kali kamu mau menyimpan data, kamu bikin satu variabel. Mau simpan 5 nilai ujian? Bikin 5 variabel: `nilai1`, `nilai2`, `nilai3`... Capek, kan? Bagaimana kalau ada 100 siswa? Masa bikin 100 variabel?
+
+Nah, **array** hadir untuk menyelamatkan hidupmu!
+
+## Analogi: Loker Sekolah
+
+Bayangkan deretan loker di sekolah. Setiap loker:
+- Punya **nomor** (0, 1, 2, 3, ...)
+- Bisa menyimpan **satu barang** (satu nilai)
+- Semua loker **bentuknya sama** (tipe data sama)
+
+Array itu persis seperti deretan loker. Satu variabel, tapi bisa menyimpan banyak data!
+
+```
+  Array "nilai" dengan 5 elemen:
+
+  Index:    [0]    [1]    [2]    [3]    [4]
+          ┌──────┬──────┬──────┬──────┬──────┐
+  Nilai:  │  85  │  90  │  78  │  92  │  88  │
+          └──────┴──────┴──────┴──────┴──────┘
+```
+
+## Deklarasi Array
+
+Ada beberapa cara mendeklarasikan array di C++:
+
+```cpp
+// 1. Deklarasi tanpa inisialisasi (isinya sampah/random!)
+int angka[5];
+
+// 2. Deklarasi dengan inisialisasi lengkap
+int nilai[5] = {85, 90, 78, 92, 88};
+
+// 3. Ukuran otomatis dari jumlah elemen
+int harga[] = {5000, 12000, 8500, 3000};  // otomatis ukuran 4
+
+// 4. Inisialisasi sebagian (sisanya jadi 0)
+int data[5] = {10, 20};  // {10, 20, 0, 0, 0}
+
+// 5. Semua elemen jadi 0
+int kosong[5] = {};  // {0, 0, 0, 0, 0}
+```
+
+:::warning
+Kalau kamu deklarasi array tanpa inisialisasi (`int angka[5];`), isinya bukan 0! Isinya **sampah** — nilai random yang kebetulan ada di memori. Selalu inisialisasi array-mu!
+:::
+
+## Contoh 1: Array Pertamaku
+
+```cpp
+#include <iostream>
+
+int main() {
+    int nilai[5] = {85, 90, 78, 92, 88};
+
+    std::cout << "Nilai pertama : " << nilai[0] << std::endl;
+    std::cout << "Nilai kedua   : " << nilai[1] << std::endl;
+    std::cout << "Nilai ketiga  : " << nilai[2] << std::endl;
+    std::cout << "Nilai keempat : " << nilai[3] << std::endl;
+    std::cout << "Nilai kelima  : " << nilai[4] << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Nilai pertama : 85
+Nilai kedua   : 90
+Nilai ketiga  : 78
+Nilai keempat : 92
+Nilai kelima  : 88
+```
+
+## Index Mulai dari 0!
+
+Ini adalah hal **paling penting** yang harus kamu ingat tentang array:
+
+> **Index array di C++ selalu mulai dari 0, bukan 1!**
+
+```
+  Elemen ke-1  →  index [0]
+  Elemen ke-2  →  index [1]
+  Elemen ke-3  →  index [2]
+  ...
+  Elemen ke-N  →  index [N-1]
+```
+
+Jadi kalau array punya 5 elemen, index-nya adalah 0, 1, 2, 3, 4. **Bukan** 1, 2, 3, 4, 5!
+
+:::tip
+Cara mengingat: pikirkan index sebagai **jarak dari awal**. Elemen pertama jaraknya 0 dari awal, elemen kedua jaraknya 1 dari awal, dan seterusnya. Seperti lantai gedung di Eropa — lantai dasar itu lantai 0!
+:::
+
+## Contoh 2: Mengubah Elemen Array
+
+```cpp
+#include <iostream>
+
+int main() {
+    int suhu[5] = {30, 32, 28, 35, 31};
+
+    std::cout << "Suhu hari ke-3 (sebelum): " << suhu[2] << std::endl;
+
+    // Ubah suhu hari ke-3
+    suhu[2] = 29;
+
+    std::cout << "Suhu hari ke-3 (sesudah): " << suhu[2] << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Suhu hari ke-3 (sebelum): 28
+Suhu hari ke-3 (sesudah): 29
+```
+
+## Contoh 3: Array Berbagai Tipe Data
+
+Array bisa menyimpan tipe data apa saja — asal semua elemennya **tipe yang sama**:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    // Array of double
+    double harga[4] = {15000.50, 25000.75, 8500.00, 12000.25};
+
+    // Array of string
+    std::string nama[3] = {"Andi", "Budi", "Citra"};
+
+    // Array of bool
+    bool hadir[5] = {true, true, false, true, false};
+
+    // Array of char
+    char huruf[4] = {'A', 'B', 'C', 'D'};
+
+    // Cetak beberapa elemen
+    std::cout << "Harga ke-1 : Rp " << harga[0] << std::endl;
+    std::cout << "Nama ke-2  : " << nama[1] << std::endl;
+    std::cout << "Hadir ke-3 : " << hadir[2] << std::endl;
+    std::cout << "Huruf ke-4 : " << huruf[3] << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Harga ke-1 : Rp 15000.5
+Nama ke-2  : Budi
+Hadir ke-3 : 0
+Huruf ke-4 : D
+```
+
+## Contoh 4: Menghitung Panjang Array
+
+Kamu bisa menghitung jumlah elemen array dengan trik `sizeof`:
+
+```cpp
+#include <iostream>
+
+int main() {
+    int angka[] = {10, 20, 30, 40, 50, 60, 70};
+
+    // sizeof(angka) = total byte seluruh array
+    // sizeof(angka[0]) = byte satu elemen
+    int panjang = sizeof(angka) / sizeof(angka[0]);
+
+    std::cout << "Total byte array : " << sizeof(angka) << std::endl;
+    std::cout << "Byte per elemen  : " << sizeof(angka[0]) << std::endl;
+    std::cout << "Jumlah elemen    : " << panjang << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Total byte array : 28
+Byte per elemen  : 4
+Jumlah elemen    : 7
+```
+
+:::note
+`sizeof(angka)` memberikan total ukuran array dalam byte (7 elemen x 4 byte = 28 byte). Dibagi dengan ukuran satu elemen (`sizeof(angka[0])` = 4 byte), hasilnya adalah jumlah elemen: 7.
+:::
+
+## Contoh 5: Nilai Ujian 5 Siswa
+
+Contoh yang lebih lengkap — program rapor sederhana:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string nama[5] = {"Andi", "Budi", "Citra", "Dewi", "Eka"};
+    int nilai[5] = {85, 92, 78, 95, 88};
+
+    std::cout << "=== DAFTAR NILAI UJIAN ===" << std::endl;
+    std::cout << "-------------------------" << std::endl;
+
+    for (int i = 0; i < 5; i++) {
+        std::cout << nama[i] << "\t: " << nilai[i];
+
+        if (nilai[i] >= 90) {
+            std::cout << " (A)";
+        } else if (nilai[i] >= 80) {
+            std::cout << " (B)";
+        } else if (nilai[i] >= 70) {
+            std::cout << " (C)";
+        } else {
+            std::cout << " (D)";
+        }
+
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+=== DAFTAR NILAI UJIAN ===
+-------------------------
+Andi	: 85 (B)
+Budi	: 92 (A)
+Citra	: 78 (C)
+Dewi	: 95 (A)
+Eka	: 88 (B)
+```
+
+## Out-of-Bounds Access: Sangat Berbahaya!
+
+Apa yang terjadi kalau kamu akses index yang tidak ada?
+
+```cpp
+#include <iostream>
+
+int main() {
+    int angka[3] = {10, 20, 30};
+
+    // Index valid: 0, 1, 2
+    std::cout << angka[0] << std::endl;  // OK: 10
+    std::cout << angka[2] << std::endl;  // OK: 30
+
+    // BAHAYA! Index di luar batas
+    // std::cout << angka[5] << std::endl;   // Undefined behavior!
+    // std::cout << angka[-1] << std::endl;  // Undefined behavior!
+
+    return 0;
+}
+```
+
+:::warning
+Mengakses array di luar batas (out-of-bounds) menyebabkan **undefined behavior**. Programmu bisa:
+- Menampilkan nilai sampah/random
+- Crash tanpa pesan error
+- Tampak berjalan normal tapi diam-diam merusak data lain
+- Berperilaku berbeda setiap kali dijalankan
+
+C++ **tidak akan** memberitahumu kalau kamu salah index! Ini beda dengan bahasa lain yang langsung error. Jadi kamu harus **ekstra hati-hati** sendiri.
+:::
+
+## Contoh 6: Daftar Harga Jajanan
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string jajanan[] = {"Bakso", "Mie Ayam", "Es Teh", "Gorengan", "Cilok"};
+    int harga[] = {15000, 12000, 5000, 2000, 8000};
+    int jumlahItem = sizeof(harga) / sizeof(harga[0]);
+
+    std::cout << "=== DAFTAR HARGA JAJANAN ===" << std::endl;
+
+    for (int i = 0; i < jumlahItem; i++) {
+        std::cout << i + 1 << ". " << jajanan[i]
+                  << " - Rp " << harga[i] << std::endl;
+    }
+
+    int total = 0;
+    for (int i = 0; i < jumlahItem; i++) {
+        total += harga[i];
+    }
+
+    std::cout << "----------------------------" << std::endl;
+    std::cout << "Total semua: Rp " << total << std::endl;
+    std::cout << "Rata-rata  : Rp " << total / jumlahItem << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+=== DAFTAR HARGA JAJANAN ===
+1. Bakso - Rp 15000
+2. Mie Ayam - Rp 12000
+3. Es Teh - Rp 5000
+4. Gorengan - Rp 2000
+5. Cilok - Rp 8000
+----------------------------
+Total semua: Rp 42000
+Rata-rata  : Rp 8400
+```
+
+## Kesalahan Umum
+
+### 1. Lupa bahwa index mulai dari 0
+
+```cpp
+int arr[3] = {10, 20, 30};
+
+// SALAH — elemen pertama bukan arr[1]!
+std::cout << arr[1];  // Ini elemen KEDUA (20), bukan pertama!
+
+// BENAR — elemen pertama adalah arr[0]
+std::cout << arr[0];  // 10
+```
+
+### 2. Akses elemen terakhir salah
+
+```cpp
+int arr[5] = {1, 2, 3, 4, 5};
+
+// SALAH — arr[5] di luar batas! (index valid: 0-4)
+// std::cout << arr[5];  // Undefined behavior!
+
+// BENAR
+std::cout << arr[4];  // 5 (elemen terakhir)
+```
+
+### 3. Ukuran array harus konstanta
+
+```cpp
+// SALAH di standar C++ (beberapa compiler mengizinkan, tapi tidak portabel)
+int n = 5;
+// int arr[n];  // Variable-length array — tidak standar di C++!
+
+// BENAR — pakai konstanta
+const int N = 5;
+int arr[N];  // OK!
+
+// Atau langsung pakai angka
+int arr2[5];  // OK!
+```
+
+### 4. Inisialisasi terlalu banyak elemen
+
+```cpp
+// SALAH — 6 nilai untuk array ukuran 5
+// int arr[5] = {1, 2, 3, 4, 5, 6};  // Error!
+
+// BENAR
+int arr[5] = {1, 2, 3, 4, 5};  // Pas 5 elemen
+```
+
+## Latihan
+
+**Latihan 1:** Buat program yang menyimpan suhu harian selama 7 hari dalam array. Tampilkan semua suhu, lalu hitung dan tampilkan suhu rata-rata.
+
+**Latihan 2:** Buat program yang menyimpan 5 nama buah dalam array of string. Tampilkan semua buah dengan nomor urut (1, 2, 3, ...), lalu minta user memasukkan nomor dan tampilkan buah yang dipilih.
+
+**Latihan 3:** Buat program dengan array berisi 10 angka. Tampilkan array secara terbalik (dari elemen terakhir ke pertama). Hint: gunakan loop mundur dari index `panjang - 1` sampai 0.
+
+:::tip
+Untuk Latihan 2, jangan lupa validasi input user! Kalau user memasukkan nomor di luar jangkauan 1-5, tampilkan pesan error. Ingat, user memasukkan nomor 1-5 tapi array index-nya 0-4.
+:::
+
+## Ringkasan
+
+| Konsep | Penjelasan |
+|--------|------------|
+| Array | Kumpulan data bertipe sama dalam satu variabel |
+| Deklarasi | `int arr[5];` atau `int arr[] = {1,2,3};` |
+| Index | Mulai dari **0**, bukan 1 |
+| Akses elemen | `arr[0]`, `arr[1]`, ..., `arr[N-1]` |
+| Ubah elemen | `arr[2] = 99;` |
+| Panjang array | `sizeof(arr) / sizeof(arr[0])` |
+| Inisialisasi kosong | `int arr[5] = {};` (semua jadi 0) |
+| Out-of-bounds | Mengakses index di luar batas = **undefined behavior** |
+| Berbagai tipe | `int`, `double`, `std::string`, `bool`, `char` |
+
+Sekarang kamu bisa menyimpan banyak data dalam satu variabel! Tapi mengakses elemen satu-satu masih kurang efisien. Di pelajaran berikutnya, kamu akan belajar bagaimana menggabungkan array dengan loop — kombinasi yang **super powerful**!

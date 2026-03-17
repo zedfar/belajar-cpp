@@ -1,0 +1,559 @@
+---
+title: "Struct: Membuat Tipe Data Sendiri"
+unit: 6
+lesson: 1
+description: "Mengenal struct di C++ — cara mengelompokkan beberapa data terkait menjadi satu tipe data custom"
+objectives:
+  - "Memahami keterbatasan array untuk menyimpan data beragam tipe"
+  - "Membuat struct dengan beberapa field berbeda tipe"
+  - "Mengakses dan mengisi field struct dengan operator dot (.)"
+  - "Menginisialisasi struct secara langsung"
+  - "Menggunakan array dan vector of struct"
+estimatedTime: 40
+prerequisites: ["unit-5/07-project-buku-nilai"]
+difficulty: "beginner"
+tags: ["struct", "custom-type", "data-grouping", "record", "vector-of-struct"]
+---
+
+# Struct: Membuat Tipe Data Sendiri
+
+Kamu sudah belajar pakai array dan vector untuk menyimpan banyak data. Tapi ada masalah besar: **array hanya bisa menyimpan satu tipe data**. Bagaimana kalau kamu mau menyimpan nama siswa (string), umur (int), dan nilai (double) **bersama-sama** sebagai satu kesatuan?
+
+Nah, di sinilah **struct** menjadi penyelamat!
+
+## Analogi: Formulir Data Siswa
+
+Bayangkan kamu diminta mengisi **formulir pendaftaran sekolah**. Di formulir itu ada:
+
+```
+Nama  : _______________
+Umur  : ___
+Kelas : ___
+Nilai : ___
+```
+
+Formulir ini **mengelompokkan beberapa data berbeda** menjadi satu lembar yang utuh. Kamu tidak mengisi nama di satu kertas, umur di kertas lain, dan nilai di kertas lain lagi. Semuanya **satu paket**.
+
+Dalam C++, formulir ini adalah **struct**! Struct adalah cara kita membuat **tipe data custom** yang bisa menyimpan beberapa field sekaligus.
+
+Analogi lain:
+- **KTP** = struct yang berisi nama, NIK, alamat, tanggal lahir
+- **Kartu nama** = struct yang berisi nama, jabatan, nomor telepon, email
+- **Struk belanja** = struct yang berisi nama barang, harga, jumlah
+
+## Masalah Tanpa Struct
+
+Misalnya kamu ingin menyimpan data 3 siswa: nama, umur, dan nilai mereka. Tanpa struct, kamu harus pakai array terpisah:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    // Data terpisah-pisah... berantakan!
+    std::string nama[3] = {"Budi", "Ani", "Citra"};
+    int umur[3] = {15, 16, 15};
+    double nilai[3] = {85.5, 92.0, 78.3};
+
+    // Untuk menampilkan data siswa ke-0
+    std::cout << "Nama : " << nama[0] << std::endl;
+    std::cout << "Umur : " << umur[0] << std::endl;
+    std::cout << "Nilai: " << nilai[0] << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Nama : Budi
+Umur : 15
+Nilai: 85.5
+```
+
+Kelihatannya oke, tapi ada masalah besar:
+- Data **tidak terhubung** satu sama lain. Kamu harus **ingat** bahwa `nama[0]`, `umur[0]`, dan `nilai[0]` milik orang yang sama.
+- Kalau kamu mau **mengurutkan** berdasarkan nilai, kamu harus pindahkan ketiga array sekaligus. Rawan banget salah!
+- Bayangkan kalau datanya ada 10 field... harus buat 10 array terpisah?
+
+## Solusi: Struct!
+
+Dengan struct, semua data terkait digabung jadi satu:
+
+```cpp
+#include <iostream>
+#include <string>
+
+struct Siswa {
+    std::string nama;
+    int umur;
+    double nilai;
+};
+
+int main() {
+    Siswa s1;
+    s1.nama = "Budi";
+    s1.umur = 15;
+    s1.nilai = 85.5;
+
+    std::cout << "Nama : " << s1.nama << std::endl;
+    std::cout << "Umur : " << s1.umur << std::endl;
+    std::cout << "Nilai: " << s1.nilai << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Nama : Budi
+Umur : 15
+Nilai: 85.5
+```
+
+Sekarang data Budi **satu paket** dalam variabel `s1`. Rapi dan tidak mungkin ketuker!
+
+## Sintaks Struct
+
+Begini cara mendeklarasikan struct:
+
+```cpp
+struct NamaStruct {
+    tipe_data field1;
+    tipe_data field2;
+    tipe_data field3;
+    // ... bisa tambah sebanyak yang kamu mau
+};  // <-- JANGAN LUPA titik koma di sini!
+```
+
+Contoh lengkap:
+
+```cpp
+struct Siswa {
+    std::string nama;
+    int umur;
+    double nilai;
+};
+```
+
+:::warning
+Jangan lupa **titik koma (`;`)** setelah kurung kurawal penutup struct! Ini salah satu kesalahan paling umum yang bikin error membingungkan.
+:::
+
+## Membuat Variabel Struct dan Akses Field
+
+Setelah struct didefinisikan, kamu bisa membuat variabel dari tipe tersebut:
+
+```cpp
+#include <iostream>
+#include <string>
+
+struct Produk {
+    std::string nama;
+    int harga;
+    int stok;
+};
+
+int main() {
+    // Membuat variabel struct
+    Produk barang1;
+
+    // Mengisi field dengan operator dot (.)
+    barang1.nama = "Pensil 2B";
+    barang1.harga = 3000;
+    barang1.stok = 50;
+
+    // Membaca field
+    std::cout << "Produk : " << barang1.nama << std::endl;
+    std::cout << "Harga  : Rp " << barang1.harga << std::endl;
+    std::cout << "Stok   : " << barang1.stok << " buah" << std::endl;
+
+    // Mengubah field
+    barang1.stok = barang1.stok - 1;
+    std::cout << "Stok setelah dijual 1: " << barang1.stok << " buah" << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Produk : Pensil 2B
+Harga  : Rp 3000
+Stok   : 50 buah
+Stok setelah dijual 1: 49 buah
+```
+
+:::tip
+Operator **dot (`.`)** digunakan untuk mengakses field dalam struct. Ingat polanya: `variabel.field`.
+:::
+
+## Inisialisasi Langsung
+
+Selain mengisi field satu per satu, kamu bisa langsung inisialisasi saat membuat variabel:
+
+```cpp
+#include <iostream>
+#include <string>
+
+struct Buku {
+    std::string judul;
+    std::string penulis;
+    int tahun;
+    double harga;
+};
+
+int main() {
+    // Inisialisasi langsung — urutan sesuai field dalam struct
+    Buku buku1 = {"Laskar Pelangi", "Andrea Hirata", 2005, 79000.0};
+
+    // C++ modern: designated initializers (C++20)
+    // Buku buku2 = {.judul = "Bumi", .penulis = "Tere Liye", .tahun = 2014, .harga = 89000.0};
+
+    // Inisialisasi dengan kurung kurawal kosong = semua field jadi default
+    Buku buku3 = {};  // nama = "", tahun = 0, harga = 0.0
+
+    std::cout << "Judul  : " << buku1.judul << std::endl;
+    std::cout << "Penulis: " << buku1.penulis << std::endl;
+    std::cout << "Tahun  : " << buku1.tahun << std::endl;
+    std::cout << "Harga  : Rp " << buku1.harga << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Judul  : Laskar Pelangi
+Penulis: Andrea Hirata
+Tahun  : 2005
+Harga  : Rp 79000
+```
+
+:::note
+Saat inisialisasi langsung, **urutan nilai harus sesuai** dengan urutan field di struct. `"Laskar Pelangi"` masuk ke `judul`, `"Andrea Hirata"` masuk ke `penulis`, dan seterusnya.
+:::
+
+## Array of Struct
+
+Kamu bisa membuat array yang isinya struct! Ini seperti punya **tumpukan formulir** data siswa.
+
+```cpp
+#include <iostream>
+#include <string>
+
+struct Siswa {
+    std::string nama;
+    int umur;
+    double nilai;
+};
+
+int main() {
+    // Array of struct
+    Siswa kelas[3] = {
+        {"Budi", 15, 85.5},
+        {"Ani", 16, 92.0},
+        {"Citra", 15, 78.3}
+    };
+
+    std::cout << "=== Data Siswa ===" << std::endl;
+    for (int i = 0; i < 3; i++) {
+        std::cout << "Siswa " << (i + 1) << ": "
+                  << kelas[i].nama << " (umur "
+                  << kelas[i].umur << "), nilai: "
+                  << kelas[i].nilai << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+=== Data Siswa ===
+Siswa 1: Budi (umur 15), nilai: 85.5
+Siswa 2: Ani (umur 16), nilai: 92.0
+Siswa 3: Citra (umur 15), nilai: 78.3
+```
+
+## Vector of Struct (Ukuran Dinamis)
+
+Kalau kamu tidak tahu berapa banyak data yang akan dimasukkan, gunakan `std::vector` supaya ukurannya bisa bertambah:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+struct Karyawan {
+    std::string nama;
+    std::string jabatan;
+    int gaji;
+};
+
+int main() {
+    std::vector<Karyawan> tim;
+
+    // Tambah data pakai push_back
+    tim.push_back({"Andi", "Programmer", 8000000});
+    tim.push_back({"Budi", "Designer", 7500000});
+    tim.push_back({"Citra", "Manager", 12000000});
+
+    std::cout << "=== Data Tim ===" << std::endl;
+    for (int i = 0; i < tim.size(); i++) {
+        std::cout << tim[i].nama << " - "
+                  << tim[i].jabatan << " - Rp "
+                  << tim[i].gaji << std::endl;
+    }
+
+    std::cout << std::endl;
+    std::cout << "Jumlah anggota tim: " << tim.size() << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+=== Data Tim ===
+Andi - Programmer - Rp 8000000
+Budi - Designer - Rp 7500000
+Citra - Manager - Rp 12000000
+
+Jumlah anggota tim: 3
+```
+
+:::tip
+`std::vector<Siswa>` jauh lebih fleksibel daripada `Siswa kelas[30]`. Dengan vector, kamu bisa `push_back()` data baru kapan saja tanpa khawatir kehabisan tempat!
+:::
+
+## Type Alias dengan `using`
+
+Kadang nama struct bisa jadi panjang. Kamu bisa buat alias dengan keyword `using`:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+struct DataNilaiSiswa {
+    std::string nama;
+    double nilaiUTS;
+    double nilaiUAS;
+    double nilaiTugas;
+};
+
+// Buat alias supaya lebih pendek
+using Nilai = DataNilaiSiswa;
+
+int main() {
+    // Sekarang bisa pakai 'Nilai' sebagai ganti 'DataNilaiSiswa'
+    Nilai n1 = {"Budi", 80.0, 85.0, 90.0};
+
+    double rataRata = (n1.nilaiUTS + n1.nilaiUAS + n1.nilaiTugas) / 3.0;
+
+    std::cout << "Nama     : " << n1.nama << std::endl;
+    std::cout << "UTS      : " << n1.nilaiUTS << std::endl;
+    std::cout << "UAS      : " << n1.nilaiUAS << std::endl;
+    std::cout << "Tugas    : " << n1.nilaiTugas << std::endl;
+    std::cout << "Rata-rata: " << rataRata << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Nama     : Budi
+UTS      : 80
+UAS      : 85
+Tugas    : 90
+Rata-rata: 85
+```
+
+## Contoh Praktis: Data Perpustakaan
+
+Mari buat contoh yang lebih lengkap — sistem data buku perpustakaan mini:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+struct Buku {
+    std::string judul;
+    std::string penulis;
+    int tahun;
+    bool tersedia;
+};
+
+int main() {
+    std::vector<Buku> perpustakaan = {
+        {"Laskar Pelangi", "Andrea Hirata", 2005, true},
+        {"Bumi", "Tere Liye", 2014, false},
+        {"Filosofi Teras", "Henry Manampiring", 2018, true},
+        {"Pulang", "Tere Liye", 2015, true},
+        {"Negeri 5 Menara", "Ahmad Fuadi", 2009, false}
+    };
+
+    std::cout << "=== KATALOG PERPUSTAKAAN ===" << std::endl;
+    std::cout << std::endl;
+
+    for (int i = 0; i < perpustakaan.size(); i++) {
+        std::cout << (i + 1) << ". " << perpustakaan[i].judul << std::endl;
+        std::cout << "   Penulis : " << perpustakaan[i].penulis << std::endl;
+        std::cout << "   Tahun   : " << perpustakaan[i].tahun << std::endl;
+        std::cout << "   Status  : "
+                  << (perpustakaan[i].tersedia ? "Tersedia" : "Dipinjam")
+                  << std::endl;
+        std::cout << std::endl;
+    }
+
+    // Hitung buku yang tersedia
+    int jumlahTersedia = 0;
+    for (int i = 0; i < perpustakaan.size(); i++) {
+        if (perpustakaan[i].tersedia) {
+            jumlahTersedia++;
+        }
+    }
+
+    std::cout << "Total buku: " << perpustakaan.size() << std::endl;
+    std::cout << "Buku tersedia: " << jumlahTersedia << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+=== KATALOG PERPUSTAKAAN ===
+
+1. Laskar Pelangi
+   Penulis : Andrea Hirata
+   Tahun   : 2005
+   Status  : Tersedia
+
+2. Bumi
+   Penulis : Tere Liye
+   Tahun   : 2014
+   Status  : Dipinjam
+
+3. Filosofi Teras
+   Penulis : Henry Manampiring
+   Tahun   : 2018
+   Status  : Tersedia
+
+4. Pulang
+   Penulis : Tere Liye
+   Tahun   : 2015
+   Status  : Tersedia
+
+5. Negeri 5 Menara
+   Penulis : Ahmad Fuadi
+   Tahun   : 2009
+   Status  : Dipinjam
+
+Total buku: 5
+Buku tersedia: 3
+```
+
+## Kesalahan Umum
+
+### 1. Lupa titik koma setelah struct
+
+```cpp
+// SALAH — lupa ; di akhir!
+struct Siswa {
+    std::string nama;
+    int umur;
+}  // <-- Error! Harus ada ;
+
+// BENAR
+struct Siswa {
+    std::string nama;
+    int umur;
+};  // <-- Titik koma wajib!
+```
+
+### 2. Urutan inisialisasi tidak sesuai
+
+```cpp
+struct Siswa {
+    std::string nama;
+    int umur;
+    double nilai;
+};
+
+// SALAH — urutan terbalik, umur dan nama ketuker
+// Siswa s = {15, "Budi", 85.5};  // Error!
+
+// BENAR — urutan sesuai: nama, umur, nilai
+Siswa s = {"Budi", 15, 85.5};
+```
+
+### 3. Mengakses field tanpa operator dot
+
+```cpp
+Siswa s1 = {"Budi", 15, 85.5};
+
+// SALAH
+// std::cout << s1 << std::endl;  // Struct tidak bisa langsung di-cout!
+
+// BENAR — akses per field
+std::cout << s1.nama << std::endl;
+std::cout << s1.umur << std::endl;
+```
+
+### 4. Mendefinisikan struct di dalam main
+
+```cpp
+// KURANG TEPAT — struct di dalam main hanya bisa dipakai di main
+int main() {
+    struct Siswa {
+        std::string nama;
+    };
+}
+
+// LEBIH BAIK — definisikan struct di luar main (global)
+struct Siswa {
+    std::string nama;
+};
+
+int main() {
+    Siswa s;
+}
+```
+
+:::warning
+Selalu definisikan struct **di luar fungsi `main()`** (biasanya di atas `main` atau di file header). Ini memastikan struct bisa dipakai di mana saja dalam programmu.
+:::
+
+## Latihan
+
+**Latihan 1:** Buat struct `Kontak` yang menyimpan nama, nomor telepon, dan email. Buat 3 variabel `Kontak` dan tampilkan datanya.
+
+Contoh output:
+```
+=== Daftar Kontak ===
+1. Andi  | 081234567890 | andi@email.com
+2. Budi  | 089876543210 | budi@email.com
+3. Citra | 082111222333 | citra@email.com
+```
+
+**Latihan 2:** Buat struct `Produk` dengan field nama, harga, dan stok. Masukkan 5 produk ke dalam `std::vector<Produk>`, lalu tampilkan semua produk dan hitung **total nilai stok** (harga x stok untuk setiap produk, lalu dijumlahkan).
+
+**Latihan 3:** Buat program pendaftaran siswa sederhana. Struct `Siswa` berisi nama, kelas, dan nilai rata-rata. Gunakan loop `while` untuk meminta input dari user (ketik "selesai" untuk berhenti), simpan ke `std::vector<Siswa>`, lalu tampilkan semua data dan cari siswa dengan nilai tertinggi.
+
+## Ringkasan
+
+| Konsep | Penjelasan | Contoh |
+|--------|------------|--------|
+| **struct** | Tipe data custom yang mengelompokkan beberapa field | `struct Siswa { ... };` |
+| **Field** | Variabel di dalam struct | `std::string nama;` |
+| **Operator dot (`.`)** | Mengakses field dari variabel struct | `s1.nama` |
+| **Inisialisasi langsung** | Mengisi semua field sekaligus saat deklarasi | `Siswa s = {"Budi", 15, 85.5};` |
+| **Array of struct** | Array biasa yang elemennya bertipe struct | `Siswa kelas[30];` |
+| **Vector of struct** | Vector dinamis yang elemennya bertipe struct | `std::vector<Siswa> data;` |
+| **`using` alias** | Membuat nama alternatif untuk tipe data | `using Nilai = DataNilaiSiswa;` |
+
+Struct adalah pondasi penting menuju **Object-Oriented Programming** yang akan kamu pelajari nanti. Di pelajaran berikutnya, kita akan belajar cara **menggabungkan struct dengan fungsi** untuk membuat program yang lebih terstruktur!

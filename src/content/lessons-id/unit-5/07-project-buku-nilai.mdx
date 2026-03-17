@@ -1,0 +1,1026 @@
+---
+title: "Project: Buku Nilai Siswa"
+unit: 5
+lesson: 7
+description: "Membuat program manajemen nilai siswa lengkap menggunakan semua konsep Unit 5: vector, string, sorting, searching, dan fungsi"
+objectives:
+  - "Menggabungkan semua konsep Unit 5 dalam satu program lengkap"
+  - "Menggunakan vector<string> dan vector<double> untuk menyimpan data siswa"
+  - "Menerapkan sorting untuk membuat ranking"
+  - "Menerapkan linear search untuk mencari siswa"
+  - "Menghitung statistik: rata-rata, tertinggi, terendah"
+  - "Membangun menu interaktif dengan fungsi-fungsi terpisah"
+  - "Memformat output tabel dengan setw dari <iomanip>"
+estimatedTime: 90
+prerequisites: ["unit-5/06-sorting-searching"]
+difficulty: "beginner"
+isProject: true
+tags: ["project", "buku-nilai", "vector", "string", "sorting", "searching", "fungsi", "iomanip"]
+---
+
+# Project: Buku Nilai Siswa
+
+Selamat datang di project akhir Unit 5! Kamu sudah belajar tentang array, vector, string, sorting, dan searching. Sekarang waktunya menggabungkan **semuanya** dalam satu program nyata yang bermanfaat — **Buku Nilai Siswa**!
+
+Program ini akan bisa:
+- Menambahkan data siswa (nama & nilai)
+- Menampilkan semua data dalam tabel rapi
+- Menghitung statistik (rata-rata, tertinggi, terendah)
+- Membuat ranking berdasarkan nilai
+- Mencari siswa berdasarkan nama
+- Menu interaktif yang mudah digunakan
+
+Kita akan membangunnya **tahap demi tahap**, menambah fitur satu per satu. Siap? Ayo mulai!
+
+:::note
+Project ini mengintegrasikan konsep dari Unit 4 (fungsi) dan Unit 5 (array, vector, string, sorting, searching). Setiap fitur menggunakan fungsi terpisah agar kode terorganisir rapi!
+:::
+
+## Desain Fungsi
+
+Sebelum mulai coding, mari rencanakan fungsi-fungsi yang kita butuhkan:
+
+| Fungsi | Tugas | Konsep Unit 5 |
+|--------|-------|----------------|
+| `tambahSiswa()` | Input nama & nilai | vector, getline, push_back |
+| `tampilkanSemua()` | Tampilkan tabel data | vector, loop, setw |
+| `hitungRataRata()` | Hitung rata-rata nilai | vector, loop, akumulasi |
+| `cariNilaiTertinggi()` | Cari nilai max | vector, linear search |
+| `cariNilaiTerendah()` | Cari nilai min | vector, linear search |
+| `tampilkanStatistik()` | Tampilkan semua statistik | gabungan fungsi di atas |
+| `tampilkanRanking()` | Sort & tampilkan ranking | sorting, indeks |
+| `cariSiswa()` | Cari by nama | linear search, string |
+| `tampilkanMenu()` | Tampilkan pilihan menu | output |
+
+## Tahap 1: Input Nama & Nilai
+
+Kita mulai dengan hal paling dasar — menyimpan nama dan nilai siswa:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+void tambahSiswa(std::vector<std::string>& nama_siswa,
+                 std::vector<double>& nilai_siswa) {
+    std::string nama;
+    double nilai;
+
+    std::cout << "Masukkan nama siswa: ";
+    std::getline(std::cin, nama);
+
+    std::cout << "Masukkan nilai " << nama << ": ";
+    std::cin >> nilai;
+    std::cin.ignore();  // Buang newline agar getline berikutnya benar
+
+    nama_siswa.push_back(nama);
+    nilai_siswa.push_back(nilai);
+
+    std::cout << "Data " << nama << " berhasil ditambahkan!" << std::endl;
+}
+
+int main() {
+    std::vector<std::string> nama_siswa;
+    std::vector<double> nilai_siswa;
+
+    // Tambah 3 siswa untuk testing
+    for (int i = 0; i < 3; i++) {
+        std::cout << "\n--- Siswa ke-" << (i + 1) << " ---" << std::endl;
+        tambahSiswa(nama_siswa, nilai_siswa);
+    }
+
+    // Tampilkan sederhana
+    std::cout << "\n=== Data Siswa ===" << std::endl;
+    for (int i = 0; i < nama_siswa.size(); i++) {
+        std::cout << nama_siswa[i] << ": " << nilai_siswa[i] << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Contoh output:
+
+```
+--- Siswa ke-1 ---
+Masukkan nama siswa: Andi Pratama
+Masukkan nilai Andi Pratama: 85.5
+Data Andi Pratama berhasil ditambahkan!
+
+--- Siswa ke-2 ---
+Masukkan nama siswa: Budi Santoso
+Masukkan nilai Budi Santoso: 92
+Data Budi Santoso berhasil ditambahkan!
+
+--- Siswa ke-3 ---
+Masukkan nama siswa: Citra Dewi
+Masukkan nilai Citra Dewi: 78.3
+Data Citra Dewi berhasil ditambahkan!
+
+=== Data Siswa ===
+Andi Pratama: 85.5
+Budi Santoso: 92
+Citra Dewi: 78.3
+```
+
+:::warning
+Perhatikan `std::cin.ignore()` setelah `std::cin >> nilai`! Ini penting karena setelah membaca angka, karakter newline masih ada di buffer. Tanpa `ignore()`, `getline()` berikutnya akan membaca string kosong.
+:::
+
+## Tahap 2: Tampilkan Tabel Rapi dengan `setw`
+
+Sekarang kita buat tampilan yang profesional menggunakan `std::setw()` dari `<iomanip>`:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+#include <iomanip>
+
+void tampilkanSemua(const std::vector<std::string>& nama_siswa,
+                    const std::vector<double>& nilai_siswa) {
+    if (nama_siswa.empty()) {
+        std::cout << "Belum ada data siswa." << std::endl;
+        return;
+    }
+
+    std::cout << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << "            DAFTAR NILAI SISWA" << std::endl;
+    std::cout << "============================================" << std::endl;
+
+    // Header tabel
+    std::cout << std::left
+              << std::setw(5) << "No"
+              << std::setw(22) << "Nama"
+              << std::right
+              << std::setw(8) << "Nilai"
+              << std::endl;
+    std::cout << "--------------------------------------------" << std::endl;
+
+    // Isi tabel
+    for (int i = 0; i < nama_siswa.size(); i++) {
+        std::cout << std::left
+                  << std::setw(5) << (i + 1)
+                  << std::setw(22) << nama_siswa[i]
+                  << std::right
+                  << std::setw(8) << std::fixed << std::setprecision(1)
+                  << nilai_siswa[i]
+                  << std::endl;
+    }
+
+    std::cout << "--------------------------------------------" << std::endl;
+    std::cout << "Total: " << nama_siswa.size() << " siswa" << std::endl;
+    std::cout << "============================================" << std::endl;
+}
+```
+
+Contoh output:
+
+```
+============================================
+            DAFTAR NILAI SISWA
+============================================
+No   Nama                     Nilai
+--------------------------------------------
+1    Andi Pratama               85.5
+2    Budi Santoso               92.0
+3    Citra Dewi                 78.3
+4    Dewi Lestari               95.7
+5    Eka Putra                  88.0
+--------------------------------------------
+Total: 5 siswa
+============================================
+```
+
+:::tip
+`std::setw(n)` mengatur lebar kolom, `std::left` rata kiri, `std::right` rata kanan, `std::fixed` dan `std::setprecision(1)` mengatur format desimal. Semua dari `<iomanip>`!
+:::
+
+## Tahap 3: Hitung Statistik
+
+Sekarang kita tambahkan fungsi-fungsi untuk menghitung statistik:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+#include <iomanip>
+
+double hitungRataRata(const std::vector<double>& nilai_siswa) {
+    if (nilai_siswa.empty()) return 0.0;
+
+    double total = 0;
+    for (double n : nilai_siswa) {
+        total += n;
+    }
+    return total / nilai_siswa.size();
+}
+
+int cariIndeksTertinggi(const std::vector<double>& nilai_siswa) {
+    if (nilai_siswa.empty()) return -1;
+
+    int idx_max = 0;
+    for (int i = 1; i < nilai_siswa.size(); i++) {
+        if (nilai_siswa[i] > nilai_siswa[idx_max]) {
+            idx_max = i;
+        }
+    }
+    return idx_max;
+}
+
+int cariIndeksTerendah(const std::vector<double>& nilai_siswa) {
+    if (nilai_siswa.empty()) return -1;
+
+    int idx_min = 0;
+    for (int i = 1; i < nilai_siswa.size(); i++) {
+        if (nilai_siswa[i] < nilai_siswa[idx_min]) {
+            idx_min = i;
+        }
+    }
+    return idx_min;
+}
+
+int hitungLulus(const std::vector<double>& nilai_siswa, double batas_lulus) {
+    int jumlah = 0;
+    for (double n : nilai_siswa) {
+        if (n >= batas_lulus) {
+            jumlah++;
+        }
+    }
+    return jumlah;
+}
+
+void tampilkanStatistik(const std::vector<std::string>& nama_siswa,
+                        const std::vector<double>& nilai_siswa) {
+    if (nama_siswa.empty()) {
+        std::cout << "Belum ada data siswa." << std::endl;
+        return;
+    }
+
+    double rata_rata = hitungRataRata(nilai_siswa);
+    int idx_max = cariIndeksTertinggi(nilai_siswa);
+    int idx_min = cariIndeksTerendah(nilai_siswa);
+    double batas_lulus = 75.0;
+    int lulus = hitungLulus(nilai_siswa, batas_lulus);
+    int tidak_lulus = nama_siswa.size() - lulus;
+
+    std::cout << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << "              STATISTIK KELAS" << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << std::fixed << std::setprecision(1);
+    std::cout << "  Jumlah siswa    : " << nama_siswa.size() << std::endl;
+    std::cout << "  Rata-rata       : " << rata_rata << std::endl;
+    std::cout << "  Nilai tertinggi : " << nilai_siswa[idx_max]
+              << " (" << nama_siswa[idx_max] << ")" << std::endl;
+    std::cout << "  Nilai terendah  : " << nilai_siswa[idx_min]
+              << " (" << nama_siswa[idx_min] << ")" << std::endl;
+    std::cout << "  Batas lulus     : " << batas_lulus << std::endl;
+    std::cout << "  Lulus           : " << lulus << " siswa" << std::endl;
+    std::cout << "  Tidak lulus     : " << tidak_lulus << " siswa" << std::endl;
+    std::cout << "============================================" << std::endl;
+}
+```
+
+Contoh output:
+
+```
+============================================
+              STATISTIK KELAS
+============================================
+  Jumlah siswa    : 5
+  Rata-rata       : 87.9
+  Nilai tertinggi : 95.7 (Dewi Lestari)
+  Nilai terendah  : 78.3 (Citra Dewi)
+  Batas lulus     : 75.0
+  Lulus           : 5 siswa
+  Tidak lulus     : 0 siswa
+============================================
+```
+
+## Tahap 4: Ranking (Sort berdasarkan Nilai)
+
+Kita gunakan teknik **sort indeks** agar data asli tidak berubah posisinya:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <iomanip>
+
+void tampilkanRanking(const std::vector<std::string>& nama_siswa,
+                      const std::vector<double>& nilai_siswa) {
+    if (nama_siswa.empty()) {
+        std::cout << "Belum ada data siswa." << std::endl;
+        return;
+    }
+
+    // Buat vector indeks
+    std::vector<int> indeks;
+    for (int i = 0; i < nama_siswa.size(); i++) {
+        indeks.push_back(i);
+    }
+
+    // Sort indeks berdasarkan nilai — tertinggi dulu
+    for (int i = 0; i < indeks.size() - 1; i++) {
+        for (int j = 0; j < indeks.size() - 1 - i; j++) {
+            if (nilai_siswa[indeks[j]] < nilai_siswa[indeks[j + 1]]) {
+                int temp = indeks[j];
+                indeks[j] = indeks[j + 1];
+                indeks[j + 1] = temp;
+            }
+        }
+    }
+
+    std::cout << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << "            RANKING KELAS" << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << std::left
+              << std::setw(7) << "Rank"
+              << std::setw(22) << "Nama"
+              << std::right
+              << std::setw(8) << "Nilai"
+              << std::endl;
+    std::cout << "--------------------------------------------" << std::endl;
+
+    for (int i = 0; i < indeks.size(); i++) {
+        int idx = indeks[i];
+        std::string rank_str = std::to_string(i + 1) + ".";
+
+        std::cout << std::left
+                  << std::setw(7) << rank_str
+                  << std::setw(22) << nama_siswa[idx]
+                  << std::right
+                  << std::setw(8) << std::fixed << std::setprecision(1)
+                  << nilai_siswa[idx]
+                  << std::endl;
+    }
+
+    std::cout << "============================================" << std::endl;
+}
+```
+
+Contoh output:
+
+```
+============================================
+            RANKING KELAS
+============================================
+Rank   Nama                     Nilai
+--------------------------------------------
+1.     Dewi Lestari              95.7
+2.     Budi Santoso              92.0
+3.     Eka Putra                 88.0
+4.     Andi Pratama              85.5
+5.     Citra Dewi                78.3
+============================================
+```
+
+## Tahap 5: Cari Siswa by Nama
+
+Kita implementasikan linear search untuk mencari siswa berdasarkan nama:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+#include <iomanip>
+#include <cctype>
+
+// Fungsi bantu: ubah string ke lowercase untuk perbandingan
+std::string toLower(const std::string& s) {
+    std::string hasil = s;
+    for (int i = 0; i < hasil.length(); i++) {
+        hasil[i] = std::tolower(hasil[i]);
+    }
+    return hasil;
+}
+
+void cariSiswa(const std::vector<std::string>& nama_siswa,
+               const std::vector<double>& nilai_siswa) {
+    if (nama_siswa.empty()) {
+        std::cout << "Belum ada data siswa." << std::endl;
+        return;
+    }
+
+    std::string cari;
+    std::cout << "Masukkan nama yang dicari: ";
+    std::getline(std::cin, cari);
+
+    std::string cari_lower = toLower(cari);
+    bool ditemukan = false;
+
+    std::cout << std::endl;
+    std::cout << "Hasil pencarian untuk \"" << cari << "\":" << std::endl;
+    std::cout << "--------------------------------------------" << std::endl;
+
+    for (int i = 0; i < nama_siswa.size(); i++) {
+        // Cari substring (case-insensitive)
+        std::string nama_lower = toLower(nama_siswa[i]);
+        if (nama_lower.find(cari_lower) != std::string::npos) {
+            std::cout << "  " << nama_siswa[i] << " - Nilai: "
+                      << std::fixed << std::setprecision(1)
+                      << nilai_siswa[i] << std::endl;
+            ditemukan = true;
+        }
+    }
+
+    if (!ditemukan) {
+        std::cout << "  Tidak ada siswa dengan nama \"" << cari << "\"" << std::endl;
+    }
+    std::cout << "--------------------------------------------" << std::endl;
+}
+```
+
+Contoh output:
+
+```
+Masukkan nama yang dicari: dewi
+
+Hasil pencarian untuk "dewi":
+--------------------------------------------
+  Citra Dewi - Nilai: 78.3
+  Dewi Lestari - Nilai: 95.7
+--------------------------------------------
+```
+
+:::tip
+Pencarian ini bersifat **case-insensitive** (tidak peduli huruf besar/kecil) dan mendukung **pencarian parsial** (mengetik "dewi" akan menemukan "Citra Dewi" dan "Dewi Lestari"). Ini membuat program lebih user-friendly!
+:::
+
+## Tahap 6: Menu Interaktif
+
+Sekarang kita gabungkan semuanya dengan menu yang memudahkan pengguna:
+
+```cpp
+void tampilkanMenu() {
+    std::cout << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << "           BUKU NILAI SISWA v1.0" << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << "  1. Tambah data siswa" << std::endl;
+    std::cout << "  2. Tampilkan semua data" << std::endl;
+    std::cout << "  3. Statistik kelas" << std::endl;
+    std::cout << "  4. Ranking kelas" << std::endl;
+    std::cout << "  5. Cari siswa" << std::endl;
+    std::cout << "  0. Keluar" << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << "  Pilihan: ";
+}
+```
+
+Dan `main()` menjadi:
+
+```cpp
+int main() {
+    std::vector<std::string> nama_siswa;
+    std::vector<double> nilai_siswa;
+
+    int pilihan;
+
+    do {
+        tampilkanMenu();
+        std::cin >> pilihan;
+        std::cin.ignore();  // Buang newline
+
+        switch (pilihan) {
+            case 1:
+                tambahSiswa(nama_siswa, nilai_siswa);
+                break;
+            case 2:
+                tampilkanSemua(nama_siswa, nilai_siswa);
+                break;
+            case 3:
+                tampilkanStatistik(nama_siswa, nilai_siswa);
+                break;
+            case 4:
+                tampilkanRanking(nama_siswa, nilai_siswa);
+                break;
+            case 5:
+                cariSiswa(nama_siswa, nilai_siswa);
+                break;
+            case 0:
+                std::cout << "\nTerima kasih! Sampai jumpa!" << std::endl;
+                break;
+            default:
+                std::cout << "\nPilihan tidak valid. Coba lagi." << std::endl;
+        }
+
+    } while (pilihan != 0);
+
+    return 0;
+}
+```
+
+## Kode Final Lengkap
+
+Ini dia kode final yang menggabungkan semua tahap! Ketik dan pelajari baik-baik setiap bagiannya:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+#include <iomanip>
+#include <cctype>
+
+// ============================================
+// DEKLARASI FUNGSI
+// ============================================
+void tampilkanMenu();
+void tambahSiswa(std::vector<std::string>& nama_siswa,
+                 std::vector<double>& nilai_siswa);
+void tampilkanSemua(const std::vector<std::string>& nama_siswa,
+                    const std::vector<double>& nilai_siswa);
+double hitungRataRata(const std::vector<double>& nilai_siswa);
+int cariIndeksTertinggi(const std::vector<double>& nilai_siswa);
+int cariIndeksTerendah(const std::vector<double>& nilai_siswa);
+int hitungLulus(const std::vector<double>& nilai_siswa, double batas_lulus);
+void tampilkanStatistik(const std::vector<std::string>& nama_siswa,
+                        const std::vector<double>& nilai_siswa);
+void tampilkanRanking(const std::vector<std::string>& nama_siswa,
+                      const std::vector<double>& nilai_siswa);
+std::string toLower(const std::string& s);
+void cariSiswa(const std::vector<std::string>& nama_siswa,
+               const std::vector<double>& nilai_siswa);
+
+// ============================================
+// FUNGSI MAIN
+// ============================================
+int main() {
+    std::vector<std::string> nama_siswa;
+    std::vector<double> nilai_siswa;
+
+    int pilihan;
+
+    do {
+        tampilkanMenu();
+        std::cin >> pilihan;
+        std::cin.ignore();
+
+        switch (pilihan) {
+            case 1:
+                tambahSiswa(nama_siswa, nilai_siswa);
+                break;
+            case 2:
+                tampilkanSemua(nama_siswa, nilai_siswa);
+                break;
+            case 3:
+                tampilkanStatistik(nama_siswa, nilai_siswa);
+                break;
+            case 4:
+                tampilkanRanking(nama_siswa, nilai_siswa);
+                break;
+            case 5:
+                cariSiswa(nama_siswa, nilai_siswa);
+                break;
+            case 0:
+                std::cout << std::endl;
+                std::cout << "Terima kasih sudah menggunakan Buku Nilai Siswa!" << std::endl;
+                std::cout << "Sampai jumpa!" << std::endl;
+                break;
+            default:
+                std::cout << std::endl;
+                std::cout << "Pilihan tidak valid. Masukkan angka 0-5." << std::endl;
+        }
+
+    } while (pilihan != 0);
+
+    return 0;
+}
+
+// ============================================
+// IMPLEMENTASI FUNGSI
+// ============================================
+
+void tampilkanMenu() {
+    std::cout << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << "           BUKU NILAI SISWA v1.0" << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << "  1. Tambah data siswa" << std::endl;
+    std::cout << "  2. Tampilkan semua data" << std::endl;
+    std::cout << "  3. Statistik kelas" << std::endl;
+    std::cout << "  4. Ranking kelas" << std::endl;
+    std::cout << "  5. Cari siswa" << std::endl;
+    std::cout << "  0. Keluar" << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << "  Pilihan: ";
+}
+
+void tambahSiswa(std::vector<std::string>& nama_siswa,
+                 std::vector<double>& nilai_siswa) {
+    std::string nama;
+    double nilai;
+
+    std::cout << std::endl;
+    std::cout << "--- Tambah Data Siswa ---" << std::endl;
+    std::cout << "Nama siswa : ";
+    std::getline(std::cin, nama);
+
+    // Validasi nama tidak kosong
+    if (nama.empty()) {
+        std::cout << "Nama tidak boleh kosong!" << std::endl;
+        return;
+    }
+
+    std::cout << "Nilai      : ";
+    std::cin >> nilai;
+    std::cin.ignore();
+
+    // Validasi nilai
+    if (nilai < 0 || nilai > 100) {
+        std::cout << "Nilai harus antara 0 dan 100!" << std::endl;
+        return;
+    }
+
+    nama_siswa.push_back(nama);
+    nilai_siswa.push_back(nilai);
+
+    std::cout << "Data " << nama << " (nilai: "
+              << std::fixed << std::setprecision(1) << nilai
+              << ") berhasil ditambahkan!" << std::endl;
+}
+
+void tampilkanSemua(const std::vector<std::string>& nama_siswa,
+                    const std::vector<double>& nilai_siswa) {
+    if (nama_siswa.empty()) {
+        std::cout << std::endl;
+        std::cout << "Belum ada data siswa. Tambahkan dulu lewat menu 1." << std::endl;
+        return;
+    }
+
+    std::cout << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << "            DAFTAR NILAI SISWA" << std::endl;
+    std::cout << "============================================" << std::endl;
+
+    std::cout << std::left
+              << std::setw(5) << "No"
+              << std::setw(22) << "Nama"
+              << std::right
+              << std::setw(8) << "Nilai"
+              << std::endl;
+    std::cout << "--------------------------------------------" << std::endl;
+
+    for (int i = 0; i < nama_siswa.size(); i++) {
+        std::cout << std::left
+                  << std::setw(5) << (i + 1)
+                  << std::setw(22) << nama_siswa[i]
+                  << std::right
+                  << std::setw(8) << std::fixed << std::setprecision(1)
+                  << nilai_siswa[i]
+                  << std::endl;
+    }
+
+    std::cout << "--------------------------------------------" << std::endl;
+    std::cout << "Total: " << nama_siswa.size() << " siswa" << std::endl;
+    std::cout << "============================================" << std::endl;
+}
+
+double hitungRataRata(const std::vector<double>& nilai_siswa) {
+    if (nilai_siswa.empty()) return 0.0;
+
+    double total = 0.0;
+    for (double n : nilai_siswa) {
+        total += n;
+    }
+    return total / nilai_siswa.size();
+}
+
+int cariIndeksTertinggi(const std::vector<double>& nilai_siswa) {
+    if (nilai_siswa.empty()) return -1;
+
+    int idx_max = 0;
+    for (int i = 1; i < nilai_siswa.size(); i++) {
+        if (nilai_siswa[i] > nilai_siswa[idx_max]) {
+            idx_max = i;
+        }
+    }
+    return idx_max;
+}
+
+int cariIndeksTerendah(const std::vector<double>& nilai_siswa) {
+    if (nilai_siswa.empty()) return -1;
+
+    int idx_min = 0;
+    for (int i = 1; i < nilai_siswa.size(); i++) {
+        if (nilai_siswa[i] < nilai_siswa[idx_min]) {
+            idx_min = i;
+        }
+    }
+    return idx_min;
+}
+
+int hitungLulus(const std::vector<double>& nilai_siswa, double batas_lulus) {
+    int jumlah = 0;
+    for (double n : nilai_siswa) {
+        if (n >= batas_lulus) {
+            jumlah++;
+        }
+    }
+    return jumlah;
+}
+
+void tampilkanStatistik(const std::vector<std::string>& nama_siswa,
+                        const std::vector<double>& nilai_siswa) {
+    if (nama_siswa.empty()) {
+        std::cout << std::endl;
+        std::cout << "Belum ada data siswa. Tambahkan dulu lewat menu 1." << std::endl;
+        return;
+    }
+
+    double rata_rata = hitungRataRata(nilai_siswa);
+    int idx_max = cariIndeksTertinggi(nilai_siswa);
+    int idx_min = cariIndeksTerendah(nilai_siswa);
+    double batas_lulus = 75.0;
+    int lulus = hitungLulus(nilai_siswa, batas_lulus);
+    int tidak_lulus = nama_siswa.size() - lulus;
+
+    std::cout << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << "              STATISTIK KELAS" << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << std::fixed << std::setprecision(1);
+    std::cout << "  Jumlah siswa    : " << nama_siswa.size() << std::endl;
+    std::cout << "  Rata-rata kelas : " << rata_rata << std::endl;
+    std::cout << "  Nilai tertinggi : " << nilai_siswa[idx_max]
+              << " (" << nama_siswa[idx_max] << ")" << std::endl;
+    std::cout << "  Nilai terendah  : " << nilai_siswa[idx_min]
+              << " (" << nama_siswa[idx_min] << ")" << std::endl;
+    std::cout << "--------------------------------------------" << std::endl;
+    std::cout << "  Batas lulus     : " << batas_lulus << std::endl;
+    std::cout << "  Lulus           : " << lulus << " siswa" << std::endl;
+    std::cout << "  Tidak lulus     : " << tidak_lulus << " siswa" << std::endl;
+    std::cout << "============================================" << std::endl;
+}
+
+void tampilkanRanking(const std::vector<std::string>& nama_siswa,
+                      const std::vector<double>& nilai_siswa) {
+    if (nama_siswa.empty()) {
+        std::cout << std::endl;
+        std::cout << "Belum ada data siswa. Tambahkan dulu lewat menu 1." << std::endl;
+        return;
+    }
+
+    // Buat vector indeks untuk sort
+    std::vector<int> indeks;
+    for (int i = 0; i < nama_siswa.size(); i++) {
+        indeks.push_back(i);
+    }
+
+    // Bubble sort indeks berdasarkan nilai (tertinggi dulu)
+    for (int i = 0; i < indeks.size() - 1; i++) {
+        for (int j = 0; j < indeks.size() - 1 - i; j++) {
+            if (nilai_siswa[indeks[j]] < nilai_siswa[indeks[j + 1]]) {
+                int temp = indeks[j];
+                indeks[j] = indeks[j + 1];
+                indeks[j + 1] = temp;
+            }
+        }
+    }
+
+    std::cout << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << "              RANKING KELAS" << std::endl;
+    std::cout << "============================================" << std::endl;
+    std::cout << std::left
+              << std::setw(7) << "Rank"
+              << std::setw(22) << "Nama"
+              << std::right
+              << std::setw(8) << "Nilai"
+              << std::endl;
+    std::cout << "--------------------------------------------" << std::endl;
+
+    for (int i = 0; i < indeks.size(); i++) {
+        int idx = indeks[i];
+        std::string rank_str = std::to_string(i + 1) + ".";
+
+        std::cout << std::left
+                  << std::setw(7) << rank_str
+                  << std::setw(22) << nama_siswa[idx]
+                  << std::right
+                  << std::setw(8) << std::fixed << std::setprecision(1)
+                  << nilai_siswa[idx]
+                  << std::endl;
+    }
+
+    std::cout << "--------------------------------------------" << std::endl;
+
+    // Tampilkan rata-rata di bawah ranking
+    double rata_rata = hitungRataRata(nilai_siswa);
+    std::cout << "  Rata-rata kelas: " << std::fixed << std::setprecision(1)
+              << rata_rata << std::endl;
+    std::cout << "============================================" << std::endl;
+}
+
+std::string toLower(const std::string& s) {
+    std::string hasil = s;
+    for (int i = 0; i < hasil.length(); i++) {
+        hasil[i] = std::tolower(hasil[i]);
+    }
+    return hasil;
+}
+
+void cariSiswa(const std::vector<std::string>& nama_siswa,
+               const std::vector<double>& nilai_siswa) {
+    if (nama_siswa.empty()) {
+        std::cout << std::endl;
+        std::cout << "Belum ada data siswa. Tambahkan dulu lewat menu 1." << std::endl;
+        return;
+    }
+
+    std::string cari;
+    std::cout << std::endl;
+    std::cout << "--- Cari Siswa ---" << std::endl;
+    std::cout << "Masukkan nama: ";
+    std::getline(std::cin, cari);
+
+    if (cari.empty()) {
+        std::cout << "Kata pencarian tidak boleh kosong!" << std::endl;
+        return;
+    }
+
+    std::string cari_lower = toLower(cari);
+    bool ditemukan = false;
+    int jumlah_hasil = 0;
+
+    std::cout << std::endl;
+    std::cout << "Hasil pencarian untuk \"" << cari << "\":" << std::endl;
+    std::cout << "--------------------------------------------" << std::endl;
+
+    for (int i = 0; i < nama_siswa.size(); i++) {
+        std::string nama_lower = toLower(nama_siswa[i]);
+
+        if (nama_lower.find(cari_lower) != std::string::npos) {
+            jumlah_hasil++;
+            std::cout << "  " << jumlah_hasil << ". "
+                      << nama_siswa[i] << " - Nilai: "
+                      << std::fixed << std::setprecision(1)
+                      << nilai_siswa[i] << std::endl;
+            ditemukan = true;
+        }
+    }
+
+    if (!ditemukan) {
+        std::cout << "  Tidak ada siswa dengan nama \"" << cari << "\"" << std::endl;
+    } else {
+        std::cout << "  (" << jumlah_hasil << " hasil ditemukan)" << std::endl;
+    }
+    std::cout << "--------------------------------------------" << std::endl;
+}
+```
+
+## Contoh Sesi Penggunaan
+
+```
+============================================
+           BUKU NILAI SISWA v1.0
+============================================
+  1. Tambah data siswa
+  2. Tampilkan semua data
+  3. Statistik kelas
+  4. Ranking kelas
+  5. Cari siswa
+  0. Keluar
+============================================
+  Pilihan: 1
+
+--- Tambah Data Siswa ---
+Nama siswa : Andi Pratama
+Nilai      : 85.5
+Data Andi Pratama (nilai: 85.5) berhasil ditambahkan!
+
+============================================
+           BUKU NILAI SISWA v1.0
+============================================
+  Pilihan: 1
+
+--- Tambah Data Siswa ---
+Nama siswa : Budi Santoso
+Nilai      : 92
+Data Budi Santoso (nilai: 92.0) berhasil ditambahkan!
+
+============================================
+           BUKU NILAI SISWA v1.0
+============================================
+  Pilihan: 1
+
+--- Tambah Data Siswa ---
+Nama siswa : Citra Dewi
+Nilai      : 78.3
+Data Citra Dewi (nilai: 78.3) berhasil ditambahkan!
+
+============================================
+           BUKU NILAI SISWA v1.0
+============================================
+  Pilihan: 4
+
+============================================
+              RANKING KELAS
+============================================
+Rank   Nama                     Nilai
+--------------------------------------------
+1.     Budi Santoso              92.0
+2.     Andi Pratama              85.5
+3.     Citra Dewi                78.3
+--------------------------------------------
+  Rata-rata kelas: 85.3
+============================================
+
+============================================
+           BUKU NILAI SISWA v1.0
+============================================
+  Pilihan: 5
+
+--- Cari Siswa ---
+Masukkan nama: dewi
+
+Hasil pencarian untuk "dewi":
+--------------------------------------------
+  1. Citra Dewi - Nilai: 78.3
+  (1 hasil ditemukan)
+--------------------------------------------
+
+============================================
+           BUKU NILAI SISWA v1.0
+============================================
+  Pilihan: 0
+
+Terima kasih sudah menggunakan Buku Nilai Siswa!
+Sampai jumpa!
+```
+
+## Konsep yang Digunakan
+
+| Konsep | Digunakan di |
+|--------|-------------|
+| `std::vector<std::string>` | Menyimpan nama siswa |
+| `std::vector<double>` | Menyimpan nilai siswa |
+| `push_back()` | Menambah data baru |
+| `std::getline()` | Input nama dengan spasi |
+| `std::setw()`, `std::left`, `std::right` | Format tabel rapi |
+| `std::fixed`, `std::setprecision()` | Format angka desimal |
+| Linear search | Mencari siswa by nama |
+| Bubble sort (via indeks) | Ranking berdasarkan nilai |
+| `std::string::find()` | Pencarian substring |
+| `std::tolower()` | Case-insensitive search |
+| Pass by reference (`&`) | Menambah data ke vector |
+| Const reference (`const &`) | Membaca data tanpa mengubah |
+| Fungsi terpisah | Setiap fitur punya fungsinya sendiri |
+
+## Tantangan Ekstra
+
+Sudah berhasil menjalankan program di atas? Coba tantangan-tantangan berikut untuk meningkatkan programmu!
+
+**Tantangan 1: Export ke Format Teks**
+
+Buat fungsi `void exportData(...)` yang menampilkan semua data dalam format yang bisa di-copy-paste ke file teks:
+
+```
+LAPORAN NILAI SISWA
+Tanggal: [tampilkan tanggal]
+
+No | Nama             | Nilai | Status
+1  | Andi Pratama     | 85.5  | LULUS
+2  | Budi Santoso     | 92.0  | LULUS
+3  | Citra Dewi       | 78.3  | LULUS
+
+Rata-rata: 85.3
+Tertinggi: 92.0 (Budi Santoso)
+Terendah: 78.3 (Citra Dewi)
+```
+
+**Tantangan 2: Filter by Nilai Minimum**
+
+Buat fungsi yang menampilkan hanya siswa dengan nilai di atas batas tertentu. Minta user memasukkan batas nilai, lalu tampilkan siswa yang memenuhi syarat.
+
+**Tantangan 3: Edit Nilai Siswa**
+
+Tambahkan menu baru "Edit nilai siswa". User memasukkan nama siswa, program mencari dan menampilkan nilai lama, lalu minta nilai baru. Update nilai di vector.
+
+**Tantangan 4: Hapus Data Siswa**
+
+Tambahkan menu "Hapus data siswa". Gunakan method `erase()` dari vector untuk menghapus elemen pada indeks tertentu. Jangan lupa hapus dari kedua vector (nama dan nilai)!
+
+**Tantangan 5: Multiple Subject**
+
+Ubah program agar setiap siswa bisa punya nilai untuk beberapa mata pelajaran (Matematika, Bahasa Indonesia, IPA). Gunakan `std::vector<std::vector<double>>` untuk menyimpan nilai multi-dimensi.
+
+:::tip
+Jangan merasa harus menyelesaikan semua tantangan sekaligus. Pilih satu yang paling menarik, selesaikan, baru lanjut ke yang berikutnya. Setiap tantangan yang kamu selesaikan menambah skill programmingmu!
+:::
+
+## Latihan
+
+**Latihan 1:** Ketik ulang kode final di atas dari awal tanpa copy-paste. Pastikan semua menu berjalan dengan benar.
+
+**Latihan 2:** Tambahkan fitur untuk menampilkan berapa siswa yang mendapat nilai A (90-100), B (80-89), C (70-79), D (60-69), dan E (di bawah 60).
+
+**Latihan 3:** Modifikasi fungsi `cariSiswa()` agar juga menampilkan ranking siswa yang ditemukan (posisinya di antara semua siswa).
+
+**Latihan 4:** Tambahkan validasi agar tidak bisa menambahkan siswa dengan nama yang sudah ada (nama duplikat).
+
+Selamat! Kamu sudah menyelesaikan **Unit 5: Array & Data**! Sekarang kamu bisa menyimpan, mengolah, mengurutkan, dan mencari data menggunakan vector dan string. Ini adalah fondasi penting untuk program-program yang lebih besar dan kompleks di masa depan!

@@ -1,0 +1,660 @@
+---
+title: "Sorting & Searching"
+unit: 5
+lesson: 6
+description: "Mempelajari algoritma pencarian (linear search, binary search) dan pengurutan (bubble sort, selection sort, std::sort) untuk mengolah data secara efisien"
+objectives:
+  - "Memahami dan mengimplementasikan linear search"
+  - "Memahami dan mengimplementasikan binary search pada data terurut"
+  - "Memahami dan mengimplementasikan bubble sort"
+  - "Memahami dan mengimplementasikan selection sort"
+  - "Menggunakan std::sort() dari <algorithm> untuk sorting cepat"
+  - "Menulis custom comparator untuk std::sort()"
+  - "Memilih algoritma yang tepat berdasarkan kebutuhan"
+estimatedTime: 40
+prerequisites: ["unit-5/05-string-array"]
+difficulty: "intermediate"
+tags: ["sorting", "searching", "linear-search", "binary-search", "bubble-sort", "selection-sort", "algorithm"]
+---
+
+# Sorting & Searching
+
+Bayangkan kamu punya daftar nilai 100 siswa dan perlu mencari siapa yang dapat nilai tertinggi, atau mengurutkan dari yang terbaik ke terburuk untuk ranking. Inilah dua operasi paling fundamental dalam pemrograman: **searching** (mencari data) dan **sorting** (mengurutkan data).
+
+Di lesson ini, kita akan belajar beberapa algoritma klasik yang wajib diketahui setiap programmer!
+
+## Bagian 1: Searching (Pencarian)
+
+### Linear Search — Cari Satu Per Satu
+
+Linear search adalah cara paling sederhana: cek elemen **satu per satu** dari awal sampai akhir sampai ketemu (atau sampai habis).
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int linearSearch(const std::vector<int>& data, int target) {
+    for (int i = 0; i < data.size(); i++) {
+        if (data[i] == target) {
+            return i;  // Ketemu! Kembalikan posisinya
+        }
+    }
+    return -1;  // Tidak ditemukan
+}
+
+int main() {
+    std::vector<int> nilai = {78, 92, 65, 88, 45, 95, 72, 83};
+
+    int cari = 88;
+    int pos = linearSearch(nilai, cari);
+
+    if (pos != -1) {
+        std::cout << "Nilai " << cari << " ditemukan di indeks " << pos << std::endl;
+    } else {
+        std::cout << "Nilai " << cari << " tidak ditemukan" << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Nilai 88 ditemukan di indeks 3
+```
+
+**Kompleksitas: O(n)** — dalam kasus terburuk, kita harus mengecek semua n elemen. Kalau ada 1.000.000 data, mungkin perlu 1.000.000 pengecekan!
+
+:::note
+Linear search bisa dipakai pada data yang **belum terurut**. Ini kelebihannya — kamu tidak perlu mengurutkan data dulu.
+:::
+
+### Linear Search untuk String
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+
+int cariNama(const std::vector<std::string>& daftar, const std::string& target) {
+    for (int i = 0; i < daftar.size(); i++) {
+        if (daftar[i] == target) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int main() {
+    std::vector<std::string> siswa = {"Andi", "Budi", "Citra", "Dewi", "Eka"};
+
+    std::string nama = "Citra";
+    int pos = cariNama(siswa, nama);
+
+    if (pos != -1) {
+        std::cout << nama << " ditemukan di posisi " << pos << std::endl;
+    } else {
+        std::cout << nama << " tidak ada di daftar" << std::endl;
+    }
+
+    return 0;
+}
+```
+
+### Binary Search — Bagi Dua, Cari Cepat
+
+Binary search jauh lebih cepat, tapi ada syaratnya: **data harus sudah terurut**!
+
+Idenya: bandingkan target dengan elemen **tengah**. Kalau target lebih kecil, cari di setengah kiri. Kalau lebih besar, cari di setengah kanan. Setiap langkah, data yang perlu dicek **berkurang setengah**!
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int binarySearch(const std::vector<int>& data, int target) {
+    int kiri = 0;
+    int kanan = data.size() - 1;
+
+    while (kiri <= kanan) {
+        int tengah = kiri + (kanan - kiri) / 2;
+
+        if (data[tengah] == target) {
+            return tengah;  // Ketemu!
+        } else if (data[tengah] < target) {
+            kiri = tengah + 1;   // Target di sebelah kanan
+        } else {
+            kanan = tengah - 1;  // Target di sebelah kiri
+        }
+    }
+
+    return -1;  // Tidak ditemukan
+}
+
+int main() {
+    // Data HARUS sudah terurut!
+    std::vector<int> data = {12, 25, 34, 47, 56, 63, 78, 89, 95};
+
+    int target = 63;
+    int pos = binarySearch(data, target);
+
+    if (pos != -1) {
+        std::cout << target << " ditemukan di indeks " << pos << std::endl;
+    } else {
+        std::cout << target << " tidak ditemukan" << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+
+```
+63 ditemukan di indeks 5
+```
+
+**Kompleksitas: O(log n)** — untuk 1.000.000 data, binary search hanya perlu maksimal sekitar 20 langkah! Bandingkan dengan linear search yang butuh 1.000.000 langkah.
+
+:::tip
+Rumus `tengah = kiri + (kanan - kiri) / 2` lebih aman daripada `(kiri + kanan) / 2` karena menghindari integer overflow saat kiri dan kanan sangat besar.
+:::
+
+### Visualisasi Binary Search
+
+Mari kita telusuri langkah demi langkah mencari angka **63** di data `{12, 25, 34, 47, 56, 63, 78, 89, 95}`:
+
+```
+Langkah 1: kiri=0, kanan=8, tengah=4
+  [12, 25, 34, 47, >56<, 63, 78, 89, 95]
+  56 < 63 → cari di kanan, kiri = 5
+
+Langkah 2: kiri=5, kanan=8, tengah=6
+  [               , 63, >78<, 89, 95]
+  78 > 63 → cari di kiri, kanan = 5
+
+Langkah 3: kiri=5, kanan=5, tengah=5
+  [               , >63<                ]
+  63 == 63 → KETEMU di indeks 5!
+```
+
+Hanya 3 langkah untuk menemukan di antara 9 elemen!
+
+### Kapan Pakai Linear vs Binary Search?
+
+| Situasi | Pilihan | Alasan |
+|---------|---------|--------|
+| Data tidak terurut | Linear search | Binary search butuh data terurut |
+| Data sedikit (`<` 20 elemen) | Linear search | Perbedaannya tidak terasa |
+| Data banyak dan terurut | Binary search | Jauh lebih cepat: O(log n) vs O(n) |
+| Perlu cari berkali-kali | Sort dulu, lalu binary search | Sorting sekali, searching berkali-kali |
+
+## Bagian 2: Sorting (Pengurutan)
+
+### Bubble Sort — Algoritma Paling Sederhana
+
+Bubble sort bekerja dengan cara **membandingkan dua elemen bersebelahan** dan menukarnya jika urutannya salah. Proses ini diulang sampai tidak ada lagi pertukaran.
+
+Namanya "bubble" karena elemen terbesar akan "naik" ke atas (akhir array) seperti gelembung!
+
+```cpp
+#include <iostream>
+#include <vector>
+
+void bubbleSort(std::vector<int>& data) {
+    int n = data.size();
+
+    for (int i = 0; i < n - 1; i++) {
+        bool ada_tukar = false;
+
+        for (int j = 0; j < n - 1 - i; j++) {
+            if (data[j] > data[j + 1]) {
+                // Tukar posisi
+                int temp = data[j];
+                data[j] = data[j + 1];
+                data[j + 1] = temp;
+                ada_tukar = true;
+            }
+        }
+
+        // Jika tidak ada pertukaran, array sudah terurut
+        if (!ada_tukar) {
+            break;
+        }
+    }
+}
+
+int main() {
+    std::vector<int> nilai = {64, 34, 25, 12, 22, 11, 90};
+
+    std::cout << "Sebelum sort: ";
+    for (int n : nilai) std::cout << n << " ";
+    std::cout << std::endl;
+
+    bubbleSort(nilai);
+
+    std::cout << "Sesudah sort: ";
+    for (int n : nilai) std::cout << n << " ";
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Sebelum sort: 64 34 25 12 22 11 90
+Sesudah sort: 11 12 22 25 34 64 90
+```
+
+### Visualisasi Bubble Sort Step-by-Step
+
+Mari kita lihat proses bubble sort pada data `{5, 3, 8, 1, 2}`:
+
+```
+Data awal: [5, 3, 8, 1, 2]
+
+=== Pass 1 ===
+  Bandingkan 5 dan 3 → tukar!  [3, 5, 8, 1, 2]
+  Bandingkan 5 dan 8 → ok      [3, 5, 8, 1, 2]
+  Bandingkan 8 dan 1 → tukar!  [3, 5, 1, 8, 2]
+  Bandingkan 8 dan 2 → tukar!  [3, 5, 1, 2, 8]  ← 8 sudah di tempatnya!
+
+=== Pass 2 ===
+  Bandingkan 3 dan 5 → ok      [3, 5, 1, 2, 8]
+  Bandingkan 5 dan 1 → tukar!  [3, 1, 5, 2, 8]
+  Bandingkan 5 dan 2 → tukar!  [3, 1, 2, 5, 8]  ← 5 sudah di tempatnya!
+
+=== Pass 3 ===
+  Bandingkan 3 dan 1 → tukar!  [1, 3, 2, 5, 8]
+  Bandingkan 3 dan 2 → tukar!  [1, 2, 3, 5, 8]  ← 3 sudah di tempatnya!
+
+=== Pass 4 ===
+  Bandingkan 1 dan 2 → ok      [1, 2, 3, 5, 8]
+  Tidak ada pertukaran → SELESAI!
+
+Hasil: [1, 2, 3, 5, 8]
+```
+
+Kamu bisa mencetak proses ini dalam kode:
+
+```cpp
+#include <iostream>
+#include <vector>
+
+void bubbleSortVisualisasi(std::vector<int>& data) {
+    int n = data.size();
+
+    for (int i = 0; i < n - 1; i++) {
+        std::cout << "=== Pass " << (i + 1) << " ===" << std::endl;
+        bool ada_tukar = false;
+
+        for (int j = 0; j < n - 1 - i; j++) {
+            std::cout << "  Bandingkan " << data[j] << " dan " << data[j + 1];
+
+            if (data[j] > data[j + 1]) {
+                int temp = data[j];
+                data[j] = data[j + 1];
+                data[j + 1] = temp;
+                ada_tukar = true;
+                std::cout << " -> tukar!  ";
+            } else {
+                std::cout << " -> ok      ";
+            }
+
+            // Tampilkan keadaan array
+            std::cout << "[";
+            for (int k = 0; k < n; k++) {
+                if (k > 0) std::cout << ", ";
+                std::cout << data[k];
+            }
+            std::cout << "]" << std::endl;
+        }
+
+        if (!ada_tukar) {
+            std::cout << "  Tidak ada pertukaran -> SELESAI!" << std::endl;
+            break;
+        }
+        std::cout << std::endl;
+    }
+}
+
+int main() {
+    std::vector<int> data = {5, 3, 8, 1, 2};
+
+    std::cout << "Data awal: ";
+    for (int n : data) std::cout << n << " ";
+    std::cout << std::endl << std::endl;
+
+    bubbleSortVisualisasi(data);
+
+    std::cout << std::endl << "Hasil: ";
+    for (int n : data) std::cout << n << " ";
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+### Selection Sort — Cari Minimum, Taruh di Depan
+
+Selection sort bekerja dengan cara: **cari elemen terkecil**, taruh di posisi pertama. Lalu cari terkecil kedua, taruh di posisi kedua. Dan seterusnya.
+
+```cpp
+#include <iostream>
+#include <vector>
+
+void selectionSort(std::vector<int>& data) {
+    int n = data.size();
+
+    for (int i = 0; i < n - 1; i++) {
+        // Cari indeks elemen terkecil dari posisi i sampai akhir
+        int idx_min = i;
+        for (int j = i + 1; j < n; j++) {
+            if (data[j] < data[idx_min]) {
+                idx_min = j;
+            }
+        }
+
+        // Tukar elemen terkecil ke posisi i
+        if (idx_min != i) {
+            int temp = data[i];
+            data[i] = data[idx_min];
+            data[idx_min] = temp;
+        }
+    }
+}
+
+int main() {
+    std::vector<int> nilai = {78, 45, 92, 34, 88, 61};
+
+    std::cout << "Sebelum: ";
+    for (int n : nilai) std::cout << n << " ";
+    std::cout << std::endl;
+
+    selectionSort(nilai);
+
+    std::cout << "Sesudah: ";
+    for (int n : nilai) std::cout << n << " ";
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Sebelum: 78 45 92 34 88 61
+Sesudah: 34 45 61 78 88 92
+```
+
+**Kompleksitas Bubble Sort dan Selection Sort: O(n^2)** — untuk data besar, ini lambat! Tapi untuk belajar konsep sorting, keduanya sangat bagus karena mudah dipahami.
+
+### `std::sort()` — Sorting Profesional
+
+Dalam kode production (kode yang benar-benar dipakai), kamu hampir selalu menggunakan `std::sort()` dari `<algorithm>`. Ini **jauh lebih cepat** dengan kompleksitas **O(n log n)**:
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+int main() {
+    std::vector<int> nilai = {78, 45, 92, 34, 88, 61};
+
+    std::cout << "Sebelum: ";
+    for (int n : nilai) std::cout << n << " ";
+    std::cout << std::endl;
+
+    // Sort ascending (kecil ke besar) — default
+    std::sort(nilai.begin(), nilai.end());
+
+    std::cout << "Ascending: ";
+    for (int n : nilai) std::cout << n << " ";
+    std::cout << std::endl;
+
+    // Sort descending (besar ke kecil)
+    std::sort(nilai.begin(), nilai.end(), std::greater<int>());
+
+    std::cout << "Descending: ";
+    for (int n : nilai) std::cout << n << " ";
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Sebelum: 78 45 92 34 88 61
+Ascending: 34 45 61 78 88 92
+Descending: 92 88 78 61 45 34
+```
+
+:::warning
+Jangan lupa `#include <algorithm>` untuk menggunakan `std::sort()`! Tanpa header ini, kode tidak akan compile.
+:::
+
+### Custom Comparator — Sort Sesuai Keinginan
+
+Kamu bisa membuat aturan sorting sendiri dengan **comparator function**. Comparator menerima dua elemen dan mengembalikan `true` jika elemen pertama harus di depan:
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+// Comparator: sort string berdasarkan panjangnya (pendek dulu)
+bool urutByPanjang(const std::string& a, const std::string& b) {
+    return a.length() < b.length();
+}
+
+// Comparator: sort angka — genap duluan, baru ganjil
+bool genapDulu(int a, int b) {
+    if (a % 2 == 0 && b % 2 != 0) return true;   // a genap, b ganjil → a duluan
+    if (a % 2 != 0 && b % 2 == 0) return false;  // a ganjil, b genap → b duluan
+    return a < b;  // sama-sama genap atau ganjil → urutkan biasa
+}
+
+int main() {
+    // Sort nama berdasarkan panjang
+    std::vector<std::string> nama = {"Andi", "Bu", "Citra", "Dewi Sartika", "Eka"};
+
+    std::sort(nama.begin(), nama.end(), urutByPanjang);
+
+    std::cout << "Urut by panjang:" << std::endl;
+    for (const std::string& n : nama) {
+        std::cout << "  " << n << " (" << n.length() << " huruf)" << std::endl;
+    }
+
+    // Sort angka: genap dulu
+    std::vector<int> angka = {5, 2, 8, 1, 4, 7, 6, 3};
+
+    std::sort(angka.begin(), angka.end(), genapDulu);
+
+    std::cout << "\nGenap duluan:" << std::endl;
+    for (int a : angka) std::cout << a << " ";
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+
+```
+Urut by panjang:
+  Bu (2 huruf)
+  Andi (4 huruf)
+  Eka (3 huruf)
+  Dewi Sartika (12 huruf)
+  Citra (5 huruf)
+
+Genap duluan:
+2 4 6 8 1 3 5 7
+```
+
+## Contoh Praktis: Ranking Nilai Siswa
+
+Gabungkan searching dan sorting untuk kasus nyata — membuat ranking kelas:
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+int main() {
+    std::vector<std::string> nama = {"Andi", "Budi", "Citra", "Dewi", "Eka"};
+    std::vector<double> nilai = {85.5, 92.0, 78.3, 95.7, 88.0};
+
+    // Buat indeks untuk sort (agar nama dan nilai tetap sinkron)
+    std::vector<int> indeks = {0, 1, 2, 3, 4};
+
+    // Sort indeks berdasarkan nilai — dari tertinggi ke terendah
+    std::sort(indeks.begin(), indeks.end(), [&](int a, int b) {
+        return nilai[a] > nilai[b];
+    });
+
+    // Tampilkan ranking
+    std::cout << "===== RANKING KELAS =====" << std::endl;
+    std::cout << "Rank  Nama          Nilai" << std::endl;
+    std::cout << "-------------------------" << std::endl;
+
+    for (int i = 0; i < indeks.size(); i++) {
+        int idx = indeks[i];
+        std::cout << "  " << (i + 1) << ".   "
+                  << nama[idx];
+
+        // Padding supaya rapi
+        for (int j = nama[idx].length(); j < 14; j++) {
+            std::cout << " ";
+        }
+
+        std::cout << nilai[idx] << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+
+```
+===== RANKING KELAS =====
+Rank  Nama          Nilai
+-------------------------
+  1.   Dewi          95.7
+  2.   Budi          92
+  3.   Eka           88
+  4.   Andi          85.5
+  5.   Citra         78.3
+```
+
+:::note
+Contoh di atas menggunakan **lambda function** (`[&](int a, int b) { ... }`) sebagai comparator. Lambda adalah cara singkat menulis fungsi tanpa nama — kamu akan belajar lebih dalam tentang ini nanti. Untuk sekarang, pahami saja bahwa `[&]` artinya lambda bisa mengakses variabel di luar dirinya.
+:::
+
+## Contoh Praktis: Cari Produk di Toko
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+int main() {
+    std::vector<std::string> produk = {"Roti", "Susu", "Telur", "Minyak", "Gula", "Beras"};
+    std::vector<int> harga = {15000, 18000, 25000, 28000, 14000, 65000};
+
+    // Sort berdasarkan harga (termurah dulu)
+    std::vector<int> indeks = {0, 1, 2, 3, 4, 5};
+    std::sort(indeks.begin(), indeks.end(), [&](int a, int b) {
+        return harga[a] < harga[b];
+    });
+
+    std::cout << "=== DAFTAR PRODUK (Termurah) ===" << std::endl;
+    for (int i = 0; i < indeks.size(); i++) {
+        int idx = indeks[i];
+        std::cout << "  " << produk[idx] << " - Rp" << harga[idx] << std::endl;
+    }
+
+    // Cari produk tertentu
+    std::cout << std::endl;
+    std::string cari = "Telur";
+    for (int i = 0; i < produk.size(); i++) {
+        if (produk[i] == cari) {
+            std::cout << cari << " ditemukan! Harga: Rp" << harga[i] << std::endl;
+            break;
+        }
+    }
+
+    return 0;
+}
+```
+
+## Sort Nama secara Alfabetis
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+int main() {
+    std::vector<std::string> nama = {"Zaki", "Andi", "Maya", "Budi", "Sari", "Dina"};
+
+    std::cout << "Sebelum sort:" << std::endl;
+    for (const std::string& n : nama) std::cout << "  " << n << std::endl;
+
+    // std::sort otomatis sort string secara alfabetis
+    std::sort(nama.begin(), nama.end());
+
+    std::cout << "\nSesudah sort (A-Z):" << std::endl;
+    for (const std::string& n : nama) std::cout << "  " << n << std::endl;
+
+    // Sort Z-A
+    std::sort(nama.begin(), nama.end(), std::greater<std::string>());
+
+    std::cout << "\nSort terbalik (Z-A):" << std::endl;
+    for (const std::string& n : nama) std::cout << "  " << n << std::endl;
+
+    return 0;
+}
+```
+
+## Perbandingan Algoritma
+
+| Algoritma | Kompleksitas | Stabil? | Kapan Dipakai |
+|-----------|-------------|---------|---------------|
+| Linear Search | O(n) | - | Data tidak terurut, data sedikit |
+| Binary Search | O(log n) | - | Data terurut, cari berkali-kali |
+| Bubble Sort | O(n^2) | Ya | Belajar konsep, data sangat sedikit |
+| Selection Sort | O(n^2) | Tidak | Belajar konsep, data sangat sedikit |
+| `std::sort()` | O(n log n) | Tidak* | **Selalu gunakan ini di production!** |
+
+:::tip
+Untuk tugas sekolah dan kompetisi: **pahami** bubble sort dan selection sort untuk belajar konsep, tapi **gunakan** `std::sort()` untuk menyelesaikan soal. `std::sort()` sudah dioptimalkan oleh para ahli dan jauh lebih cepat!
+:::
+
+## Latihan
+
+**Latihan 1:** Implementasikan linear search yang mengembalikan **semua posisi** di mana target ditemukan (bukan hanya yang pertama). Gunakan `std::vector<int>` sebagai return type.
+
+**Latihan 2:** Buat program yang menerima input 10 angka, lalu:
+- Urutkan dari kecil ke besar menggunakan bubble sort
+- Setelah terurut, cari angka tertentu menggunakan binary search
+- Tampilkan hasilnya
+
+**Latihan 3:** Buat program yang menyimpan nama dan nilai 5 siswa, lalu tampilkan:
+- Ranking dari nilai tertinggi ke terendah
+- Nama siswa dengan nilai tertinggi dan terendah
+- Rata-rata kelas
+
+**Latihan 4:** Buat comparator untuk `std::sort()` yang mengurutkan string berdasarkan huruf terakhirnya. Jika huruf terakhir sama, urutkan secara alfabetis.
+
+**Latihan 5:** Implementasikan selection sort versi **descending** (besar ke kecil) — cari **maksimum** dan taruh di depan, bukan minimum.

@@ -117,7 +117,7 @@ export const CURRICULUM_ID: UnitMetadata[] = [
     },
     estimatedHours: '8-10',
     projectTitle: { id: 'Buku Nilai Siswa', en: 'Student Grade Book' },
-    isAvailable: false,
+    isAvailable: true,
     lessons: [
       { slug: 'unit-5/01-array-dasar', title: { id: 'Array Dasar', en: 'Basic Arrays' }, estimatedTime: 40, isProject: false },
       { slug: 'unit-5/02-array-loop', title: { id: 'Array & Loop', en: 'Arrays & Loops' }, estimatedTime: 35, isProject: false },
@@ -138,7 +138,7 @@ export const CURRICULUM_ID: UnitMetadata[] = [
     },
     estimatedHours: '6-8',
     projectTitle: { id: 'Manajemen Kontak', en: 'Contact Manager' },
-    isAvailable: false,
+    isAvailable: true,
     lessons: [
       { slug: 'unit-6/01-struct', title: { id: 'Struct', en: 'Structs' }, estimatedTime: 40, isProject: false },
       { slug: 'unit-6/02-struct-function', title: { id: 'Struct & Function', en: 'Structs & Functions' }, estimatedTime: 30, isProject: false },

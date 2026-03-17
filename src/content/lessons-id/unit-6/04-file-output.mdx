@@ -1,0 +1,408 @@
+---
+title: "File Output: Menulis File"
+unit: 6
+lesson: 4
+description: "Belajar menulis data ke file menggunakan ofstream — dari menyimpan hasil program hingga membuat laporan teks"
+objectives:
+  - "Menggunakan std::ofstream untuk menulis data ke file"
+  - "Memahami perbedaan mode overwrite dan append"
+  - "Menulis data dengan format rapi menggunakan setw dan setprecision"
+  - "Menggabungkan file input dan output untuk memproses data"
+  - "Membuat program yang menyimpan hasil ke file secara permanen"
+estimatedTime: 30
+prerequisites: ["unit-6/03-file-input"]
+difficulty: "beginner"
+tags: ["file-output", "ofstream", "write-file", "append", "formatting"]
+---
+
+# File Output: Menulis File
+
+Di lesson sebelumnya, kamu sudah bisa **membaca** data dari file. Sekarang kita belajar kebalikannya — **menulis** data ke file! Ini sangat berguna karena hasil program bisa disimpan secara permanen, tidak hilang saat program selesai.
+
+Bayangkan kamu membuat program untuk menghitung nilai siswa. Tanpa file output, hasilnya hanya muncul di layar dan hilang begitu program ditutup. Dengan file output, hasilnya tersimpan rapi dan bisa dibuka kapan saja!
+
+## Menulis File dengan `std::ofstream`
+
+Untuk menulis file, kita menggunakan `std::ofstream` (output file stream) dari header `<fstream>`:
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+
+int main() {
+    // Buat objek ofstream dan buka file
+    std::ofstream fileOutput("pesan.txt");
+
+    // Cek apakah file berhasil dibuka
+    if (!fileOutput.is_open()) {
+        std::cout << "Gagal membuka file!" << std::endl;
+        return 1;
+    }
+
+    // Tulis ke file — sama seperti cout!
+    fileOutput << "Halo! Ini pesan dari program C++." << std::endl;
+    fileOutput << "Baris kedua dari file." << std::endl;
+    fileOutput << "Angka juga bisa: " << 42 << std::endl;
+
+    // Tutup file
+    fileOutput.close();
+
+    std::cout << "Data berhasil ditulis ke pesan.txt!" << std::endl;
+
+    return 0;
+}
+```
+
+Isi file `pesan.txt` setelah program dijalankan:
+
+```
+Halo! Ini pesan dari program C++.
+Baris kedua dari file.
+Angka juga bisa: 42
+```
+
+:::tip
+Menulis ke file menggunakan operator `<<` — **persis sama** seperti `std::cout`! Bedanya, `cout` menulis ke layar, sedangkan `ofstream` menulis ke file. Kalau kamu sudah bisa pakai `cout`, kamu sudah bisa menulis file!
+:::
+
+## Mode Overwrite vs Append
+
+Ada dua cara menulis file:
+
+### Mode Overwrite (Default)
+
+Secara default, `ofstream` akan **menimpa** (overwrite) isi file yang sudah ada. Kalau file belum ada, file baru akan dibuat.
+
+```cpp
+// Setiap kali program dijalankan, isi file.txt diganti total
+std::ofstream file("data.txt");
+file << "Data baru — yang lama hilang!" << std::endl;
+file.close();
+```
+
+:::warning
+Hati-hati dengan mode overwrite! Kalau kamu membuka file yang sudah berisi data penting, semua isinya akan **hilang** dan diganti dengan yang baru. Pastikan kamu memang ingin menimpa datanya.
+:::
+
+### Mode Append
+
+Kalau kamu ingin **menambahkan** data di akhir file tanpa menghapus yang sudah ada, gunakan `std::ios::app`:
+
+```cpp
+// Data ditambahkan di akhir file — data lama tetap aman!
+std::ofstream file("log.txt", std::ios::app);
+file << "Entri baru ditambahkan di bawah." << std::endl;
+file.close();
+```
+
+Ini sangat berguna untuk membuat **log** (catatan aktivitas program):
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+
+void catatLog(const std::string& pesan) {
+    std::ofstream log("aktivitas.txt", std::ios::app);
+    if (log.is_open()) {
+        log << pesan << std::endl;
+        log.close();
+    }
+}
+
+int main() {
+    catatLog("Program dimulai");
+    catatLog("User login: Budi");
+    catatLog("User menambah data");
+    catatLog("Program selesai");
+
+    std::cout << "Log aktivitas tersimpan!" << std::endl;
+    return 0;
+}
+```
+
+Setiap kali program dijalankan, log baru **ditambahkan** di bawah log lama:
+
+```
+Program dimulai
+User login: Budi
+User menambah data
+Program selesai
+Program dimulai
+User login: Siti
+...
+```
+
+## Menulis dengan Format Rapi
+
+Kamu bisa menggunakan `<iomanip>` untuk membuat output file yang rapi, misalnya untuk membuat tabel:
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include <string>
+
+int main() {
+    std::ofstream file("nilai_siswa.txt");
+
+    if (!file.is_open()) {
+        std::cout << "Gagal membuka file!" << std::endl;
+        return 1;
+    }
+
+    // Header tabel
+    file << std::left;
+    file << std::setw(5)  << "No"
+         << std::setw(20) << "Nama"
+         << std::setw(10) << "Nilai"
+         << std::setw(10) << "Status"
+         << std::endl;
+    file << std::string(45, '-') << std::endl;
+
+    // Data siswa
+    std::string nama[] = {"Budi", "Siti", "Andi", "Rina", "Doni"};
+    double nilai[] = {85.5, 92.3, 67.8, 78.0, 55.2};
+
+    for (int i = 0; i < 5; i++) {
+        std::string status = (nilai[i] >= 70.0) ? "Lulus" : "Tidak Lulus";
+
+        file << std::setw(5)  << (i + 1)
+             << std::setw(20) << nama[i]
+             << std::setw(10) << std::fixed << std::setprecision(1) << nilai[i]
+             << std::setw(10) << status
+             << std::endl;
+    }
+
+    // Rata-rata
+    double total = 0;
+    for (int i = 0; i < 5; i++) {
+        total += nilai[i];
+    }
+    double rataRata = total / 5;
+
+    file << std::string(45, '-') << std::endl;
+    file << "Rata-rata: " << std::fixed << std::setprecision(2)
+         << rataRata << std::endl;
+
+    file.close();
+    std::cout << "Laporan tersimpan di nilai_siswa.txt" << std::endl;
+
+    return 0;
+}
+```
+
+Isi file `nilai_siswa.txt`:
+
+```
+No   Nama                Nilai     Status
+---------------------------------------------
+1    Budi                85.5      Lulus
+2    Siti                92.3      Lulus
+3    Andi                67.8      Tidak Lulus
+4    Rina                78.0      Lulus
+5    Doni                55.2      Tidak Lulus
+---------------------------------------------
+Rata-rata: 75.76
+```
+
+:::note
+Fungsi-fungsi formatting seperti `setw`, `setprecision`, `left`, `right`, dan `fixed` bekerja sama persis di `ofstream` dan `cout`. Apapun yang bisa kamu format di layar, bisa juga kamu format di file!
+:::
+
+## Flush dan Close
+
+Saat kamu menulis ke file, data tidak langsung disimpan ke disk. Data disimpan dulu di **buffer** (memori sementara) untuk efisiensi. Ada dua cara memastikan data benar-benar tersimpan:
+
+```cpp
+std::ofstream file("data.txt");
+
+file << "Baris pertama" << std::endl;  // endl juga melakukan flush
+file << "Baris kedua" << std::flush;   // flush manual tanpa newline
+
+file.close();  // close otomatis flush semua data yang tersisa
+```
+
+- **`std::endl`** — menambah newline DAN flush buffer
+- **`std::flush`** — flush buffer tanpa newline
+- **`close()`** — flush semua buffer lalu tutup file
+
+:::tip
+Dalam kebanyakan kasus, cukup panggil `close()` di akhir dan semuanya aman. Gunakan `flush` manual hanya kalau kamu perlu memastikan data tersimpan di tengah proses (misalnya untuk log yang harus real-time).
+:::
+
+## Kombinasi Read + Write
+
+Salah satu pola paling berguna adalah **membaca** dari satu file, **memproses** datanya, lalu **menulis** hasilnya ke file lain:
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include <string>
+
+int main() {
+    // Buka file input (berisi nama dan nilai mentah)
+    std::ifstream fileInput("nilai_mentah.txt");
+    if (!fileInput.is_open()) {
+        std::cout << "File nilai_mentah.txt tidak ditemukan!" << std::endl;
+        return 1;
+    }
+
+    // Buka file output (untuk laporan)
+    std::ofstream fileOutput("laporan.txt");
+    if (!fileOutput.is_open()) {
+        std::cout << "Gagal membuat file laporan!" << std::endl;
+        return 1;
+    }
+
+    // Tulis header laporan
+    fileOutput << "========== LAPORAN NILAI ==========" << std::endl;
+    fileOutput << std::left;
+    fileOutput << std::setw(15) << "Nama"
+               << std::setw(10) << "Nilai"
+               << std::setw(10) << "Grade"
+               << std::endl;
+    fileOutput << std::string(35, '-') << std::endl;
+
+    // Baca dari input, proses, tulis ke output
+    std::string nama;
+    double nilai;
+    int jumlahSiswa = 0;
+    double totalNilai = 0;
+
+    while (fileInput >> nama >> nilai) {
+        // Tentukan grade
+        std::string grade;
+        if (nilai >= 90) grade = "A";
+        else if (nilai >= 80) grade = "B";
+        else if (nilai >= 70) grade = "C";
+        else if (nilai >= 60) grade = "D";
+        else grade = "E";
+
+        // Tulis ke file output
+        fileOutput << std::setw(15) << nama
+                   << std::setw(10) << std::fixed << std::setprecision(1) << nilai
+                   << std::setw(10) << grade
+                   << std::endl;
+
+        totalNilai += nilai;
+        jumlahSiswa++;
+    }
+
+    // Tulis ringkasan
+    fileOutput << std::string(35, '-') << std::endl;
+    fileOutput << "Jumlah siswa: " << jumlahSiswa << std::endl;
+    if (jumlahSiswa > 0) {
+        fileOutput << "Rata-rata   : " << std::fixed << std::setprecision(2)
+                   << (totalNilai / jumlahSiswa) << std::endl;
+    }
+    fileOutput << "===================================" << std::endl;
+
+    fileInput.close();
+    fileOutput.close();
+
+    std::cout << "Laporan berhasil dibuat! Cek file laporan.txt" << std::endl;
+
+    return 0;
+}
+```
+
+Kalau file `nilai_mentah.txt` berisi:
+
+```
+Budi 85.5
+Siti 92.0
+Andi 67.8
+Rina 78.0
+```
+
+Maka program akan membuat `laporan.txt`:
+
+```
+========== LAPORAN NILAI ==========
+Nama           Nilai     Grade
+-----------------------------------
+Budi           85.5      B
+Siti           92.0      A
+Andi           67.8      D
+Rina           78.0      C
+-----------------------------------
+Jumlah siswa: 4
+Rata-rata   : 80.82
+===================================
+```
+
+## Contoh: Log Harian dengan Append
+
+Ini contoh program yang mencatat log harian — setiap kali dijalankan, catatan baru ditambahkan tanpa menghapus yang lama:
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+
+int main() {
+    std::string aktivitas;
+
+    std::cout << "=== CATATAN HARIAN ===" << std::endl;
+    std::cout << "Apa yang kamu lakukan hari ini?" << std::endl;
+    std::cout << "(ketik 'selesai' untuk berhenti)" << std::endl;
+    std::cout << std::endl;
+
+    // Buka file dalam mode append
+    std::ofstream file("catatan_harian.txt", std::ios::app);
+    if (!file.is_open()) {
+        std::cout << "Gagal membuka file!" << std::endl;
+        return 1;
+    }
+
+    file << "--- Catatan Baru ---" << std::endl;
+
+    int nomor = 1;
+    while (true) {
+        std::cout << nomor << ". ";
+        std::getline(std::cin, aktivitas);
+
+        if (aktivitas == "selesai") {
+            break;
+        }
+
+        file << nomor << ". " << aktivitas << std::endl;
+        nomor++;
+    }
+
+    file << std::endl;
+    file.close();
+
+    std::cout << std::endl;
+    std::cout << "Catatan tersimpan! (" << (nomor - 1)
+              << " aktivitas dicatat)" << std::endl;
+
+    return 0;
+}
+```
+
+## Ringkasan
+
+| Konsep | Penjelasan | Contoh |
+|--------|-----------|--------|
+| `std::ofstream` | Object untuk menulis file | `std::ofstream f("data.txt");` |
+| Mode overwrite | Timpa isi file (default) | `std::ofstream f("data.txt");` |
+| Mode append | Tambah di akhir file | `std::ofstream f("data.txt", std::ios::app);` |
+| Operator `<<` | Menulis data ke file | `f << "teks" << 42;` |
+| `setw` / `setprecision` | Format output rapi | `f << std::setw(10) << nilai;` |
+| `flush` | Paksa tulis buffer ke disk | `f << std::flush;` |
+| `close()` | Tutup file (otomatis flush) | `f.close();` |
+| `is_open()` | Cek file berhasil dibuka | `if (!f.is_open()) { ... }` |
+
+## Latihan
+
+**Latihan 1:** Buat program yang meminta user memasukkan 5 nama dan nilai ujian, lalu simpan ke file `hasil_ujian.txt` dalam format tabel yang rapi.
+
+**Latihan 2:** Buat program "buku tamu" — setiap kali dijalankan, minta user memasukkan nama dan pesan, lalu **tambahkan** (append) ke file `buku_tamu.txt`. Data lama tidak boleh hilang!
+
+**Latihan 3:** Buat program yang membaca file `belanja.txt` (berisi nama barang dan harga per baris), lalu menulis file `struk.txt` yang berisi daftar belanjaan dengan total harga di bawahnya.
+
+**Latihan 4:** Buat program log sederhana — setiap aksi user (tambah data, hapus data, lihat data) dicatat ke file `log.txt` dengan mode append. Program utamanya bisa berupa menu sederhana.

@@ -1,0 +1,527 @@
+---
+title: "Array & Loop"
+unit: 5
+lesson: 2
+description: "Menggabungkan array dengan loop — pola paling fundamental di programming untuk memproses banyak data sekaligus"
+objectives:
+  - "Mengiterasi array menggunakan for loop"
+  - "Menginput array dari user dengan cin"
+  - "Menghitung rata-rata, mencari max/min, dan menjumlahkan elemen"
+  - "Melakukan linear search sederhana"
+  - "Menggunakan range-based for loop dengan array"
+estimatedTime: 35
+prerequisites: ["unit-5/01-array-dasar"]
+difficulty: "beginner"
+tags: ["array", "loop", "iterasi", "linear-search", "range-based-for"]
+---
+
+# Array & Loop
+
+Di pelajaran sebelumnya, kamu mengakses elemen array satu per satu: `arr[0]`, `arr[1]`, `arr[2]`... Kalau ada 100 elemen, masa kamu tulis 100 baris? Tentu tidak!
+
+Kombinasi **array + loop** adalah pola paling sering dipakai di programming. Hampir setiap program yang berurusan dengan banyak data menggunakan pola ini.
+
+## Analogi: Guru Memeriksa Tugas
+
+Bayangkan guru kelas memeriksa tugas 30 siswa. Guru tidak akan bilang: "Buka buku Andi... sekarang buku Budi... sekarang buku Citra..." satu per satu. Guru akan bilang: "**Untuk setiap** buku tugas di tumpukan ini, periksa dan beri nilai." Itulah array + loop!
+
+## Contoh 1: Mencetak Semua Elemen Array
+
+```cpp
+#include <iostream>
+
+int main() {
+    int nilai[] = {85, 90, 78, 92, 88, 76, 95};
+    int panjang = sizeof(nilai) / sizeof(nilai[0]);
+
+    std::cout << "=== Daftar Nilai ===" << std::endl;
+
+    for (int i = 0; i < panjang; i++) {
+        std::cout << "Siswa " << i + 1 << ": " << nilai[i] << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+=== Daftar Nilai ===
+Siswa 1: 85
+Siswa 2: 90
+Siswa 3: 78
+Siswa 4: 92
+Siswa 5: 88
+Siswa 6: 76
+Siswa 7: 95
+```
+
+:::note
+Perhatikan pola `for (int i = 0; i < panjang; i++)`. Ini adalah pola **paling standar** untuk menelusuri array. Mulai dari index 0, lanjut selama `i` masih `<` panjang array, tambah 1 setiap iterasi. Hafalkan pola ini!
+:::
+
+## Contoh 2: Input Array dari User
+
+```cpp
+#include <iostream>
+
+int main() {
+    const int JUMLAH = 5;
+    int nilai[JUMLAH];
+
+    std::cout << "Masukkan nilai " << JUMLAH << " siswa:" << std::endl;
+
+    for (int i = 0; i < JUMLAH; i++) {
+        std::cout << "Siswa " << i + 1 << ": ";
+        std::cin >> nilai[i];
+    }
+
+    std::cout << std::endl;
+    std::cout << "=== Nilai yang dimasukkan ===" << std::endl;
+
+    for (int i = 0; i < JUMLAH; i++) {
+        std::cout << "Siswa " << i + 1 << ": " << nilai[i] << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output (contoh input):
+```
+Masukkan nilai 5 siswa:
+Siswa 1: 85
+Siswa 2: 92
+Siswa 3: 78
+Siswa 4: 90
+Siswa 5: 88
+
+=== Nilai yang dimasukkan ===
+Siswa 1: 85
+Siswa 2: 92
+Siswa 3: 78
+Siswa 4: 90
+Siswa 5: 88
+```
+
+## Contoh 3: Hitung Total dan Rata-rata
+
+```cpp
+#include <iostream>
+
+int main() {
+    int nilai[] = {85, 90, 78, 92, 88};
+    int panjang = sizeof(nilai) / sizeof(nilai[0]);
+
+    int total = 0;
+
+    for (int i = 0; i < panjang; i++) {
+        total += nilai[i];
+    }
+
+    double rataRata = static_cast<double>(total) / panjang;
+
+    std::cout << "Total nilai : " << total << std::endl;
+    std::cout << "Jumlah siswa: " << panjang << std::endl;
+    std::cout << "Rata-rata   : " << rataRata << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Total nilai : 433
+Jumlah siswa: 5
+Rata-rata   : 86.6
+```
+
+:::tip
+Gunakan `static_cast<double>(total)` sebelum dibagi supaya hasilnya desimal. Kalau `total / panjang` saja (int / int), hasilnya dipotong jadi integer!
+:::
+
+## Contoh 4: Cari Nilai Maksimum dan Minimum
+
+```cpp
+#include <iostream>
+
+int main() {
+    int suhu[] = {30, 35, 28, 32, 27, 33, 31};
+    int panjang = sizeof(suhu) / sizeof(suhu[0]);
+
+    int maks = suhu[0];  // Anggap elemen pertama adalah maks
+    int mini = suhu[0];  // Anggap elemen pertama adalah min
+
+    for (int i = 1; i < panjang; i++) {
+        if (suhu[i] > maks) {
+            maks = suhu[i];
+        }
+        if (suhu[i] < mini) {
+            mini = suhu[i];
+        }
+    }
+
+    std::cout << "=== Suhu Seminggu ===" << std::endl;
+    for (int i = 0; i < panjang; i++) {
+        std::cout << "Hari " << i + 1 << ": " << suhu[i] << " C" << std::endl;
+    }
+    std::cout << "---------------------" << std::endl;
+    std::cout << "Suhu tertinggi: " << maks << " C" << std::endl;
+    std::cout << "Suhu terendah : " << mini << " C" << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+=== Suhu Seminggu ===
+Hari 1: 30 C
+Hari 2: 35 C
+Hari 3: 28 C
+Hari 4: 32 C
+Hari 5: 27 C
+Hari 6: 33 C
+Hari 7: 31 C
+---------------------
+Suhu tertinggi: 35 C
+Suhu terendah : 27 C
+```
+
+:::note
+Kenapa mulai loop dari `i = 1` dan bukan `i = 0`? Karena kita sudah memakai `suhu[0]` sebagai nilai awal maks dan min. Jadi perbandingan cukup dimulai dari elemen kedua (index 1).
+:::
+
+## Contoh 5: Linear Search — Cari Elemen Tertentu
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string siswa[] = {"Andi", "Budi", "Citra", "Dewi", "Eka"};
+    int panjang = sizeof(siswa) / sizeof(siswa[0]);
+
+    std::string cari;
+    std::cout << "Cari nama siswa: ";
+    std::cin >> cari;
+
+    bool ditemukan = false;
+    int posisi = -1;
+
+    for (int i = 0; i < panjang; i++) {
+        if (siswa[i] == cari) {
+            ditemukan = true;
+            posisi = i;
+            break;  // Sudah ketemu, tidak perlu lanjut
+        }
+    }
+
+    if (ditemukan) {
+        std::cout << cari << " ditemukan di posisi " << posisi + 1 << std::endl;
+    } else {
+        std::cout << cari << " tidak ditemukan!" << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output (contoh input "Citra"):
+```
+Cari nama siswa: Citra
+Citra ditemukan di posisi 3
+```
+
+Output (contoh input "Fajar"):
+```
+Cari nama siswa: Fajar
+Fajar tidak ditemukan!
+```
+
+## Contoh 6: Range-Based For Loop
+
+Cara modern dan lebih bersih untuk menelusuri array:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string buah[] = {"Mangga", "Jeruk", "Apel", "Durian", "Rambutan"};
+
+    std::cout << "=== Buah Favorit ===" << std::endl;
+
+    // Range-based for loop — simpel dan elegan!
+    for (std::string b : buah) {
+        std::cout << "- " << b << std::endl;
+    }
+
+    // Bisa juga pakai auto
+    std::cout << std::endl << "=== Dengan auto ===" << std::endl;
+    for (auto b : buah) {
+        std::cout << "- " << b << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+=== Buah Favorit ===
+- Mangga
+- Jeruk
+- Apel
+- Durian
+- Rambutan
+
+=== Dengan auto ===
+- Mangga
+- Jeruk
+- Apel
+- Durian
+- Rambutan
+```
+
+:::tip
+`for (auto b : buah)` dibaca: "untuk setiap elemen `b` di dalam `buah`". Keyword `auto` membuat compiler otomatis menentukan tipe datanya. Ini lebih praktis daripada menulis `std::string` secara eksplisit.
+:::
+
+## Contoh 7: Program Rapor Nilai Siswa
+
+Contoh yang lebih lengkap menggabungkan banyak teknik:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    const int JUMLAH_SISWA = 5;
+    std::string nama[JUMLAH_SISWA];
+    int nilai[JUMLAH_SISWA];
+
+    // Input data
+    std::cout << "=== INPUT DATA SISWA ===" << std::endl;
+    for (int i = 0; i < JUMLAH_SISWA; i++) {
+        std::cout << "Nama siswa " << i + 1 << " : ";
+        std::cin >> nama[i];
+        std::cout << "Nilai siswa " << i + 1 << ": ";
+        std::cin >> nilai[i];
+        std::cout << std::endl;
+    }
+
+    // Hitung statistik
+    int total = 0;
+    int maks = nilai[0];
+    int mini = nilai[0];
+    int idxMaks = 0;
+    int idxMin = 0;
+
+    for (int i = 0; i < JUMLAH_SISWA; i++) {
+        total += nilai[i];
+        if (nilai[i] > maks) {
+            maks = nilai[i];
+            idxMaks = i;
+        }
+        if (nilai[i] < mini) {
+            mini = nilai[i];
+            idxMin = i;
+        }
+    }
+
+    double rataRata = static_cast<double>(total) / JUMLAH_SISWA;
+
+    // Tampilkan rapor
+    std::cout << "=============================" << std::endl;
+    std::cout << "      RAPOR KELAS" << std::endl;
+    std::cout << "=============================" << std::endl;
+
+    for (int i = 0; i < JUMLAH_SISWA; i++) {
+        std::cout << nama[i] << "\t: " << nilai[i];
+        if (nilai[i] >= 90) std::cout << " (A)";
+        else if (nilai[i] >= 80) std::cout << " (B)";
+        else if (nilai[i] >= 70) std::cout << " (C)";
+        else std::cout << " (D)";
+        std::cout << std::endl;
+    }
+
+    std::cout << "-----------------------------" << std::endl;
+    std::cout << "Rata-rata  : " << rataRata << std::endl;
+    std::cout << "Tertinggi  : " << nama[idxMaks] << " (" << maks << ")" << std::endl;
+    std::cout << "Terendah   : " << nama[idxMin] << " (" << mini << ")" << std::endl;
+
+    return 0;
+}
+```
+
+Output (contoh):
+```
+=== INPUT DATA SISWA ===
+Nama siswa 1 : Andi
+Nilai siswa 1: 85
+
+Nama siswa 2 : Budi
+Nilai siswa 2: 92
+
+Nama siswa 3 : Citra
+Nilai siswa 3: 78
+
+Nama siswa 4 : Dewi
+Nilai siswa 4: 95
+
+Nama siswa 5 : Eka
+Nilai siswa 5: 88
+
+=============================
+      RAPOR KELAS
+=============================
+Andi	: 85 (B)
+Budi	: 92 (A)
+Citra	: 78 (C)
+Dewi	: 95 (A)
+Eka	: 88 (B)
+-----------------------------
+Rata-rata  : 87.6
+Tertinggi  : Dewi (95)
+Terendah   : Citra (78)
+```
+
+## Contoh 8: Modifikasi Semua Elemen
+
+Bagaimana kalau guru mau menambah bonus 5 poin ke semua nilai?
+
+```cpp
+#include <iostream>
+
+int main() {
+    int nilai[] = {75, 82, 68, 90, 71};
+    int panjang = sizeof(nilai) / sizeof(nilai[0]);
+
+    std::cout << "Sebelum bonus:" << std::endl;
+    for (int i = 0; i < panjang; i++) {
+        std::cout << "Siswa " << i + 1 << ": " << nilai[i] << std::endl;
+    }
+
+    // Tambah bonus 5 poin
+    for (int i = 0; i < panjang; i++) {
+        nilai[i] += 5;
+
+        // Pastikan tidak melebihi 100
+        if (nilai[i] > 100) {
+            nilai[i] = 100;
+        }
+    }
+
+    std::cout << std::endl << "Sesudah bonus (+5):" << std::endl;
+    for (int i = 0; i < panjang; i++) {
+        std::cout << "Siswa " << i + 1 << ": " << nilai[i] << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+Sebelum bonus:
+Siswa 1: 75
+Siswa 2: 82
+Siswa 3: 68
+Siswa 4: 90
+Siswa 5: 71
+
+Sesudah bonus (+5):
+Siswa 1: 80
+Siswa 2: 87
+Siswa 3: 73
+Siswa 4: 95
+Siswa 5: 76
+```
+
+## Kesalahan Umum
+
+### 1. Off-by-one di loop
+
+```cpp
+int arr[5] = {10, 20, 30, 40, 50};
+
+// SALAH — i <= 5 akan akses arr[5] yang di luar batas!
+for (int i = 0; i <= 5; i++) {
+    std::cout << arr[i];  // Crash saat i = 5!
+}
+
+// BENAR — i < 5 berhenti di arr[4]
+for (int i = 0; i < 5; i++) {
+    std::cout << arr[i];
+}
+```
+
+:::warning
+Ingat aturan emas: kalau index mulai dari 0, kondisinya pakai `<` (bukan `<=`). Jadi `for (int i = 0; i < panjang; i++)`, **bukan** `i <= panjang`.
+:::
+
+### 2. Range-based for tidak bisa ubah elemen asli
+
+```cpp
+int angka[] = {1, 2, 3, 4, 5};
+
+// SALAH — x adalah SALINAN, bukan elemen asli
+for (int x : angka) {
+    x *= 2;  // Hanya mengubah salinan, array asli tidak berubah!
+}
+
+// BENAR — pakai referensi (&) untuk mengubah elemen asli
+for (int& x : angka) {
+    x *= 2;  // Sekarang array asli ikut berubah
+}
+```
+
+### 3. Lupa inisialisasi variabel akumulator
+
+```cpp
+// SALAH — total tidak diinisialisasi, isinya sampah!
+int total;
+for (int i = 0; i < 5; i++) {
+    total += arr[i];  // Menambah ke nilai sampah
+}
+
+// BENAR
+int total = 0;  // Selalu inisialisasi ke 0!
+for (int i = 0; i < 5; i++) {
+    total += arr[i];
+}
+```
+
+## Latihan
+
+**Latihan 1:** Buat program yang meminta user memasukkan 7 suhu harian. Lalu tampilkan:
+- Semua suhu yang dimasukkan
+- Suhu rata-rata
+- Suhu tertinggi dan terendah
+- Berapa hari yang suhunya di atas rata-rata
+
+**Latihan 2:** Buat program yang menyimpan 10 angka dalam array, lalu hitung dan tampilkan:
+- Jumlah bilangan genap dan ganjil
+- Total bilangan genap dan total bilangan ganjil
+
+**Latihan 3:** Buat program "Cari Harga" untuk toko. Simpan 5 nama barang dan harganya di dua array paralel. Minta user memasukkan nama barang yang dicari, lalu tampilkan harganya (atau pesan "Barang tidak ditemukan").
+
+:::tip
+Untuk Latihan 1, hitung rata-rata dulu, lalu gunakan loop kedua untuk menghitung berapa hari yang suhunya di atas rata-rata.
+:::
+
+## Ringkasan
+
+| Pola | Kode | Kegunaan |
+|------|------|----------|
+| Traverse array | `for (int i = 0; i < n; i++)` | Menelusuri semua elemen |
+| Input array | `std::cin >> arr[i]` di dalam loop | Isi array dari user |
+| Total/Rata-rata | `total += arr[i]`, lalu `total / n` | Statistik dasar |
+| Cari maks/min | Bandingkan setiap elemen dengan maks/min saat ini | Nilai ekstrem |
+| Linear search | Loop + `if (arr[i] == target)` | Cari elemen tertentu |
+| Range-based for | `for (auto x : arr)` | Cara modern menelusuri array |
+| Modifikasi elemen | `for (int& x : arr)` dengan referensi | Ubah isi array |
+| Akumulator | Variabel `total = 0` sebelum loop | Kumpulkan hasil |
+
+Array + loop adalah kombinasi yang akan kamu pakai terus-menerus. Kuasai pola-pola di atas, dan kamu sudah siap menghadapi banyak problem programming! Selanjutnya, kita akan naik level ke **array 2 dimensi** — array di dalam array!

@@ -1,0 +1,619 @@
+---
+title: "Struct & Function: Menggabungkan Data dan Aksi"
+unit: 6
+lesson: 2
+description: "Belajar cara mengirim struct ke fungsi, mengembalikan struct dari fungsi, dan membuat operasi CRUD sederhana dengan vector of struct"
+objectives:
+  - "Mengirim struct ke fungsi secara by value dan by reference"
+  - "Mengembalikan struct dari fungsi"
+  - "Membuat fungsi CRUD (tambah, tampilkan, cari) untuk vector of struct"
+  - "Memahami nested struct"
+  - "Mengurutkan vector of struct dengan lambda comparator"
+estimatedTime: 30
+prerequisites: ["unit-6/01-struct"]
+difficulty: "beginner"
+tags: ["struct", "function", "pass-by-reference", "nested-struct", "sort", "lambda", "CRUD"]
+---
+
+# Struct & Function: Menggabungkan Data dan Aksi
+
+Di pelajaran sebelumnya, kamu sudah bisa membuat struct dan mengisi datanya. Tapi semua kode masih menumpuk di `main()`. Sekarang saatnya kita **gabungkan struct dengan fungsi** supaya kode lebih rapi, modular, dan bisa dipakai ulang!
+
+## Analogi: Petugas Administrasi
+
+Bayangkan struct adalah **formulir data**. Sekarang kamu butuh **petugas** yang bisa:
+- **Menampilkan** isi formulir (fungsi tampilkan)
+- **Mengisi** formulir baru (fungsi buat/tambah)
+- **Mencari** formulir tertentu (fungsi cari)
+- **Mengurutkan** tumpukan formulir (fungsi sort)
+
+Petugas-petugas ini adalah **fungsi**! Mereka menerima formulir (struct), memproses, dan kadang mengembalikan formulir baru.
+
+## Pass Struct ke Fungsi: By Value
+
+Cara paling sederhana adalah mengirim struct ke fungsi **by value** — fungsi mendapat **salinan** data.
+
+```cpp
+#include <iostream>
+#include <string>
+
+struct Siswa {
+    std::string nama;
+    int umur;
+    double nilai;
+};
+
+void tampilkanSiswa(Siswa s) {
+    std::cout << "Nama : " << s.nama << std::endl;
+    std::cout << "Umur : " << s.umur << " tahun" << std::endl;
+    std::cout << "Nilai: " << s.nilai << std::endl;
+    std::cout << std::endl;
+}
+
+int main() {
+    Siswa s1 = {"Budi", 15, 85.5};
+    Siswa s2 = {"Ani", 16, 92.0};
+
+    tampilkanSiswa(s1);
+    tampilkanSiswa(s2);
+
+    return 0;
+}
+```
+
+Output:
+```
+Nama : Budi
+Umur : 15 tahun
+Nilai: 85.5
+
+Nama : Ani
+Umur : 16 tahun
+Nilai: 92.0
+```
+
+:::note
+Karena struct dikirim **by value**, fungsi mendapat salinan. Kalau kamu ubah `s.nama` di dalam fungsi, data asli di `main()` **tidak berubah**.
+:::
+
+## Pass Struct ke Fungsi: By Reference
+
+Kalau kamu ingin fungsi **mengubah** data asli, gunakan **reference** (`&`):
+
+```cpp
+#include <iostream>
+#include <string>
+
+struct Siswa {
+    std::string nama;
+    int umur;
+    double nilai;
+};
+
+void tambahNilaiBonus(Siswa &s, double bonus) {
+    s.nilai = s.nilai + bonus;
+    std::cout << s.nama << " dapat bonus " << bonus
+              << ", nilai jadi " << s.nilai << std::endl;
+}
+
+void tampilkanSiswa(Siswa s) {
+    std::cout << s.nama << " - Nilai: " << s.nilai << std::endl;
+}
+
+int main() {
+    Siswa budi = {"Budi", 15, 80.0};
+
+    std::cout << "Sebelum bonus:" << std::endl;
+    tampilkanSiswa(budi);
+
+    std::cout << std::endl;
+    tambahNilaiBonus(budi, 5.0);
+
+    std::cout << std::endl;
+    std::cout << "Setelah bonus:" << std::endl;
+    tampilkanSiswa(budi);
+
+    return 0;
+}
+```
+
+Output:
+```
+Sebelum bonus:
+Budi - Nilai: 80
+
+Budi dapat bonus 5, nilai jadi 85
+
+Setelah bonus:
+Budi - Nilai: 85
+```
+
+Perhatikan bahwa nilai Budi **benar-benar berubah** di `main()` karena kita pakai reference (`Siswa &s`).
+
+:::tip
+Gunakan `Siswa &s` (reference) kalau fungsi perlu **mengubah** data struct. Gunakan `Siswa s` (by value) kalau fungsi hanya perlu **membaca** data tanpa mengubah.
+:::
+
+## Return Struct dari Fungsi
+
+Fungsi juga bisa **mengembalikan** struct. Ini berguna untuk membuat "pabrik" yang menghasilkan data baru:
+
+```cpp
+#include <iostream>
+#include <string>
+
+struct Siswa {
+    std::string nama;
+    int umur;
+    double nilai;
+};
+
+Siswa buatSiswa(std::string nama, int umur, double nilai) {
+    Siswa baru;
+    baru.nama = nama;
+    baru.umur = umur;
+    baru.nilai = nilai;
+    return baru;
+}
+
+void tampilkanSiswa(Siswa s) {
+    std::cout << s.nama << " (umur " << s.umur
+              << "), nilai: " << s.nilai << std::endl;
+}
+
+int main() {
+    Siswa s1 = buatSiswa("Budi", 15, 85.5);
+    Siswa s2 = buatSiswa("Ani", 16, 92.0);
+    Siswa s3 = buatSiswa("Citra", 15, 78.3);
+
+    tampilkanSiswa(s1);
+    tampilkanSiswa(s2);
+    tampilkanSiswa(s3);
+
+    return 0;
+}
+```
+
+Output:
+```
+Budi (umur 15), nilai: 85.5
+Ani (umur 16), nilai: 92.0
+Citra (umur 15), nilai: 78.3
+```
+
+## Vector of Struct + Fungsi CRUD
+
+Sekarang kita gabungkan semuanya! Mari buat fungsi-fungsi untuk **menambah**, **menampilkan**, dan **mencari** data di dalam vector of struct:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+struct Produk {
+    std::string nama;
+    int harga;
+    int stok;
+};
+
+void tambahProduk(std::vector<Produk> &daftar, std::string nama,
+                  int harga, int stok) {
+    Produk baru = {nama, harga, stok};
+    daftar.push_back(baru);
+    std::cout << "Produk \"" << nama << "\" berhasil ditambahkan!" << std::endl;
+}
+
+void tampilkanSemua(std::vector<Produk> daftar) {
+    std::cout << std::endl;
+    std::cout << "=== DAFTAR PRODUK ===" << std::endl;
+    for (int i = 0; i < daftar.size(); i++) {
+        std::cout << (i + 1) << ". " << daftar[i].nama
+                  << " | Rp " << daftar[i].harga
+                  << " | Stok: " << daftar[i].stok << std::endl;
+    }
+    std::cout << std::endl;
+}
+
+int cariProduk(std::vector<Produk> daftar, std::string keyword) {
+    for (int i = 0; i < daftar.size(); i++) {
+        if (daftar[i].nama == keyword) {
+            return i;  // Ketemu! Return index-nya
+        }
+    }
+    return -1;  // Tidak ketemu
+}
+
+int main() {
+    std::vector<Produk> toko;
+
+    tambahProduk(toko, "Pensil 2B", 3000, 50);
+    tambahProduk(toko, "Buku Tulis", 5000, 30);
+    tambahProduk(toko, "Penghapus", 2000, 40);
+    tambahProduk(toko, "Penggaris", 4000, 25);
+
+    tampilkanSemua(toko);
+
+    // Cari produk
+    std::string cari = "Buku Tulis";
+    int idx = cariProduk(toko, cari);
+
+    if (idx != -1) {
+        std::cout << "\"" << cari << "\" ditemukan di posisi " << (idx + 1) << std::endl;
+        std::cout << "Harga: Rp " << toko[idx].harga << std::endl;
+    } else {
+        std::cout << "\"" << cari << "\" tidak ditemukan." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+Produk "Pensil 2B" berhasil ditambahkan!
+Produk "Buku Tulis" berhasil ditambahkan!
+Produk "Penghapus" berhasil ditambahkan!
+Produk "Penggaris" berhasil ditambahkan!
+
+=== DAFTAR PRODUK ===
+1. Pensil 2B | Rp 3000 | Stok: 50
+2. Buku Tulis | Rp 5000 | Stok: 30
+3. Penghapus | Rp 2000 | Stok: 40
+4. Penggaris | Rp 4000 | Stok: 25
+
+"Buku Tulis" ditemukan di posisi 2
+Harga: Rp 5000
+```
+
+:::note
+Perhatikan bahwa `tambahProduk` menerima vector **by reference** (`&daftar`) karena perlu mengubah isi vector, sedangkan `tampilkanSemua` dan `cariProduk` menerima **by value** karena hanya membaca.
+:::
+
+## Fungsi Hitung dengan Struct
+
+Kamu juga bisa buat fungsi yang menghitung sesuatu dari kumpulan struct:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+struct Siswa {
+    std::string nama;
+    double nilai;
+};
+
+double hitungRataRata(std::vector<Siswa> daftar) {
+    if (daftar.size() == 0) {
+        return 0.0;
+    }
+
+    double total = 0.0;
+    for (int i = 0; i < daftar.size(); i++) {
+        total = total + daftar[i].nilai;
+    }
+    return total / daftar.size();
+}
+
+Siswa cariNilaiTertinggi(std::vector<Siswa> daftar) {
+    Siswa terbaik = daftar[0];
+    for (int i = 1; i < daftar.size(); i++) {
+        if (daftar[i].nilai > terbaik.nilai) {
+            terbaik = daftar[i];
+        }
+    }
+    return terbaik;
+}
+
+int main() {
+    std::vector<Siswa> kelas = {
+        {"Budi", 85.5},
+        {"Ani", 92.0},
+        {"Citra", 78.3},
+        {"Dedi", 88.7},
+        {"Eka", 95.1}
+    };
+
+    double rata = hitungRataRata(kelas);
+    std::cout << "Rata-rata kelas: " << rata << std::endl;
+
+    Siswa terbaik = cariNilaiTertinggi(kelas);
+    std::cout << "Nilai tertinggi: " << terbaik.nama
+              << " (" << terbaik.nilai << ")" << std::endl;
+
+    return 0;
+}
+```
+
+Output:
+```
+Rata-rata kelas: 87.92
+Nilai tertinggi: Eka (95.1)
+```
+
+## Nested Struct
+
+Struct bisa berisi struct lain! Ini disebut **nested struct** — sangat berguna untuk data yang kompleks:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+struct Siswa {
+    std::string nama;
+    double nilai;
+};
+
+struct Kelas {
+    std::string namaKelas;
+    std::string waliKelas;
+    std::vector<Siswa> anggota;
+};
+
+void tampilkanKelas(Kelas k) {
+    std::cout << "Kelas     : " << k.namaKelas << std::endl;
+    std::cout << "Wali Kelas: " << k.waliKelas << std::endl;
+    std::cout << "Anggota   : " << k.anggota.size() << " siswa" << std::endl;
+    std::cout << std::endl;
+
+    for (int i = 0; i < k.anggota.size(); i++) {
+        std::cout << "  " << (i + 1) << ". " << k.anggota[i].nama
+                  << " - Nilai: " << k.anggota[i].nilai << std::endl;
+    }
+}
+
+int main() {
+    Kelas ipa1;
+    ipa1.namaKelas = "X IPA 1";
+    ipa1.waliKelas = "Bu Sari";
+    ipa1.anggota = {
+        {"Budi", 85.5},
+        {"Ani", 92.0},
+        {"Citra", 78.3}
+    };
+
+    Kelas ips1;
+    ips1.namaKelas = "X IPS 1";
+    ips1.waliKelas = "Pak Joko";
+    ips1.anggota = {
+        {"Dedi", 80.0},
+        {"Eka", 88.5}
+    };
+
+    tampilkanKelas(ipa1);
+    std::cout << std::endl;
+    tampilkanKelas(ips1);
+
+    return 0;
+}
+```
+
+Output:
+```
+Kelas     : X IPA 1
+Wali Kelas: Bu Sari
+Anggota   : 3 siswa
+
+  1. Budi - Nilai: 85.5
+  2. Ani - Nilai: 92.0
+  3. Citra - Nilai: 78.3
+
+Kelas     : X IPS 1
+Wali Kelas: Pak Joko
+Anggota   : 2 siswa
+
+  1. Dedi - Nilai: 80.0
+  2. Eka - Nilai: 88.5
+```
+
+## Sort Vector of Struct
+
+Bagaimana kalau kamu mau mengurutkan data siswa berdasarkan nilai? Kamu bisa pakai `std::sort` dengan **lambda comparator**:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+struct Siswa {
+    std::string nama;
+    double nilai;
+};
+
+void tampilkanDaftar(std::vector<Siswa> daftar) {
+    for (int i = 0; i < daftar.size(); i++) {
+        std::cout << (i + 1) << ". " << daftar[i].nama
+                  << " - " << daftar[i].nilai << std::endl;
+    }
+    std::cout << std::endl;
+}
+
+int main() {
+    std::vector<Siswa> kelas = {
+        {"Budi", 85.5},
+        {"Ani", 92.0},
+        {"Citra", 78.3},
+        {"Dedi", 88.7},
+        {"Eka", 95.1}
+    };
+
+    std::cout << "=== Sebelum diurutkan ===" << std::endl;
+    tampilkanDaftar(kelas);
+
+    // Sort berdasarkan nilai dari TERTINGGI ke terendah
+    std::sort(kelas.begin(), kelas.end(),
+        [](Siswa a, Siswa b) {
+            return a.nilai > b.nilai;
+        }
+    );
+
+    std::cout << "=== Setelah diurutkan (tertinggi dulu) ===" << std::endl;
+    tampilkanDaftar(kelas);
+
+    // Sort berdasarkan nama (A-Z)
+    std::sort(kelas.begin(), kelas.end(),
+        [](Siswa a, Siswa b) {
+            return a.nama < b.nama;
+        }
+    );
+
+    std::cout << "=== Diurutkan berdasarkan nama (A-Z) ===" << std::endl;
+    tampilkanDaftar(kelas);
+
+    return 0;
+}
+```
+
+Output:
+```
+=== Sebelum diurutkan ===
+1. Budi - 85.5
+2. Ani - 92.0
+3. Citra - 78.3
+4. Dedi - 88.7
+5. Eka - 95.1
+
+=== Setelah diurutkan (tertinggi dulu) ===
+1. Eka - 95.1
+2. Ani - 92.0
+3. Dedi - 88.7
+4. Budi - 85.5
+5. Citra - 78.3
+
+=== Diurutkan berdasarkan nama (A-Z) ===
+1. Ani - 92.0
+2. Budi - 85.5
+3. Citra - 78.3
+4. Dedi - 88.7
+5. Eka - 95.1
+```
+
+:::tip
+Lambda `[](Siswa a, Siswa b) { return a.nilai > b.nilai; }` artinya: "urutkan supaya yang nilainya lebih besar ada di depan". Ganti `>` jadi `<` kalau mau dari kecil ke besar.
+:::
+
+## Operator Perbandingan untuk Struct (Manual)
+
+Tidak seperti `int` atau `string`, struct **tidak bisa langsung dibandingkan** dengan `==` atau `<`. Kamu harus buat fungsi sendiri:
+
+```cpp
+#include <iostream>
+#include <string>
+
+struct Siswa {
+    std::string nama;
+    double nilai;
+};
+
+bool samaSiswa(Siswa a, Siswa b) {
+    return (a.nama == b.nama) && (a.nilai == b.nilai);
+}
+
+bool nilaiLebihTinggi(Siswa a, Siswa b) {
+    return a.nilai > b.nilai;
+}
+
+int main() {
+    Siswa s1 = {"Budi", 85.5};
+    Siswa s2 = {"Budi", 85.5};
+    Siswa s3 = {"Ani", 92.0};
+
+    if (samaSiswa(s1, s2)) {
+        std::cout << "s1 dan s2 sama!" << std::endl;
+    }
+
+    if (nilaiLebihTinggi(s3, s1)) {
+        std::cout << s3.nama << " nilainya lebih tinggi dari "
+                  << s1.nama << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output:
+```
+s1 dan s2 sama!
+Ani nilainya lebih tinggi dari Budi
+```
+
+## Kesalahan Umum
+
+### 1. Lupa pakai reference saat ingin mengubah data
+
+```cpp
+// SALAH — data asli tidak berubah karena by value
+void naikkanNilai(Siswa s, double tambahan) {
+    s.nilai = s.nilai + tambahan;  // Hanya ubah salinan!
+}
+
+// BENAR — pakai reference
+void naikkanNilai(Siswa &s, double tambahan) {
+    s.nilai = s.nilai + tambahan;  // Ubah data asli!
+}
+```
+
+### 2. Lupa reference pada vector di fungsi tambah
+
+```cpp
+// SALAH — push_back hanya ke salinan, vector asli tidak berubah
+void tambah(std::vector<Siswa> daftar, Siswa baru) {
+    daftar.push_back(baru);
+}
+
+// BENAR
+void tambah(std::vector<Siswa> &daftar, Siswa baru) {
+    daftar.push_back(baru);
+}
+```
+
+### 3. Akses vector kosong
+
+```cpp
+std::vector<Siswa> kelas;
+
+// SALAH — vector kosong, tidak ada elemen ke-0!
+// std::cout << kelas[0].nama << std::endl;  // Crash!
+
+// BENAR — cek dulu
+if (kelas.size() > 0) {
+    std::cout << kelas[0].nama << std::endl;
+}
+```
+
+:::warning
+Selalu cek apakah vector **tidak kosong** sebelum mengakses elemennya. Akses index yang tidak ada bisa menyebabkan program crash!
+:::
+
+## Latihan
+
+**Latihan 1:** Buat struct `Buku` (judul, penulis, tahun) dan fungsi-fungsi berikut:
+- `Buku buatBuku(string judul, string penulis, int tahun)` — buat dan return Buku baru
+- `void tampilkanBuku(Buku b)` — tampilkan info buku
+- `void tampilkanSemua(vector<Buku> daftar)` — tampilkan semua buku dengan nomor urut
+
+Gunakan fungsi-fungsi tersebut di `main()` untuk membuat dan menampilkan 3 buku.
+
+**Latihan 2:** Buat program **katalog produk** dengan struct `Produk` (nama, harga, stok). Implementasikan:
+- Fungsi `tambah` untuk menambah produk ke vector
+- Fungsi `cari` berdasarkan nama
+- Fungsi `urutkan` berdasarkan harga (murah ke mahal)
+- Tampilkan sebelum dan sesudah diurutkan
+
+**Latihan 3:** Buat nested struct: `Sekolah` berisi nama sekolah dan `vector<Kelas>`, di mana `Kelas` berisi nama kelas dan `vector<Siswa>`. Buat fungsi `hitungTotalSiswa(Sekolah s)` yang menghitung total semua siswa di sekolah tersebut.
+
+## Ringkasan
+
+| Konsep | Penjelasan | Contoh |
+|--------|------------|--------|
+| **Pass by value** | Fungsi menerima salinan struct | `void tampil(Siswa s)` |
+| **Pass by reference** | Fungsi bisa mengubah struct asli | `void ubah(Siswa &s)` |
+| **Return struct** | Fungsi menghasilkan struct baru | `Siswa buat(string n, int u)` |
+| **CRUD** | Create, Read, Update, Delete — operasi dasar data | Fungsi tambah, tampil, cari |
+| **Nested struct** | Struct di dalam struct | `struct Kelas { vector<Siswa> anggota; };` |
+| **`std::sort` + lambda** | Mengurutkan vector of struct | `sort(v.begin(), v.end(), [](A a, A b){...})` |
+| **Perbandingan manual** | Fungsi sendiri untuk membandingkan struct | `bool sama(Siswa a, Siswa b)` |
+
+Sekarang kamu sudah bisa menggabungkan struct dan fungsi untuk membuat program yang terstruktur rapi. Di pelajaran berikutnya, kita akan belajar **membaca file** supaya data tidak hilang saat program ditutup!
