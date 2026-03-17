@@ -51,10 +51,10 @@ Platform ini mengajarkan **C++ modern (C++17)** dari nol, langsung bisa dicoba d
 | 2 | Percabangan | 6 | ✅ Tersedia |
 | 3 | Perulangan | 7 | ✅ Tersedia |
 | 4 | Fungsi | 8 | ✅ Tersedia |
-| 5 | Array & Data | 7 | 🔒 Coming Soon |
-| 6 | Struct & File I/O | 6 | 🔒 Coming Soon |
+| 5 | Array & Data | 7 | ✅ Tersedia |
+| 6 | Struct & File I/O | 6 | ✅ Tersedia |
 
-**32 lessons tersedia** · ~40-45 jam belajar · 2 proyek mini per unit
+**45 lessons tersedia** · ~55-60 jam belajar · 1 proyek mini per unit
 
 ---
 
