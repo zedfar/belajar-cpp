@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 340" width="560" height="340" font-family="'Segoe UI', system-ui, sans-serif">
+  <defs>
+    <style>
+      :root {
+        --bg: #f8fafc;
+        --border: #e2e8f0;
+        --card-bg: #ffffff;
+        --card-border: #e2e8f0;
+        --text-main: #1e293b;
+        --text-sub: #64748b;
+        --arrow: #94a3b8;
+        --flow-line: #cbd5e1;
+        --shadow: rgba(0,0,0,0.07);
+        --term-bg: #6366f1;
+        --end-bg: #6366f1;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0f172a;
+          --border: #1e293b;
+          --card-bg: #1e293b;
+          --card-border: #334155;
+          --text-main: #f1f5f9;
+          --text-sub: #94a3b8;
+          --arrow: #475569;
+          --flow-line: #334155;
+          --shadow: rgba(0,0,0,0.4);
+          --term-bg: #4f46e5;
+          --end-bg: #4f46e5;
+        }
+      }
+    </style>
+    <filter id="fc-shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="var(--shadow)"/>
+    </filter>
+    <marker id="fc-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="var(--arrow)"/>
+    </marker>
+    <marker id="fc-arrow-true" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#10b981"/>
+    </marker>
+    <marker id="fc-arrow-false" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#ef4444"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="560" height="340" rx="14" fill="var(--bg)" stroke="var(--border)" stroke-width="1.5"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" fill="var(--text-sub)" font-size="11" font-weight="600" letter-spacing="0.5">ALUR IF-ELSE (PERCABANGAN)</text>
+
+  <!-- === START (rounded rect terminal) === -->
+  <g filter="url(#fc-shadow)">
+    <rect x="200" y="42" width="160" height="38" rx="19" fill="var(--term-bg)"/>
+  </g>
+  <text x="280" y="66" text-anchor="middle" fill="white" font-size="13" font-weight="600">Mulai Program</text>
+
+  <!-- Arrow: Start → Condition -->
+  <line x1="280" y1="80" x2="280" y2="110" stroke="var(--arrow)" stroke-width="2" marker-end="url(#fc-arrow)"/>
+
+  <!-- === CONDITION (diamond) === -->
+  <g filter="url(#fc-shadow)">
+    <!-- Diamond shape: center 280,145, half-w=95, half-h=45 -->
+    <polygon points="280,100 375,145 280,190 185,145" fill="var(--card-bg)" stroke="#f59e0b" stroke-width="2.5"/>
+  </g>
+  <text x="280" y="139" text-anchor="middle" fill="#d97706" font-size="12" font-weight="700">kondisi</text>
+  <text x="280" y="156" text-anchor="middle" fill="#d97706" font-size="12" font-weight="700">benar?</text>
+
+  <!-- TRUE label (left) -->
+  <text x="175" y="140" text-anchor="middle" fill="#10b981" font-size="11" font-weight="700">true</text>
+  <!-- FALSE label (right) -->
+  <text x="385" y="140" text-anchor="middle" fill="#ef4444" font-size="11" font-weight="700">false</text>
+
+  <!-- Arrow: Condition → if block (left/true) -->
+  <line x1="185" y1="145" x2="105" y2="145" stroke="#10b981" stroke-width="2" marker-end="url(#fc-arrow-true)"/>
+  <!-- Arrow down to if action -->
+  <line x1="105" y1="145" x2="105" y2="198" stroke="#10b981" stroke-width="2" marker-end="url(#fc-arrow-true)"/>
+
+  <!-- Arrow: Condition → else block (right/false) -->
+  <line x1="375" y1="145" x2="455" y2="145" stroke="#ef4444" stroke-width="2" marker-end="url(#fc-arrow-false)"/>
+  <line x1="455" y1="145" x2="455" y2="198" stroke="#ef4444" stroke-width="2" marker-end="url(#fc-arrow-false)"/>
+
+  <!-- === IF Block (left) === -->
+  <g filter="url(#fc-shadow)">
+    <rect x="30" y="198" width="150" height="70" rx="10" fill="var(--card-bg)" stroke="#10b981" stroke-width="2"/>
+    <!-- green left accent -->
+    <rect x="30" y="198" width="6" height="70" rx="0" fill="#10b981"/>
+    <rect x="30" y="198" width="6" height="70" rx="5" fill="#10b981"/>
+    <rect x="34" y="198" width="4" height="70" fill="#10b981"/>
+  </g>
+  <text x="110" y="227" text-anchor="middle" fill="#10b981" font-size="11" font-weight="700">Blok if</text>
+  <text x="110" y="245" text-anchor="middle" fill="var(--text-main)" font-size="11">Kode dijalankan</text>
+  <text x="110" y="260" text-anchor="middle" fill="var(--text-sub)" font-size="10">jika kondisi true</text>
+
+  <!-- === ELSE Block (right) === -->
+  <g filter="url(#fc-shadow)">
+    <rect x="380" y="198" width="150" height="70" rx="10" fill="var(--card-bg)" stroke="#ef4444" stroke-width="2"/>
+    <rect x="380" y="198" width="6" height="70" fill="#ef4444" rx="5"/>
+    <rect x="384" y="198" width="4" height="70" fill="#ef4444"/>
+  </g>
+  <text x="455" y="227" text-anchor="middle" fill="#ef4444" font-size="11" font-weight="700">Blok else</text>
+  <text x="455" y="245" text-anchor="middle" fill="var(--text-main)" font-size="11">Kode dijalankan</text>
+  <text x="455" y="260" text-anchor="middle" fill="var(--text-sub)" font-size="10">jika kondisi false</text>
+
+  <!-- Merge lines → down to continue -->
+  <line x1="105" y1="268" x2="105" y2="296" stroke="#10b981" stroke-width="2"/>
+  <line x1="105" y1="296" x2="280" y2="296" stroke="var(--arrow)" stroke-width="2"/>
+  <line x1="455" y1="268" x2="455" y2="296" stroke="#ef4444" stroke-width="2"/>
+  <line x1="455" y1="296" x2="280" y2="296" stroke="var(--arrow)" stroke-width="2"/>
+  <!-- Arrow down to end -->
+  <line x1="280" y1="296" x2="280" y2="306" stroke="var(--arrow)" stroke-width="2" marker-end="url(#fc-arrow)"/>
+
+  <!-- === END === -->
+  <g filter="url(#fc-shadow)">
+    <rect x="200" y="306" width="160" height="22" rx="11" fill="var(--end-bg)"/>
+  </g>
+  <text x="280" y="322" text-anchor="middle" fill="white" font-size="11" font-weight="600">Lanjut Program</text>
+</svg>

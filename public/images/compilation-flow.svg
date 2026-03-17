@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 200" width="860" height="200" font-family="'Segoe UI', system-ui, sans-serif">
+  <defs>
+    <style>
+      :root {
+        --bg: #f8fafc;
+        --border: #e2e8f0;
+        --card-bg: #ffffff;
+        --shadow: rgba(0,0,0,0.08);
+        --label: #64748b;
+        --arrow: #94a3b8;
+        --arrow-label: #94a3b8;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0f172a;
+          --border: #1e293b;
+          --card-bg: #1e293b;
+          --shadow: rgba(0,0,0,0.4);
+          --label: #64748b;
+          --arrow: #475569;
+          --arrow-label: #64748b;
+        }
+      }
+    </style>
+    <filter id="cf-shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="var(--shadow)"/>
+    </filter>
+    <marker id="cf-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="var(--arrow)"/>
+    </marker>
+    <!-- Blue gradient for Source -->
+    <linearGradient id="cf-g1" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+    <!-- Purple gradient for Compiler -->
+    <linearGradient id="cf-g2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <!-- Green gradient for Program -->
+    <linearGradient id="cf-g3" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+    <!-- Amber gradient for Output -->
+    <linearGradient id="cf-g4" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="860" height="200" rx="14" fill="var(--bg)" stroke="var(--border)" stroke-width="1.5"/>
+
+  <!-- === BOX 1: Source Code === -->
+  <g filter="url(#cf-shadow)">
+    <rect x="28" y="44" width="152" height="108" rx="12" fill="url(#cf-g1)"/>
+  </g>
+  <!-- file icon -->
+  <g transform="translate(104, 78)">
+    <rect x="-15" y="-12" width="30" height="38" rx="4" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
+    <polyline points="6,-12 16,-2 16,-12" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
+    <line x1="-8" y1="4" x2="4" y2="4" stroke="rgba(255,255,255,0.85)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="-8" y1="11" x2="8" y2="11" stroke="rgba(255,255,255,0.85)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="-8" y1="18" x2="1" y2="18" stroke="rgba(255,255,255,0.85)" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <text x="104" y="134" text-anchor="middle" fill="white" font-size="13" font-weight="700">Source Code</text>
+  <text x="104" y="150" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-size="11">main.cpp</text>
+  <text x="104" y="36" text-anchor="middle" fill="var(--label)" font-size="10" font-weight="600" letter-spacing="0.8">KAMU TULIS</text>
+
+  <!-- Arrow 1 -->
+  <line x1="183" y1="98" x2="218" y2="98" stroke="var(--arrow)" stroke-width="2" marker-end="url(#cf-arrow)"/>
+
+  <!-- === BOX 2: Compiler === -->
+  <g filter="url(#cf-shadow)">
+    <rect x="222" y="44" width="152" height="108" rx="12" fill="url(#cf-g2)"/>
+  </g>
+  <!-- gear icon -->
+  <g transform="translate(298, 86)">
+    <circle cx="0" cy="0" r="7" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="2.5"/>
+    <circle cx="0" cy="0" r="2.5" fill="rgba(255,255,255,0.9)"/>
+    <g stroke="rgba(255,255,255,0.9)" stroke-width="2.5" stroke-linecap="round">
+      <line x1="0" y1="-7" x2="0" y2="-12"/>
+      <line x1="0" y1="7" x2="0" y2="12"/>
+      <line x1="-7" y1="0" x2="-12" y2="0"/>
+      <line x1="7" y1="0" x2="12" y2="0"/>
+      <line x1="-4.95" y1="-4.95" x2="-8.49" y2="-8.49"/>
+      <line x1="4.95" y1="4.95" x2="8.49" y2="8.49"/>
+      <line x1="4.95" y1="-4.95" x2="8.49" y2="-8.49"/>
+      <line x1="-4.95" y1="4.95" x2="-8.49" y2="8.49"/>
+    </g>
+  </g>
+  <text x="298" y="134" text-anchor="middle" fill="white" font-size="13" font-weight="700">Compiler</text>
+  <text x="298" y="150" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-size="11">g++ / clang++</text>
+  <text x="298" y="36" text-anchor="middle" fill="var(--label)" font-size="10" font-weight="600" letter-spacing="0.8">MENERJEMAHKAN</text>
+
+  <!-- Arrow 2 -->
+  <line x1="377" y1="98" x2="412" y2="98" stroke="var(--arrow)" stroke-width="2" marker-end="url(#cf-arrow)"/>
+
+  <!-- === BOX 3: Program (.exe) === -->
+  <g filter="url(#cf-shadow)">
+    <rect x="416" y="44" width="152" height="108" rx="12" fill="url(#cf-g3)"/>
+  </g>
+  <!-- terminal icon -->
+  <g transform="translate(492, 85)">
+    <rect x="-17" y="-13" width="34" height="26" rx="5" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
+    <text x="-10" y="3" fill="rgba(255,255,255,0.9)" font-size="11" font-family="monospace">▶</text>
+    <line x1="-2" y1="3" x2="10" y2="3" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <text x="492" y="134" text-anchor="middle" fill="white" font-size="13" font-weight="700">Program</text>
+  <text x="492" y="150" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-size="11">main.exe / a.out</text>
+  <text x="492" y="36" text-anchor="middle" fill="var(--label)" font-size="10" font-weight="600" letter-spacing="0.8">HASIL TERJEMAHAN</text>
+
+  <!-- Arrow 3 -->
+  <line x1="571" y1="98" x2="606" y2="98" stroke="var(--arrow)" stroke-width="2" marker-end="url(#cf-arrow)"/>
+
+  <!-- === BOX 4: Output === -->
+  <g filter="url(#cf-shadow)">
+    <rect x="610" y="44" width="220" height="108" rx="12" fill="url(#cf-g4)"/>
+  </g>
+  <!-- monitor icon -->
+  <g transform="translate(720, 85)">
+    <rect x="-20" y="-14" width="40" height="28" rx="4" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
+    <line x1="0" y1="14" x2="0" y2="20" stroke="rgba(255,255,255,0.7)" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="-9" y1="20" x2="9" y2="20" stroke="rgba(255,255,255,0.7)" stroke-width="2.5" stroke-linecap="round"/>
+    <text x="-14" y="-2" fill="rgba(255,255,255,0.9)" font-size="8" font-family="monospace">Hello!</text>
+    <line x1="-14" y1="4" x2="6" y2="4" stroke="rgba(255,255,255,0.55)" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="-14" y1="8" x2="2" y2="8" stroke="rgba(255,255,255,0.55)" stroke-width="1.5" stroke-linecap="round"/>
+  </g>
+  <text x="720" y="134" text-anchor="middle" fill="white" font-size="13" font-weight="700">Komputer Menjalankan</text>
+  <text x="720" y="150" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-size="11">output di layar</text>
+  <text x="720" y="36" text-anchor="middle" fill="var(--label)" font-size="10" font-weight="600" letter-spacing="0.8">OUTPUT DI LAYAR</text>
+</svg>

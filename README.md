@@ -36,7 +36,8 @@ Platform ini mengajarkan **C++ modern (C++17)** dari nol, langsung bisa dicoba d
 - **Progresif** — Kurikulum terstruktur dari pemula hingga mahir
 - **Gratis** — Selamanya, tanpa akun, tanpa iklan
 - **Mobile-friendly** — Responsif dari desktop hingga HP Android low-end
-- **Dark mode** — Tampilan nyaman di malam hari
+- **Dark mode** — Tampilan nyaman di malam hari, didukung diagram SVG adaptive
+- **Diagram visual** — Konsep kunci dijelaskan dengan ilustrasi SVG (alur kompilasi, variabel, I/O, flowchart)
 - **Progress tracking** — Pantau kemajuan belajar secara lokal
 
 ---
@@ -125,7 +126,8 @@ npm test           # Run tests (vitest)
 
 ```
 belajar-cpp/
-├── public/                  # Static assets (favicon, fonts)
+├── public/
+│   └── images/              # SVG diagrams (compilation flow, variables, I/O, flowcharts)
 ├── src/
 │   ├── components/
 │   │   ├── ui/              # Button, Card, Tabs
