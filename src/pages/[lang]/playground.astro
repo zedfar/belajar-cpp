@@ -17,7 +17,7 @@ const snippets = [
     code: '#include <iostream>\n\nint main() {\n    std::cout << "Halo, Dunia!" << std::endl;\n    return 0;\n}',
   },
   {
-    label: lang === 'id' ? 'Input & Output' : 'Input & Output',
+    label: 'Input & Output',
     code: '#include <iostream>\n#include <string>\n\nint main() {\n    std::string nama;\n    std::cout << "Siapa namamu? ";\n    std::cin >> nama;\n    std::cout << "Halo, " << nama << "!" << std::endl;\n    return 0;\n}',
   },
   {
@@ -26,7 +26,7 @@ const snippets = [
   },
   {
     label: 'For Loop',
-    code: '#include <iostream>\n\nint main() {\n    // Hitung jumlah 1 sampai 10\n    int jumlah = 0;\n    for (int i = 1; i <= 10; i++) {\n        jumlah += i;\n        std::cout << i << " ";\n    }\n    std::cout << std::endl;\n    std::cout << "Jumlah: " << jumlah << std::endl;\n    return 0;\n}',
+    code: '#include <iostream>\n\nint main() {\n    int jumlah = 0;\n    for (int i = 1; i <= 10; i++) {\n        jumlah += i;\n        std::cout << i << " ";\n    }\n    std::cout << std::endl;\n    std::cout << "Jumlah: " << jumlah << std::endl;\n    return 0;\n}',
   },
   {
     label: 'While Loop',
@@ -46,102 +46,163 @@ const snippets = [
   },
 ]
 ---
+
 <PageLayout title={t(lang, 'playground.title')} description={t(lang, 'playground.description')} lang={lang}>
   <div class="max-w-6xl mx-auto">
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-slate-900 dark:text-white mb-2">
+    <div class="mb-5">
+      <h1 class="text-3xl font-bold text-slate-900 dark:text-white mb-1">
         {t(lang, 'playground.title')}
       </h1>
-      <p class="text-slate-600 dark:text-slate-400">
+      <p class="text-slate-600 dark:text-slate-400 text-sm">
         {t(lang, 'playground.description')}
       </p>
     </div>
 
+    <!-- Snippet pill strip (mobile only) -->
+    <div class="lg:hidden mb-3">
+      <div class="flex items-center gap-2 overflow-x-auto pb-2 snippet-strip">
+        {snippets.map(snippet => (
+          <button
+            class="snippet-btn flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-all whitespace-nowrap bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700"
+            data-snippet={snippet.code}
+            data-label={snippet.label}
+          >
+            {snippet.label}
+          </button>
+        ))}
+      </div>
+    </div>
+
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-      <!-- Main editor area -->
-      <div class="lg:col-span-3">
-        <!-- Code editor -->
+      <!-- Main editor column -->
+      <div class="lg:col-span-3 space-y-3">
+
+        <!-- Editor card -->
         <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-[#282c34] overflow-hidden">
-          <div class="flex items-center justify-between px-4 py-2 bg-[#21252b] border-b border-slate-700">
+          <!-- Toolbar -->
+          <div class="flex items-center justify-between px-3 sm:px-4 py-2 bg-[#21252b] border-b border-slate-700">
             <span class="text-sm text-slate-400 font-mono">main.cpp</span>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1.5 sm:gap-2">
+              <!-- Reset: icon only on mobile, icon+text on sm+ -->
               <button
                 id="reset-btn"
-                class="px-3 py-1 rounded text-xs bg-slate-700 hover:bg-slate-600 text-slate-300 transition-colors"
+                title={lang === 'id' ? 'Reset kode' : 'Reset code'}
+                class="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-lg text-xs bg-slate-700 hover:bg-slate-600 text-slate-300 transition-colors"
               >
-                {t(lang, 'code.reset')}
+                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H4.598a.75.75 0 00-.75.75v3.634a.75.75 0 001.5 0v-2.033l.312.311a7 7 0 0011.712-3.138.75.75 0 00-1.06-.179zm-9.624-3.848a5.5 5.5 0 019.201-2.466l.312.311H12.768a.75.75 0 000 1.5h3.634a.75.75 0 00.75-.75V2.537a.75.75 0 00-1.5 0v2.033l-.312-.311A7 7 0 003.628 7.397a.75.75 0 001.06.179z" clip-rule="evenodd" />
+                </svg>
+                <span class="hidden sm:inline">{t(lang, 'code.reset')}</span>
               </button>
+              <!-- Download: icon only on mobile -->
               <button
                 id="download-btn"
-                class="px-3 py-1 rounded text-xs bg-slate-700 hover:bg-slate-600 text-slate-300 transition-colors flex items-center gap-1.5"
+                title={lang === 'id' ? 'Unduh kode' : 'Download code'}
+                class="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-lg text-xs bg-slate-700 hover:bg-slate-600 text-slate-300 transition-colors"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 20 20" fill="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 20 20" fill="currentColor">
                   <path d="M10.75 2.75a.75.75 0 00-1.5 0v8.614L6.295 8.235a.75.75 0 10-1.09 1.03l4.25 4.5a.75.75 0 001.09 0l4.25-4.5a.75.75 0 00-1.09-1.03l-2.955 3.129V2.75z" />
                   <path d="M3.5 12.75a.75.75 0 00-1.5 0v2.5A2.75 2.75 0 004.75 18h10.5A2.75 2.75 0 0018 15.25v-2.5a.75.75 0 00-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5z" />
                 </svg>
-                {lang === 'id' ? 'Unduh' : 'Download'}
+                <span class="hidden sm:inline">{lang === 'id' ? 'Unduh' : 'Download'}</span>
               </button>
+              <!-- Run button with spinner -->
               <button
                 id="run-btn"
-                class="px-4 py-1.5 rounded text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-medium transition-colors flex items-center gap-1.5"
+                title={lang === 'id' ? 'Jalankan kode (Ctrl+Enter)' : 'Run code (Ctrl+Enter)'}
+                class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-medium transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                <!-- Play icon -->
+                <svg id="run-icon" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
                   <polygon points="5 3 19 12 5 21 5 3"/>
                 </svg>
-                {t(lang, 'code.run')}
+                <!-- Spinner (hidden by default) -->
+                <svg id="run-spinner" class="hidden animate-spin" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                  <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                </svg>
+                <span id="run-label">{t(lang, 'code.run')}</span>
               </button>
             </div>
           </div>
-          <div id="code-editor-cm" class="w-full h-[420px] overflow-hidden" data-lang={lang} data-default-code={defaultCode}></div>
+
+          <!-- CodeMirror container — responsive height -->
+          <div
+            id="code-editor-cm"
+            class="w-full h-[300px] sm:h-[360px] lg:h-[420px] overflow-hidden"
+            data-lang={lang}
+            data-default-code={defaultCode}
+          ></div>
+          <!-- Fallback textarea -->
           <textarea
             id="code-editor"
-            class="w-full h-[420px] p-4 bg-transparent text-slate-100 font-mono text-sm resize-none focus:outline-none hidden"
+            class="w-full h-[300px] sm:h-[360px] lg:h-[420px] p-4 bg-transparent text-slate-100 font-mono text-sm resize-none focus:outline-none hidden"
             spellcheck="false"
           >{defaultCode}</textarea>
         </div>
 
-        <!-- Stdin input -->
-        <div class="mt-4 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
-          <div class="px-4 py-2 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
-            <span class="text-xs font-medium text-slate-500 dark:text-slate-400">
-              Input (stdin)
+        <!-- Stdin: collapsible, collapsed by default -->
+        <div class="rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+          <button
+            id="stdin-toggle"
+            type="button"
+            class="flex items-center gap-2 w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-left"
+          >
+            <svg
+              id="stdin-chevron"
+              xmlns="http://www.w3.org/2000/svg"
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="text-slate-400 transition-transform duration-200"
+            >
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+            <span class="text-xs font-medium text-slate-600 dark:text-slate-400">Input (stdin)</span>
+            <span class="text-xs text-slate-400 dark:text-slate-500">
+              {lang === 'id' ? '— opsional, untuk program yang pakai std::cin' : '— optional, for programs using std::cin'}
             </span>
+          </button>
+          <div id="stdin-content" class="hidden">
+            <textarea
+              id="stdin-input"
+              class="w-full h-20 px-4 py-3 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-mono text-sm resize-none focus:outline-none border-t border-slate-200 dark:border-slate-800"
+              placeholder={lang === 'id' ? 'Masukkan input di sini...' : 'Enter input here...'}
+              spellcheck="false"
+            ></textarea>
           </div>
-          <textarea
-            id="stdin-input"
-            class="w-full h-20 p-4 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-mono text-sm resize-none focus:outline-none"
-            placeholder={lang === 'id' ? 'Masukkan input di sini (opsional)...' : 'Enter input here (optional)...'}
-            spellcheck="false"
-          ></textarea>
         </div>
 
         <!-- Output -->
-        <div class="mt-4 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
-          <div class="px-4 py-2 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
-            <span class="text-xs font-medium text-slate-500 dark:text-slate-400">
-              {t(lang, 'code.output')}
-            </span>
-            <span id="exec-time" class="text-xs text-slate-400 ml-3 hidden"></span>
+        <div id="output-card" class="rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+          <div class="flex items-center gap-3 px-4 py-2.5 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+            <span class="text-xs font-medium text-slate-500 dark:text-slate-400">{t(lang, 'code.output')}</span>
+            <span id="exec-time" class="text-xs text-slate-400 hidden"></span>
           </div>
-          <pre
+          <div
             id="output-area"
-            class="p-4 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-mono text-sm min-h-[80px] whitespace-pre-wrap"
-          ><span class="text-slate-400 italic">{lang === 'id' ? 'Output akan muncul di sini...' : 'Output will appear here...'}</span></pre>
+            class="p-4 bg-white dark:bg-slate-950 font-mono text-sm min-h-[100px] whitespace-pre-wrap text-slate-400 italic"
+          >{lang === 'id' ? 'Output akan muncul di sini setelah kode dijalankan...' : 'Output will appear here after running your code...'}</div>
         </div>
       </div>
 
-      <!-- Sidebar: tips & snippets -->
-      <div class="lg:col-span-1 space-y-6">
+      <!-- Sidebar (desktop only) -->
+      <div class="hidden lg:flex lg:col-span-1 flex-col gap-6">
         <!-- Snippets -->
         <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4">
           <h3 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
             {lang === 'id' ? 'Contoh Kode' : 'Code Snippets'}
           </h3>
-          <div class="space-y-2">
+          <div class="space-y-1">
             {snippets.map(snippet => (
               <button
                 class="snippet-btn w-full text-left px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
                 data-snippet={snippet.code}
+                data-label={snippet.label}
               >
                 {snippet.label}
               </button>
@@ -151,23 +212,34 @@ const snippets = [
 
         <!-- Tips -->
         <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4">
-          <h3 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
-            {lang === 'id' ? 'Tips' : 'Tips'}
-          </h3>
-          <ul class="space-y-2 text-xs text-slate-500 dark:text-slate-400">
-            <li>{t(lang, 'playground.tips')}</li>
-            <li>{lang === 'id' ? 'Ctrl+Enter untuk jalankan kode' : 'Ctrl+Enter to run code'}</li>
-            <li>{lang === 'id' ? 'Gunakan std::endl atau \\n untuk baris baru' : 'Use std::endl or \\n for new lines'}</li>
+          <h3 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Tips</h3>
+          <ul class="space-y-2.5 text-xs text-slate-500 dark:text-slate-400">
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-500 mt-0.5">→</span>
+              <span>{lang === 'id' ? 'Ctrl+Enter untuk jalankan kode' : 'Ctrl+Enter to run code'}</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-500 mt-0.5">→</span>
+              <span>{lang === 'id' ? 'Gunakan std::endl atau \\n untuk baris baru' : 'Use std::endl or \\n for new lines'}</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-500 mt-0.5">→</span>
+              <span>{lang === 'id' ? 'Buka Input (stdin) jika program pakai std::cin' : 'Open Input (stdin) if program uses std::cin'}</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-500 mt-0.5">→</span>
+              <span>{lang === 'id' ? 'Pesan error biasanya menunjuk nomor baris yang bermasalah' : 'Error messages usually point to the problematic line number'}</span>
+            </li>
           </ul>
         </div>
 
-        <!-- Link to curriculum -->
+        <!-- Curriculum link -->
         <a
           href={`/${lang}/curriculum`}
-          class="block text-center px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-primary-300 dark:hover:border-primary-600 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+          class="flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-primary-400 dark:hover:border-primary-500 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
         >
           {lang === 'id' ? 'Lihat Kurikulum' : 'View Curriculum'}
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block ml-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="9 18 15 12 9 6"/>
           </svg>
         </a>
@@ -177,7 +249,7 @@ const snippets = [
 
   <script>
     import { EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLineGutter, drawSelection, dropCursor, highlightSpecialChars } from '@codemirror/view'
-    import { EditorState, EditorSelection } from '@codemirror/state'
+    import { EditorState } from '@codemirror/state'
     import { history, defaultKeymap, historyKeymap, indentWithTab } from '@codemirror/commands'
     import { syntaxHighlighting, defaultHighlightStyle, indentOnInput, bracketMatching, foldGutter } from '@codemirror/language'
     import { closeBrackets, autocompletion } from '@codemirror/autocomplete'
@@ -187,17 +259,22 @@ const snippets = [
     const editorFallback = document.getElementById('code-editor') as HTMLTextAreaElement | null
     const editorCmContainer = document.getElementById('code-editor-cm') as HTMLElement | null
     const stdinInput = document.getElementById('stdin-input') as HTMLTextAreaElement | null
+    const stdinToggle = document.getElementById('stdin-toggle') as HTMLButtonElement | null
+    const stdinContent = document.getElementById('stdin-content') as HTMLElement | null
+    const stdinChevron = document.getElementById('stdin-chevron') as SVGElement | null
     const runBtn = document.getElementById('run-btn') as HTMLButtonElement | null
+    const runIcon = document.getElementById('run-icon') as SVGElement | null
+    const runSpinner = document.getElementById('run-spinner') as SVGElement | null
+    const runLabel = document.getElementById('run-label') as HTMLElement | null
     const resetBtn = document.getElementById('reset-btn') as HTMLButtonElement | null
     const downloadBtn = document.getElementById('download-btn') as HTMLButtonElement | null
     const outputArea = document.getElementById('output-area') as HTMLElement | null
+    const outputCard = document.getElementById('output-card') as HTMLElement | null
     const execTime = document.getElementById('exec-time') as HTMLElement | null
 
-    // Read variables from data attributes
-    const lang = editorCmContainer?.dataset.lang || 'en'
+    const lang = editorCmContainer?.dataset.lang || 'id'
     const defaultCode = editorCmContainer?.dataset.defaultCode || ''
 
-    // Editor state - managed by CodeMirror or fallback textarea
     let cmView: EditorView | null = null
     let currentCode = defaultCode
 
@@ -217,22 +294,45 @@ const snippets = [
       currentCode = value
     }
 
-    // Run code
+    // Run button loading state
+    function setRunning(running: boolean) {
+      if (!runBtn) return
+      runBtn.disabled = running
+      runIcon?.classList.toggle('hidden', running)
+      runSpinner?.classList.toggle('hidden', !running)
+      if (runLabel) {
+        runLabel.textContent = running
+          ? (lang === 'id' ? 'Menjalankan...' : 'Running...')
+          : (lang === 'id' ? 'Jalankan' : 'Run')
+      }
+    }
+
+    // Loading output with animated dots
+    function setOutputLoading() {
+      if (!outputArea) return
+      outputArea.innerHTML = `
+        <div class="flex items-center gap-2 text-slate-400 italic">
+          <span>${lang === 'id' ? 'Mengompilasi dan menjalankan' : 'Compiling and running'}</span>
+          <span class="flex gap-1 items-center">
+            <span class="loading-dot" style="animation-delay:0ms"></span>
+            <span class="loading-dot" style="animation-delay:180ms"></span>
+            <span class="loading-dot" style="animation-delay:360ms"></span>
+          </span>
+        </div>
+      `
+    }
+
     async function runCode() {
       if (!outputArea || !runBtn) return
-      const code = getCode()
-      const stdin = stdinInput?.value || ''
 
-      runBtn.disabled = true
-      runBtn.textContent = lang === 'id' ? 'Menjalankan...' : 'Running...'
-      outputArea.textContent = lang === 'id' ? 'Mengompilasi dan menjalankan...' : 'Compiling and running...'
-      outputArea.className = 'p-4 bg-white dark:bg-slate-950 text-slate-500 font-mono text-sm min-h-[80px] whitespace-pre-wrap italic'
+      setRunning(true)
+      setOutputLoading()
 
       try {
         const res = await fetch('/api/run-code', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code, stdin }),
+          body: JSON.stringify({ code: getCode(), stdin: stdinInput?.value || '' }),
         })
 
         if (!res.ok) {
@@ -244,14 +344,22 @@ const snippets = [
         const statusId = result.status?.id
 
         if (statusId === 3) {
+          // Accepted
           outputArea.textContent = result.stdout || (lang === 'id' ? '(Tidak ada output)' : '(No output)')
-          outputArea.className = 'p-4 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-mono text-sm min-h-[80px] whitespace-pre-wrap'
+          outputArea.className = 'p-4 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-mono text-sm min-h-[100px] whitespace-pre-wrap'
         } else if (statusId === 6) {
-          outputArea.textContent = (lang === 'id' ? 'Error Kompilasi:\n' : 'Compilation Error:\n') + (result.compile_output || '')
-          outputArea.className = 'p-4 bg-white dark:bg-slate-950 text-red-600 dark:text-red-400 font-mono text-sm min-h-[80px] whitespace-pre-wrap'
+          // Compilation error
+          outputArea.innerHTML = `<span class="text-xs font-semibold text-red-500 uppercase tracking-wide">${lang === 'id' ? 'Error Kompilasi' : 'Compilation Error'}</span>\n\n` + escapeHtml(result.compile_output || '')
+          outputArea.className = 'p-4 bg-white dark:bg-slate-950 text-red-500 dark:text-red-400 font-mono text-sm min-h-[100px] whitespace-pre-wrap'
+        } else if (statusId === 5) {
+          // TLE
+          outputArea.textContent = lang === 'id' ? 'Waktu eksekusi melebihi batas (Time Limit Exceeded).' : 'Execution time limit exceeded.'
+          outputArea.className = 'p-4 bg-white dark:bg-slate-950 text-amber-500 font-mono text-sm min-h-[100px] whitespace-pre-wrap'
         } else {
-          outputArea.textContent = (result.stderr || result.compile_output || result.status?.description || 'Error')
-          outputArea.className = 'p-4 bg-white dark:bg-slate-950 text-red-600 dark:text-red-400 font-mono text-sm min-h-[80px] whitespace-pre-wrap'
+          // Runtime error or other
+          const msg = result.stderr || result.compile_output || result.status?.description || 'Error'
+          outputArea.innerHTML = `<span class="text-xs font-semibold text-red-500 uppercase tracking-wide">${lang === 'id' ? 'Runtime Error' : 'Runtime Error'}</span>\n\n` + escapeHtml(msg)
+          outputArea.className = 'p-4 bg-white dark:bg-slate-950 text-red-500 dark:text-red-400 font-mono text-sm min-h-[100px] whitespace-pre-wrap'
         }
 
         if (result.time && execTime) {
@@ -259,21 +367,104 @@ const snippets = [
           execTime.classList.remove('hidden')
         }
       } catch (err: any) {
-        outputArea.textContent = (lang === 'id' ? 'Error: ' : 'Error: ') + err.message
-        outputArea.className = 'p-4 bg-white dark:bg-slate-950 text-red-600 dark:text-red-400 font-mono text-sm min-h-[80px] whitespace-pre-wrap'
+        const isNetworkErr = err instanceof TypeError
+        outputArea.textContent = isNetworkErr
+          ? (lang === 'id' ? 'Tidak dapat terhubung ke server. Periksa koneksi internet dan coba lagi.' : 'Cannot connect to server. Check your internet connection and try again.')
+          : `Error: ${err.message}`
+        outputArea.className = 'p-4 bg-white dark:bg-slate-950 text-red-500 dark:text-red-400 font-mono text-sm min-h-[100px] whitespace-pre-wrap'
       } finally {
-        runBtn.disabled = false
-        runBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> ' + (lang === 'id' ? 'Jalankan' : 'Run')
+        setRunning(false)
+        // Auto-scroll to output
+        outputCard?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
       }
     }
+
+    function escapeHtml(str: string): string {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    }
+
+    // Stdin toggle
+    stdinToggle?.addEventListener('click', () => {
+      const isHidden = stdinContent?.classList.contains('hidden')
+      stdinContent?.classList.toggle('hidden')
+      if (stdinChevron) {
+        stdinChevron.style.transform = isHidden ? 'rotate(90deg)' : ''
+      }
+    })
+
+    // Snippet active state
+    function setActiveSnippet(label: string) {
+      document.querySelectorAll<HTMLElement>('.snippet-btn').forEach(btn => {
+        const active = btn.dataset.label === label
+        if (active) {
+          btn.classList.add('snippet-active')
+        } else {
+          btn.classList.remove('snippet-active')
+        }
+      })
+    }
+
+    // Snippet buttons (mobile pills + desktop list)
+    document.querySelectorAll('.snippet-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const el = btn as HTMLElement
+        setCode(el.dataset.snippet || '')
+        setActiveSnippet(el.dataset.label || '')
+        // On mobile, scroll editor into view after selecting snippet
+        editorCmContainer?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+      })
+    })
+
+    // Reset
+    resetBtn?.addEventListener('click', () => {
+      setCode(defaultCode || '')
+      setActiveSnippet('')
+      if (outputArea) {
+        outputArea.textContent = lang === 'id' ? 'Output akan muncul di sini setelah kode dijalankan...' : 'Output will appear here after running your code...'
+        outputArea.className = 'p-4 bg-white dark:bg-slate-950 font-mono text-sm min-h-[100px] whitespace-pre-wrap text-slate-400 italic'
+      }
+      if (execTime) execTime.classList.add('hidden')
+    })
+
+    // Download
+    downloadBtn?.addEventListener('click', () => {
+      const code = getCode()
+      const blob = new Blob([code], { type: 'text/plain' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'belajar-cpp-code.cpp'
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+    })
+
+    runBtn?.addEventListener('click', runCode)
+
+    // Fallback textarea keyboard shortcuts
+    editorFallback?.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault()
+        runCode()
+      }
+      if (e.key === 'Tab') {
+        e.preventDefault()
+        const start = editorFallback.selectionStart
+        const end = editorFallback.selectionEnd
+        editorFallback.value = editorFallback.value.substring(0, start) + '    ' + editorFallback.value.substring(end)
+        editorFallback.selectionStart = editorFallback.selectionEnd = start + 4
+      }
+    })
 
     // Initialize CodeMirror
     if (editorCmContainer) {
       try {
+        const cmHeight = editorCmContainer.offsetHeight || 420
+
         const state = EditorState.create({
           doc: currentCode,
           extensions: [
-            // Core editor features
             lineNumbers(),
             highlightActiveLineGutter(),
             highlightSpecialChars(),
@@ -295,11 +486,10 @@ const snippets = [
               { key: 'Ctrl-Enter', run: () => { runCode(); return true } },
               { key: 'Meta-Enter', run: () => { runCode(); return true } },
             ]),
-            // C++ language + one-dark theme (includes syntax token colors)
             cpp(),
             oneDark,
             EditorView.theme({
-              '&': { height: '420px', fontSize: '14px', overflow: 'hidden' },
+              '&': { height: `${cmHeight}px`, fontSize: '14px', overflow: 'hidden' },
               '.cm-scroller': {
                 overflow: 'auto',
                 fontFamily: '"JetBrains Mono", "Fira Code", ui-monospace, monospace',
@@ -308,10 +498,7 @@ const snippets = [
               },
               '.cm-scroller::-webkit-scrollbar': { width: '6px', height: '6px' },
               '.cm-scroller::-webkit-scrollbar-track': { background: 'transparent' },
-              '.cm-scroller::-webkit-scrollbar-thumb': {
-                background: '#475569',
-                borderRadius: '3px',
-              },
+              '.cm-scroller::-webkit-scrollbar-thumb': { background: '#475569', borderRadius: '3px' },
               '.cm-scroller::-webkit-scrollbar-thumb:hover': { background: '#64748b' },
               '.cm-gutters': { borderRight: '1px solid #3e4451' },
             }),
@@ -322,62 +509,54 @@ const snippets = [
         })
 
         cmView = new EditorView({ state, parent: editorCmContainer })
-        // Hide fallback textarea
         if (editorFallback) editorFallback.classList.add('hidden')
       } catch (err) {
-        console.warn('CodeMirror failed to load, using textarea fallback:', err)
-        // Show fallback textarea
+        console.warn('CodeMirror failed, using textarea fallback:', err)
         if (editorCmContainer) editorCmContainer.classList.add('hidden')
         if (editorFallback) editorFallback.classList.remove('hidden')
       }
     }
-
-    runBtn?.addEventListener('click', runCode)
-
-    // Ctrl+Enter shortcut for fallback textarea
-    editorFallback?.addEventListener('keydown', (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-        e.preventDefault()
-        runCode()
-      }
-      if (e.key === 'Tab') {
-        e.preventDefault()
-        const start = editorFallback.selectionStart
-        const end = editorFallback.selectionEnd
-        editorFallback.value = editorFallback.value.substring(0, start) + '    ' + editorFallback.value.substring(end)
-        editorFallback.selectionStart = editorFallback.selectionEnd = start + 4
-      }
-    })
-
-    // Reset
-    resetBtn?.addEventListener('click', () => {
-      setCode(defaultCode || '')
-      if (outputArea) {
-        outputArea.innerHTML = '<span class="text-slate-400 italic">' + (lang === 'id' ? 'Output akan muncul di sini...' : 'Output will appear here...') + '</span>'
-        outputArea.className = 'p-4 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-mono text-sm min-h-[80px] whitespace-pre-wrap'
-      }
-      if (execTime) execTime.classList.add('hidden')
-    })
-
-    // Download
-    downloadBtn?.addEventListener('click', () => {
-      const code = getCode()
-      const blob = new Blob([code], { type: 'text/plain' })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = 'belajar-cpp-code.cpp'
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
-    })
-
-    // Snippet buttons
-    document.querySelectorAll('.snippet-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        setCode(btn.getAttribute('data-snippet') || '')
-      })
-    })
   </script>
+
+  <style is:global>
+    /* Snippet active state */
+    .snippet-btn.snippet-active {
+      background-color: rgb(var(--color-primary-50, 239 246 255));
+      color: rgb(var(--color-primary-700, 29 78 216));
+      border-color: rgb(var(--color-primary-400, 96 165 250));
+    }
+    .dark .snippet-btn.snippet-active {
+      background-color: rgb(30 58 138 / 0.3);
+      color: rgb(147 197 253);
+      border-color: rgb(59 130 246 / 0.6);
+    }
+    /* Desktop sidebar list: active state */
+    .lg\\:hidden + div .snippet-btn.snippet-active,
+    .snippet-btn.snippet-active:not(.flex-shrink-0) {
+      background-color: rgb(239 246 255);
+      color: rgb(29 78 216);
+    }
+    .dark .snippet-btn.snippet-active:not(.flex-shrink-0) {
+      background-color: rgb(30 58 138 / 0.25);
+      color: rgb(147 197 253);
+    }
+
+    /* Hide scrollbar on mobile snippet strip */
+    .snippet-strip::-webkit-scrollbar { display: none; }
+    .snippet-strip { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Loading dots animation */
+    .loading-dot {
+      display: inline-block;
+      width: 5px;
+      height: 5px;
+      background-color: #94a3b8;
+      border-radius: 50%;
+      animation: loading-bounce 0.8s ease-in-out infinite;
+    }
+    @keyframes loading-bounce {
+      0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+      40% { transform: translateY(-5px); opacity: 1; }
+    }
+  </style>
 </PageLayout>
