@@ -87,6 +87,7 @@ const currentUnitSlug = currentSlug ? currentSlug.split('/')[0] : null
                           : 'text-slate-400 dark:text-slate-600 cursor-not-allowed'
                     ]}
                     data-lesson-slug={lesson.slug}
+                    data-current={isCurrentLesson ? 'true' : undefined}
                   >
                     {/* Status indicator */}
                     <span class="flex-shrink-0 w-4 text-center" data-lesson-status={lesson.slug}>
@@ -172,4 +173,10 @@ const currentUnitSlug = currentSlug ? currentSlug.split('/')[0] : null
       })
     }
   } catch {}
+
+  // Auto-scroll sidebar to the current active lesson
+  const currentLink = document.querySelector('[data-current="true"]')
+  if (currentLink) {
+    currentLink.scrollIntoView({ block: 'center', behavior: 'instant' })
+  }
 </script>

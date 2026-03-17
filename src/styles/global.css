@@ -114,6 +114,10 @@
 pre:hover > .shiki-copy-btn {
   opacity: 1;
 }
+/* Show copy button on touch devices (no hover state) */
+@media (hover: none) {
+  .shiki-copy-btn { opacity: 0.8; }
+}
 .shiki-copy-btn:hover {
   background: rgba(255, 255, 255, 0.15);
   color: #e2e8f0;
@@ -129,6 +133,13 @@ pre::-webkit-scrollbar { height: 5px; width: 5px; }
 pre::-webkit-scrollbar-track { background: transparent; }
 pre::-webkit-scrollbar-thumb { background: #374151; border-radius: 9999px; }
 pre::-webkit-scrollbar-thumb:hover { background: #4b5563; }
+
+/* Responsive tables in prose */
+.prose table {
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
 
 /* Smooth scroll for TOC */
 html { scroll-behavior: smooth; }

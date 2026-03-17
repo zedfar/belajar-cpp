@@ -37,10 +37,11 @@ const ogImg = ogImage || `${siteUrl}/og-default.svg`
     <meta name="twitter:description" content={desc} />
     <meta name="twitter:image" content={ogImg} />
 
-    <!-- Fonts -->
+    <!-- Fonts (non-blocking) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" /></noscript>
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -59,6 +60,9 @@ const ogImg = ogImage || `${siteUrl}/og-default.svg`
 
   </head>
   <body class="bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors min-h-screen">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-white dark:focus:bg-slate-900 focus:text-primary-600 focus:rounded-lg focus:shadow-lg focus:border focus:border-primary-300 focus:outline-none focus:font-medium">
+      {lang === 'id' ? 'Langsung ke konten' : 'Skip to content'}
+    </a>
     <slot />
   </body>
 </html>

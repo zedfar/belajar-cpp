@@ -42,9 +42,9 @@ function isActive(href: string): boolean {
       <a
         href={item.href}
         class:list={[
-          'flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg text-xs transition-colors min-w-[4rem]',
+          'relative flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg text-xs transition-colors min-w-[4rem]',
           isActive(item.href)
-            ? 'text-primary-600 dark:text-primary-400'
+            ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/50'
             : 'text-slate-500 dark:text-slate-400'
         ]}
       >
@@ -75,7 +75,7 @@ function isActive(href: string): boolean {
         )}
         <span>{item.label}</span>
         {isActive(item.href) && (
-          <span class="absolute -top-0.5 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-primary-600 dark:bg-primary-400 rounded-full"></span>
+          <span class="absolute -top-0.5 left-1/2 -translate-x-1/2 w-8 h-1 bg-primary-600 dark:bg-primary-400 rounded-full"></span>
         )}
       </a>
     ))}
