@@ -357,7 +357,7 @@ export function getLangName(lang: Language): string {
  */
 export function detectLanguage(acceptLanguage?: string): Language {
   if (!acceptLanguage) return 'id'
-  const preferred = acceptLanguage.split(',')[0].trim().toLowerCase()
+  const preferred = (acceptLanguage.split(',')[0] ?? '').trim().toLowerCase()
   if (preferred.startsWith('en')) return 'en'
   return 'id'
 }

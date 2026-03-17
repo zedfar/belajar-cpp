@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/>
+      <stop offset="100%" style="stop-color:#1e293b"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3b82f6"/>
+      <stop offset="100%" style="stop-color:#6366f1"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.15"/>
+      <stop offset="100%" style="stop-color:#6366f1;stop-opacity:0.05"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Decorative grid lines -->
+  <g stroke="#1e40af" stroke-width="1" opacity="0.15">
+    <line x1="0" y1="105" x2="1200" y2="105"/>
+    <line x1="0" y1="210" x2="1200" y2="210"/>
+    <line x1="0" y1="315" x2="1200" y2="315"/>
+    <line x1="0" y1="420" x2="1200" y2="420"/>
+    <line x1="0" y1="525" x2="1200" y2="525"/>
+    <line x1="200" y1="0" x2="200" y2="630"/>
+    <line x1="400" y1="0" x2="400" y2="630"/>
+    <line x1="600" y1="0" x2="600" y2="630"/>
+    <line x1="800" y1="0" x2="800" y2="630"/>
+    <line x1="1000" y1="0" x2="1000" y2="630"/>
+  </g>
+
+  <!-- Glow blob top-right -->
+  <ellipse cx="1050" cy="150" rx="320" ry="220" fill="url(#glow)"/>
+
+  <!-- Glow blob bottom-left -->
+  <ellipse cx="150" cy="520" rx="240" ry="160" fill="url(#glow)"/>
+
+  <!-- Code editor mockup (right side) -->
+  <rect x="660" y="120" width="480" height="340" rx="12" fill="#1e293b" opacity="0.9"/>
+  <rect x="660" y="120" width="480" height="36" rx="12" fill="#0f172a"/>
+  <rect x="660" y="144" width="480" height="12" fill="#0f172a"/>
+  <!-- Window dots -->
+  <circle cx="690" cy="138" r="6" fill="#ef4444" opacity="0.8"/>
+  <circle cx="712" cy="138" r="6" fill="#f59e0b" opacity="0.8"/>
+  <circle cx="734" cy="138" r="6" fill="#22c55e" opacity="0.8"/>
+  <!-- Filename -->
+  <text x="760" y="143" font-family="monospace" font-size="13" fill="#64748b">main.cpp</text>
+
+  <!-- Code lines -->
+  <text x="680" y="186" font-family="monospace" font-size="14" fill="#64748b">1</text>
+  <text x="706" y="186" font-family="monospace" font-size="14" fill="#c792ea">#include </text>
+  <text x="800" y="186" font-family="monospace" font-size="14" fill="#c3e88d">&lt;iostream&gt;</text>
+
+  <text x="680" y="210" font-family="monospace" font-size="14" fill="#64748b">2</text>
+
+  <text x="680" y="234" font-family="monospace" font-size="14" fill="#64748b">3</text>
+  <text x="706" y="234" font-family="monospace" font-size="14" fill="#82aaff">int </text>
+  <text x="744" y="234" font-family="monospace" font-size="14" fill="#f78c6c">main</text>
+  <text x="789" y="234" font-family="monospace" font-size="14" fill="#89ddff">() {</text>
+
+  <text x="680" y="258" font-family="monospace" font-size="14" fill="#64748b">4</text>
+  <text x="706" y="258" font-family="monospace" font-size="14" fill="#94a3b8">    std::</text>
+  <text x="762" y="258" font-family="monospace" font-size="14" fill="#82aaff">cout</text>
+  <text x="797" y="258" font-family="monospace" font-size="14" fill="#89ddff"> &lt;&lt; </text>
+  <text x="831" y="258" font-family="monospace" font-size="14" fill="#c3e88d">"Halo!"</text>
+  <text x="895" y="258" font-family="monospace" font-size="14" fill="#89ddff">;</text>
+
+  <text x="680" y="282" font-family="monospace" font-size="14" fill="#64748b">5</text>
+  <text x="706" y="282" font-family="monospace" font-size="14" fill="#82aaff">    return </text>
+  <text x="791" y="282" font-family="monospace" font-size="14" fill="#f78c6c">0</text>
+  <text x="802" y="282" font-family="monospace" font-size="14" fill="#89ddff">;</text>
+
+  <text x="680" y="306" font-family="monospace" font-size="14" fill="#64748b">6</text>
+  <text x="706" y="306" font-family="monospace" font-size="14" fill="#89ddff">}</text>
+
+  <!-- Output panel -->
+  <rect x="660" y="340" width="480" height="120" rx="0" fill="#0a0f1a" opacity="0.8"/>
+  <rect x="660" y="340" width="480" height="1" fill="#334155"/>
+  <text x="680" y="360" font-family="monospace" font-size="12" fill="#475569">Output</text>
+  <text x="680" y="390" font-family="monospace" font-size="15" fill="#4ade80">Halo!</text>
+  <text x="680" y="412" font-family="monospace" font-size="13" fill="#334155">──────────────────</text>
+  <text x="680" y="435" font-family="monospace" font-size="12" fill="#1d4ed8">Eksekusi: 42ms</text>
+
+  <!-- Rounded corner fix for output -->
+  <rect x="660" y="448" width="480" height="12" rx="0" ry="0" fill="#0a0f1a" opacity="0.8"/>
+  <rect x="660" y="448" width="480" height="12" rx="12" fill="#1e293b" opacity="0.9"/>
+
+  <!-- Left side: branding -->
+  <!-- Logo / icon -->
+  <rect x="80" y="160" width="72" height="72" rx="16" fill="url(#accent)" opacity="0.9"/>
+  <text x="116" y="208" font-family="monospace" font-weight="bold" font-size="32" fill="white" text-anchor="middle">&lt;/&gt;</text>
+
+  <!-- Title -->
+  <text x="80" y="290" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="56" fill="white">Belajar</text>
+  <text x="80" y="354" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="56" fill="url(#accent)">C++</text>
+
+  <!-- Tagline -->
+  <text x="80" y="400" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#94a3b8">Platform belajar C++ gratis &amp; interaktif</text>
+  <text x="80" y="430" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#64748b">untuk siswa Indonesia</text>
+
+  <!-- Feature pills -->
+  <rect x="80" y="470" width="120" height="32" rx="16" fill="#1e3a5f" stroke="#3b82f6" stroke-width="1"/>
+  <text x="140" y="491" font-family="system-ui, sans-serif" font-size="14" fill="#93c5fd" text-anchor="middle">✓ Gratis</text>
+
+  <rect x="212" y="470" width="148" height="32" rx="16" fill="#1e3a5f" stroke="#3b82f6" stroke-width="1"/>
+  <text x="286" y="491" font-family="system-ui, sans-serif" font-size="14" fill="#93c5fd" text-anchor="middle">✓ Interaktif</text>
+
+  <rect x="372" y="470" width="148" height="32" rx="16" fill="#1e3a5f" stroke="#3b82f6" stroke-width="1"/>
+  <text x="446" y="491" font-family="system-ui, sans-serif" font-size="14" fill="#93c5fd" text-anchor="middle">✓ Bilingual</text>
+
+  <!-- Bottom accent bar -->
+  <rect x="0" y="610" width="1200" height="4" fill="url(#accent)"/>
+
+  <!-- URL -->
+  <text x="80" y="598" font-family="monospace" font-size="16" fill="#475569">belajar-cpp.varnimyr.my.id</text>
+</svg>

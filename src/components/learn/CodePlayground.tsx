@@ -179,7 +179,7 @@ export function CodePlayground({
     setOutput(null)
     setMatched(false)
     try {
-      const result = await runCodeViaProxy({ code, stdin: stdin || undefined })
+      const result = await runCodeViaProxy({ code, ...(stdin ? { stdin } : {}) })
       const { text, isError: hasError } = getDisplayOutput(result)
       setOutput(text)
       setIsError(hasError)

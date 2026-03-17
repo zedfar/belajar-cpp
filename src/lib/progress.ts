@@ -147,24 +147,21 @@ export function getTheme(): 'light' | 'dark' {
 // ============================================================
 
 function updateStreak(progress: UserProgress): void {
-  const today = new Date().toISOString().split('T')[0]
+  const today = new Date().toISOString().split('T')[0] ?? ''
   const lastActive = progress.lastActiveDate
 
   if (!lastActive || lastActive === today) {
-    // Already active today, no change
     progress.lastActiveDate = today
     return
   }
 
   const yesterday = new Date()
   yesterday.setDate(yesterday.getDate() - 1)
-  const yesterdayStr = yesterday.toISOString().split('T')[0]
+  const yesterdayStr = yesterday.toISOString().split('T')[0] ?? ''
 
   if (lastActive === yesterdayStr) {
-    // Consecutive day — increment streak
     progress.streakDays += 1
   } else {
-    // Streak broken
     progress.streakDays = 1
   }
   progress.lastActiveDate = today

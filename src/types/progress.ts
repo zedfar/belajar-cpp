@@ -46,6 +46,6 @@ export const DEFAULT_PROGRESS: UserProgress = {
   theme: 'light',
   lastVisited: new Date().toISOString(),
   streakDays: 0,
-  lastActiveDate: new Date().toISOString().split('T')[0],
+  lastActiveDate: new Date().toISOString().split('T')[0] ?? '',
   unlockedBadges: [],
 }

@@ -31,6 +31,7 @@ export function QuizCard({ quizId, questions, lang, onComplete }: QuizCardProps)
   const [finished, setFinished] = useState(false)
 
   const q = questions[currentQ]
+  if (!q) return null
   const isLast = currentQ === questions.length - 1
   const isAnswered = submitted[currentQ]
   const selected = selectedAnswers[currentQ]
@@ -97,7 +98,6 @@ export function QuizCard({ quizId, questions, lang, onComplete }: QuizCardProps)
           <div className="mt-6 text-left space-y-4">
             {questions.map((q, qi) => {
               const userAnswer = selectedAnswers[qi]
-              const isCorrect = userAnswer === q.correctIndex
               return (
                 <div key={q.id} className="p-3 rounded-lg border border-slate-200 dark:border-slate-700">
                   <p className="text-sm font-medium text-slate-800 dark:text-slate-200 mb-2">
@@ -143,8 +143,8 @@ export function QuizCard({ quizId, questions, lang, onComplete }: QuizCardProps)
               className={clsx(
                 'w-2 h-2 rounded-full',
                 i === currentQ && 'bg-blue-500',
-                i < currentQ && submitted[i] && selectedAnswers[i] === questions[i].correctIndex && 'bg-emerald-500',
-                i < currentQ && submitted[i] && selectedAnswers[i] !== questions[i].correctIndex && 'bg-red-400',
+                i < currentQ && submitted[i] && selectedAnswers[i] === questions[i]?.correctIndex && 'bg-emerald-500',
+                i < currentQ && submitted[i] && selectedAnswers[i] !== questions[i]?.correctIndex && 'bg-red-400',
                 i > currentQ && 'bg-slate-300 dark:bg-slate-600'
               )}
             />

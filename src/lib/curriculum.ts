@@ -169,6 +169,7 @@ export function getNextLesson(currentSlug: string): { slug: string; unitSlug: st
   const idx = allLessons.findIndex(l => l.slug === currentSlug)
   if (idx === -1 || idx >= allLessons.length - 1) return null
   const next = allLessons[idx + 1]
+  if (!next) return null
   return { slug: next.slug, unitSlug: next.unitSlug }
 }
 
@@ -179,6 +180,7 @@ export function getPrevLesson(currentSlug: string): { slug: string; unitSlug: st
   const idx = allLessons.findIndex(l => l.slug === currentSlug)
   if (idx <= 0) return null
   const prev = allLessons[idx - 1]
+  if (!prev) return null
   return { slug: prev.slug, unitSlug: prev.unitSlug }
 }
 

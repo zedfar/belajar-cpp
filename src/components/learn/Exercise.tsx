@@ -42,7 +42,7 @@ function FillBlankExercise({
 
   const handleCheck = () => {
     onAttempt()
-    const checked = answers.map((a, i) => a.trim() === blanks[i].trim())
+    const checked = answers.map((a, i) => a.trim() === (blanks[i] ?? '').trim())
     setResults(checked)
     if (checked.every(Boolean)) onCorrect()
   }
@@ -221,7 +221,7 @@ export function Exercise(props: ExerciseProps) {
         <CodePlayground
           initialCode={starterCode ?? ''}
           lang={lang}
-          expectedOutput={expectedOutput}
+          {...(expectedOutput !== undefined ? { expectedOutput } : {})}
           onSuccess={handleCorrect}
           height={200}
         />

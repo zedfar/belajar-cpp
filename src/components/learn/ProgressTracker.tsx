@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { clsx } from 'clsx'
 import { loadProgress, setCurrentLesson, getOverallProgress } from '../../lib/progress'
 import type { Language } from '../../types/lesson'
 import type { UserProgress } from '../../types/progress'
