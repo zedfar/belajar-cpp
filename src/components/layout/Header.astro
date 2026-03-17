@@ -11,9 +11,21 @@ interface Props {
 const { lang, currentPath } = Astro.props
 
 const navLinks = [
-  { href: `/${lang}`, label: t(lang, 'nav.home') },
-  { href: `/${lang}/curriculum`, label: t(lang, 'nav.curriculum') },
-  { href: `/${lang}/playground`, label: t(lang, 'nav.playground') },
+  {
+    href: `/${lang}`,
+    label: t(lang, 'nav.home'),
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+  },
+  {
+    href: `/${lang}/curriculum`,
+    label: t(lang, 'nav.curriculum'),
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>`,
+  },
+  {
+    href: `/${lang}/playground`,
+    label: t(lang, 'nav.playground'),
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>`,
+  },
 ]
 
 function isActive(href: string): boolean {
@@ -39,12 +51,13 @@ function isActive(href: string): boolean {
           <a
             href={link.href}
             class:list={[
-              'px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+              'flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
               isActive(link.href)
                 ? 'bg-primary-50 dark:bg-primary-950 text-primary-600 dark:text-primary-400'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800'
             ]}
           >
+            <span set:html={link.icon} />
             {link.label}
           </a>
         ))}
@@ -88,12 +101,13 @@ function isActive(href: string): boolean {
         <a
           href={link.href}
           class:list={[
-            'flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+            'flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
             isActive(link.href)
               ? 'bg-primary-50 dark:bg-primary-950 text-primary-600 dark:text-primary-400'
               : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800'
           ]}
         >
+          <span set:html={link.icon} />
           {link.label}
         </a>
       ))}

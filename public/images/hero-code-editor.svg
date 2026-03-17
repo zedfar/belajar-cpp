@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-24 -18 696 448" overflow="visible">
+  <defs>
+    <filter id="hce-shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="14" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+    <!-- Clip to keep terminal bottom corners rounded -->
+    <clipPath id="hce-clip">
+      <rect x="20" y="10" width="600" height="380" rx="12"/>
+    </clipPath>
+  </defs>
+
+  <!-- ── Editor window shell ── -->
+  <g filter="url(#hce-shadow)">
+    <rect x="20" y="10" width="600" height="380" rx="12" fill="#1e1e2e"/>
+  </g>
+
+  <!-- ── Title bar ── -->
+  <rect x="20" y="10" width="600" height="38" rx="12" fill="#2d2d40" clip-path="url(#hce-clip)"/>
+  <!-- flat bottom of title bar -->
+  <rect x="20" y="36" width="600" height="12" fill="#2d2d40"/>
+
+  <!-- Traffic lights -->
+  <circle cx="46" cy="29" r="6" fill="#ff5f57"/>
+  <circle cx="66" cy="29" r="6" fill="#febc2e"/>
+  <circle cx="86" cy="29" r="6" fill="#28c840"/>
+
+  <!-- Active tab -->
+  <rect x="114" y="12" width="112" height="28" rx="5" fill="#1e1e2e"/>
+  <circle cx="120" cy="26" r="3" fill="#89ddff" opacity="0.6"/>
+  <text x="130" y="31" font-family="monospace" font-size="11" fill="#cdd3de">main.cpp</text>
+
+  <!-- ── Gutter (line numbers bg) ── -->
+  <rect x="20" y="48" width="48" height="278" fill="#181825"/>
+
+  <!-- ── Editor bg ── -->
+  <rect x="68" y="48" width="552" height="278" fill="#1e1e2e"/>
+
+  <!-- ── Line numbers (right-aligned at x=60) ── -->
+  <g font-family="'JetBrains Mono', monospace" font-size="12" fill="#3d4460" text-anchor="end">
+    <text x="60" y="72">1</text>
+    <text x="60" y="94">2</text>
+    <text x="60" y="116">3</text>
+    <text x="60" y="138">4</text>
+    <text x="60" y="160">5</text>
+    <text x="60" y="182">6</text>
+    <text x="60" y="204">7</text>
+    <text x="60" y="226">8</text>
+    <text x="60" y="248">9</text>
+    <text x="60" y="270">10</text>
+    <text x="60" y="292">11</text>
+  </g>
+
+  <!-- ── Code content — tiap token dengan x eksplisit ── -->
+  <!-- Line 1: #include <iostream> -->
+  <text x="78" y="72" font-family="'JetBrains Mono', monospace" font-size="12.5" fill="#89ddff">#include &lt;iostream&gt;</text>
+
+  <!-- Line 2: (blank) -->
+
+  <!-- Line 3: int main() { -->
+  <text x="78" y="116" font-family="'JetBrains Mono', monospace" font-size="12.5">
+    <tspan fill="#c792ea">int</tspan><tspan fill="#82aaff"> main</tspan><tspan fill="#cdd3de">() {</tspan>
+  </text>
+
+  <!-- Line 4:     std::string nama = "Budi"; -->
+  <!-- indent = 78 + 4*7.5 = 108 -->
+  <text x="108" y="138" font-family="'JetBrains Mono', monospace" font-size="12.5">
+    <tspan fill="#89ddff">std::</tspan><tspan fill="#cdd3de">string nama = </tspan><tspan fill="#c3e88d">"Budi"</tspan><tspan fill="#cdd3de">;</tspan>
+  </text>
+
+  <!-- Line 5:     int umur = 17; -->
+  <text x="108" y="160" font-family="'JetBrains Mono', monospace" font-size="12.5">
+    <tspan fill="#c792ea">int</tspan><tspan fill="#cdd3de"> umur = </tspan><tspan fill="#f78c6c">17</tspan><tspan fill="#cdd3de">;</tspan>
+  </text>
+
+  <!-- Line 6: (blank) -->
+
+  <!-- Line 7:     std::cout << "Halo, " << nama << "!" -->
+  <text x="108" y="204" font-family="'JetBrains Mono', monospace" font-size="12.5">
+    <tspan fill="#89ddff">std::</tspan><tspan fill="#cdd3de">cout &lt;&lt; </tspan><tspan fill="#c3e88d">"Halo, "</tspan><tspan fill="#cdd3de"> &lt;&lt; nama</tspan>
+  </text>
+
+  <!-- Line 8:               << "!" << std::endl; -->
+  <!-- aligned to << above: "    std::cout << " = 108 + ~10chars*7.5 = 183 -->
+  <text x="183" y="226" font-family="'JetBrains Mono', monospace" font-size="12.5">
+    <tspan fill="#cdd3de">&lt;&lt; </tspan><tspan fill="#c3e88d">"!"</tspan><tspan fill="#cdd3de"> &lt;&lt; </tspan><tspan fill="#89ddff">std::</tspan><tspan fill="#cdd3de">endl;</tspan>
+  </text>
+
+  <!-- Line 9:     return 0; -->
+  <text x="108" y="248" font-family="'JetBrains Mono', monospace" font-size="12.5">
+    <tspan fill="#c792ea">return</tspan><tspan fill="#cdd3de"> </tspan><tspan fill="#f78c6c">0</tspan><tspan fill="#cdd3de">;</tspan>
+  </text>
+
+  <!-- Line 10: } -->
+  <text x="78" y="270" font-family="'JetBrains Mono', monospace" font-size="12.5" fill="#cdd3de">}</text>
+
+  <!-- Cursor -->
+  <rect x="90" y="278" width="2" height="13" fill="#89ddff" opacity="0.75">
+    <animate attributeName="opacity" values="0.75;0;0.75" dur="1.2s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- ── Terminal panel ── -->
+  <rect x="20" y="326" width="600" height="1" fill="#383856"/>
+  <rect x="20" y="327" width="600" height="63" fill="#181825" clip-path="url(#hce-clip)"/>
+
+  <!-- TERMINAL label -->
+  <text x="36" y="346" font-family="'JetBrains Mono', monospace" font-size="10" fill="#3d4460" letter-spacing="1">TERMINAL</text>
+
+  <!-- Output line -->
+  <text x="36" y="368" font-family="'JetBrains Mono', monospace" font-size="12.5" fill="#a6e3a1">$ </text>
+  <text x="55" y="368" font-family="'JetBrains Mono', monospace" font-size="12.5" fill="#cdd3de">Halo, Budi!</text>
+</svg>

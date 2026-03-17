@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 288" width="700" height="288" font-family="'Segoe UI', system-ui, sans-serif">
+  <defs>
+    <style>
+      :root {
+        --bg: #f8fafc;
+        --border: #e2e8f0;
+        --card-bg: #ffffff;
+        --card-border: #e2e8f0;
+        --text-main: #1e293b;
+        --text-sub: #64748b;
+        --num-bg: #f1f5f9;
+        --num-border: #cbd5e1;
+        --num-text: #1e293b;
+        --row-bg: #ffffff;
+        --shadow: rgba(0,0,0,0.06);
+        --divider: #f1f5f9;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0f172a;
+          --border: #1e293b;
+          --card-bg: #1e293b;
+          --card-border: #334155;
+          --text-main: #f1f5f9;
+          --text-sub: #94a3b8;
+          --num-bg: #0f172a;
+          --num-border: #475569;
+          --num-text: #f1f5f9;
+          --row-bg: #1e293b;
+          --shadow: rgba(0,0,0,0.4);
+          --divider: #1e293b;
+        }
+      }
+    </style>
+    <filter id="op-shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="var(--shadow)"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="700" height="288" rx="14" fill="var(--bg)" stroke="var(--border)" stroke-width="1.5"/>
+
+  <!-- Title -->
+  <text x="350" y="26" text-anchor="middle" fill="var(--text-sub)" font-size="11" font-weight="600" letter-spacing="0.5">OPERATOR PERBANDINGAN — HASILNYA SELALU true ATAU false</text>
+
+  <!-- ============ ROW 1: 5 > 3 → true ============ -->
+  <g filter="url(#op-shadow)">
+    <rect x="20" y="40" width="660" height="68" rx="10" fill="var(--row-bg)" stroke="var(--card-border)" stroke-width="1.5"/>
+    <!-- green left accent -->
+    <rect x="20" y="40" width="5" height="68" fill="#10b981" rx="3"/>
+    <rect x="23" y="40" width="3" height="68" fill="#10b981"/>
+  </g>
+
+  <!-- Left number box -->
+  <rect x="56" y="56" width="68" height="36" rx="8" fill="var(--num-bg)" stroke="var(--num-border)" stroke-width="1.5"/>
+  <text x="90" y="80" text-anchor="middle" fill="var(--num-text)" font-size="20" font-weight="700" font-family="'JetBrains Mono', monospace">5</text>
+
+  <!-- Operator -->
+  <text x="168" y="80" text-anchor="middle" fill="#f59e0b" font-size="22" font-weight="800" font-family="'JetBrains Mono', monospace">&gt;</text>
+  <text x="168" y="95" text-anchor="middle" fill="#f59e0b" font-size="9" font-weight="600">lebih dari?</text>
+
+  <!-- Right number box -->
+  <rect x="196" y="56" width="68" height="36" rx="8" fill="var(--num-bg)" stroke="var(--num-border)" stroke-width="1.5"/>
+  <text x="230" y="80" text-anchor="middle" fill="var(--num-text)" font-size="20" font-weight="700" font-family="'JetBrains Mono', monospace">3</text>
+
+  <!-- Arrow -->
+  <text x="294" y="80" text-anchor="middle" fill="var(--text-sub)" font-size="18">→</text>
+
+  <!-- Result badge: true -->
+  <rect x="316" y="54" width="76" height="32" rx="8" fill="#10b981" fill-opacity="0.15" stroke="#10b981" stroke-width="1.5"/>
+  <text x="354" y="75" text-anchor="middle" fill="#10b981" font-size="14" font-weight="700" font-family="'JetBrains Mono', monospace">true</text>
+
+  <!-- Explanation -->
+  <text x="414" y="68" fill="var(--text-sub)" font-size="12">Ya, 5 memang lebih besar dari 3</text>
+  <text x="414" y="86" fill="#10b981" font-size="11" font-weight="600">✓ kondisi terpenuhi</text>
+
+  <!-- ============ ROW 2: 7 == 7 → true ============ -->
+  <g filter="url(#op-shadow)">
+    <rect x="20" y="120" width="660" height="68" rx="10" fill="var(--row-bg)" stroke="var(--card-border)" stroke-width="1.5"/>
+    <rect x="20" y="120" width="5" height="68" fill="#10b981" rx="3"/>
+    <rect x="23" y="120" width="3" height="68" fill="#10b981"/>
+  </g>
+
+  <rect x="56" y="136" width="68" height="36" rx="8" fill="var(--num-bg)" stroke="var(--num-border)" stroke-width="1.5"/>
+  <text x="90" y="160" text-anchor="middle" fill="var(--num-text)" font-size="20" font-weight="700" font-family="'JetBrains Mono', monospace">7</text>
+
+  <text x="168" y="158" text-anchor="middle" fill="#3b82f6" font-size="22" font-weight="800" font-family="'JetBrains Mono', monospace">==</text>
+  <text x="168" y="175" text-anchor="middle" fill="#3b82f6" font-size="9" font-weight="600">sama dengan?</text>
+
+  <rect x="196" y="136" width="68" height="36" rx="8" fill="var(--num-bg)" stroke="var(--num-border)" stroke-width="1.5"/>
+  <text x="230" y="160" text-anchor="middle" fill="var(--num-text)" font-size="20" font-weight="700" font-family="'JetBrains Mono', monospace">7</text>
+
+  <text x="294" y="160" text-anchor="middle" fill="var(--text-sub)" font-size="18">→</text>
+
+  <rect x="316" y="134" width="76" height="32" rx="8" fill="#10b981" fill-opacity="0.15" stroke="#10b981" stroke-width="1.5"/>
+  <text x="354" y="155" text-anchor="middle" fill="#10b981" font-size="14" font-weight="700" font-family="'JetBrains Mono', monospace">true</text>
+
+  <text x="414" y="148" fill="var(--text-sub)" font-size="12">Ya, keduanya bernilai 7 (sama persis)</text>
+  <text x="414" y="166" fill="#10b981" font-size="11" font-weight="600">✓ kondisi terpenuhi</text>
+
+  <!-- ============ ROW 3: 2 > 8 → false ============ -->
+  <g filter="url(#op-shadow)">
+    <rect x="20" y="200" width="660" height="68" rx="10" fill="var(--row-bg)" stroke="var(--card-border)" stroke-width="1.5"/>
+    <rect x="20" y="200" width="5" height="68" fill="#ef4444" rx="3"/>
+    <rect x="23" y="200" width="3" height="68" fill="#ef4444"/>
+  </g>
+
+  <rect x="56" y="216" width="68" height="36" rx="8" fill="var(--num-bg)" stroke="var(--num-border)" stroke-width="1.5"/>
+  <text x="90" y="240" text-anchor="middle" fill="var(--num-text)" font-size="20" font-weight="700" font-family="'JetBrains Mono', monospace">2</text>
+
+  <text x="168" y="238" text-anchor="middle" fill="#f59e0b" font-size="22" font-weight="800" font-family="'JetBrains Mono', monospace">&gt;</text>
+  <text x="168" y="255" text-anchor="middle" fill="#f59e0b" font-size="9" font-weight="600">lebih dari?</text>
+
+  <rect x="196" y="216" width="68" height="36" rx="8" fill="var(--num-bg)" stroke="var(--num-border)" stroke-width="1.5"/>
+  <text x="230" y="240" text-anchor="middle" fill="var(--num-text)" font-size="20" font-weight="700" font-family="'JetBrains Mono', monospace">8</text>
+
+  <text x="294" y="240" text-anchor="middle" fill="var(--text-sub)" font-size="18">→</text>
+
+  <!-- Result badge: false -->
+  <rect x="316" y="214" width="76" height="32" rx="8" fill="#ef4444" fill-opacity="0.12" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="354" y="235" text-anchor="middle" fill="#ef4444" font-size="14" font-weight="700" font-family="'JetBrains Mono', monospace">false</text>
+
+  <text x="414" y="228" fill="var(--text-sub)" font-size="12">Tidak, 2 tidak lebih besar dari 8</text>
+  <text x="414" y="246" fill="#ef4444" font-size="11" font-weight="600">✗ kondisi tidak terpenuhi</text>
+</svg>

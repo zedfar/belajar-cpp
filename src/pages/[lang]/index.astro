@@ -11,61 +11,78 @@ export function getStaticPaths() {
 const { lang } = Astro.params as { lang: Language }
 const totalLessons = getTotalLessons()
 const totalUnits = CURRICULUM_ID.length
-const firstLessonSlug = lang === 'id' ? '01-apa-itu-programming' : '01-what-is-programming'
+const firstLessonSlug = '01-apa-itu-programming'
 const firstLessonUrl = `/${lang}/learn/unit-0/${firstLessonSlug}`
 
 const features = [
   {
     title: t(lang, 'home.features.interactive.title'),
     description: t(lang, 'home.features.interactive.description'),
-    svg: `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>`,
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none"><defs><linearGradient id="gi" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse"><stop stop-color="#3b82f6"/><stop offset="1" stop-color="#1d4ed8"/></linearGradient></defs><rect x="4" y="8" width="40" height="32" rx="4" fill="url(#gi)" opacity="0.12"/><rect x="4" y="8" width="40" height="32" rx="4" stroke="url(#gi)" stroke-width="2" fill="none"/><text x="24" y="29" text-anchor="middle" font-family="monospace" font-weight="700" font-size="14" fill="url(#gi)">&lt;/&gt;</text></svg>`,
   },
   {
     title: t(lang, 'home.features.bilingual.title'),
     description: t(lang, 'home.features.bilingual.description'),
-    svg: `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none"><defs><linearGradient id="gb" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse"><stop stop-color="#22d3ee"/><stop offset="1" stop-color="#3b82f6"/></linearGradient></defs><circle cx="24" cy="24" r="18" fill="url(#gb)" opacity="0.12"/><circle cx="24" cy="24" r="18" stroke="url(#gb)" stroke-width="2" fill="none"/><ellipse cx="24" cy="24" rx="8" ry="18" stroke="url(#gb)" stroke-width="1.5" fill="none"/><line x1="6" y1="24" x2="42" y2="24" stroke="url(#gb)" stroke-width="1.5"/><path d="M8 16h32M8 32h32" stroke="url(#gb)" stroke-width="1" opacity="0.5"/></svg>`,
   },
   {
     title: t(lang, 'home.features.progressive.title'),
     description: t(lang, 'home.features.progressive.description'),
-    svg: `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`,
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none"><defs><linearGradient id="gp" x1="0" y1="48" x2="48" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#8b5cf6"/><stop offset="1" stop-color="#a78bfa"/></linearGradient></defs><rect x="6" y="32" width="8" height="10" rx="2" fill="url(#gp)" opacity="0.5"/><rect x="17" y="24" width="8" height="18" rx="2" fill="url(#gp)" opacity="0.7"/><rect x="28" y="16" width="8" height="26" rx="2" fill="url(#gp)" opacity="0.85"/><rect x="39" y="6" width="8" height="36" rx="2" fill="url(#gp)"/></svg>`,
   },
   {
     title: t(lang, 'home.features.free.title'),
     description: t(lang, 'home.features.free.description'),
-    svg: `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`,
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none"><defs><linearGradient id="gf" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse"><stop stop-color="#34d399"/><stop offset="1" stop-color="#059669"/></linearGradient></defs><path d="M24 42s-14-8.4-14-18.2C10 16.6 16.3 12 21.5 12c2.9 0 5 1.4 6.5 3.5C29.5 13.4 31.6 12 34.5 12 39.7 12 42 16.6 42 23.8 42 33.6 28 42 28 42" fill="url(#gf)" opacity="0.15"/><path d="M24 42s-14-8.4-14-18.2C10 16.6 13.6 10 19.5 10c3.5 0 6.2 2.2 7.5 4.5C28.3 12.2 31 10 34.5 10 40.4 10 44 16.6 44 23.8 44 33.6 28 42 28 42" stroke="url(#gf)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="url(#gf)" opacity="0.2"/><path d="M24 40s-12-7.5-12-16c0-5.6 3-10 7.5-10 2.8 0 5 1.8 6.5 4 1.5-2.2 3.7-4 6.5-4 4.5 0 7.5 4.4 7.5 10 0 8.5-12 16-12 16z" fill="url(#gf)"/></svg>`,
   },
 ]
+
+const unitIcons: Record<string, string> = {
+  'unit-0': `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>`,
+  'unit-1': `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H7a2 2 0 00-2 2v5a2 2 0 01-2 2 2 2 0 012 2v5a2 2 0 002 2h1"/><path d="M16 3h1a2 2 0 012 2v5a2 2 0 002 2 2 2 0 00-2 2v5a2 2 0 01-2 2h-1"/></svg>`,
+  'unit-2': `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="12" r="3"/><line x1="15.35" y1="7.56" x2="8.65" y2="10.44"/><line x1="8.65" y1="13.56" x2="15.35" y2="16.44"/></svg>`,
+  'unit-3': `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>`,
+  'unit-4': `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/><path d="M7 8l3 3-3 3"/><line x1="13" y1="14" x2="17" y2="14"/></svg>`,
+  'unit-5': `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>`,
+  'unit-6': `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.89 1.45l8 4A2 2 0 0122 7.24v9.53a2 2 0 01-1.11 1.79l-8 4a2 2 0 01-1.79 0l-8-4A2 2 0 012 16.76V7.24a2 2 0 011.11-1.79l8-4a2 2 0 011.78 0z"/><polyline points="2.32 6.16 12 11 21.68 6.16"/><line x1="12" y1="22.76" x2="12" y2="11"/></svg>`,
+}
 ---
 <PageLayout title={t(lang, 'home.hero.title')} description={t(lang, 'meta.siteDescription')} lang={lang}>
   <!-- Hero Section -->
-  <section class="py-16 md:py-24 text-center">
-    <div class="max-w-3xl mx-auto">
-      <h1 class="text-4xl md:text-6xl font-bold text-slate-900 dark:text-white mb-4">
-        {t(lang, 'home.hero.title')}
-      </h1>
-      <p class="text-xl md:text-2xl text-primary-600 dark:text-primary-400 font-medium mb-4">
-        {t(lang, 'home.hero.subtitle')}
-      </p>
-      <p class="text-lg text-slate-600 dark:text-slate-400 mb-8 max-w-2xl mx-auto">
-        {t(lang, 'home.hero.description')}
-      </p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a
-          href={firstLessonUrl}
-          class="inline-flex items-center justify-center px-8 py-3 rounded-lg bg-primary-600 hover:bg-primary-700 text-white font-semibold text-lg transition-colors shadow-lg shadow-primary-600/25"
-        >
-          {t(lang, 'home.hero.cta')}
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2">
-            <polyline points="9 18 15 12 9 6"/>
-          </svg>
-        </a>
-        <a
-          href={`/${lang}/curriculum`}
-          class="inline-flex items-center justify-center px-8 py-3 rounded-lg border-2 border-slate-300 dark:border-slate-600 hover:border-primary-400 dark:hover:border-primary-500 text-slate-700 dark:text-slate-300 font-semibold text-lg transition-colors"
-        >
-          {t(lang, 'home.hero.ctaSecondary')}
-        </a>
+  <section class="py-16 md:py-24">
+    <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <!-- Left: text content -->
+      <div class="text-center lg:text-left">
+        <h1 class="text-4xl md:text-6xl font-bold text-slate-900 dark:text-white mb-4">
+          {t(lang, 'home.hero.title')}
+        </h1>
+        <p class="text-xl md:text-2xl text-primary-600 dark:text-primary-400 font-medium mb-4">
+          {t(lang, 'home.hero.subtitle')}
+        </p>
+        <p class="text-lg text-slate-600 dark:text-slate-400 mb-8 max-w-2xl mx-auto lg:mx-0">
+          {t(lang, 'home.hero.description')}
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+          <a
+            href={firstLessonUrl}
+            class="inline-flex items-center justify-center px-8 py-3 rounded-lg bg-primary-600 hover:bg-primary-700 text-white font-semibold text-lg transition-colors shadow-lg shadow-primary-600/25"
+          >
+            {t(lang, 'home.hero.cta')}
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </a>
+          <a
+            href={`/${lang}/curriculum`}
+            class="inline-flex items-center justify-center px-8 py-3 rounded-lg border-2 border-slate-300 dark:border-slate-600 hover:border-primary-400 dark:hover:border-primary-500 text-slate-700 dark:text-slate-300 font-semibold text-lg transition-colors"
+          >
+            {t(lang, 'home.hero.ctaSecondary')}
+          </a>
+        </div>
+      </div>
+      <!-- Right: illustration -->
+      <div class="flex justify-center lg:justify-end">
+        <img src="/images/hero-code-editor.svg" alt="C++ code editor" class="w-full max-w-lg" style="overflow: visible;" />
       </div>
     </div>
   </section>
@@ -75,7 +92,7 @@ const features = [
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
       {features.map(feature => (
         <div class="text-center p-6 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800">
-          <div class="flex justify-center mb-4 text-primary-600 dark:text-primary-400" set:html={feature.svg} />
+          <div class="flex justify-center mb-4" set:html={feature.svg} />
           <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-2">{feature.title}</h3>
           <p class="text-sm text-slate-600 dark:text-slate-400">{feature.description}</p>
         </div>
@@ -98,6 +115,7 @@ const features = [
             <span class="text-xs font-mono px-2 py-1 rounded bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300">
               Unit {unit.id}
             </span>
+            <div set:html={unitIcons[unit.slug]} />
             <span class="text-xs text-slate-400">{unit.lessons.length} {lang === 'id' ? 'pelajaran' : 'lessons'}</span>
           </div>
           <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-2">{unit.title[lang]}</h3>
