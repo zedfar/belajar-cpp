@@ -295,6 +295,60 @@ const snippets = [
     </div>
   </div>
 
+  <!-- Custom modal (replaces browser alert/confirm/prompt) -->
+  <div id="pg-modal" class="fixed inset-0 z-50 hidden" aria-modal="true" role="dialog">
+    <div id="pg-modal-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-200 opacity-0"></div>
+    <div class="absolute inset-0 flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div
+        id="pg-modal-card"
+        class="relative bg-[#21252b] border border-slate-600/80 rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-sm
+               transform transition-all duration-200 translate-y-4 sm:translate-y-0 scale-100 sm:scale-95 opacity-0
+               p-5 sm:p-6"
+      >
+        <!-- Icon -->
+        <div id="pg-modal-icon" class="mb-3 hidden">
+          <div id="pg-modal-icon-wrap" class="w-9 h-9 rounded-full flex items-center justify-center">
+            <svg id="pg-modal-icon-svg" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
+          </div>
+        </div>
+        <h3 id="pg-modal-title" class="text-sm font-semibold text-white mb-1.5"></h3>
+        <p id="pg-modal-message" class="text-sm text-slate-400 leading-relaxed"></p>
+        <!-- Copy input (for share) -->
+        <div id="pg-modal-copy-wrap" class="hidden mt-4">
+          <div class="flex items-center gap-2 p-2.5 bg-slate-900 border border-slate-700 rounded-lg">
+            <input
+              id="pg-modal-copy-input"
+              type="text"
+              readonly
+              class="flex-1 bg-transparent text-xs text-slate-300 font-mono focus:outline-none min-w-0 truncate"
+            />
+            <button
+              id="pg-modal-copy-btn"
+              class="flex-shrink-0 px-2 py-1 text-xs bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-md transition-colors"
+            >
+              {lang === 'id' ? 'Salin' : 'Copy'}
+            </button>
+          </div>
+        </div>
+        <!-- Actions -->
+        <div class="flex justify-end gap-2 mt-5">
+          <button
+            id="pg-modal-cancel"
+            class="hidden px-4 py-2 rounded-lg text-xs text-slate-400 hover:bg-slate-700 hover:text-slate-200 transition-colors"
+          >
+            {lang === 'id' ? 'Batal' : 'Cancel'}
+          </button>
+          <button
+            id="pg-modal-ok"
+            class="px-4 py-2 rounded-lg text-xs font-medium text-white transition-colors"
+          >
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     import {
       EditorView, keymap, lineNumbers, highlightActiveLine,
@@ -312,6 +366,115 @@ const snippets = [
     import { closeBrackets, autocompletion } from '@codemirror/autocomplete'
     import { cpp } from '@codemirror/lang-cpp'
     import { oneDark } from '@codemirror/theme-one-dark'
+
+    // ─── Custom modal ─────────────────────────────────────────────────────────
+    const pgModal       = document.getElementById('pg-modal') as HTMLElement
+    const pgBackdrop    = document.getElementById('pg-modal-backdrop') as HTMLElement
+    const pgCard        = document.getElementById('pg-modal-card') as HTMLElement
+    const pgTitle       = document.getElementById('pg-modal-title') as HTMLElement
+    const pgMessage     = document.getElementById('pg-modal-message') as HTMLElement
+    const pgIcon        = document.getElementById('pg-modal-icon') as HTMLElement
+    const pgIconWrap    = document.getElementById('pg-modal-icon-wrap') as HTMLElement
+    const pgIconSvg     = document.getElementById('pg-modal-icon-svg') as unknown as SVGElement
+    const pgCopyWrap    = document.getElementById('pg-modal-copy-wrap') as HTMLElement
+    const pgCopyInput   = document.getElementById('pg-modal-copy-input') as HTMLInputElement
+    const pgCopyBtn     = document.getElementById('pg-modal-copy-btn') as HTMLButtonElement
+    const pgCancelBtn   = document.getElementById('pg-modal-cancel') as HTMLButtonElement
+    const pgOkBtn       = document.getElementById('pg-modal-ok') as HTMLButtonElement
+
+    let modalResolve: ((v: boolean) => void) | null = null
+
+    function openModal(opts: {
+      title: string
+      message: string
+      okText?: string
+      showCancel?: boolean
+      danger?: boolean
+      iconPath?: string
+      iconBg?: string
+      copyValue?: string
+    }): Promise<boolean> {
+      return new Promise(resolve => {
+        modalResolve = resolve
+
+        pgTitle.textContent   = opts.title
+        pgMessage.textContent = opts.message
+
+        // Icon
+        if (opts.iconPath) {
+          pgIconSvg.innerHTML = opts.iconPath
+          pgIconWrap.className = `w-9 h-9 rounded-full flex items-center justify-center ${opts.iconBg || 'bg-slate-700'}`
+          pgIconSvg.setAttribute('stroke', opts.danger ? '#f87171' : '#94a3b8')
+          pgIcon.classList.remove('hidden')
+        } else {
+          pgIcon.classList.add('hidden')
+        }
+
+        // OK button style
+        pgOkBtn.textContent = opts.okText || 'OK'
+        pgOkBtn.className = opts.danger
+          ? 'px-4 py-2 rounded-lg text-xs font-medium text-white bg-red-600 hover:bg-red-500 transition-colors'
+          : 'px-4 py-2 rounded-lg text-xs font-medium text-white bg-primary-600 hover:bg-primary-500 transition-colors'
+
+        // Cancel
+        if (opts.showCancel) {
+          pgCancelBtn.classList.remove('hidden')
+        } else {
+          pgCancelBtn.classList.add('hidden')
+        }
+
+        // Copy input
+        if (opts.copyValue !== undefined) {
+          pgCopyInput.value = opts.copyValue
+          pgCopyWrap.classList.remove('hidden')
+          setTimeout(() => { pgCopyInput.select() }, 100)
+        } else {
+          pgCopyWrap.classList.add('hidden')
+        }
+
+        // Show
+        pgModal.classList.remove('hidden')
+        requestAnimationFrame(() => {
+          pgBackdrop.style.opacity = '1'
+          pgCard.style.opacity = '1'
+          pgCard.style.transform = 'translateY(0) scale(1)'
+        })
+      })
+    }
+
+    function closeModal(result: boolean) {
+      pgBackdrop.style.opacity = '0'
+      pgCard.style.opacity = '0'
+      pgCard.style.transform = 'translateY(4px) scale(0.98)'
+      setTimeout(() => {
+        pgModal.classList.add('hidden')
+        pgCard.style.transform = ''
+        if (modalResolve) { modalResolve(result); modalResolve = null }
+      }, 180)
+    }
+
+    pgOkBtn.addEventListener('click', () => closeModal(true))
+    pgCancelBtn.addEventListener('click', () => closeModal(false))
+    pgBackdrop.addEventListener('click', () => closeModal(false))
+    document.addEventListener('keydown', e => {
+      if (!pgModal.classList.contains('hidden')) {
+        if (e.key === 'Escape') closeModal(false)
+        if (e.key === 'Enter' && document.activeElement !== pgCancelBtn) closeModal(true)
+      }
+    })
+
+    // Copy-to-clipboard inside modal
+    pgCopyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(pgCopyInput.value).then(() => {
+        pgCopyBtn.textContent = '✓'
+        setTimeout(() => { pgCopyBtn.textContent = lang === 'id' ? 'Salin' : 'Copy' }, 1500)
+      })
+      pgCopyInput.select()
+    })
+
+    // Icon paths
+    const ICON_WARN  = '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>'
+    const ICON_SHARE = '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>'
 
     // ─── DOM refs ────────────────────────────────────────────────────────────
     const editorFallback   = document.getElementById('code-editor') as HTMLTextAreaElement | null
@@ -565,23 +728,48 @@ const snippets = [
             if (shareLabel) shareLabel.textContent = lang === 'id' ? 'Bagikan' : 'Share'
           }, 2000)
         }).catch(() => {
-          // clipboard blocked (HTTP or permissions) — fallback prompt
-          prompt(lang === 'id' ? 'Salin link ini:' : 'Copy this link:', url.toString())
+          // Clipboard blocked — show modal with copy input
+          openModal({
+            title: lang === 'id' ? 'Link Kode' : 'Code Link',
+            message: lang === 'id' ? 'Salin link di bawah untuk bagikan kode kamu:' : 'Copy the link below to share your code:',
+            okText: lang === 'id' ? 'Tutup' : 'Close',
+            showCancel: false,
+            iconPath: ICON_SHARE,
+            iconBg: 'bg-slate-700',
+            copyValue: url.toString(),
+          })
         })
       } catch {
-        // btoa failed (non-ASCII chars)
-        alert(lang === 'id'
-          ? 'Kode mengandung karakter khusus yang tidak bisa di-encode.'
-          : 'Code contains special characters that cannot be encoded.')
+        openModal({
+          title: lang === 'id' ? 'Tidak Dapat Dibagikan' : 'Cannot Share',
+          message: lang === 'id'
+            ? 'Kode mengandung karakter khusus yang tidak dapat di-encode ke URL.'
+            : 'Code contains special characters that cannot be encoded into a URL.',
+          okText: 'OK',
+          iconPath: ICON_WARN,
+          iconBg: 'bg-red-900/40',
+          danger: true,
+        })
       }
     })
 
     // ─── Reset ────────────────────────────────────────────────────────────────
-    resetBtn?.addEventListener('click', () => {
+    resetBtn?.addEventListener('click', async () => {
       const isDirty = getCode() !== defaultCode
-      if (isDirty && !confirm(lang === 'id'
-        ? 'Reset akan menghapus semua perubahan kamu. Lanjutkan?'
-        : 'Reset will discard all your changes. Continue?')) return
+      if (isDirty) {
+        const ok = await openModal({
+          title: lang === 'id' ? 'Reset Kode?' : 'Reset Code?',
+          message: lang === 'id'
+            ? 'Semua perubahan yang kamu buat akan hilang dan kode akan kembali ke awal.'
+            : 'All your changes will be lost and the code will revert to its initial state.',
+          okText: lang === 'id' ? 'Ya, Reset' : 'Yes, Reset',
+          showCancel: true,
+          danger: true,
+          iconPath: ICON_WARN,
+          iconBg: 'bg-red-900/40',
+        })
+        if (!ok) return
+      }
 
       setCode(defaultCode)
       setActiveSnippet('')
@@ -608,15 +796,24 @@ const snippets = [
 
     // ─── Snippet buttons (mobile pills + desktop list) ────────────────────────
     document.querySelectorAll('.snippet-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', async () => {
         const el = btn as HTMLElement
         const snippet = el.dataset.snippet || ''
         const label   = el.dataset.label || ''
 
         if (getCode() !== snippet && getCode() !== defaultCode) {
-          if (!confirm(lang === 'id'
-            ? 'Mengganti contoh akan menghapus kode yang ada. Lanjutkan?'
-            : 'Switching example will replace your current code. Continue?')) return
+          const ok = await openModal({
+            title: lang === 'id' ? 'Ganti Contoh Kode?' : 'Switch Example?',
+            message: lang === 'id'
+              ? 'Kode yang sedang kamu tulis akan diganti. Pastikan sudah kamu simpan atau unduh terlebih dahulu.'
+              : 'Your current code will be replaced. Make sure you\'ve saved or downloaded it first.',
+            okText: lang === 'id' ? 'Ya, Ganti' : 'Yes, Switch',
+            showCancel: true,
+            danger: false,
+            iconPath: ICON_WARN,
+            iconBg: 'bg-amber-900/30',
+          })
+          if (!ok) return
         }
 
         setCode(snippet)
