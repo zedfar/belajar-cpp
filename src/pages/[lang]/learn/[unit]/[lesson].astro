@@ -107,6 +107,13 @@ const difficultyColor = entry.data.difficulty === 'intermediate'
           Project
         </span>
       )}
+      <!-- Read time tracker -->
+      <span id="read-time-wrap" class="hidden items-center gap-1 text-xs text-slate-400 dark:text-slate-500">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>
+        </svg>
+        <span id="read-time">0m</span>
+      </span>
     </div>
 
     <!-- Objectives -->
@@ -167,6 +174,27 @@ const difficultyColor = entry.data.difficulty === 'intermediate'
     </button>
   </div>
 
+  <!-- Resume position toast -->
+  <div
+    id="resume-toast"
+    class="fixed bottom-24 left-4 md:bottom-8 md:left-6 z-50 hidden max-w-[240px] bg-slate-900 border border-slate-700 rounded-xl shadow-2xl p-4 transition-all duration-300 -translate-x-3 opacity-0"
+  >
+    <p class="text-sm font-semibold text-white mb-0.5">
+      {lang === 'id' ? 'Lanjutkan membaca?' : 'Continue reading?'}
+    </p>
+    <p class="text-xs text-slate-400 mb-3 leading-snug">
+      {lang === 'id' ? 'Kamu sudah membaca sebagian lesson ini.' : "You've partially read this lesson."}
+    </p>
+    <div class="flex gap-2">
+      <button id="resume-yes" class="text-xs px-3 py-1.5 rounded-lg bg-primary-600 text-white hover:bg-primary-700 transition-colors font-medium">
+        {lang === 'id' ? 'Lanjutkan' : 'Resume'}
+      </button>
+      <button id="resume-no" class="text-xs px-3 py-1.5 rounded-lg bg-slate-700 text-slate-300 hover:bg-slate-600 transition-colors">
+        {lang === 'id' ? 'Dari Awal' : 'Start Over'}
+      </button>
+    </div>
+  </div>
+
   <!-- Badge toast notification -->
   <div
     id="badge-toast"
@@ -221,6 +249,8 @@ const difficultyColor = entry.data.difficulty === 'intermediate'
       const newBadge = badgesAfter.find(b => !badgesBefore.includes(b)) ?? null
       markDone()
       showBadgeToast(newBadge)
+      // Clear saved scroll — lesson is done
+      localStorage.removeItem(`belajar-cpp:scroll:${slug}`)
     })
   }
 
@@ -236,6 +266,64 @@ const difficultyColor = entry.data.difficulty === 'intermediate'
     'first-playground':  ['🚀', 'First Project!'],
     'streak-3':          ['🔥', '3-Day Streak!'],
     'streak-7':          ['⚡', '7-Day Streak!'],
+  }
+
+  // ── Scroll position save/restore ──────────────────────────────────────────
+  const lessonSlug = window.location.pathname.split('/').slice(-2).join('/')
+  const SCROLL_KEY = `belajar-cpp:scroll:${lessonSlug}`
+  const MIN_SCROLL = 250
+
+  // Save position (debounced 600ms)
+  let scrollTimer: ReturnType<typeof setTimeout>
+  window.addEventListener('scroll', () => {
+    clearTimeout(scrollTimer)
+    scrollTimer = setTimeout(() => {
+      if (window.scrollY > MIN_SCROLL) localStorage.setItem(SCROLL_KEY, String(Math.round(window.scrollY)))
+    }, 600)
+  }, { passive: true })
+
+  // Show resume toast if saved position exists
+  const savedPos = parseInt(localStorage.getItem(SCROLL_KEY) ?? '0')
+  const resumeToast = document.getElementById('resume-toast') as HTMLElement | null
+  if (savedPos > MIN_SCROLL && resumeToast) {
+    const showToast = () => {
+      resumeToast.classList.remove('hidden')
+      requestAnimationFrame(() => {
+        resumeToast.classList.remove('-translate-x-3', 'opacity-0')
+        resumeToast.classList.add('translate-x-0', 'opacity-100')
+      })
+    }
+    const hideToast = () => {
+      resumeToast.classList.add('-translate-x-3', 'opacity-0')
+      resumeToast.classList.remove('translate-x-0', 'opacity-100')
+      setTimeout(() => resumeToast.classList.add('hidden'), 300)
+    }
+    setTimeout(showToast, 900)
+    setTimeout(hideToast, 9000)
+
+    document.getElementById('resume-yes')?.addEventListener('click', () => {
+      window.scrollTo({ top: savedPos, behavior: 'smooth' })
+      hideToast()
+    })
+    document.getElementById('resume-no')?.addEventListener('click', () => {
+      localStorage.removeItem(SCROLL_KEY)
+      hideToast()
+    })
+  }
+
+  // ── Reading time tracker ────────────────────────────────────────────────────
+  const readTimeEl = document.getElementById('read-time') as HTMLElement | null
+  const readTimeWrap = document.getElementById('read-time-wrap') as HTMLElement | null
+  if (readTimeEl && readTimeWrap) {
+    let secs = 0
+    let active = !document.hidden
+    const tick = setInterval(() => {
+      if (!active) return
+      secs++
+      if (secs >= 60) readTimeWrap.classList.replace('hidden', 'inline-flex')
+      readTimeEl.textContent = `${Math.floor(secs / 60)}m`
+    }, 1000)
+    document.addEventListener('visibilitychange', () => { active = !document.hidden })
   }
 
   function showBadgeToast(badgeId: string | null) {
