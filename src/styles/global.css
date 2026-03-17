@@ -141,5 +141,15 @@ pre::-webkit-scrollbar-thumb:hover { background: #4b5563; }
   -webkit-overflow-scrolling: touch;
 }
 
+/* Hide duplicate H1 from MDX (lesson title already shown in page header) */
+.prose > h1:first-child { display: none; }
+
+/* Infobox labels in English */
+html[lang="en"] .infobox-note::before    { content: "📝  Note"; }
+html[lang="en"] .infobox-tip::before     { content: "💡  Tip"; }
+html[lang="en"] .infobox-warning::before { content: "⚠️  Warning"; }
+html[lang="en"] .infobox-error::before   { content: "🚫  Error"; }
+html[lang="en"] .infobox-fun::before     { content: "🌟  Fun Fact"; }
+
 /* Smooth scroll for TOC */
 html { scroll-behavior: smooth; }

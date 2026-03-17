@@ -81,7 +81,7 @@ const langLabel = langLabels[lang] ?? lang.toUpperCase()
   </div>
 
   <!-- Code area -->
-  <div class:list={['overflow-x-auto text-sm', showLineNumbers && 'code-with-line-numbers']}>
+  <div class:list={['code-scroll-area overflow-x-auto text-sm', showLineNumbers && 'code-with-line-numbers']}>
     <Code code={code.trim()} lang={lang as any} theme="one-dark-pro" />
   </div>
 
@@ -124,6 +124,19 @@ const langLabel = langLabels[lang] ?? lang.toUpperCase()
   .overflow-x-auto::-webkit-scrollbar-track { background: transparent; }
   .overflow-x-auto::-webkit-scrollbar-thumb { background: #374151; border-radius: 9999px; }
   .overflow-x-auto::-webkit-scrollbar-thumb:hover { background: #4b5563; }
+
+  /* Scrolling shadows — appear only when content overflows */
+  .code-scroll-area {
+    background-image:
+      linear-gradient(to right, #1e1e2e, #1e1e2e),
+      linear-gradient(to left,  #1e1e2e, #1e1e2e),
+      linear-gradient(to right, rgba(0,0,0,0.45), transparent),
+      linear-gradient(to left,  rgba(0,0,0,0.45), transparent);
+    background-position: left center, right center, left center, right center;
+    background-size: 20px 100%, 20px 100%, 40px 100%, 40px 100%;
+    background-repeat: no-repeat;
+    background-attachment: local, local, scroll, scroll;
+  }
 </style>
 
 <script is:inline>

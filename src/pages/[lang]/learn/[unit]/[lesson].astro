@@ -130,8 +130,10 @@ const difficultyColor = entry.data.difficulty === 'intermediate'
     )}
   </div>
 
-  <!-- Table of Contents -->
-  <TableOfContents headings={headings} lang={lang} />
+  <!-- Table of Contents (inline on mobile/tablet, hidden on xl where sidebar shows) -->
+  <div class="xl:hidden mb-6">
+    <TableOfContents headings={headings} lang={lang} />
+  </div>
 
   <!-- Lesson Content (MDX rendered) -->
   <article class="prose prose-slate dark:prose-invert max-w-none
@@ -183,6 +185,11 @@ const difficultyColor = entry.data.difficulty === 'intermediate'
 
   <!-- Lesson Navigation -->
   <LessonNav currentSlug={fullSlug} lang={lang} />
+
+  <!-- TOC for sticky sidebar at xl breakpoint -->
+  <Fragment slot="toc">
+    <TableOfContents headings={headings} lang={lang} />
+  </Fragment>
 </LessonLayout>
 
 <script>

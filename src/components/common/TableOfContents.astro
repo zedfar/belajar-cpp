@@ -14,15 +14,16 @@ const shouldShow = filteredHeadings.length >= 2
 ---
 {shouldShow && (
   <nav class="p-4 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800" aria-label={t(lang, 'lesson.tableOfContents')}>
-    <h2 class="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">
+    <h2 class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">
       {t(lang, 'lesson.tableOfContents')}
     </h2>
-    <ul class="space-y-1.5 text-sm">
+    <ul class="space-y-1 text-sm">
       {filteredHeadings.map(heading => (
-        <li class:list={[heading.depth === 3 ? 'ml-4' : '']}>
+        <li class:list={[heading.depth === 3 ? 'ml-3' : '']}>
           <a
             href={`#${heading.slug}`}
-            class="text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors block py-0.5 leading-snug"
+            data-toc-href={heading.slug}
+            class="toc-link text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors block py-0.5 leading-snug"
           >
             {heading.text}
           </a>
@@ -31,3 +32,40 @@ const shouldShow = filteredHeadings.length >= 2
     </ul>
   </nav>
 )}
+
+<script>
+  // Active heading via Intersection Observer (deduped by Astro — runs once even with two TOC instances)
+  const allLinks = document.querySelectorAll<HTMLAnchorElement>('a[data-toc-href]')
+  if (allLinks.length > 0) {
+    let activeId = ''
+
+    const setActive = (id: string) => {
+      if (id === activeId) return
+      activeId = id
+      allLinks.forEach(link => {
+        if (link.dataset.tocHref === id) {
+          link.classList.add('text-primary-600', 'dark:text-primary-400', 'font-medium')
+          link.classList.remove('text-slate-600', 'dark:text-slate-400')
+        } else {
+          link.classList.remove('text-primary-600', 'dark:text-primary-400', 'font-medium')
+          link.classList.add('text-slate-600', 'dark:text-slate-400')
+        }
+      })
+    }
+
+    const ids = [...new Set([...allLinks].map(a => a.dataset.tocHref).filter(Boolean))] as string[]
+    const observer = new IntersectionObserver(
+      entries => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActive(entry.target.id)
+        }
+      },
+      { rootMargin: '-10% 0% -75% 0%', threshold: 0 }
+    )
+
+    ids.forEach(id => {
+      const el = document.getElementById(id)
+      if (el) observer.observe(el)
+    })
+  }
+</script>

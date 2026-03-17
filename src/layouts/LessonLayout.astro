@@ -28,8 +28,17 @@ const currentPath = Astro.url.pathname
 
       <!-- Main lesson content -->
       <main id="main-content" class="flex-1 min-w-0 px-4 sm:px-6 lg:px-8 py-6 pb-24 md:pb-8">
-        <div class="max-w-3xl mx-auto">
-          <slot />
+        <div class="mx-auto max-w-2xl xl:max-w-none xl:flex xl:gap-10 xl:justify-center">
+          <!-- Content column -->
+          <div class="min-w-0 xl:max-w-[42rem] xl:flex-1">
+            <slot />
+          </div>
+          <!-- TOC sticky sidebar (xl only) -->
+          <div class="hidden xl:block xl:w-52 xl:flex-shrink-0">
+            <div class="sticky top-24">
+              <slot name="toc" />
+            </div>
+          </div>
         </div>
       </main>
     </div>
@@ -54,6 +63,24 @@ const currentPath = Astro.url.pathname
     </div>
     <Sidebar lang={lang} currentSlug={currentLessonSlug} />
   </aside>
+
+  <!-- Reading progress bar -->
+  <div class="fixed top-16 left-0 right-0 z-20 h-0.5 pointer-events-none" aria-hidden="true">
+    <div id="reading-progress" class="h-full bg-primary-500" style="width:0%"></div>
+  </div>
+
+  <script>
+    const bar = document.getElementById('reading-progress')
+    if (bar) {
+      const update = () => {
+        const doc = document.documentElement
+        const total = doc.scrollHeight - doc.clientHeight
+        bar.style.width = total > 0 ? `${Math.round((doc.scrollTop / total) * 100)}%` : '0%'
+      }
+      window.addEventListener('scroll', update, { passive: true })
+      update()
+    }
+  </script>
 
   <!-- Click handler for build-time copy buttons injected by Shiki transformer -->
   <script is:inline>
