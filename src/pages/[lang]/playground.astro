@@ -64,7 +64,7 @@ const snippets = [
               </button>
             </div>
           </div>
-          <div id="code-editor-cm" class="w-full h-80"></div>
+          <div id="code-editor-cm" class="w-full h-80" data-lang={lang} data-default-code={defaultCode}></div>
           <textarea
             id="code-editor"
             class="w-full h-80 p-4 bg-transparent text-slate-100 font-mono text-sm resize-none focus:outline-none hidden"
@@ -147,26 +147,36 @@ const snippets = [
     </div>
   </div>
 
-  <script is:inline define:vars={{ lang, defaultCode }}>
-    const editorFallback = document.getElementById('code-editor')
-    const editorCmContainer = document.getElementById('code-editor-cm')
-    const stdinInput = document.getElementById('stdin-input')
-    const runBtn = document.getElementById('run-btn')
-    const resetBtn = document.getElementById('reset-btn')
-    const downloadBtn = document.getElementById('download-btn')
-    const outputArea = document.getElementById('output-area')
-    const execTime = document.getElementById('exec-time')
+  <script>
+    import { EditorView, keymap } from '@codemirror/view'
+    import { EditorState } from '@codemirror/state'
+    import { cpp } from '@codemirror/lang-cpp'
+    import { oneDark } from '@codemirror/theme-one-dark'
+    import { basicSetup } from '@codemirror/basic-setup'
+
+    const editorFallback = document.getElementById('code-editor') as HTMLTextAreaElement | null
+    const editorCmContainer = document.getElementById('code-editor-cm') as HTMLElement | null
+    const stdinInput = document.getElementById('stdin-input') as HTMLTextAreaElement | null
+    const runBtn = document.getElementById('run-btn') as HTMLButtonElement | null
+    const resetBtn = document.getElementById('reset-btn') as HTMLButtonElement | null
+    const downloadBtn = document.getElementById('download-btn') as HTMLButtonElement | null
+    const outputArea = document.getElementById('output-area') as HTMLElement | null
+    const execTime = document.getElementById('exec-time') as HTMLElement | null
+
+    // Read variables from data attributes
+    const lang = editorCmContainer?.dataset.lang || 'en'
+    const defaultCode = editorCmContainer?.dataset.defaultCode || ''
 
     // Editor state - managed by CodeMirror or fallback textarea
-    let cmView = null
-    let currentCode = defaultCode || ''
+    let cmView: EditorView | null = null
+    let currentCode = defaultCode
 
-    function getCode() {
+    function getCode(): string {
       if (cmView) return cmView.state.doc.toString()
       return editorFallback?.value || ''
     }
 
-    function setCode(value) {
+    function setCode(value: string) {
       if (cmView) {
         const current = cmView.state.doc.toString()
         if (current !== value) {
@@ -175,57 +185,6 @@ const snippets = [
       }
       if (editorFallback) editorFallback.value = value
       currentCode = value
-    }
-
-    // Initialize CodeMirror
-    if (editorCmContainer) {
-      Promise.all([
-        import('@codemirror/view'),
-        import('@codemirror/state'),
-        import('@codemirror/lang-cpp'),
-        import('@codemirror/theme-one-dark'),
-        import('@codemirror/basic-setup'),
-      ]).then(([viewMod, stateMod, cppMod, themeMod, setupMod]) => {
-        const { EditorView, keymap } = viewMod
-        const { EditorState } = stateMod
-        const { cpp } = cppMod
-        const { oneDark } = themeMod
-        const { basicSetup } = setupMod
-
-        const state = EditorState.create({
-          doc: currentCode,
-          extensions: [
-            basicSetup,
-            cpp(),
-            oneDark,
-            EditorView.theme({
-              '&': { height: '320px', fontSize: '14px' },
-              '.cm-scroller': { overflow: 'auto' },
-            }),
-            EditorView.updateListener.of(update => {
-              if (update.docChanged) {
-                currentCode = update.state.doc.toString()
-              }
-            }),
-            keymap.of([{
-              key: 'Ctrl-Enter',
-              run: () => { runCode(); return true },
-            }, {
-              key: 'Meta-Enter',
-              run: () => { runCode(); return true },
-            }]),
-          ],
-        })
-
-        cmView = new EditorView({ state, parent: editorCmContainer })
-        // Hide fallback textarea
-        if (editorFallback) editorFallback.classList.add('hidden')
-      }).catch(err => {
-        console.warn('CodeMirror failed to load, using textarea fallback:', err)
-        // Show fallback textarea
-        if (editorCmContainer) editorCmContainer.classList.add('hidden')
-        if (editorFallback) editorFallback.classList.remove('hidden')
-      })
     }
 
     // Run code
@@ -269,12 +228,51 @@ const snippets = [
           execTime.textContent = `${(parseFloat(result.time) * 1000).toFixed(0)}ms`
           execTime.classList.remove('hidden')
         }
-      } catch (err) {
+      } catch (err: any) {
         outputArea.textContent = (lang === 'id' ? 'Error: ' : 'Error: ') + err.message
         outputArea.className = 'p-4 bg-white dark:bg-slate-950 text-red-600 dark:text-red-400 font-mono text-sm min-h-[80px] whitespace-pre-wrap'
       } finally {
         runBtn.disabled = false
         runBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> ' + (lang === 'id' ? 'Jalankan' : 'Run')
+      }
+    }
+
+    // Initialize CodeMirror
+    if (editorCmContainer) {
+      try {
+        const state = EditorState.create({
+          doc: currentCode,
+          extensions: [
+            basicSetup,
+            cpp(),
+            oneDark,
+            EditorView.theme({
+              '&': { height: '320px', fontSize: '14px' },
+              '.cm-scroller': { overflow: 'auto' },
+            }),
+            EditorView.updateListener.of(update => {
+              if (update.docChanged) {
+                currentCode = update.state.doc.toString()
+              }
+            }),
+            keymap.of([{
+              key: 'Ctrl-Enter',
+              run: () => { runCode(); return true },
+            }, {
+              key: 'Meta-Enter',
+              run: () => { runCode(); return true },
+            }]),
+          ],
+        })
+
+        cmView = new EditorView({ state, parent: editorCmContainer })
+        // Hide fallback textarea
+        if (editorFallback) editorFallback.classList.add('hidden')
+      } catch (err) {
+        console.warn('CodeMirror failed to load, using textarea fallback:', err)
+        // Show fallback textarea
+        if (editorCmContainer) editorCmContainer.classList.add('hidden')
+        if (editorFallback) editorFallback.classList.remove('hidden')
       }
     }
 
