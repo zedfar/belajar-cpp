@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 320" width="640" height="320" font-family="'Segoe UI', system-ui, sans-serif">
+  <defs>
+    <style>
+      :root {
+        --bg: #f8fafc;
+        --border: #e2e8f0;
+        --label: #64748b;
+        --arrow: #94a3b8;
+        --loop: #cbd5e1;
+        --loop-text: #94a3b8;
+        --dt-text: #1c1917;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0f172a;
+          --border: #1e293b;
+          --label: #475569;
+          --arrow: #475569;
+          --loop: #334155;
+          --loop-text: #475569;
+          --dt-text: #0f172a;
+        }
+      }
+    </style>
+    <filter id="wf-sh">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="rgba(0,0,0,0.10)"/>
+    </filter>
+    <marker id="wf-a" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="var(--arrow)"/>
+    </marker>
+    <marker id="wf-al" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="var(--loop)"/>
+    </marker>
+    <marker id="wf-ag" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#10b981"/>
+    </marker>
+    <linearGradient id="wf-blue" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+    <linearGradient id="wf-purple" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="wf-red" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f87171"/>
+      <stop offset="100%" stop-color="#dc2626"/>
+    </linearGradient>
+    <linearGradient id="wf-green" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="640" height="320" rx="14" fill="var(--bg)" stroke="var(--border)" stroke-width="1.5"/>
+
+  <!-- ══════════════ ROW 1 (y-center=90) ══════════════ -->
+
+  <!-- [Tulis Kode] x=16 y=68 w=112 h=44 -->
+  <g filter="url(#wf-sh)">
+    <rect x="16" y="68" width="112" height="44" rx="10" fill="url(#wf-blue)"/>
+  </g>
+  <text x="72" y="87" text-anchor="middle" fill="white" font-size="12" font-weight="700">Tulis</text>
+  <text x="72" y="102" text-anchor="middle" fill="white" font-size="12" font-weight="700">Kode</text>
+
+  <!-- → Compile -->
+  <line x1="128" y1="90" x2="160" y2="90" stroke="var(--arrow)" stroke-width="2" marker-end="url(#wf-a)"/>
+
+  <!-- [Compile] x=160 y=68 w=108 h=44 -->
+  <g filter="url(#wf-sh)">
+    <rect x="160" y="68" width="108" height="44" rx="10" fill="url(#wf-purple)"/>
+  </g>
+  <text x="214" y="95" text-anchor="middle" fill="white" font-size="13" font-weight="700">Compile</text>
+
+  <!-- → Ada Error? -->
+  <line x1="268" y1="90" x2="285" y2="90" stroke="var(--arrow)" stroke-width="2" marker-end="url(#wf-a)"/>
+
+  <!-- ◇ Ada Error? center=(343,90) hw=58 hh=28 -->
+  <polygon points="285,90 343,62 401,90 343,118" fill="#f59e0b"/>
+  <text x="343" y="86" text-anchor="middle" fill="var(--dt-text)" font-size="11" font-weight="700">Ada</text>
+  <text x="343" y="99" text-anchor="middle" fill="var(--dt-text)" font-size="11" font-weight="700">Error?</text>
+
+  <!-- Ya label + → Perbaiki -->
+  <text x="414" y="86" fill="#dc2626" font-size="11" font-weight="700">Ya</text>
+  <line x1="401" y1="90" x2="452" y2="90" stroke="var(--arrow)" stroke-width="2" marker-end="url(#wf-a)"/>
+
+  <!-- [Perbaiki] x=452 y=68 w=112 h=44 -->
+  <g filter="url(#wf-sh)">
+    <rect x="452" y="68" width="112" height="44" rx="10" fill="url(#wf-red)"/>
+  </g>
+  <text x="508" y="95" text-anchor="middle" fill="white" font-size="13" font-weight="700">Perbaiki</text>
+
+  <!-- Perbaiki → Compile dashed loop (via y=42) -->
+  <path d="M508,68 L508,42 L214,42 L214,68"
+        fill="none" stroke="var(--loop)" stroke-width="1.5" stroke-dasharray="5,3"
+        marker-end="url(#wf-al)"/>
+  <text x="360" y="33" text-anchor="middle" fill="var(--loop-text)" font-size="10">ulangi compile</text>
+
+  <!-- Tidak label + path ↓ to Jalankan (via y=156) -->
+  <text x="350" y="136" fill="#059669" font-size="11" font-weight="700">Tidak</text>
+  <path d="M343,118 L343,156 L72,156 L72,188"
+        fill="none" stroke="var(--arrow)" stroke-width="2" marker-end="url(#wf-a)"/>
+
+  <!-- ══════════════ ROW 2 (y-center=210) ══════════════ -->
+
+  <!-- [Jalankan] x=16 y=188 w=112 h=44 -->
+  <g filter="url(#wf-sh)">
+    <rect x="16" y="188" width="112" height="44" rx="10" fill="url(#wf-blue)"/>
+  </g>
+  <text x="72" y="215" text-anchor="middle" fill="white" font-size="13" font-weight="700">Jalankan</text>
+
+  <!-- → Output sesuai? -->
+  <line x1="128" y1="210" x2="158" y2="210" stroke="var(--arrow)" stroke-width="2" marker-end="url(#wf-a)"/>
+
+  <!-- ◇ Output sesuai? center=(222,210) hw=64 hh=28 -->
+  <polygon points="158,210 222,182 286,210 222,238" fill="#f59e0b"/>
+  <text x="222" y="206" text-anchor="middle" fill="var(--dt-text)" font-size="10" font-weight="700">Output</text>
+  <text x="222" y="218" text-anchor="middle" fill="var(--dt-text)" font-size="10" font-weight="700">sesuai?</text>
+
+  <!-- Tidak label + → Perbaiki kode -->
+  <text x="296" y="206" fill="#dc2626" font-size="11" font-weight="700">Tidak</text>
+  <line x1="286" y1="210" x2="348" y2="210" stroke="var(--arrow)" stroke-width="2" marker-end="url(#wf-a)"/>
+
+  <!-- [Perbaiki kode] x=348 y=188 w=118 h=44 -->
+  <g filter="url(#wf-sh)">
+    <rect x="348" y="188" width="118" height="44" rx="10" fill="url(#wf-red)"/>
+  </g>
+  <text x="407" y="207" text-anchor="middle" fill="white" font-size="12" font-weight="700">Perbaiki</text>
+  <text x="407" y="221" text-anchor="middle" fill="white" font-size="12" font-weight="700">Kode</text>
+
+  <!-- Perbaiki kode → Tulis Kode big loop (left side, via y=276 then x=8) -->
+  <path d="M407,232 L407,276 L8,276 L8,90 L16,90"
+        fill="none" stroke="var(--loop)" stroke-width="1.5" stroke-dasharray="5,3"
+        marker-end="url(#wf-al)"/>
+  <text x="207" y="291" text-anchor="middle" fill="var(--loop-text)" font-size="10">mulai dari Tulis Kode</text>
+
+  <!-- Ya label + ↓ arrow → Selesai -->
+  <text x="228" y="254" fill="#059669" font-size="11" font-weight="700">Ya</text>
+  <line x1="222" y1="238" x2="222" y2="264" stroke="#10b981" stroke-width="2" marker-end="url(#wf-ag)"/>
+
+  <!-- [Selesai!] pill x=157 y=264 w=130 h=44 -->
+  <g filter="url(#wf-sh)">
+    <rect x="157" y="264" width="130" height="44" rx="22" fill="url(#wf-green)"/>
+  </g>
+  <text x="222" y="284" text-anchor="middle" fill="white" font-size="13" font-weight="700">Selesai!</text>
+  <text x="222" y="299" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-size="10">program berjalan</text>
+</svg>
