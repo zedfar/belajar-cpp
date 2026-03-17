@@ -38,8 +38,19 @@ const totalLessons = getTotalLessons()
         <div id="overall-bar" class="h-full rounded-full bg-primary-500 transition-all duration-500" style="width: 0%"></div>
       </div>
       <div class="mt-3 flex gap-6 text-sm text-slate-500 dark:text-slate-400">
-        <span>🔥 <span id="streak-days">0</span> {lang === 'id' ? 'hari streak' : 'day streak'}</span>
-        <span>🏅 <span id="badge-count">0</span> {lang === 'id' ? 'lencana' : 'badges'}</span>
+        <span class="flex items-center gap-1.5">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/>
+          </svg>
+          <span id="streak-days">0</span> {lang === 'id' ? 'hari streak' : 'day streak'}
+        </span>
+        <span class="flex items-center gap-1.5">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="8" r="6"/>
+            <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
+          </svg>
+          <span id="badge-count">0</span> {lang === 'id' ? 'lencana' : 'badges'}
+        </span>
       </div>
     </div>
 
@@ -126,18 +137,33 @@ const totalLessons = getTotalLessons()
 </PageLayout>
 
 <script define:vars={{ totalLessons, units: CURRICULUM_ID, lang }}>
+  const S = 'width="28" height="28" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"'
+  const BADGE_ICONS = {
+    'first-lesson':       `<svg ${S} stroke="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`,
+    'unit-1-complete':    `<svg ${S} stroke="#b45309"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>`,
+    'unit-2-complete':    `<svg ${S} stroke="#64748b"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>`,
+    'unit-3-complete':    `<svg ${S} stroke="#ca8a04"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>`,
+    'unit-4-complete':    `<svg ${S} stroke="#ca8a04"><path d="M6 9H4.5a2.5 2.5 0 010-5H6"/><path d="M18 9h1.5a2.5 2.5 0 000-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0012 0V2z"/></svg>`,
+    'unit-5-complete':    `<svg ${S} stroke="#0ea5e9"><path d="M6 3h12l4 6-10 13L2 9z"/><path d="M11 3L8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></svg>`,
+    'unit-6-complete':    `<svg ${S} stroke="#a855f7"><polygon points="2,19 4,10 8,15 12,4 16,15 20,10 22,19"/><rect x="2" y="20" width="20" height="2" rx="1" stroke="none" fill="#a855f7"/></svg>`,
+    'all-units-complete': `<svg ${S} stroke="#6366f1"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>`,
+    'first-playground':   `<svg ${S} stroke="#f97316"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M15 13v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>`,
+    'streak-3':           `<svg ${S} stroke="#f97316"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>`,
+    'streak-7':           `<svg ${S} stroke="#eab308"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
+  }
+
   const BADGES = [
-    { id: 'first-lesson',       icon: '🌟', label: { id: 'Langkah Pertama',    en: 'First Step' },         desc: { id: 'Selesaikan 1 pelajaran',         en: 'Complete 1 lesson' } },
-    { id: 'unit-1-complete',    icon: '🥉', label: { id: 'Tamat Unit 1',        en: 'Unit 1 Complete' },    desc: { id: 'Selesaikan semua lesson Unit 1', en: 'Finish all Unit 1 lessons' } },
-    { id: 'unit-2-complete',    icon: '🥈', label: { id: 'Tamat Unit 2',        en: 'Unit 2 Complete' },    desc: { id: 'Selesaikan semua lesson Unit 2', en: 'Finish all Unit 2 lessons' } },
-    { id: 'unit-3-complete',    icon: '🥇', label: { id: 'Tamat Unit 3',        en: 'Unit 3 Complete' },    desc: { id: 'Selesaikan semua lesson Unit 3', en: 'Finish all Unit 3 lessons' } },
-    { id: 'unit-4-complete',    icon: '🏆', label: { id: 'Tamat Unit 4',        en: 'Unit 4 Complete' },    desc: { id: 'Selesaikan semua lesson Unit 4', en: 'Finish all Unit 4 lessons' } },
-    { id: 'unit-5-complete',    icon: '💎', label: { id: 'Tamat Unit 5',        en: 'Unit 5 Complete' },    desc: { id: 'Selesaikan semua lesson Unit 5', en: 'Finish all Unit 5 lessons' } },
-    { id: 'unit-6-complete',    icon: '👑', label: { id: 'Tamat Unit 6',        en: 'Unit 6 Complete' },    desc: { id: 'Selesaikan semua lesson Unit 6', en: 'Finish all Unit 6 lessons' } },
-    { id: 'all-units-complete', icon: '🎓', label: { id: 'Master C++',          en: 'C++ Master' },         desc: { id: 'Selesaikan semua unit',          en: 'Complete all units' } },
-    { id: 'first-playground',   icon: '🚀', label: { id: 'Proyek Pertama',      en: 'First Project' },      desc: { id: 'Selesaikan 1 mini project',      en: 'Complete a mini project' } },
-    { id: 'streak-3',           icon: '🔥', label: { id: 'Streak 3 Hari',       en: '3-Day Streak' },       desc: { id: 'Belajar 3 hari berturut-turut',  en: 'Study 3 days in a row' } },
-    { id: 'streak-7',           icon: '⚡', label: { id: 'Streak 7 Hari',       en: '7-Day Streak' },       desc: { id: 'Belajar 7 hari berturut-turut',  en: 'Study 7 days in a row' } },
+    { id: 'first-lesson',       label: { id: 'Langkah Pertama',    en: 'First Step' },         desc: { id: 'Selesaikan 1 pelajaran',         en: 'Complete 1 lesson' } },
+    { id: 'unit-1-complete',    label: { id: 'Tamat Unit 1',        en: 'Unit 1 Complete' },    desc: { id: 'Selesaikan semua lesson Unit 1', en: 'Finish all Unit 1 lessons' } },
+    { id: 'unit-2-complete',    label: { id: 'Tamat Unit 2',        en: 'Unit 2 Complete' },    desc: { id: 'Selesaikan semua lesson Unit 2', en: 'Finish all Unit 2 lessons' } },
+    { id: 'unit-3-complete',    label: { id: 'Tamat Unit 3',        en: 'Unit 3 Complete' },    desc: { id: 'Selesaikan semua lesson Unit 3', en: 'Finish all Unit 3 lessons' } },
+    { id: 'unit-4-complete',    label: { id: 'Tamat Unit 4',        en: 'Unit 4 Complete' },    desc: { id: 'Selesaikan semua lesson Unit 4', en: 'Finish all Unit 4 lessons' } },
+    { id: 'unit-5-complete',    label: { id: 'Tamat Unit 5',        en: 'Unit 5 Complete' },    desc: { id: 'Selesaikan semua lesson Unit 5', en: 'Finish all Unit 5 lessons' } },
+    { id: 'unit-6-complete',    label: { id: 'Tamat Unit 6',        en: 'Unit 6 Complete' },    desc: { id: 'Selesaikan semua lesson Unit 6', en: 'Finish all Unit 6 lessons' } },
+    { id: 'all-units-complete', label: { id: 'Master C++',          en: 'C++ Master' },         desc: { id: 'Selesaikan semua unit',          en: 'Complete all units' } },
+    { id: 'first-playground',   label: { id: 'Proyek Pertama',      en: 'First Project' },      desc: { id: 'Selesaikan 1 mini project',      en: 'Complete a mini project' } },
+    { id: 'streak-3',           label: { id: 'Streak 3 Hari',       en: '3-Day Streak' },       desc: { id: 'Belajar 3 hari berturut-turut',  en: 'Study 3 days in a row' } },
+    { id: 'streak-7',           label: { id: 'Streak 7 Hari',       en: '7-Day Streak' },       desc: { id: 'Belajar 7 hari berturut-turut',  en: 'Study 7 days in a row' } },
   ]
 
   function loadProgress() {
@@ -187,7 +213,7 @@ const totalLessons = getTotalLessons()
             ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-700/50'
             : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 opacity-50 grayscale'
         }">
-          <span class="text-2xl leading-none flex-shrink-0">${b.icon}</span>
+          <span class="flex-shrink-0">${BADGE_ICONS[b.id] ?? ''}</span>
           <div class="min-w-0">
             <p class="text-xs font-semibold ${earned ? 'text-amber-900 dark:text-amber-200' : 'text-slate-500 dark:text-slate-400'} truncate">
               ${b.label[lang] || b.label.en}
