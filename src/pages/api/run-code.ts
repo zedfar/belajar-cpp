@@ -54,9 +54,9 @@ export const POST: APIRoute = async ({ request }) => {
       method: 'POST',
       headers,
       body: JSON.stringify({
-        source_code: btoa(unescape(encodeURIComponent(code))),
+        source_code: Buffer.from(code).toString('base64'),
         language_id: 54, // C++ (GCC)
-        stdin: stdin ? btoa(unescape(encodeURIComponent(stdin))) : '',
+        stdin: stdin ? Buffer.from(stdin).toString('base64') : '',
       }),
     })
 
@@ -87,7 +87,7 @@ export const POST: APIRoute = async ({ request }) => {
         const decode = (s: string | null): string | null => {
           if (!s) return null
           try {
-            return decodeURIComponent(escape(atob(s)))
+            return Buffer.from(s, 'base64').toString('utf-8')
           } catch {
             return s
           }
