@@ -78,7 +78,7 @@ Platform ini mengajarkan **C++ modern (C++17)** dari nol, langsung bisa dicoba d
 ### Prerequisites
 
 - Node.js 22+
-- Judge0 API key ([RapidAPI](https://rapidapi.com/judge0-official/api/judge0-ce) atau [self-hosted](./JUDGE0_SELF_HOSTED.md))
+- Judge0 API key ([RapidAPI](https://rapidapi.com/judge0-official/api/judge0-ce) atau self-hosted)
 
 ### Instalasi
 
@@ -108,7 +108,7 @@ Buka **http://localhost:4321** di browser.
 | `JUDGE0_API_KEY` | API key / auth token | `your-key-here` |
 | `PUBLIC_SITE_URL` | URL production | `https://belajar-cpp.varnimyr.my.id` |
 
-> Untuk self-host Judge0 sendiri (gratis di Oracle Cloud), lihat [JUDGE0_SELF_HOSTED.md](./JUDGE0_SELF_HOSTED.md).
+> Untuk self-host Judge0 sendiri (gratis di Oracle Cloud), lihat dokumentasi di folder `.docs/`.
 
 ### Scripts
 
@@ -143,9 +143,8 @@ belajar-cpp/
 │   ├── plugins/             # Custom remark plugins
 │   ├── styles/              # global.css
 │   └── types/               # TypeScript type definitions
-├── JUDGE0_SELF_HOSTED.md    # Panduan self-host Judge0 di Oracle Cloud
-├── judge0-portainer.yml     # Docker Compose stack untuk Judge0
-├── PLAN.md                  # Arsitektur & rencana pengembangan
+├── .docs/                   # Dokumentasi internal (tidak di-track git)
+├── CHANGELOG.md             # Riwayat perubahan
 └── tailwind.config.ts       # Tailwind design tokens
 ```
 
