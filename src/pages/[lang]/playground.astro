@@ -92,10 +92,10 @@ const snippets = [
               </button>
             </div>
           </div>
-          <div id="code-editor-cm" class="w-full h-80" data-lang={lang} data-default-code={defaultCode}></div>
+          <div id="code-editor-cm" class="w-full h-[420px] overflow-hidden" data-lang={lang} data-default-code={defaultCode}></div>
           <textarea
             id="code-editor"
-            class="w-full h-80 p-4 bg-transparent text-slate-100 font-mono text-sm resize-none focus:outline-none hidden"
+            class="w-full h-[420px] p-4 bg-transparent text-slate-100 font-mono text-sm resize-none focus:outline-none hidden"
             spellcheck="false"
           >{defaultCode}</textarea>
         </div>
@@ -299,8 +299,21 @@ const snippets = [
             cpp(),
             oneDark,
             EditorView.theme({
-              '&': { height: '320px', fontSize: '14px' },
-              '.cm-scroller': { overflow: 'auto', fontFamily: 'JetBrains Mono, monospace' },
+              '&': { height: '420px', fontSize: '14px', overflow: 'hidden' },
+              '.cm-scroller': {
+                overflow: 'auto',
+                fontFamily: '"JetBrains Mono", "Fira Code", ui-monospace, monospace',
+                scrollbarWidth: 'thin',
+                scrollbarColor: '#475569 transparent',
+              },
+              '.cm-scroller::-webkit-scrollbar': { width: '6px', height: '6px' },
+              '.cm-scroller::-webkit-scrollbar-track': { background: 'transparent' },
+              '.cm-scroller::-webkit-scrollbar-thumb': {
+                background: '#475569',
+                borderRadius: '3px',
+              },
+              '.cm-scroller::-webkit-scrollbar-thumb:hover': { background: '#64748b' },
+              '.cm-gutters': { borderRight: '1px solid #3e4451' },
             }),
             EditorView.updateListener.of(update => {
               if (update.docChanged) currentCode = update.state.doc.toString()
