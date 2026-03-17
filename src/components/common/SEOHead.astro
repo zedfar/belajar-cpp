@@ -7,7 +7,7 @@ interface Props {
   ogImage?: string
 }
 const { title, description, lang, url, ogImage } = Astro.props
-const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://belajar-cpp.vercel.app'
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://belajar-cpp.varnimyr.my.id'
 const canonicalUrl = new URL(url, siteUrl).href
 const image = ogImage || `${siteUrl}/og-default.png`
 ---

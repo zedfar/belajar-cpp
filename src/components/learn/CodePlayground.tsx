@@ -39,7 +39,7 @@ function useCodeMirror(
       import('@codemirror/state'),
       import('@codemirror/lang-cpp'),
       import('@codemirror/theme-one-dark'),
-      import('@codemirror/basic-setup'),
+      import('codemirror'),
     ]).then(([viewMod, stateMod, cppMod, themeMod, setupMod]) => {
       if (cancelled) return
 
