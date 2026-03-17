@@ -344,22 +344,40 @@ Keliling  : 43.9823
 
 ## Latihan
 
-**Latihan:** Buat program yang menerima input panjang dan lebar persegi panjang, lalu menghitung dan menampilkan **luas** dan **keliling**-nya.
+import { Exercise } from '@/components/learn/Exercise'
 
-Rumus:
-- Luas = panjang x lebar
-- Keliling = 2 x (panjang + lebar)
+<Exercise
+  id="u1l5-ex1"
+  title="Hasil Integer Division"
+  description="Apa hasil dari ekspresi <code>9 / 2</code> jika kedua angka bertipe <code>int</code>?"
+  type="multiple-choice"
+  options={["4.5", "4", "5", "Error"]}
+  correctIndex={1}
+  hints={["Integer division memotong bagian desimal", "Hasilnya bukan dibulatkan, melainkan dipotong ke bawah"]}
+  explanation="Saat kedua operand bertipe int, C++ melakukan integer division — bagian desimal dibuang. Jadi 9 / 2 = 4, bukan 4.5. Untuk mendapatkan 4.5, setidaknya satu operand harus bertipe double: 9.0 / 2 atau 9 / 2.0."
+  lang="id"
+/>
 
-Contoh interaksi yang diharapkan:
-```
-Masukkan panjang: 10
-Masukkan lebar: 5
+<Exercise
+  id="u1l5-ex2"
+  title="Hitung Luas Persegi Panjang"
+  description="Lengkapi program untuk menghitung luas persegi panjang. Output harus persis: <code>Luas: 50</code>"
+  type="code-output"
+  expectedOutput="Luas: 50"
+  starterCode={`#include <iostream>
 
-Luas persegi panjang: 50
-Keliling persegi panjang: 30
-```
+int main() {
+    int panjang = 10;
+    int lebar = 5;
 
-**Bonus challenge:** Ubah programmu agar juga menghitung panjang diagonal. Rumus: diagonal = akar dari (panjang^2 + lebar^2). Hint: gunakan `#include <cmath>` dan fungsi `sqrt()`.
+    // Hitung luas dan tampilkan dengan format: Luas: 50
+
+    return 0;
+}`}
+  hints={["Luas = panjang * lebar", 'Gunakan std::cout << "Luas: " << luas << std::endl;', "Simpan hasil perkalian ke variabel int luas"]}
+  explanation="Operator * digunakan untuk perkalian. Luas = panjang * lebar = 10 * 5 = 50. Hasil disimpan ke variabel lalu dicetak dengan cout."
+  lang="id"
+/>
 
 ## Ringkasan
 

@@ -438,23 +438,41 @@ if (umur == 20) {
 
 ## Latihan
 
-**Latihan 1:** Buat program yang menyimpan suhu air dalam variabel `double`. Lalu tampilkan:
-- Jika suhu `<= 0`: "Air membeku (es)"
-- Jika suhu `>= 100`: "Air mendidih (uap)"
-- Selain itu: "Air dalam keadaan cair"
+import { Exercise } from '@/components/learn/Exercise'
 
-**Latihan 2:** Buat program konversi nilai yang lebih detail. Simpan nilai (0-100) ke variabel `int`, lalu tampilkan:
-- 90-100: "A (Istimewa)"
-- 80-89: "B (Sangat Baik)"
-- 70-79: "C (Baik)"
-- 60-69: "D (Cukup)"
-- 0-59: "E (Perlu Perbaikan)"
+<Exercise
+  id="u2l2-ex1"
+  title="Cek Lulus atau Tidak"
+  description="Lengkapi program berikut dengan if-else agar mencetak <code>Lulus</code> jika nilai >= 75, atau <code>Tidak Lulus</code> jika tidak."
+  type="code-output"
+  expectedOutput="Lulus"
+  starterCode={`#include <iostream>
 
-**Latihan 3:** Buat program yang mengecek apakah sebuah tahun adalah **tahun kabisat**. Aturannya: tahun habis dibagi 4 adalah tahun kabisat, KECUALI yang habis dibagi 100 (bukan kabisat), KECUALI yang habis dibagi 400 (kabisat lagi). Contoh: 2024 kabisat, 1900 bukan, 2000 kabisat.
+int main() {
+    int nilai = 80;
 
-:::tip
-Untuk Latihan 3, coba pikirkan urutan pengecekan yang tepat. Mulai dari kondisi yang paling spesifik (habis dibagi 400) ke yang paling umum.
-:::
+    // Tulis if-else di sini:
+    // Jika nilai >= 75, cetak: Lulus
+    // Jika tidak, cetak: Tidak Lulus
+
+    return 0;
+}`}
+  hints={["Sintaks: if (kondisi) { ... } else { ... }", "Kondisi yang dicek: nilai >= 75", 'std::cout << "Lulus" << std::endl;']}
+  explanation="Karena nilai adalah 80 dan 80 >= 75 bernilai true, blok if dijalankan dan mencetak Lulus. Blok else dilewati."
+  lang="id"
+/>
+
+<Exercise
+  id="u2l2-ex2"
+  title="Pengecekan Kondisi if-else"
+  description="Variabel x bernilai 0. Program mengecek: jika x > 0 cetak Positif, jika x &lt; 0 cetak Negatif, selain itu cetak Nol. Apa output yang dihasilkan?"
+  type="multiple-choice"
+  options={["Positif", "Negatif", "Nol", "Tidak ada output"]}
+  correctIndex={2}
+  hints={["x bernilai 0", "0 > 0 adalah false, 0 < 0 juga false", "Jika semua kondisi false, blok else yang dijalankan"]}
+  explanation="Karena x = 0, kondisi x > 0 adalah false dan x < 0 juga false. Kedua kondisi gagal, sehingga blok else dijalankan dan mencetak Nol."
+  lang="id"
+/>
 
 ## Ringkasan
 

@@ -422,19 +422,42 @@ if ((a || b) && c) { }   // kalau memang ini yang dimaksud
 
 ## Latihan
 
-**Latihan 1:** Buat program yang mengecek apakah seseorang boleh membuat SIM. Syarat: umur minimal 17 tahun DAN sudah lulus tes tertulis (`bool lulusTes`). Tampilkan "Boleh buat SIM!" atau "Belum memenuhi syarat."
+import { Exercise } from '@/components/learn/Exercise'
 
-**Latihan 2:** Buat program yang mengecek apakah sebuah angka berada di luar rentang 1-100. Gunakan operator `||` untuk mengecek apakah angka < 1 ATAU angka > 100. Tampilkan "Angka di luar rentang!" atau "Angka valid."
+<Exercise
+  id="u2l3-ex1"
+  title="Hasil Operator AND"
+  description="Apa hasil dari ekspresi <code>true &amp;&amp; false</code>?"
+  type="multiple-choice"
+  options={["true", "false", "Error", "0.5"]}
+  correctIndex={1}
+  hints={["AND (&&) menghasilkan true HANYA jika KEDUA kondisi true", "Salah satu sudah false, maka hasilnya pasti false"]}
+  explanation="Operator && (AND) menghasilkan true hanya jika kedua operand bernilai true. Karena salah satu adalah false, maka true && false = false."
+  lang="id"
+/>
 
-**Latihan 3:** Buat program untuk sistem diskon toko buku:
-- Diskon 30% jika: member DAN belanja >= Rp100.000
-- Diskon 15% jika: member ATAU belanja >= Rp200.000
-- Diskon 0% jika tidak memenuhi syarat apa pun
-Tampilkan total sebelum dan sesudah diskon.
+<Exercise
+  id="u2l3-ex2"
+  title="Cek Syarat Naik Wahana"
+  description="Lengkapi kondisi if agar seseorang boleh naik wahana jika umur >= 12 DAN tinggi >= 140. Output harus: <code>Boleh naik!</code>"
+  type="code-output"
+  expectedOutput="Boleh naik!"
+  starterCode={`#include <iostream>
 
-:::tip
-Untuk Latihan 3, perhatikan urutan pengecekan! Cek kondisi diskon terbesar lebih dulu (30%), baru yang lebih kecil (15%). Kalau dibalik, orang yang harusnya dapat 30% malah dapat 15%.
-:::
+int main() {
+    int umur = 14;
+    int tinggi = 145;
+
+    // Tulis kondisi if yang menggunakan && (AND)
+    // Jika umur >= 12 DAN tinggi >= 140: cetak "Boleh naik!"
+    // Jika tidak: cetak "Belum boleh."
+
+    return 0;
+}`}
+  hints={["Gunakan && untuk menggabungkan dua kondisi", "if (umur >= 12 && tinggi >= 140)", 'std::cout << "Boleh naik!" << std::endl;']}
+  explanation="Karena umur 14 >= 12 (true) DAN tinggi 145 >= 140 (true), maka true && true = true dan blok if dijalankan."
+  lang="id"
+/>
 
 ## Ringkasan
 

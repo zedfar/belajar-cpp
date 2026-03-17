@@ -370,19 +370,54 @@ Case di switch harus selalu berupa **nilai konstan** — angka literal (`1`, `2`
 
 ## Latihan
 
-**Latihan 1:** Buat program kalkulator sederhana. User memasukkan dua angka dan operator (`+`, `-`, `*`, `/`). Gunakan switch berdasarkan operator untuk menampilkan hasilnya.
+import { Exercise } from '@/components/learn/Exercise'
 
-Contoh:
-```
-Angka pertama: 10
-Operator (+, -, *, /): *
-Angka kedua: 5
-Hasil: 10 * 5 = 50
-```
+<Exercise
+  id="u2l4-ex1"
+  title="Peran break dalam Switch"
+  description="Apa yang terjadi jika sebuah <code>case</code> dalam switch-case tidak memiliki <code>break</code>?"
+  type="multiple-choice"
+  options={[
+    "Program langsung berhenti",
+    "Compiler memberikan error",
+    "Program terus mengeksekusi case berikutnya (fall-through)",
+    "Case tersebut dilewati"
+  ]}
+  correctIndex={2}
+  hints={["break adalah 'pintu keluar' dari switch", "Tanpa break, tidak ada yang menghentikan eksekusi ke case selanjutnya"]}
+  explanation="Tanpa break, terjadi fall-through: program terus mengeksekusi case berikutnya meskipun nilainya tidak cocok. Ini adalah bug umum — compiler tidak mengeluarkan error, tapi program berperilaku salah."
+  lang="id"
+/>
 
-**Latihan 2:** Buat program yang menerima nomor bulan (1-12) dan menampilkan jumlah hari di bulan tersebut. Gunakan fall-through untuk bulan-bulan yang punya jumlah hari sama. (Abaikan tahun kabisat untuk Februari — anggap saja 28 hari.)
+<Exercise
+  id="u2l4-ex2"
+  title="Switch untuk Nama Hari"
+  description="Lengkapi switch-case agar mencetak nama hari. Jika <code>hari = 1</code>, output harus: <code>Senin</code>"
+  type="code-output"
+  expectedOutput="Senin"
+  starterCode={`#include <iostream>
 
-**Latihan 3:** Buat program menu restoran dengan minimal 5 pilihan makanan. Tampilkan nama makanan, harga, dan estimasi waktu penyajian berdasarkan pilihan user.
+int main() {
+    int hari = 1;
+
+    switch (hari) {
+        case 1:
+            // Cetak: Senin
+            break;
+        case 2:
+            std::cout << "Selasa" << std::endl;
+            break;
+        default:
+            std::cout << "Hari lain" << std::endl;
+            break;
+    }
+
+    return 0;
+}`}
+  hints={['Tambahkan std::cout << "Senin" << std::endl; di dalam case 1', "Pastikan ada break setelah cout", "Perhatikan bahwa hari = 1 sehingga case 1 yang dijalankan"]}
+  explanation="switch mencocokkan nilai hari (1) dengan setiap case. Case 1 cocok, sehingga kode di dalamnya dijalankan dan mencetak Senin. break menghentikan eksekusi setelah case ini."
+  lang="id"
+/>
 
 ## Ringkasan
 

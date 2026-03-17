@@ -233,14 +233,41 @@ std::cout << (5 > 3) << std::endl;
 
 ## Latihan
 
-**Latihan 1:** Buat program yang mendeklarasikan dua variabel `int` berisi tinggi badan (dalam cm) dua orang temanmu. Lalu tampilkan hasil perbandingan: siapa yang lebih tinggi, apakah tinggi mereka sama, dan apakah masing-masing di atas 160 cm.
+import { Exercise } from '@/components/learn/Exercise'
 
-**Latihan 2:** Buat program yang menyimpan harga dua barang ke dalam variabel `double`. Bandingkan harga keduanya dan tampilkan:
-- Apakah harganya sama?
-- Apakah barang pertama lebih murah?
-- Apakah barang kedua harganya di atas 50000?
+<Exercise
+  id="u2l1-ex1"
+  title="Operator Perbandingan yang Benar"
+  description="Kamu ingin mengecek apakah nilai variabel <code>x</code> sama dengan 10. Operator mana yang harus digunakan?"
+  type="multiple-choice"
+  options={["x = 10", "x == 10", "x != 10", "x := 10"]}
+  correctIndex={1}
+  hints={["= adalah assignment (memberi nilai), bukan perbandingan", "== digunakan untuk membandingkan dua nilai"]}
+  explanation="== adalah operator perbandingan yang mengecek apakah dua nilai sama. Operator = (satu tanda sama) digunakan untuk assignment (menyimpan nilai), bukan membandingkan. Ini adalah salah satu kesalahan paling umum di C++!"
+  lang="id"
+/>
 
-**Latihan 3:** Deklarasikan variabel `int umur` dan `int batasMin = 12`. Simpan hasil perbandingan `umur >= batasMin` ke variabel `bool bolehMasuk`, lalu tampilkan hasilnya.
+<Exercise
+  id="u2l1-ex2"
+  title="Hasil Perbandingan"
+  description="Program berikut menggunakan operator perbandingan. Lengkapi agar mencetak output: <code>1</code> (artinya true — nilai 85 memang lebih besar dari 75)."
+  type="code-output"
+  expectedOutput="1"
+  starterCode={`#include <iostream>
+
+int main() {
+    int nilai = 85;
+    int kkm = 75;
+
+    // Cetak hasil perbandingan: apakah nilai >= kkm ?
+    // Output harus: 1
+
+    return 0;
+}`}
+  hints={["Gunakan operator >= untuk perbandingan", "std::cout << (nilai >= kkm) << std::endl;", "Bungkus perbandingan dalam tanda kurung saat digunakan di cout"]}
+  explanation="Ekspresi (nilai >= kkm) menghasilkan bool. Karena 85 >= 75 adalah benar, hasilnya true yang ditampilkan sebagai 1 oleh cout."
+  lang="id"
+/>
 
 ## Ringkasan
 

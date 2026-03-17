@@ -309,11 +309,43 @@ Ternary dirancang untuk **menghasilkan nilai**, bukan untuk menjalankan perintah
 
 ## Latihan
 
-**Latihan 1:** Buat program yang meminta user memasukkan suhu dalam Celsius, lalu tampilkan apakah air dalam keadaan "Membeku" (di bawah 0) atau "Tidak Membeku" menggunakan ternary.
+import { Exercise } from '@/components/learn/Exercise'
 
-**Latihan 2:** Buat program yang meminta dua angka dari user, lalu tampilkan mana yang lebih besar. Gunakan ternary operator. Tangani juga kasus jika kedua angka sama (boleh pakai if tambahan untuk kasus ini).
+<Exercise
+  id="u2l5-ex1"
+  title="Baca Ternary Operator"
+  description="Apa hasil dari ekspresi <code>(10 > 5) ? &quot;Besar&quot; : &quot;Kecil&quot;</code>?"
+  type="multiple-choice"
+  options={["Kecil", "Besar", "true", "false"]}
+  correctIndex={1}
+  hints={["Evaluasi kondisi terlebih dahulu: apakah 10 > 5?", "Jika kondisi true, hasilnya adalah nilai setelah ?", "Jika kondisi false, hasilnya adalah nilai setelah :"]}
+  explanation='Kondisi 10 > 5 adalah true. Ternary operator mengambil nilai setelah ? jika kondisi true, sehingga hasilnya adalah "Besar".'
+  lang="id"
+/>
 
-**Latihan 3:** Buat program yang meminta nilai ujian (0-100), lalu tentukan apakah siswa mendapat predikat "Tuntas" (>= 75) atau "Belum Tuntas" menggunakan ternary. Tampilkan juga pesan motivasi yang berbeda untuk masing-masing predikat.
+<Exercise
+  id="u2l5-ex2"
+  title="Gunakan Ternary untuk Status Kelulusan"
+  description="Lengkapi program menggunakan ternary operator agar mencetak <code>Lulus</code> jika nilai >= 75, atau <code>Tidak Lulus</code> jika tidak."
+  type="code-output"
+  expectedOutput="Lulus"
+  starterCode={`#include <iostream>
+#include <string>
+
+int main() {
+    int nilai = 80;
+
+    // Gunakan ternary operator untuk menentukan status
+    // std::string status = (kondisi) ? "nilai_true" : "nilai_false";
+    std::string status = "";
+
+    std::cout << status << std::endl;
+    return 0;
+}`}
+  hints={["Kondisi yang dicek: nilai >= 75", 'std::string status = (nilai >= 75) ? "Lulus" : "Tidak Lulus";', "Ternary memilih nilai berdasarkan kondisi dalam satu baris"]}
+  explanation='Ternary (nilai >= 75) ? "Lulus" : "Tidak Lulus" mengevaluasi kondisi. Karena 80 >= 75 adalah true, variabel status diisi "Lulus".'
+  lang="id"
+/>
 
 ## Ringkasan
 

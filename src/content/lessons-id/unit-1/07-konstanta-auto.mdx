@@ -236,22 +236,46 @@ Perhatikan bagaimana `FAKTOR_KONVERSI` dan `OFFSET_FAHRENHEIT` dibuat sebagai ko
 
 ## Latihan
 
-Buat program yang menghitung luas dan keliling lingkaran. Gunakan `const` untuk PI dan variabel hasil yang tidak berubah:
+import { Exercise } from '@/components/learn/Exercise'
 
-```cpp
-#include <iostream>
+<Exercise
+  id="u1l7-ex1"
+  title="Deklarasi Konstanta"
+  description="Manakah cara yang benar untuk mendeklarasikan konstanta PI dengan nilai 3.14?"
+  type="multiple-choice"
+  options={[
+    "double PI = 3.14;",
+    "const double PI = 3.14;",
+    "const PI = 3.14;",
+    "auto const PI = 3.14;"
+  ]}
+  correctIndex={1}
+  hints={["Keyword const harus diletakkan sebelum tipe data", "Tipe data tetap harus ditulis meski menggunakan const"]}
+  explanation="Sintaks yang benar adalah: const tipe_data nama = nilai; Jadi const double PI = 3.14; adalah deklarasi konstanta yang benar. Tanpa tipe data, compiler tidak bisa mengalokasikan memori."
+  lang="id"
+/>
+
+<Exercise
+  id="u1l7-ex2"
+  title="Hitung Keliling Lingkaran dengan Konstanta"
+  description="Lengkapi program berikut agar mencetak keliling lingkaran. Output harus persis: <code>Keliling: 62.8</code>"
+  type="code-output"
+  expectedOutput="Keliling: 62.8"
+  starterCode={`#include <iostream>
 
 int main() {
-    // Deklarasikan PI sebagai konstanta
-    // Minta input jari-jari dari user
-    // Hitung luas (PI * r * r) dan keliling (2 * PI * r)
-    // Tampilkan hasil
+    const double PI = 3.14;
+    double jariJari = 10.0;
+
+    // Hitung keliling = 2 * PI * jariJari
+    // Cetak: Keliling: 62.8
 
     return 0;
-}
-```
-
-**Challenge tambahan:** Identifikasi variabel mana saja di program-program pelajaran sebelumnya yang seharusnya `const` (misalnya PI yang pernah kita tulis sebagai variabel biasa), lalu ubah menjadi `const`.
+}`}
+  hints={["Keliling = 2 * PI * jariJari", "2 * 3.14 * 10.0 = 62.8", 'Gunakan std::cout << "Keliling: " << keliling << std::endl;']}
+  explanation="Konstanta PI digunakan dalam perhitungan keliling = 2 * PI * r = 2 * 3.14 * 10 = 62.8. Menggunakan const memastikan nilai PI tidak bisa berubah secara tidak sengaja."
+  lang="id"
+/>
 
 ## Ringkasan
 

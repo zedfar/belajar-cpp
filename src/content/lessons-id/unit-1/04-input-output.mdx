@@ -336,20 +336,42 @@ Cara mengingat arahnya:
 
 ## Latihan
 
-**Latihan 1:** Buat program yang meminta input 2 angka bulat dari user, lalu menampilkan kedua angka tersebut.
+import { Exercise } from '@/components/learn/Exercise'
 
-Contoh interaksi:
-```
-Masukkan angka pertama: 7
-Masukkan angka kedua: 13
-Angka pertama: 7
-Angka kedua: 13
-```
+<Exercise
+  id="u1l4-ex1"
+  title="Arah Operator I/O"
+  description="Operator manakah yang digunakan untuk <strong>menerima input</strong> dari keyboard ke dalam variabel?"
+  type="multiple-choice"
+  options={["cout <<", "cin >>", "cout >>", "cin <<"]}
+  correctIndex={1}
+  hints={["cin adalah character input stream", "Arah panah >> menjauh dari cin, menuju variabel"]}
+  explanation="cin >> digunakan untuk menerima input dari keyboard. Panah >> menunjuk ke arah variabel tujuan — data 'diambil dari' cin dan disimpan ke variabel."
+  lang="id"
+/>
 
-**Latihan 2:** Buat program "Tanya Jawab" yang menanyakan 3 pertanyaan berikut dan menampilkan rangkumannya:
-- Makanan favorit (string dengan getline)
-- Berapa kali makan per hari (int)
-- Apakah suka masak (ketik 1 untuk ya, 0 untuk tidak)
+<Exercise
+  id="u1l4-ex2"
+  title="Program Output Sederhana"
+  description="Lengkapi program agar mencetak dua baris output: <code>Nama: Andi</code> lalu <code>Kota: Jakarta</code>"
+  type="code-output"
+  expectedOutput="Nama: Andi
+Kota: Jakarta"
+  starterCode={`#include <iostream>
+#include <string>
+
+int main() {
+    std::string nama = "Andi";
+    std::string kota = "Jakarta";
+
+    // Tampilkan kedua variabel dengan format yang benar
+
+    return 0;
+}`}
+  hints={['Gunakan std::cout << "Nama: " << nama << std::endl;', "Lakukan hal yang sama untuk kota", "Pastikan format persis: Nama: Andi dan Kota: Jakarta"]}
+  explanation="std::cout dapat menggabungkan string literal dan variabel menggunakan operator <<. Setiap cout dengan endl menghasilkan satu baris output."
+  lang="id"
+/>
 
 ## Ringkasan
 

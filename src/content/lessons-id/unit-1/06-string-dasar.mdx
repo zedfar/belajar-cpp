@@ -334,22 +334,47 @@ Panjang username: 9 karakter
 
 ## Latihan
 
-Buat program yang:
-1. Meminta input nama depan dan nama belakang (masing-masing satu kata)
-2. Menggabungkan keduanya menjadi nama lengkap
-3. Menampilkan nama lengkap, jumlah karakter total, dan inisial (huruf pertama nama depan + huruf pertama nama belakang)
+import { Exercise } from '@/components/learn/Exercise'
 
-Contoh interaksi:
-```
-Nama depan: Ahmad
-Nama belakang: Fauzi
+<Exercise
+  id="u1l6-ex1"
+  title="Gabungkan Dua String"
+  description="Lengkapi kode berikut agar variabel <code>namaLengkap</code> berisi hasil penggabungan nama depan dan nama belakang dengan spasi di tengah."
+  type="fill-blank"
+  template={`#include <iostream>
+#include <string>
 
-Nama lengkap: Ahmad Fauzi
-Jumlah karakter: 11
-Inisial: AF
-```
+int main() {
+    std::string depan = "Budi";
+    std::string belakang = "Santoso";
+    std::string namaLengkap = depan {{ BLANK }} " " {{ BLANK }} belakang;
+    std::cout << namaLengkap << std::endl;
+    return 0;
+}`}
+  blanks={["+", "+"]}
+  hints={["Operator + digunakan untuk concatenation string", "Kamu perlu dua kali operator + untuk menggabungkan tiga bagian"]}
+  explanation='Concatenation string menggunakan operator +. Ekspresi depan + " " + belakang menggabungkan nama depan, spasi, dan nama belakang menjadi satu string.'
+  lang="id"
+/>
 
-Hint: gunakan `[0]` untuk mengambil karakter pertama, dan `length()` untuk menghitung panjang.
+<Exercise
+  id="u1l6-ex2"
+  title="Panjang String"
+  description="Program berikut mencetak panjang string <code>Hello</code>. Apa output yang benar?"
+  type="code-output"
+  expectedOutput="5"
+  starterCode={`#include <iostream>
+#include <string>
+
+int main() {
+    std::string kata = "Hello";
+    std::cout << kata.length() << std::endl;
+    return 0;
+}`}
+  hints={["Hitung jumlah karakter dalam string Hello", "Index dimulai dari 0, tapi length() menghitung jumlah total karakter"]}
+  explanation='String "Hello" terdiri dari 5 karakter: H, e, l, l, o. Metode .length() mengembalikan jumlah total karakter dalam string.'
+  lang="id"
+/>
 
 ## Ringkasan
 

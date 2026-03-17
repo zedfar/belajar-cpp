@@ -307,34 +307,38 @@ int secondPlace = 2; // OK
 
 ## Latihan
 
-Buat program yang mendeklarasikan variabel untuk menyimpan data diri, lalu menampilkannya ke layar. Gunakan minimal 5 variabel dengan tipe data berbeda:
+import { Exercise } from '@/components/learn/Exercise'
 
-```cpp
-#include <iostream>
-#include <string>
+<Exercise
+  id="u1l3-ex1"
+  title="Tipe Data yang Tepat"
+  description="Tipe data apa yang paling tepat untuk menyimpan nilai <code>3.14</code> (bilangan desimal)?"
+  type="multiple-choice"
+  options={["int", "char", "double", "bool"]}
+  correctIndex={2}
+  hints={["int hanya untuk bilangan bulat", "double dirancang untuk menyimpan bilangan dengan titik desimal"]}
+  explanation="double adalah tipe data untuk bilangan desimal (floating point) dengan presisi tinggi. int hanya menyimpan bilangan bulat — nilai 3.14 akan dipotong menjadi 3 jika disimpan dalam int."
+  lang="id"
+/>
+
+<Exercise
+  id="u1l3-ex2"
+  title="Deklarasi dan Output Variabel"
+  description="Lengkapi program berikut agar mendeklarasikan variabel dan mencetak output yang benar."
+  type="code-output"
+  expectedOutput="Umur: 16"
+  starterCode={`#include <iostream>
 
 int main() {
-    // Deklarasikan variabel berikut dan isi dengan datamu sendiri:
-    // - Nama lengkap (string)
-    // - Umur (int)
-    // - Tinggi badan dalam cm (double)
-    // - Inisial nama depan (char)
-    // - Apakah suka programming (bool)
-
-    // Tampilkan semua data ke layar
+    // Deklarasikan variabel umur bertipe int dengan nilai 16
+    // lalu cetak: Umur: 16
 
     return 0;
-}
-```
-
-Contoh output yang diharapkan:
-```
-Nama     : Ahmad Fauzi
-Umur     : 15 tahun
-Tinggi   : 165.3 cm
-Inisial  : A
-Suka programming: 1
-```
+}`}
+  hints={["Tulis: int umur = 16;", "Gunakan std::cout << untuk mencetak", 'Format output: std::cout << "Umur: " << umur << std::endl;']}
+  explanation="Variabel int dideklarasikan dengan format: int nama = nilai; Lalu ditampilkan menggunakan std::cout << nama."
+  lang="id"
+/>
 
 ## Ringkasan
 

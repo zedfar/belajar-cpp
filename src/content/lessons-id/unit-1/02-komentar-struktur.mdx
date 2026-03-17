@@ -270,20 +270,42 @@ Perhatikan bagaimana komentar memberikan konteks tanpa berlebihan — cukup jela
 
 ## Latihan
 
-**Latihan 1:** Ambil program Hello World dari pelajaran sebelumnya dan tambahkan komentar yang menjelaskan setiap baris:
+import { Exercise } from '@/components/learn/Exercise'
 
-```cpp
+<Exercise
+  id="u1l2-ex1"
+  title="Lengkapi Komentar"
+  description="Lengkapi kode berikut dengan komentar yang tepat pada bagian <code>{{ BLANK }}</code>."
+  type="fill-blank"
+  template={`// {{ BLANK }} program Hello World
 #include <iostream>
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
-    return 0;
-}
-```
+    std::cout << "Hello!" << std::endl; // {{ BLANK }} teks ke layar
+    return 0; // Program selesai dengan sukses
+}`}
+  blanks={["Ini adalah", "Tampilkan"]}
+  hints={["Komentar single-line dimulai dengan //", "Jelaskan apa yang dilakukan baris tersebut dengan kata sederhana"]}
+  explanation="Komentar berguna untuk menjelaskan tujuan kode. // diikuti teks apapun — compiler mengabaikannya sepenuhnya."
+  lang="id"
+/>
 
-Tambahkan komentar di atas atau di samping setiap baris. Pastikan komentar menjelaskan **fungsi** baris tersebut, bukan mengulang kodenya.
-
-**Latihan 2:** Buat program yang menampilkan puisi atau lirik lagu favoritmu (minimal 4 baris). Gunakan komentar multi-line di awal untuk menjelaskan apa yang ditampilkan program.
+<Exercise
+  id="u1l2-ex2"
+  title="Output Program dengan Komentar"
+  description="Program berikut memiliki komentar yang menonaktifkan satu baris. Apa output yang dihasilkan?"
+  type="multiple-choice"
+  options={[
+    "Langkah 1\nLangkah 2\nLangkah 3",
+    "Langkah 1\nLangkah 3",
+    "Langkah 2\nLangkah 3",
+    "Tidak ada output"
+  ]}
+  correctIndex={1}
+  hints={["Baris yang diawali // diabaikan compiler", "Lihat baris mana yang aktif dan mana yang di-comment out"]}
+  explanation='Baris std::cout << "Langkah 2" diawali // sehingga menjadi komentar dan tidak dieksekusi. Hanya Langkah 1 dan Langkah 3 yang dicetak.'
+  lang="id"
+/>
 
 ## Ringkasan
 

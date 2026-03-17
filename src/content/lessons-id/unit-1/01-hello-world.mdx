@@ -202,26 +202,42 @@ Kalau menemui error, jangan panik. Baca pesan errornya — biasanya compiler men
 
 ## Latihan
 
-**Latihan 1:** Ubah program Hello World agar menampilkan namamu sendiri. Contoh output yang diharapkan:
+import { Exercise } from '@/components/learn/Exercise'
 
-```
-Hello, namamu!
-Selamat datang di dunia C++!
-```
+<Exercise
+  id="u1l1-ex1"
+  title="Ubah Output Hello World"
+  description="Ubah program Hello World agar menampilkan teks <code>Halo, C++!</code> persis seperti yang diminta."
+  type="code-output"
+  expectedOutput="Halo, C++!"
+  starterCode={`#include <iostream>
 
-**Latihan 2:** Buat program yang menampilkan kartu perkenalan seperti ini:
+int main() {
+    // Ubah baris berikut agar outputnya: Halo, C++!
+    std::cout << "Hello, World!" << std::endl;
+    return 0;
+}`}
+  hints={["Ganti teks di dalam tanda kutip ganda", "Pastikan tulisannya persis: Halo, C++!", "Jangan ubah bagian lain dari program"]}
+  explanation="std::cout mencetak teks yang ada di dalam tanda kutip ganda persis seperti apa adanya. Cukup ganti isi string-nya saja."
+  lang="id"
+/>
 
-```
-========================
-   KARTU PERKENALAN
-========================
-Nama  : [namamu]
-Umur  : [umurmu]
-Hobi  : [hobimu]
-========================
-```
-
-Gunakan `std::cout` untuk setiap baris dan bereksperimenlah dengan simbol-simbol seperti `=`, `-`, `|` untuk membuat border.
+<Exercise
+  id="u1l1-ex2"
+  title="Identifikasi Elemen Program"
+  description="Apa fungsi dari baris <code>return 0;</code> di dalam fungsi <code>main()</code>?"
+  type="multiple-choice"
+  options={[
+    "Mengakhiri loop program",
+    "Memberitahu sistem operasi bahwa program berjalan sukses",
+    "Mendeklarasikan variabel bertipe int",
+    "Memulai eksekusi program dari awal"
+  ]}
+  correctIndex={1}
+  hints={["Angka 0 adalah konvensi universal untuk 'semua baik-baik saja'", "main() harus mengembalikan nilai ke sistem operasi"]}
+  explanation="return 0; mengembalikan nilai 0 ke sistem operasi, yang berarti program berakhir dengan sukses. Nilai selain 0 menandakan ada kesalahan."
+  lang="id"
+/>
 
 ## Ringkasan
 
