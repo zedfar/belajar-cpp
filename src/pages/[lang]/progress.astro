@@ -1,0 +1,166 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro'
+import { CURRICULUM_ID, getTotalLessons, getLessonUrl } from '@/lib/curriculum'
+import type { Language } from '@/types/lesson'
+
+export function getStaticPaths() {
+  return [{ params: { lang: 'id' } }, { params: { lang: 'en' } }]
+}
+
+const { lang } = Astro.params as { lang: Language }
+const totalLessons = getTotalLessons()
+---
+
+<PageLayout
+  title={lang === 'id' ? 'Progress Belajar' : 'Learning Progress'}
+  description={lang === 'id' ? 'Pantau kemajuan belajar C++ kamu' : 'Track your C++ learning progress'}
+  lang={lang}
+>
+  <div class="max-w-3xl mx-auto" id="progress-page">
+    <h1 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-2">
+      {lang === 'id' ? 'Progress Belajar' : 'Learning Progress'}
+    </h1>
+    <p class="text-slate-500 dark:text-slate-400 mb-8">
+      {lang === 'id' ? 'Disimpan di perangkat kamu — tidak perlu login.' : 'Saved on your device — no login needed.'}
+    </p>
+
+    <!-- Overall progress -->
+    <div class="p-6 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 mb-8">
+      <div class="flex items-center justify-between mb-3">
+        <span class="font-semibold text-slate-900 dark:text-white">
+          {lang === 'id' ? 'Keseluruhan' : 'Overall'}
+        </span>
+        <span class="text-sm text-slate-500 dark:text-slate-400">
+          <span id="overall-completed">0</span> / {totalLessons} {lang === 'id' ? 'pelajaran' : 'lessons'}
+        </span>
+      </div>
+      <div class="w-full h-3 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+        <div id="overall-bar" class="h-full rounded-full bg-primary-500 transition-all duration-500" style="width: 0%"></div>
+      </div>
+      <div class="mt-3 flex gap-6 text-sm text-slate-500 dark:text-slate-400">
+        <span>🔥 <span id="streak-days">0</span> {lang === 'id' ? 'hari streak' : 'day streak'}</span>
+        <span>🏅 <span id="badge-count">0</span> {lang === 'id' ? 'lencana' : 'badges'}</span>
+      </div>
+    </div>
+
+    <!-- Per-unit progress -->
+    <div class="space-y-4 mb-8">
+      {CURRICULUM_ID.map(unit => (
+        <div
+          class:list={[
+            'p-5 rounded-xl border transition-colors',
+            unit.isAvailable
+              ? 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-primary-300 dark:hover:border-primary-700'
+              : 'bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 opacity-60'
+          ]}
+        >
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-3">
+              <span class="text-xs font-mono px-2 py-0.5 rounded bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300">
+                Unit {unit.id}
+              </span>
+              <span class="font-medium text-slate-900 dark:text-white text-sm">
+                {unit.title[lang]}
+              </span>
+              {!unit.isAvailable && (
+                <span class="text-xs text-slate-400 dark:text-slate-500">
+                  {lang === 'id' ? 'Segera' : 'Coming soon'}
+                </span>
+              )}
+            </div>
+            <span
+              class="text-xs text-slate-500 dark:text-slate-400"
+              id={`unit-${unit.id}-count`}
+            >
+              0 / {unit.lessons.length}
+            </span>
+          </div>
+          <div class="w-full h-2 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+            <div
+              id={`unit-${unit.id}-bar`}
+              class="h-full rounded-full bg-emerald-500 transition-all duration-500"
+              style="width: 0%"
+            ></div>
+          </div>
+          {unit.isAvailable && (
+            <div class="mt-3">
+              <a
+                href={getLessonUrl(lang, unit.lessons[0].slug)}
+                class="text-xs text-primary-600 dark:text-primary-400 hover:underline"
+              >
+                {lang === 'id' ? 'Lanjutkan →' : 'Continue →'}
+              </a>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+
+    <!-- Reset button -->
+    <div class="border-t border-slate-200 dark:border-slate-800 pt-6 flex items-center justify-between">
+      <p class="text-sm text-slate-500 dark:text-slate-400">
+        {lang === 'id'
+          ? 'Progress disimpan di localStorage perangkat kamu.'
+          : 'Progress is stored in your device\'s localStorage.'}
+      </p>
+      <button
+        id="reset-btn"
+        class="text-sm text-red-500 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+      >
+        {lang === 'id' ? 'Reset progress' : 'Reset progress'}
+      </button>
+    </div>
+  </div>
+</PageLayout>
+
+<script define:vars={{ totalLessons, units: CURRICULUM_ID }}>
+  function loadProgress() {
+    try {
+      const raw = localStorage.getItem('belajar-cpp-progress')
+      if (!raw) return null
+      return JSON.parse(raw)
+    } catch {
+      return null
+    }
+  }
+
+  function renderProgress() {
+    const progress = loadProgress()
+    const completed = progress?.completedLessons ?? []
+    const streak = progress?.streakDays ?? 0
+    const badges = progress?.unlockedBadges ?? []
+
+    // Overall
+    const overallPct = totalLessons > 0 ? Math.round((completed.length / totalLessons) * 100) : 0
+    document.getElementById('overall-completed').textContent = completed.length
+    document.getElementById('overall-bar').style.width = overallPct + '%'
+    document.getElementById('streak-days').textContent = streak
+    document.getElementById('badge-count').textContent = badges.length
+
+    // Per unit
+    units.forEach(unit => {
+      const unitCompleted = completed.filter(s => s.startsWith(unit.slug + '/')).length
+      const pct = unit.lessons.length > 0 ? Math.round((unitCompleted / unit.lessons.length) * 100) : 0
+
+      const countEl = document.getElementById(`unit-${unit.id}-count`)
+      const barEl = document.getElementById(`unit-${unit.id}-bar`)
+      if (countEl) countEl.textContent = `${unitCompleted} / ${unit.lessons.length}`
+      if (barEl) barEl.style.width = pct + '%'
+    })
+  }
+
+  // Reset
+  document.getElementById('reset-btn')?.addEventListener('click', () => {
+    const confirmed = confirm(
+      document.documentElement.lang === 'id'
+        ? 'Reset semua progress? Tindakan ini tidak bisa dibatalkan.'
+        : 'Reset all progress? This cannot be undone.'
+    )
+    if (confirmed) {
+      localStorage.removeItem('belajar-cpp-progress')
+      renderProgress()
+    }
+  })
+
+  renderProgress()
+</script>
