@@ -589,7 +589,10 @@ const snippets = [
       }, 2000)
     }
 
-    // ─── Run button state ─────────────────────────────────────────────────────
+    // ─── Run button state + cooldown ──────────────────────────────────────────
+    const RUN_COOLDOWN_MS = 3000
+    let runCooldownTimer: ReturnType<typeof setTimeout> | null = null
+
     function setRunning(running: boolean) {
       if (!runBtn) return
       runBtn.disabled = running
@@ -598,6 +601,24 @@ const snippets = [
       if (runLabel) runLabel.textContent = running
         ? (lang === 'id' ? 'Menjalankan...' : 'Running...')
         : (lang === 'id' ? 'Jalankan' : 'Run')
+    }
+
+    function startCooldown() {
+      if (!runBtn || !runLabel) return
+      runBtn.disabled = true
+      let remaining = Math.ceil(RUN_COOLDOWN_MS / 1000)
+      runLabel.textContent = `${lang === 'id' ? 'Jalankan' : 'Run'} (${remaining}s)`
+      runCooldownTimer = setInterval(() => {
+        remaining--
+        if (remaining <= 0) {
+          clearInterval(runCooldownTimer!)
+          runCooldownTimer = null
+          runBtn!.disabled = false
+          runLabel!.textContent = lang === 'id' ? 'Jalankan' : 'Run'
+        } else {
+          runLabel!.textContent = `${lang === 'id' ? 'Jalankan' : 'Run'} (${remaining}s)`
+        }
+      }, 1000)
     }
 
     function setOutputLoading() {
@@ -683,7 +704,12 @@ const snippets = [
         outputArea.className = 'p-4 bg-[#1d2027] text-red-400 font-mono text-sm min-h-[100px] whitespace-pre-wrap'
       } finally {
         setRunning(false)
-        outputCard?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+        startCooldown()
+        // Scroll output into view only if it's below the visible area
+        const rect = outputCard?.getBoundingClientRect()
+        if (rect && rect.top > window.innerHeight) {
+          outputCard?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+        }
       }
     }
 
@@ -819,8 +845,11 @@ const snippets = [
         setCode(snippet)
         setActiveSnippet(label)
         if (cmView) cmView.dispatch({ effects: clearErrorLines.of(null) })
-        // On mobile: scroll editor into view after picking snippet
-        editorContainer?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        // On mobile: scroll top of editor into view only if it's fully off-screen
+        const rect = editorContainer?.getBoundingClientRect()
+        if (rect && rect.bottom < 0) {
+          editorContainer?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
       })
     })
 
