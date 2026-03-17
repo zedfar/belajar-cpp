@@ -85,6 +85,7 @@ const totalLessons = getTotalLessons()
           {unit.isAvailable && (
             <div class="mt-3">
               <a
+                id={`unit-${unit.id}-link`}
                 href={getLessonUrl(lang, unit.lessons[0].slug)}
                 class="text-xs text-primary-600 dark:text-primary-400 hover:underline"
               >
@@ -94,6 +95,16 @@ const totalLessons = getTotalLessons()
           )}
         </div>
       ))}
+    </div>
+
+    <!-- Badges -->
+    <div class="mb-8">
+      <h2 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">
+        {lang === 'id' ? 'Lencana' : 'Badges'}
+      </h2>
+      <div id="badges-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        <!-- filled by JS -->
+      </div>
     </div>
 
     <!-- Reset button -->
@@ -106,6 +117,7 @@ const totalLessons = getTotalLessons()
       <button
         id="reset-btn"
         class="text-sm text-red-500 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+        data-confirm="false"
       >
         {lang === 'id' ? 'Reset progress' : 'Reset progress'}
       </button>
@@ -113,54 +125,103 @@ const totalLessons = getTotalLessons()
   </div>
 </PageLayout>
 
-<script define:vars={{ totalLessons, units: CURRICULUM_ID }}>
+<script define:vars={{ totalLessons, units: CURRICULUM_ID, lang }}>
+  const BADGES = [
+    { id: 'first-lesson',       icon: '🌟', label: { id: 'Langkah Pertama',    en: 'First Step' },         desc: { id: 'Selesaikan 1 pelajaran',         en: 'Complete 1 lesson' } },
+    { id: 'unit-1-complete',    icon: '🥉', label: { id: 'Tamat Unit 1',        en: 'Unit 1 Complete' },    desc: { id: 'Selesaikan semua lesson Unit 1', en: 'Finish all Unit 1 lessons' } },
+    { id: 'unit-2-complete',    icon: '🥈', label: { id: 'Tamat Unit 2',        en: 'Unit 2 Complete' },    desc: { id: 'Selesaikan semua lesson Unit 2', en: 'Finish all Unit 2 lessons' } },
+    { id: 'unit-3-complete',    icon: '🥇', label: { id: 'Tamat Unit 3',        en: 'Unit 3 Complete' },    desc: { id: 'Selesaikan semua lesson Unit 3', en: 'Finish all Unit 3 lessons' } },
+    { id: 'unit-4-complete',    icon: '🏆', label: { id: 'Tamat Unit 4',        en: 'Unit 4 Complete' },    desc: { id: 'Selesaikan semua lesson Unit 4', en: 'Finish all Unit 4 lessons' } },
+    { id: 'unit-5-complete',    icon: '💎', label: { id: 'Tamat Unit 5',        en: 'Unit 5 Complete' },    desc: { id: 'Selesaikan semua lesson Unit 5', en: 'Finish all Unit 5 lessons' } },
+    { id: 'unit-6-complete',    icon: '👑', label: { id: 'Tamat Unit 6',        en: 'Unit 6 Complete' },    desc: { id: 'Selesaikan semua lesson Unit 6', en: 'Finish all Unit 6 lessons' } },
+    { id: 'all-units-complete', icon: '🎓', label: { id: 'Master C++',          en: 'C++ Master' },         desc: { id: 'Selesaikan semua unit',          en: 'Complete all units' } },
+    { id: 'first-playground',   icon: '🚀', label: { id: 'Proyek Pertama',      en: 'First Project' },      desc: { id: 'Selesaikan 1 mini project',      en: 'Complete a mini project' } },
+    { id: 'streak-3',           icon: '🔥', label: { id: 'Streak 3 Hari',       en: '3-Day Streak' },       desc: { id: 'Belajar 3 hari berturut-turut',  en: 'Study 3 days in a row' } },
+    { id: 'streak-7',           icon: '⚡', label: { id: 'Streak 7 Hari',       en: '7-Day Streak' },       desc: { id: 'Belajar 7 hari berturut-turut',  en: 'Study 7 days in a row' } },
+  ]
+
   function loadProgress() {
     try {
       const raw = localStorage.getItem('belajar-cpp-progress')
-      if (!raw) return null
-      return JSON.parse(raw)
-    } catch {
-      return null
-    }
+      return raw ? JSON.parse(raw) : null
+    } catch { return null }
   }
 
   function renderProgress() {
     const progress = loadProgress()
     const completed = progress?.completedLessons ?? []
-    const streak = progress?.streakDays ?? 0
-    const badges = progress?.unlockedBadges ?? []
+    const streak    = progress?.streakDays ?? 0
+    const unlocked  = new Set(progress?.unlockedBadges ?? [])
 
     // Overall
-    const overallPct = totalLessons > 0 ? Math.round((completed.length / totalLessons) * 100) : 0
+    const pct = totalLessons > 0 ? Math.round((completed.length / totalLessons) * 100) : 0
     document.getElementById('overall-completed').textContent = completed.length
-    document.getElementById('overall-bar').style.width = overallPct + '%'
+    document.getElementById('overall-bar').style.width = pct + '%'
     document.getElementById('streak-days').textContent = streak
-    document.getElementById('badge-count').textContent = badges.length
+    document.getElementById('badge-count').textContent = unlocked.size
 
-    // Per unit
+    // Per unit + continue link
     units.forEach(unit => {
-      const unitCompleted = completed.filter(s => s.startsWith(unit.slug + '/')).length
-      const pct = unit.lessons.length > 0 ? Math.round((unitCompleted / unit.lessons.length) * 100) : 0
-
+      const done = completed.filter(s => s.startsWith(unit.slug + '/')).length
+      const unitPct = unit.lessons.length > 0 ? Math.round((done / unit.lessons.length) * 100) : 0
       const countEl = document.getElementById(`unit-${unit.id}-count`)
-      const barEl = document.getElementById(`unit-${unit.id}-bar`)
-      if (countEl) countEl.textContent = `${unitCompleted} / ${unit.lessons.length}`
-      if (barEl) barEl.style.width = pct + '%'
+      const barEl   = document.getElementById(`unit-${unit.id}-bar`)
+      const linkEl  = document.getElementById(`unit-${unit.id}-link`)
+      if (countEl) countEl.textContent = `${done} / ${unit.lessons.length}`
+      if (barEl)   barEl.style.width = unitPct + '%'
+      // Point "Continue" to first uncompleted lesson
+      if (linkEl && unit.lessons.length > 0) {
+        const nextLesson = unit.lessons.find(l => !completed.includes(l.slug)) ?? unit.lessons[0]
+        linkEl.href = `/${lang}/learn/${nextLesson.slug}`
+      }
     })
+
+    // Badges grid
+    const grid = document.getElementById('badges-grid')
+    if (!grid) return
+    grid.innerHTML = BADGES.map(b => {
+      const earned = unlocked.has(b.id)
+      return `
+        <div class="flex items-start gap-3 p-3 rounded-xl border transition-colors ${
+          earned
+            ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-700/50'
+            : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 opacity-50 grayscale'
+        }">
+          <span class="text-2xl leading-none flex-shrink-0">${b.icon}</span>
+          <div class="min-w-0">
+            <p class="text-xs font-semibold ${earned ? 'text-amber-900 dark:text-amber-200' : 'text-slate-500 dark:text-slate-400'} truncate">
+              ${b.label[lang] || b.label.en}
+            </p>
+            <p class="text-xs ${earned ? 'text-amber-700 dark:text-amber-400' : 'text-slate-400 dark:text-slate-500'} mt-0.5 leading-snug">
+              ${b.desc[lang] || b.desc.en}
+            </p>
+          </div>
+        </div>`
+    }).join('')
   }
 
-  // Reset
-  document.getElementById('reset-btn')?.addEventListener('click', () => {
-    const confirmed = confirm(
-      document.documentElement.lang === 'id'
-        ? 'Reset semua progress? Tindakan ini tidak bisa dibatalkan.'
-        : 'Reset all progress? This cannot be undone.'
-    )
-    if (confirmed) {
-      localStorage.removeItem('belajar-cpp-progress')
-      renderProgress()
-    }
-  })
+  // Reset — two-step confirmation without browser dialog
+  const resetBtn = document.getElementById('reset-btn')
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+      if (resetBtn.dataset.confirm !== 'true') {
+        resetBtn.dataset.confirm = 'true'
+        resetBtn.textContent = lang === 'id' ? 'Yakin? Klik lagi untuk reset' : 'Sure? Click again to reset'
+        resetBtn.classList.add('font-semibold')
+        setTimeout(() => {
+          resetBtn.dataset.confirm = 'false'
+          resetBtn.textContent = lang === 'id' ? 'Reset progress' : 'Reset progress'
+          resetBtn.classList.remove('font-semibold')
+        }, 4000)
+      } else {
+        localStorage.removeItem('belajar-cpp-progress')
+        renderProgress()
+        resetBtn.dataset.confirm = 'false'
+        resetBtn.textContent = lang === 'id' ? 'Reset progress' : 'Reset progress'
+        resetBtn.classList.remove('font-semibold')
+      }
+    })
+  }
 
   renderProgress()
 </script>

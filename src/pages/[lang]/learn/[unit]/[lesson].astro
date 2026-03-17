@@ -155,6 +155,9 @@ const difficultyColor = entry.data.difficulty === 'intermediate'
       id="mark-complete-btn"
       class="inline-flex items-center gap-2 px-6 py-3 rounded-lg border-2 border-emerald-500 text-emerald-600 dark:text-emerald-400 font-medium hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-colors"
       data-lesson-slug={fullSlug}
+      data-lang={lang}
+      data-label-complete={t(lang, 'lesson.markComplete')}
+      data-label-done={lang === 'id' ? '✓ Selesai' : '✓ Done'}
     >
       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="20 6 9 17 4 12"/>
@@ -163,60 +166,88 @@ const difficultyColor = entry.data.difficulty === 'intermediate'
     </button>
   </div>
 
+  <!-- Badge toast notification -->
+  <div
+    id="badge-toast"
+    class="fixed bottom-6 right-6 z-50 hidden max-w-xs bg-slate-900 border border-slate-700 rounded-xl shadow-2xl p-4 transition-all duration-300 translate-y-2 opacity-0"
+  >
+    <div class="flex items-start gap-3">
+      <div class="text-2xl leading-none mt-0.5" id="badge-toast-icon">🏅</div>
+      <div>
+        <p class="text-sm font-semibold text-white" id="badge-toast-title">
+          {lang === 'id' ? 'Lencana Baru!' : 'New Badge!'}
+        </p>
+        <p class="text-xs text-slate-400 mt-0.5" id="badge-toast-name"></p>
+      </div>
+    </div>
+  </div>
+
   <!-- Lesson Navigation -->
   <LessonNav currentSlug={fullSlug} lang={lang} />
 </LessonLayout>
 
-<script is:inline>
-  // Mark complete button
-  const btn = document.getElementById('mark-complete-btn')
-  if (btn) {
-    const slug = btn.getAttribute('data-lesson-slug')
+<script>
+  import { markLessonComplete, isLessonComplete, loadProgress } from '@/lib/progress'
 
-    // Check if already completed
-    try {
-      const raw = localStorage.getItem('belajar-cpp-progress')
-      if (raw) {
-        const progress = JSON.parse(raw)
-        if (progress.completedLessons?.includes(slug)) {
-          btn.classList.remove('border-emerald-500', 'text-emerald-600', 'dark:text-emerald-400', 'hover:bg-emerald-50', 'dark:hover:bg-emerald-950/30')
-          btn.classList.add('bg-emerald-500', 'text-white', 'border-emerald-500')
-          btn.querySelector('span').textContent = '\u2713 Selesai'
-          btn.disabled = true
-        }
-      }
-    } catch {}
+  const btn = document.getElementById('mark-complete-btn') as HTMLButtonElement | null
+  const toast = document.getElementById('badge-toast') as HTMLElement | null
+  const toastName = document.getElementById('badge-toast-name') as HTMLElement | null
+
+  if (btn) {
+    const slug      = btn.dataset.lessonSlug || ''
+    const labelDone = btn.dataset.labelDone || '✓ Done'
+
+    function markDone() {
+      btn!.classList.remove('border-emerald-500', 'text-emerald-600', 'dark:text-emerald-400', 'hover:bg-emerald-50', 'dark:hover:bg-emerald-950/30')
+      btn!.classList.add('bg-emerald-500', 'text-white', 'border-emerald-500', 'cursor-default')
+      btn!.querySelector('span')!.textContent = labelDone
+      btn!.disabled = true
+    }
+
+    // Restore state if already complete
+    if (isLessonComplete(slug)) markDone()
 
     btn.addEventListener('click', () => {
-      try {
-        let raw = localStorage.getItem('belajar-cpp-progress')
-        let progress = raw ? JSON.parse(raw) : {
-          completedLessons: [],
-          currentLesson: null,
-          exerciseResults: {},
-          quizResults: {},
-          language: 'id',
-          theme: 'light',
-          lastVisited: new Date().toISOString(),
-          streakDays: 0,
-          lastActiveDate: new Date().toISOString().split('T')[0],
-          unlockedBadges: [],
-        }
-
-        if (!progress.completedLessons.includes(slug)) {
-          progress.completedLessons.push(slug)
-        }
-        progress.currentLesson = slug
-        progress.lastVisited = new Date().toISOString()
-
-        localStorage.setItem('belajar-cpp-progress', JSON.stringify(progress))
-
-        // Update button appearance
-        btn.classList.remove('border-emerald-500', 'text-emerald-600', 'dark:text-emerald-400', 'hover:bg-emerald-50', 'dark:hover:bg-emerald-950/30')
-        btn.classList.add('bg-emerald-500', 'text-white', 'border-emerald-500')
-        btn.querySelector('span').textContent = '\u2713 Selesai'
-        btn.disabled = true
-      } catch {}
+      if (btn.disabled) return
+      const badgesBefore = loadProgress().unlockedBadges.slice()
+      markLessonComplete(slug)
+      const badgesAfter = loadProgress().unlockedBadges
+      const newBadge = badgesAfter.find(b => !badgesBefore.includes(b)) ?? null
+      markDone()
+      showBadgeToast(newBadge)
     })
+  }
+
+  const BADGE_LABELS: Record<string, [string, string]> = {
+    'first-lesson':      ['🌟', 'First Step!'],
+    'unit-1-complete':   ['🥉', 'Unit 1 Clear!'],
+    'unit-2-complete':   ['🥈', 'Unit 2 Clear!'],
+    'unit-3-complete':   ['🥇', 'Unit 3 Clear!'],
+    'unit-4-complete':   ['🏆', 'Unit 4 Clear!'],
+    'unit-5-complete':   ['💎', 'Unit 5 Clear!'],
+    'unit-6-complete':   ['👑', 'Unit 6 Clear!'],
+    'all-units-complete':['🎓', 'Master!'],
+    'first-playground':  ['🚀', 'First Project!'],
+    'streak-3':          ['🔥', '3-Day Streak!'],
+    'streak-7':          ['⚡', '7-Day Streak!'],
+  }
+
+  function showBadgeToast(badgeId: string | null) {
+    if (!badgeId || !toast || !toastName) return
+    const [icon, label] = BADGE_LABELS[badgeId] ?? ['🏅', badgeId]
+    const iconEl = document.getElementById('badge-toast-icon')
+    if (iconEl) iconEl.textContent = icon
+    if (toastName) toastName.textContent = label
+
+    toast.classList.remove('hidden')
+    requestAnimationFrame(() => {
+      toast.classList.remove('translate-y-2', 'opacity-0')
+      toast.classList.add('translate-y-0', 'opacity-100')
+    })
+    setTimeout(() => {
+      toast.classList.add('translate-y-2', 'opacity-0')
+      toast.classList.remove('translate-y-0', 'opacity-100')
+      setTimeout(() => toast.classList.add('hidden'), 300)
+    }, 3500)
   }
 </script>

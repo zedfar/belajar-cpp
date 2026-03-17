@@ -174,6 +174,16 @@ function updateStreak(progress: UserProgress): void {
 // BADGES
 // ============================================================
 
+// Actual lesson counts per unit — must stay in sync with content files
+const UNIT_LESSON_COUNTS: Record<string, number> = {
+  'unit-1': 8,
+  'unit-2': 6,
+  'unit-3': 7,
+  'unit-4': 8,
+  'unit-5': 7,
+  'unit-6': 6,
+}
+
 export function checkAndUnlockBadges(progress: UserProgress): BadgeId[] {
   const newBadges: BadgeId[] = []
 
@@ -188,16 +198,20 @@ export function checkAndUnlockBadges(progress: UserProgress): BadgeId[] {
   tryUnlock('streak-3', progress.streakDays >= 3)
   tryUnlock('streak-7', progress.streakDays >= 7)
 
-  // Unit completions (assumes ~8-10 lessons per unit, check prefix)
-  ;['unit-1', 'unit-2', 'unit-3', 'unit-4', 'unit-5', 'unit-6'].forEach((unit, idx) => {
-    const unitLessons = progress.completedLessons.filter(s => s.startsWith(unit + '/'))
-    if (unitLessons.length >= 5) {
-      tryUnlock(`unit-${idx + 1}-complete` as BadgeId, true)
-    }
+  // Unit completion: check against actual lesson count per unit
+  let allUnitsComplete = true
+  Object.entries(UNIT_LESSON_COUNTS).forEach(([unit, total]) => {
+    const done = progress.completedLessons.filter(s => s.startsWith(unit + '/')).length
+    const unitNum = unit.replace('unit-', '')
+    tryUnlock(`unit-${unitNum}-complete` as BadgeId, done >= total)
+    if (done < total) allUnitsComplete = false
   })
 
+  tryUnlock('all-units-complete', allUnitsComplete)
+
+  // First project: project lessons have 'project-' in their slug filename
   tryUnlock('first-playground',
-    progress.completedLessons.some(s => s.includes('playground'))
+    progress.completedLessons.some(s => s.includes('project-'))
   )
 
   return newBadges
