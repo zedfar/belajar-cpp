@@ -4,6 +4,14 @@ Semua perubahan penting pada proyek belajar-cpp dicatat di file ini. Format meng
 
 ## [Unreleased]
 
+## [2026-03-18] (update 10)
+
+### Fixed
+- `manifest.json`: ganti referensi `icon-192.png` / `icon-512.png` yang tidak ada dengan `favicon.svg` yang sudah ada; tambah `start_url`, `scope`, `lang`
+- `BaseLayout`: tambah `<link rel="manifest">` yang sebelumnya tidak ada sehingga manifest tidak di-load browser
+- `/api/run-code`: return `503` dengan pesan jelas jika `JUDGE0_API_KEY` tidak dikonfigurasi — sebelumnya gagal diam-diam dengan "Submission failed"
+- Font fallback: sudah handled via `display=swap` di Google Fonts URL + `system-ui, sans-serif` di `global.css` ✅ (tidak ada perubahan diperlukan)
+
 ## [2026-03-18] (update 9)
 
 ### Fixed
