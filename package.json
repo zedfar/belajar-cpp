@@ -46,6 +46,7 @@
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",
     "@vitest/ui": "latest",
+    "jsdom": "^29.0.0",
     "prettier": "latest",
     "prettier-plugin-astro": "latest",
     "tailwindcss": "^4.0.0",

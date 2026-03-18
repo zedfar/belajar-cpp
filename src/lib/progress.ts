@@ -7,16 +7,26 @@ const STORAGE_KEY = 'belajar-cpp-progress'
 // CORE STORAGE
 // ============================================================
 
+function freshDefault(): UserProgress {
+  return {
+    ...DEFAULT_PROGRESS,
+    completedLessons: [],
+    exerciseResults: {},
+    quizResults: {},
+    unlockedBadges: [],
+  }
+}
+
 export function loadProgress(): UserProgress {
-  if (typeof window === 'undefined') return { ...DEFAULT_PROGRESS }
+  if (typeof window === 'undefined') return freshDefault()
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return { ...DEFAULT_PROGRESS }
+    if (!raw) return freshDefault()
     const parsed = JSON.parse(raw)
     // Merge with defaults to handle missing fields from older versions
     return { ...DEFAULT_PROGRESS, ...parsed }
   } catch {
-    return { ...DEFAULT_PROGRESS }
+    return freshDefault()
   }
 }
 
