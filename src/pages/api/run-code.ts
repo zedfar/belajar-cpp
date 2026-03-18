@@ -87,6 +87,15 @@ export const POST: APIRoute = async ({ request }) => {
   const JUDGE0_KEY = import.meta.env.JUDGE0_API_KEY || ''
   const isSelfHosted = !JUDGE0_URL.includes('rapidapi.com')
 
+  // Validate API key is configured
+  if (!JUDGE0_KEY) {
+    console.error('[run-code] JUDGE0_API_KEY is not set. Set it in environment variables.')
+    return new Response(
+      JSON.stringify({ error: 'Code execution is not configured. JUDGE0_API_KEY missing.' }),
+      { status: 503, headers: { 'Content-Type': 'application/json' } }
+    )
+  }
+
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
   }
