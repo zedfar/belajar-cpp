@@ -4,6 +4,17 @@ Semua perubahan penting pada proyek belajar-cpp dicatat di file ini. Format meng
 
 ## [Unreleased]
 
+## [2026-03-18] (update 5)
+
+### Fixed (Accessibility — WCAG 2.1)
+- Exercise: radio `name="mc-option"` diganti `name="mc-{id}"` — sebelumnya semua Exercise di satu halaman membentuk satu radio group
+- Exercise: tambah `role="alert"` pada feedback salah, `role="status"` pada badge "Solved" agar screen reader mengumumkan hasilnya
+- QuizCard: `aria-hidden` pada dot progress (dekoratif), `aria-live="polite"` pada penghitung soal, `role="note"` pada penjelasan
+- Sidebar: `role="progressbar"` + `aria-valuenow/min/max` pada progress bar unit; `aria-hidden` pada ikon status (kunci, dot)
+- ThemeToggle: `aria-hidden` pada SVG ikon; `aria-label` dinamis yang mendeskripsikan aksi ("Switch to dark/light mode")
+- LanguageToggle: `aria-hidden` pada separator `|` dan teks ID/EN (redundan karena `aria-label` link sudah lengkap)
+- Header: `aria-hidden` + `focusable="false"` pada semua SVG ikon dekoratif (logo, nav, hamburger, X)
+
 ## [2026-03-18] (update 4)
 
 ### Added
