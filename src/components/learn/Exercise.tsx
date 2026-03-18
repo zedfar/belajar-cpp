@@ -86,12 +86,14 @@ function FillBlankExercise({
 
 // ---- Multiple choice sub-component ----
 function MultipleChoiceExercise({
+  exerciseId,
   options,
   correctIndex,
   lang,
   onCorrect,
   onAttempt,
 }: {
+  exerciseId: string
   options: string[]
   correctIndex: number
   lang: Language
@@ -124,7 +126,7 @@ function MultipleChoiceExercise({
         >
           <input
             type="radio"
-            name="mc-option"
+            name={`mc-${exerciseId}`}
             checked={selected === i}
             onChange={() => !submitted && setSelected(i)}
             disabled={submitted}
@@ -190,8 +192,8 @@ export function Exercise(props: ExerciseProps) {
           />
         </div>
         {status === 'correct' && (
-          <span className="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-xs font-medium">
-            Solved
+          <span role="status" className="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-xs font-medium">
+            {lang === 'id' ? 'Selesai' : 'Solved'}
           </span>
         )}
       </div>
@@ -209,6 +211,7 @@ export function Exercise(props: ExerciseProps) {
 
       {type === 'multiple-choice' && options && correctIndex !== undefined && (
         <MultipleChoiceExercise
+          exerciseId={id}
           options={options}
           correctIndex={correctIndex}
           lang={lang}
@@ -257,7 +260,7 @@ export function Exercise(props: ExerciseProps) {
 
       {/* Status + Explanation */}
       {status === 'incorrect' && (
-        <div className="mt-3 px-3 py-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded text-sm text-red-700 dark:text-red-300">
+        <div role="alert" className="mt-3 px-3 py-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded text-sm text-red-700 dark:text-red-300">
           {lang === 'id' ? 'Belum tepat. Coba lagi!' : 'Not quite right. Try again!'}
           {` (${attempts} ${lang === 'id' ? 'percobaan' : attempts === 1 ? 'attempt' : 'attempts'})`}
         </div>
@@ -270,7 +273,7 @@ export function Exercise(props: ExerciseProps) {
               {lang === 'id' ? 'Lihat Penjelasan' : 'Show Explanation'}
             </Button>
           ) : (
-            <div className="px-3 py-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded text-sm text-blue-800 dark:text-blue-200">
+            <div role="note" className="px-3 py-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded text-sm text-blue-800 dark:text-blue-200">
               {explanation}
             </div>
           )}

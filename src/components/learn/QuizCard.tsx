@@ -133,10 +133,10 @@ export function QuizCard({ quizId, questions, lang, onComplete }: QuizCardProps)
     <Card className="my-6" shadow>
       {/* Progress */}
       <div className="flex items-center justify-between mb-4">
-        <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+        <span className="text-xs text-slate-500 dark:text-slate-400 font-mono" aria-live="polite">
           {currentQ + 1} / {questions.length}
         </span>
-        <div className="flex gap-1">
+        <div className="flex gap-1" aria-hidden="true">
           {questions.map((_, i) => (
             <div
               key={i}
@@ -187,7 +187,7 @@ export function QuizCard({ quizId, questions, lang, onComplete }: QuizCardProps)
 
       {/* Explanation after submit */}
       {isAnswered && q.explanation && (
-        <div className="mb-4 px-3 py-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded text-sm text-blue-800 dark:text-blue-200">
+        <div role="note" className="mb-4 px-3 py-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded text-sm text-blue-800 dark:text-blue-200">
           {q.explanation}
         </div>
       )}
