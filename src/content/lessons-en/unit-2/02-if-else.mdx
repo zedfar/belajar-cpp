@@ -14,6 +14,8 @@ difficulty: "beginner"
 tags: ["if", "else", "else-if", "percabangan", "decision-making", "conditional"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # If-Else
 
 Up until now, all the programs we've written run **straight** from top to bottom -- every line is executed one by one without exception. But useful programs need to be able to **make decisions**. "If the score is above 75, display Pass. Otherwise, display Fail." This is where `if` and `else` come in!
@@ -448,6 +450,40 @@ if (age == 20) {
 
 // If you want to check user input, we use cin (from Unit 1)
 ```
+
+<Exercise client:load
+  id="u2l2-ex1"
+  title="Check Pass or Fail"
+  description="Complete the program with if-else so it prints `Passed` if score &gt;= 75, or `Failed` otherwise."
+  type="code-output"
+  expectedOutput="Passed"
+  starterCode={`#include <iostream>
+
+int main() {
+    int score = 80;
+
+    // Write if-else here:
+    // If score >= 75, print: Passed
+    // Otherwise, print: Failed
+
+    return 0;
+}`}
+  hints={["Syntax: if (condition) { ... } else { ... }", "The condition to check: score >= 75", `std::cout << "Passed" << std::endl;`]}
+  explanation="Because score is 80 and 80 >= 75 evaluates to true, the if block runs and prints Passed. The else block is skipped."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u2l2-ex2"
+  title="If-Else Condition Check"
+  description="Variable x has value 0. The program checks: if x &gt; 0 print Positive, if x &lt; 0 print Negative, otherwise print Zero. What output is produced?"
+  type="multiple-choice"
+  options={["Positive", "Negative", "Zero", "No output"]}
+  correctIndex={2}
+  hints={["x has value 0", "0 > 0 is false, and 0 < 0 is also false", "If all conditions are false, the else block runs"]}
+  explanation="Because x = 0, the condition x > 0 is false and x < 0 is also false. Both conditions fail, so the else block runs and prints Zero."
+  lang="en"
+/>
 
 ## Exercises
 

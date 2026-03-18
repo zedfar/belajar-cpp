@@ -15,6 +15,8 @@ difficulty: "beginner"
 tags: ["struct", "custom-type", "data-grouping", "record", "vector-of-struct"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Struct: Creating Your Own Data Types
 
 You already know how to use arrays and vectors to store lots of data. But there is a big problem: **arrays can only store one data type**. What if you want to store a student's name (string), age (int), and grade (double) **together** as a single unit?
@@ -527,6 +529,30 @@ int main() {
 :::warning
 Always define structs **outside the `main()` function** (usually above `main` or in a header file). This ensures the struct can be used anywhere in your program.
 :::
+
+<Exercise client:load
+  id="u6l1-ex1"
+  title="Accessing a Struct Field"
+  description="Given `struct Point { int x; int y; }; Point p = {3, 7};`, how do you access the value of `y`?"
+  type="multiple-choice"
+  options={["Point.y", "p->y", "p.y", "p[y]"]}
+  correctIndex={2}
+  hints={["The dot operator . is used to access struct fields", "p is the variable name, y is the field name", "Pointer syntax -> is used only when you have a pointer to a struct"]}
+  explanation="Struct fields are accessed using the dot operator: `variableName.fieldName`. So `p.y` gives the value 7. The arrow operator `->` is used when `p` is a pointer to a struct, not a struct variable directly."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u6l1-ex2"
+  title="Struct vs Separate Arrays"
+  description="What is the main advantage of using a struct to group `name`, `age`, and `grade` compared to three separate arrays?"
+  type="multiple-choice"
+  options={["Structs use less memory than arrays", "Related data stays together as a single logical unit, making code clearer", "Structs are always faster to access", "Structs allow storing different types — something arrays cannot do"]}
+  correctIndex={1}
+  hints={["Think about what happens when you want to pass a student's data to a function", "With separate arrays, you have to pass 3 arrays; with a struct you pass 1 variable", "Grouping related data together is the core idea of a struct"]}
+  explanation="The main advantage of a struct is that related data is kept together as one logical unit. Passing `Student s` to a function is much cleaner than passing three separate arrays. This also reduces the chance of errors where arrays get out of sync. Note: arrays CAN store different types if you use a struct of arrays, but the struct itself groups heterogeneous fields."
+  lang="en"
+/>
 
 ## Exercises
 

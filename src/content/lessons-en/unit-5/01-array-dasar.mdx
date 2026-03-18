@@ -15,6 +15,8 @@ difficulty: "beginner"
 tags: ["array", "indexing", "data", "koleksi", "sizeof"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Basic Arrays
 
 Up until now, every time you wanted to store data, you created a single variable. Want to store 5 test scores? Create 5 variables: `score1`, `score2`, `score3`... Tedious, right? What if there are 100 students? Are you going to create 100 variables?
@@ -392,6 +394,30 @@ int arr[5] = {1, 2, 3, 4, 5};  // Exactly 5 elements
 :::tip
 For Exercise 2, don't forget to validate user input! If the user enters a number outside the range 1-5, display an error message. Remember, the user enters numbers 1-5 but the array indices are 0-4.
 :::
+
+<Exercise client:load
+  id="u5l1-ex1"
+  title="Array Index"
+  description="Given `int scores[5] = {85, 90, 78, 92, 88};`, what is the value of `scores[2]`?"
+  type="multiple-choice"
+  options={["85", "90", "78", "92"]}
+  correctIndex={2}
+  hints={["Array indices start from 0, not 1", "scores[0]=85, scores[1]=90, scores[2]=?", "Count from the beginning: index 0 is the first element"]}
+  explanation="Array indices start from 0. scores[0]=85, scores[1]=90, scores[2]=78. So scores[2] is 78."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u5l1-ex2"
+  title="Declare and Initialize an Array"
+  description="Which declaration correctly creates an int array with 3 elements initialized to 10, 20, 30?"
+  type="multiple-choice"
+  options={["int arr[3] = {10, 20, 30};", "int arr = {10, 20, 30};", "int arr[3] = [10, 20, 30];", "array<int> arr = {10, 20, 30};"]}
+  correctIndex={0}
+  hints={["C++ array declarations use square brackets for the size", "Initialization uses curly braces {}", "The type comes first, then the name, then [size], then = {values}"]}
+  explanation="`int arr[3] = {10, 20, 30};` is the correct syntax. The type is `int`, the name is `arr`, `[3]` specifies the size, and `= {10, 20, 30}` provides the initial values. Square brackets are used for the size, curly braces for the initializer list."
+  lang="en"
+/>
 
 ## Summary
 

@@ -15,6 +15,8 @@ difficulty: "beginner"
 tags: ["array-2d", "matriks", "nested-loop", "tabel", "multidimensi"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # 2D Arrays
 
 In the previous lesson, your arrays only had one row — like a row of lockers. But what if you want to store data in **table** form? For example, scores of 5 students for 3 subjects? Well, you need a **2-dimensional array**!
@@ -463,6 +465,30 @@ int table[3][4];
 // Access: table[row_number][col_number]
 table[2][3] = 99;  // 3rd row, 4th column
 ```
+
+<Exercise client:load
+  id="u5l3-ex1"
+  title="Accessing a 2D Array Element"
+  description="Given `int m[3][4]`, how do you correctly access the element in the second row (index 1) and third column (index 2)?"
+  type="multiple-choice"
+  options={["m[2][3]", "m[1][2]", "m[3][2]", "m[2][1]"]}
+  correctIndex={1}
+  hints={["Row index comes first, then column index", "Both rows and columns are zero-indexed", "Second row = index 1, third column = index 2"]}
+  explanation="2D array elements are accessed with `arr[row][col]`. The second row has index 1 (zero-indexed) and the third column has index 2. So the correct access is `m[1][2]`."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u5l3-ex2"
+  title="Nested Loop for 2D Traversal"
+  description="For a 2D array `int grid[2][3]`, what is the correct nested loop to visit every element?"
+  type="multiple-choice"
+  options={["for (int i=0; i&lt;3; i++) for (int j=0; j&lt;2; j++)", "for (int i=0; i&lt;2; i++) for (int j=0; j&lt;3; j++)", "for (int i=0; i&lt;2; i++) for (int j=0; j&lt;2; j++)", "for (int i=0; i&lt;6; i++)"]}
+  correctIndex={1}
+  hints={["The outer loop controls rows, the inner loop controls columns", "grid[2][3] means 2 rows and 3 columns", "Outer loop runs 2 times (rows 0 and 1), inner loop runs 3 times (columns 0, 1, 2)"]}
+  explanation="For `grid[2][3]` (2 rows, 3 columns): the outer loop iterates over rows 0 to 1 (i &lt; 2), and the inner loop iterates over columns 0 to 2 (j &lt; 3). This visits all 2x3=6 elements exactly once."
+  lang="en"
+/>
 
 ## Exercises
 

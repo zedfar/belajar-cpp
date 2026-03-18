@@ -15,6 +15,8 @@ difficulty: "beginner"
 tags: ["struct", "function", "pass-by-reference", "nested-struct", "sort", "lambda", "CRUD"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Struct & Function: Combining Data and Actions
 
 In the previous lesson, you learned how to create structs and fill them with data. But all the code was still crammed into `main()`. Now it's time to **combine structs with functions** so the code is cleaner, more modular, and reusable!
@@ -586,6 +588,30 @@ if (classroom.size() > 0) {
 :::warning
 Always check whether the vector **is not empty** before accessing its elements. Accessing an index that doesn't exist can cause the program to crash!
 :::
+
+<Exercise client:load
+  id="u6l2-ex1"
+  title="Pass Struct by Value vs Reference"
+  description="You want a function to MODIFY a struct variable in the caller. Which parameter declaration is correct?"
+  type="multiple-choice"
+  options={["void update(Student s)", "void update(Student& s)", "void update(const Student& s)", "Student update(Student s)"]}
+  correctIndex={1}
+  hints={["Pass by value gives the function a copy — changes do not affect the original", "To modify the original, the function needs a reference to it", "const reference prevents modification — it is used for read-only access"]}
+  explanation="`void update(Student& s)` passes the struct by reference (using `&`). Changes made to `s` inside the function directly affect the original variable in the caller. `Student s` (by value) gives only a copy, so changes stay local. `const Student& s` allows reading but not modifying."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u6l2-ex2"
+  title="Returning a Struct from a Function"
+  description="Which function signature correctly creates and returns a new `Point` struct?"
+  type="multiple-choice"
+  options={["void makePoint(int x, int y)", "Point makePoint(int x, int y)", "int makePoint(Point p)", "Point& makePoint(int x, int y)"]}
+  correctIndex={1}
+  hints={["The return type must match the type of value being returned", "To return a struct, the return type should be the struct type itself", "void means nothing is returned"]}
+  explanation="`Point makePoint(int x, int y)` has `Point` as its return type, meaning it creates and returns a `Point` struct. Inside the function you would declare a `Point` variable, fill its fields, and return it. `void` returns nothing, and `int` returns an integer — neither can carry a struct back to the caller."
+  lang="en"
+/>
 
 ## Exercises
 

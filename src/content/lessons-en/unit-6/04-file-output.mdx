@@ -15,6 +15,8 @@ difficulty: "beginner"
 tags: ["file-output", "ofstream", "write-file", "append", "formatting"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # File Output: Writing Files
 
 In the previous lesson, you learned how to **read** data from a file. Now we learn the opposite — **writing** data to a file! This is very useful because program results can be saved permanently, not lost when the program finishes.
@@ -396,6 +398,30 @@ int main() {
 | `flush` | Force write buffer to disk | `f << std::flush;` |
 | `close()` | Close the file (auto-flushes) | `f.close();` |
 | `is_open()` | Check if the file was opened successfully | `if (!f.is_open()) { ... }` |
+
+<Exercise client:load
+  id="u6l4-ex1"
+  title="Overwrite vs Append Mode"
+  description="You want to ADD new data to an existing file without erasing the old contents. Which ofstream opening mode should you use?"
+  type="multiple-choice"
+  options={["Default mode — just use std::ofstream file(''''data.txt'''');", "Append mode — std::ofstream file(''''data.txt'''', std::ios::app);", "Read mode — std::ofstream file(''''data.txt'''', std::ios::in);", "Binary mode — std::ofstream file(''''data.txt'''', std::ios::binary);"]}
+  correctIndex={1}
+  hints={["The default ofstream mode overwrites the entire file", "There is a mode flag that stands for 'append'", "std::ios::app places the write position at the end of the existing file"]}
+  explanation="Opening with `std::ios::app` (append mode) positions the write pointer at the end of the existing file, so new writes are added after existing content. The default mode truncates the file to zero length first, erasing everything that was there."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u6l4-ex2"
+  title="Writing to a File"
+  description="Which statement correctly writes the text `Hello` followed by a newline to an ofstream object named `outFile`?"
+  type="multiple-choice"
+  options={["outFile.write(''''Hello'''');", "printf(outFile, ''''Hello\\n'''');", "outFile &lt;&lt; ''''Hello'''' &lt;&lt; std::endl;", "outFile.print(''''Hello'''')"]}
+  correctIndex={2}
+  hints={["ofstream uses the same << operator as std::cout", "std::endl moves to the next line just like with cout", "ofstream does not have methods called write() for text or print()"]}
+  explanation="`outFile << ''''Hello'''' << std::endl;` writes the text and a newline to the file using the same stream insertion operator `<<` used with `std::cout`. Writing to a file with `ofstream` feels just like printing to the screen."
+  lang="en"
+/>
 
 ## Exercises
 

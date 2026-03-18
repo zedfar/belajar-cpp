@@ -13,6 +13,8 @@ difficulty: "beginner"
 tags: ["variables", "data-types", "int", "double", "string", "bool", "char"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Variables and Data Types
 
 Up to now, our programs have only displayed pre-determined (hardcoded) text. But useful programs need to be able to **store** and **process** data — usernames, game scores, room temperatures, and so on. For that, we need **variables**.
@@ -312,6 +314,37 @@ int age = 17;
 int 2ndPlace = 2;   // ERROR: name cannot start with a digit
 int secondPlace = 2; // OK
 ```
+
+<Exercise client:load
+  id="u1l3-ex1"
+  title="Correct Data Type for Decimals"
+  description="Which data type is best suited for storing the value `3.14` (a decimal number)?"
+  type="multiple-choice"
+  options={["int", "char", "double", "bool"]}
+  correctIndex={2}
+  hints={["int only stores whole numbers", "double is designed for numbers with a decimal point"]}
+  explanation="double is the data type for decimal (floating-point) numbers with high precision. int only stores whole numbers — the value 3.14 would be truncated to 3 if stored as int."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u1l3-ex2"
+  title="Declare a Variable and Print It"
+  description="Complete the program so that it declares an `int` variable named `age` with value 16 and prints: `Age: 16`"
+  type="code-output"
+  expectedOutput="Age: 16"
+  starterCode={`#include <iostream>
+
+int main() {
+    // Declare an int variable called age with value 16
+    // then print: Age: 16
+
+    return 0;
+}`}
+  hints={["Write: int age = 16;", "Use std::cout << to print", `Format: std::cout << "Age: " << age << std::endl;`]}
+  explanation="An int variable is declared with: int name = value; Then it is displayed using std::cout << name."
+  lang="en"
+/>
 
 ## Exercises
 

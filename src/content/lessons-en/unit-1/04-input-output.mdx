@@ -13,6 +13,8 @@ difficulty: "beginner"
 tags: ["input", "output", "cout", "cin", "endl", "io"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Input and Output
 
 Up to now, our programs have been running on their own — displaying text that we pre-determined. But a truly useful program can **interact** with the user. The program asks, the user answers, and the program responds based on that answer.
@@ -331,6 +333,41 @@ City   : Bandung
 How to remember the direction:
 - `<<` arrow points toward `cout` (output, going out)
 - `>>` arrow points toward the variable (input, coming in)
+
+<Exercise client:load
+  id="u1l4-ex1"
+  title="Direction of I/O Operators"
+  description="Which operator is used to **receive input** from the keyboard into a variable?"
+  type="multiple-choice"
+  options={["cout <<", "cin >>", "cout >>", "cin <<"]}
+  correctIndex={1}
+  hints={["cin is the character input stream", "The >> arrow points away from cin, toward the variable"]}
+  explanation="cin >> is used to receive input from the keyboard. The >> arrow points toward the destination variable — data is 'extracted from' cin and stored in the variable."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u1l4-ex2"
+  title="Simple Output Program"
+  description="Complete the program so it prints two lines: `Name: Andi` then `City: Jakarta`"
+  type="code-output"
+  expectedOutput={`Name: Andi
+City: Jakarta`}
+  starterCode={`#include <iostream>
+#include <string>
+
+int main() {
+    std::string name = "Andi";
+    std::string city = "Jakarta";
+
+    // Display both variables in the correct format
+
+    return 0;
+}`}
+  hints={[`Use std::cout << "Name: " << name << std::endl;`, "Do the same for city", "Make sure the format is exactly: Name: Andi and City: Jakarta"]}
+  explanation="std::cout can chain string literals and variables using the << operator. Each cout with endl produces one line of output."
+  lang="en"
+/>
 
 ## Exercises
 

@@ -14,6 +14,8 @@ difficulty: "beginner"
 tags: ["setup", "compiler", "ide", "playground"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Environment Setup
 
 Before we start writing C++ code, we need to set up our "kitchen" first. A chef needs a stove, pans, and knives — a programmer needs a **text editor** and a **compiler**.
@@ -198,6 +200,40 @@ Write Code  →  Compile  →  Errors?  →  Yes → Fix → Compile again
 ```
 
 Don't worry if you encounter errors frequently — that's **completely normal**. Even experienced programmers spend a lot of time debugging (finding and fixing errors). The key: **read error messages carefully** — the compiler usually tells you which line the problem is on.
+
+<Exercise client:load
+  id="u0l2-ex1"
+  title="Compile Command"
+  description="You have a file named `hello.cpp`. Which terminal command compiles it into an executable named `hello` using g++?"
+  type="multiple-choice"
+  options={[
+    "g++ hello",
+    "compile hello.cpp -o hello",
+    "g++ hello.cpp -o hello",
+    "run hello.cpp"
+  ]}
+  correctIndex={2}
+  hints={["The compiler is called g++", "The -o flag specifies the output file name"]}
+  explanation="The correct command is `g++ hello.cpp -o hello`. This tells g++ to compile `hello.cpp` and save the resulting executable as `hello`. Without `-o hello`, the output would be named `a.out` by default."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u0l2-ex2"
+  title="Programming Workflow Order"
+  description="What is the correct order of the basic programming workflow?"
+  type="multiple-choice"
+  options={[
+    "Run → Compile → Write Code → Debug",
+    "Compile → Write Code → Run → Debug",
+    "Write Code → Run → Compile → Debug",
+    "Write Code → Compile → Debug → Run"
+  ]}
+  correctIndex={3}
+  hints={["You must write code before anything else", "The compiler checks your code before you can run it", "Debugging happens after you notice incorrect output"]}
+  explanation="The correct workflow is: Write Code → Compile (translate to machine language) → Debug if there are errors → Run the program. You always write first, then compile, fix any errors, and finally run to see the output."
+  lang="en"
+/>
 
 ## Summary
 

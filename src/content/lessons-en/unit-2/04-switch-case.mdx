@@ -14,6 +14,8 @@ difficulty: "beginner"
 tags: ["switch", "case", "break", "default", "percabangan", "decision"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Switch-Case
 
 Imagine you're at the school cafeteria and want to order food. If you use if-else, the code would be really long:
@@ -367,6 +369,53 @@ switch (number) {
 :::tip
 Cases in switch must always be **constant values** -- numeric literals (`1`, `2`, `3`), character literals (`'A'`, `'B'`), or `const` constants. Regular variables are not allowed!
 :::
+
+<Exercise client:load
+  id="u2l4-ex1"
+  title="Role of break in Switch"
+  description="What happens if a `case` in a switch-case statement does not have a `break`?"
+  type="multiple-choice"
+  options={[
+    "The program stops immediately",
+    "The compiler gives an error",
+    "The program continues executing the next case (fall-through)",
+    "That case is skipped"
+  ]}
+  correctIndex={2}
+  hints={["break is the 'exit door' from a switch", "Without break, nothing stops execution from continuing to the next case"]}
+  explanation="Without break, fall-through occurs: the program continues executing subsequent cases even if their values do not match. This is a common bug — the compiler does not raise an error, but the program behaves incorrectly."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u2l4-ex2"
+  title="Switch for Day Name"
+  description="Complete the switch-case so it prints the day name. When `day = 1`, the output must be: `Monday`"
+  type="code-output"
+  expectedOutput="Monday"
+  starterCode={`#include <iostream>
+
+int main() {
+    int day = 1;
+
+    switch (day) {
+        case 1:
+            // Print: Monday
+            break;
+        case 2:
+            std::cout << "Tuesday" << std::endl;
+            break;
+        default:
+            std::cout << "Other day" << std::endl;
+            break;
+    }
+
+    return 0;
+}`}
+  hints={[`Add std::cout << "Monday" << std::endl; inside case 1`, "Make sure break comes after cout", "Notice that day = 1, so case 1 is matched"]}
+  explanation="switch matches the value of day (1) against each case. case 1 matches, so the code inside it runs and prints Monday. break stops execution after this case."
+  lang="en"
+/>
 
 ## Exercises
 

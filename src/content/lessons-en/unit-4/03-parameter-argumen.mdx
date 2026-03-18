@@ -15,6 +15,8 @@ difficulty: "beginner"
 tags: ["parameter", "argumen", "argument", "default-parameter", "pass-by-value", "overloading"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Parameters & Arguments
 
 If a function is like a cooking recipe, then **parameters** are the **list of ingredients** needed, and **arguments** are the **actual ingredients** you provide when cooking. Let's learn more!
@@ -465,6 +467,30 @@ void greet(std::string name) {
 }
 ```
 :::
+
+<Exercise client:load
+  id="u4l3-ex1"
+  title="Parameter vs Argument"
+  description="In `void greet(std::string name) { ... }` called as `greet(''''Alice'''')`, which term correctly describes `name` in the function definition?"
+  type="multiple-choice"
+  options={["Argument — because it is the value passed", "Parameter — because it is the placeholder in the definition", "Variable — it is just a local variable", "Return value — it is what the function gives back"]}
+  correctIndex={1}
+  hints={["Parameter is in the function definition; argument is in the function call", "Think: 'name' is declared in the definition as a placeholder", "''''Alice'''' is the argument — the actual value supplied when calling"]}
+  explanation="`name` in the function definition `void greet(std::string name)` is a **parameter** — a placeholder that will receive the actual value when the function is called. `''''Alice''''` in `greet(''''Alice'''')` is the **argument** — the concrete value supplied at the call site."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u4l3-ex2"
+  title="Pass by Value — Original Unchanged"
+  description="What is the output of this program? `void addTen(int n) { n += 10; } int main() { int x = 5; addTen(x); std::cout &lt;&lt; x &lt;&lt; std::endl; }`"
+  type="multiple-choice"
+  options={["15", "5", "10", "Compile error"]}
+  correctIndex={1}
+  hints={["C++ passes arguments by value — the function gets a copy", "Changes to the parameter inside the function do NOT affect the original variable", "After addTen returns, what is the value of x in main?"]}
+  explanation="C++ uses pass by value by default. When `addTen(x)` is called, the function receives a **copy** of x. Modifying `n` inside the function has no effect on the original variable `x`. So `x` remains 5 and that is what is printed."
+  lang="en"
+/>
 
 ## Exercises
 

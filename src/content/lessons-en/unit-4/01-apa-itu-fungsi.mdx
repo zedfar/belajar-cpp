@@ -15,6 +15,8 @@ difficulty: "beginner"
 tags: ["fungsi", "function", "void", "return", "DRY", "reusable-code"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # What Are Functions?
 
 Imagine you need to write code to display a separator line `================` in 10 different places in your program. Would you want to copy-paste it 10 times? Of course not! This is where **functions** come to save your life.
@@ -402,6 +404,41 @@ Example output:
 - `int calculateTotal(int price, int quantity)` — returns price * quantity
 
 Use all three functions to display a simple receipt.
+
+<Exercise client:load
+  id="u4l1-ex1"
+  title="The Main Benefit of Functions"
+  description="What is the primary advantage of using functions instead of writing the same code repeatedly?"
+  type="multiple-choice"
+  options={["The program runs faster because of function calls", "Code is better organized and reusable without duplication", "The compiler needs more memory to store functions", "Functions are only useful for very large programs"]}
+  correctIndex={1}
+  hints={["Remember the DRY principle — Don't Repeat Yourself", "Think: if you want to change a separator line in 10 places, is it easier with or without a function?", "A function is written once but can be called many times"]}
+  explanation="Functions make code more organized, readable, and reusable. With a function, a change only needs to be made in one place — not in 10 different spots. This is the essence of the DRY (Don't Repeat Yourself) principle."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u4l1-ex2"
+  title="Calling printLine Twice"
+  description="What is the exact output when `printLine()` is called twice in `main`, given that `printLine` prints `================================` followed by a newline?"
+  type="code-output"
+  expectedOutput={`================================
+================================`}
+  starterCode={`#include <iostream>
+
+void printLine() {
+    std::cout << "================================" << std::endl;
+}
+
+int main() {
+    printLine();
+    printLine();
+    return 0;
+}`}
+  hints={["A function is called by writing its name followed by parentheses and a semicolon", "printLine();", "Calling the same function twice produces the same output twice"]}
+  explanation="A function is called by writing functionName(); Each call to printLine() prints one line of equal signs followed by a newline. Two calls produce two identical lines. This demonstrates the power of functions — write once, use many times."
+  lang="en"
+/>
 
 ## Summary
 

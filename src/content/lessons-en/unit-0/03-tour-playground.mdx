@@ -14,6 +14,8 @@ difficulty: "beginner"
 tags: ["playground", "tutorial", "getting-started"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Playground Tour
 
 Welcome to the playground! This is where you'll spend a lot of time experimenting with C++ code. Let's get to know each part so you feel comfortable and confident when coding.
@@ -137,6 +139,44 @@ After running a given example, try making variations:
 - Change the text being printed
 - Add new lines
 - Try deleting something and see what error you get
+
+<Exercise client:load
+  id="u0l3-ex1"
+  title="Reading a Compiler Error"
+  description="The compiler shows this error: `error: expected ';' before 'return'`. What is most likely the cause?"
+  type="multiple-choice"
+  options={[
+    "The #include line is missing",
+    "A semicolon is missing at the end of a statement before return",
+    "The word 'return' is misspelled",
+    "The main function is not declared"
+  ]}
+  correctIndex={1}
+  hints={["In C++, every statement must end with a semicolon", "The error says it expected a semicolon before 'return'", "The problem is on the line just before return"]}
+  explanation="The error 'expected ';' before 'return'' means the compiler reached the 'return' keyword but was expecting a semicolon first. This typically means the previous statement is missing its terminating semicolon (;)."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u0l3-ex2"
+  title="Playground Output"
+  description="How many lines of output does this program produce?"
+  type="code-output"
+  expectedOutput={`Hello! I'm learning C++!
+This is the second line.
+And this is the third!`}
+  starterCode={`#include <iostream>
+
+int main() {
+    std::cout << "Hello! I'm learning C++!" << std::endl;
+    std::cout << "This is the second line." << std::endl;
+    std::cout << "And this is the third!" << std::endl;
+    return 0;
+}`}
+  hints={["Each std::cout with std::endl produces one line of output", "Count the number of cout statements"]}
+  explanation="Each std::cout statement sends text to the screen, and std::endl moves to a new line. Three cout statements produce three lines of output, printed in order from top to bottom."
+  lang="en"
+/>
 
 ## Exercise
 

@@ -15,6 +15,8 @@ difficulty: "intermediate"
 tags: ["vector", "dynamic-array", "STL", "push_back", "collections"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # std::vector — Dynamic Arrays
 
 Regular arrays have one major weakness: their **size is fixed**. If you create `int scores[30]`, you've reserved exactly 30 slots — no more, no less.
@@ -342,6 +344,30 @@ Output:
 **Exercise 2:** Create a shopping list program. The user can add items (push_back), remove the last item (pop_back), or view all items. Use a simple menu system.
 
 **Exercise 3:** Create a program that receives n numbers from the user, stores them in a vector, then removes all negative numbers using a loop and erase. Display the vector before and after removal.
+
+<Exercise client:load
+  id="u5l4-ex1"
+  title="Adding Elements to a Vector"
+  description="Which method adds a new element to the END of an existing std::vector?"
+  type="multiple-choice"
+  options={["push_front()", "push_back()", "insert()", "append()"]}
+  correctIndex={1}
+  hints={["std::vector has a method whose name suggests adding to the back", "push_back means push to the back (end) of the vector", "push_front exists in std::deque but not in std::vector"]}
+  explanation="`push_back(value)` appends a new element to the end of the vector. This is the most commonly used method to add elements. `push_front` does not exist for `std::vector` (it exists for `std::deque`). `insert` can add at any position but requires an iterator."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u5l4-ex2"
+  title="Key Difference: Vector vs Array"
+  description="What is the main advantage of std::vector over a plain C++ array?"
+  type="multiple-choice"
+  options={["Vectors use less memory than arrays", "Vectors can grow and shrink in size dynamically at runtime", "Vectors are faster to access than arrays", "Vectors can store multiple data types at once"]}
+  correctIndex={1}
+  hints={["Think about what happens when you need to add more elements than you initially planned for", "Plain arrays have a fixed size set at compile time", "The word 'dynamic' is key here"]}
+  explanation="The key advantage of `std::vector` is that its size is **dynamic** — it can grow when you add elements (push_back) and shrink when you remove them (pop_back/erase). Plain arrays have a fixed size determined at compile time and cannot be resized."
+  lang="en"
+/>
 
 ## Summary
 

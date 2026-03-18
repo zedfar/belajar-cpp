@@ -14,6 +14,8 @@ difficulty: "beginner"
 tags: ["nested-loops", "grid", "table", "repetition"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Nested Loops
 
 Imagine you're filling in the class attendance sheet. You go through each row (each student), and for each row you fill in the columns: name, date of birth, address... That's a **loop inside a loop** — or in fancy terms, a **nested loop**!
@@ -337,6 +339,30 @@ for (int i = 0; i < 10 && !done; i++) {
 }
 ```
 :::
+
+<Exercise client:load
+  id="u3l5-ex1"
+  title="Total Inner Loop Executions"
+  description="If the outer loop runs 4 times and the inner loop runs 3 times per outer iteration, how many total times does the inner loop body execute?"
+  type="multiple-choice"
+  options={["4 times", "3 times", "12 times", "7 times"]}
+  correctIndex={2}
+  hints={["For each single outer loop iteration, how many times does the inner loop run?", "Total = number of outer iterations multiplied by number of inner iterations", "This is called O(n*m) complexity, or O(n^2) when both are the same"]}
+  explanation="Every time the outer loop runs one iteration, the inner loop completes all of its iterations (3 times). Because the outer loop runs 4 times, the total inner loop executions are 4 x 3 = 12 times."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u3l5-ex2"
+  title="Trace a Nested Loop with Coordinates"
+  description="In a nested loop with outer i=1..2 and inner j=1..2, which pair (i,j) is printed immediately after (1,2)?"
+  type="multiple-choice"
+  options={["(1,3) — j keeps incrementing", "(2,1) — i increments and j resets to 1", "(2,3) — both increment", "(1,1) — the loop restarts from the beginning"]}
+  correctIndex={1}
+  hints={["After the inner loop finishes (j has reached its limit), the outer loop advances one step", "When the outer loop moves to i=2, the inner loop starts over from j=1", "This is key to nested loops: the inner loop always resets every time the outer loop advances"]}
+  explanation="After (1,2) the inner loop (j) has reached its limit (j<=2). So the outer loop advances to i=2, and the inner loop restarts from j=1. The next pair is therefore (2,1). The inner loop always resets to its initial value each time the outer loop advances one iteration."
+  lang="en"
+/>
 
 ## Summary
 

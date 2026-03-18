@@ -14,6 +14,8 @@ difficulty: "beginner"
 tags: ["operator-logika", "logical-operators", "AND", "OR", "NOT", "boolean"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Logical Operators
 
 In the previous lesson, you learned to check a single condition with `if`. But in the real world, decisions often depend on **more than one condition**. For example: "You can ride this attraction if your age is above 12 **AND** your height is above 140 cm." Both conditions must be met! For that, we need **logical operators**.
@@ -419,6 +421,41 @@ if (x == 3 || x == 4 || x == 5) { }
 // Safer and clearer with parentheses
 if ((a || b) && c) { }   // if this is what you mean
 ```
+
+<Exercise client:load
+  id="u2l3-ex1"
+  title="Result of AND Operator"
+  description="What is the result of the expression `true &amp;&amp; false`?"
+  type="multiple-choice"
+  options={["true", "false", "Error", "0.5"]}
+  correctIndex={1}
+  hints={["AND (&&) produces true ONLY if BOTH conditions are true", "One of them is already false, so the result is guaranteed to be false"]}
+  explanation="The && (AND) operator produces true only if both operands are true. Because one operand is false, true && false = false."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u2l3-ex2"
+  title="Check Ride Eligibility with AND"
+  description="Complete the if condition so a person can ride if age &gt;= 12 AND height &gt;= 140. Output must be: `Can ride!`"
+  type="code-output"
+  expectedOutput="Can ride!"
+  starterCode={`#include <iostream>
+
+int main() {
+    int age = 14;
+    int height = 145;
+
+    // Write an if condition using && (AND)
+    // If age >= 12 AND height >= 140: print "Can ride!"
+    // Otherwise: print "Cannot ride yet."
+
+    return 0;
+}`}
+  hints={["Use && to combine two conditions", "if (age >= 12 && height >= 140)", `std::cout << "Can ride!" << std::endl;`]}
+  explanation="Because age 14 >= 12 (true) AND height 145 >= 140 (true), then true && true = true and the if block runs."
+  lang="en"
+/>
 
 ## Exercises
 

@@ -13,6 +13,8 @@ difficulty: "beginner"
 tags: ["ternary", "operator", "conditional", "shorthand", "percabangan"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Ternary Operator
 
 Have you ever sent a short text message? Instead of writing a long paragraph, you get straight to the point. Well, the **ternary operator** is like the "short text" version of if-else. While if-else needs several lines, ternary can do it in **just one line**!
@@ -306,6 +308,42 @@ if (score > 100) {
 ```
 
 Ternary is designed to **produce values**, not to execute commands. Although the example above works, if-else is more appropriate for cases like that.
+
+<Exercise client:load
+  id="u2l5-ex1"
+  title="Reading the Ternary Operator"
+  description="What is the result of the expression `(10 > 5) ? &quot;Large&quot; : &quot;Small&quot;`?"
+  type="multiple-choice"
+  options={["Small", "Large", "true", "false"]}
+  correctIndex={1}
+  hints={["Evaluate the condition first: is 10 > 5?", "If the condition is true, the result is the value after ?", "If the condition is false, the result is the value after :"]}
+  explanation='The condition 10 > 5 is true. The ternary operator returns the value after ? when the condition is true, so the result is "Large".'
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u2l5-ex2"
+  title="Use Ternary for Pass/Fail Status"
+  description="Complete the program using the ternary operator so it prints `Passed` if score &gt;= 75, or `Failed` otherwise."
+  type="code-output"
+  expectedOutput="Passed"
+  starterCode={`#include <iostream>
+#include <string>
+
+int main() {
+    int score = 80;
+
+    // Use the ternary operator to determine status
+    // std::string status = (condition) ? "value_if_true" : "value_if_false";
+    std::string status = "";
+
+    std::cout << status << std::endl;
+    return 0;
+}`}
+  hints={["The condition to check: score >= 75", `std::string status = (score >= 75) ? "Passed" : "Failed";`, "Ternary chooses a value based on the condition in one line"]}
+  explanation='The ternary (score >= 75) ? "Passed" : "Failed" evaluates the condition. Because 80 >= 75 is true, the variable status is set to "Passed".'
+  lang="en"
+/>
 
 ## Exercises
 

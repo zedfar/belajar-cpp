@@ -16,6 +16,8 @@ difficulty: "intermediate"
 tags: ["file-io", "ifstream", "getline", "fstream", "reading-files"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Reading Files (File Input)
 
 Until now, every time your program finishes running, all data **disappears just like that**. Variables, arrays, vectors — everything vanishes when the program closes. Run the program again, and you start from zero. Frustrating, isn't it?
@@ -487,7 +489,7 @@ Always prepare your program to handle problems. The two most important checks:
 std::ifstream file("data.txt");
 
 if (!file.is_open()) {
-    std::cout << "Error: file \"data.txt\" not found!" << std::endl;
+    std::cout << "Error: file ''''data.txt'''' not found!" << std::endl;
     return 1;  // Exit the program with an error code
 }
 ```
@@ -520,8 +522,8 @@ std::vector<std::string> readNameList(std::string fileName) {
 
     // Check if the file was successfully opened
     if (!file.is_open()) {
-        std::cout << "Error: file \"" << fileName
-                  << "\" not found!" << std::endl;
+        std::cout << "Error: file ''''" << fileName
+                  << "'''' not found!" << std::endl;
         return list;  // Return an empty vector
     }
 
@@ -538,8 +540,8 @@ std::vector<std::string> readNameList(std::string fileName) {
 
     // Warning if the file is empty
     if (list.size() == 0) {
-        std::cout << "Warning: file \"" << fileName
-                  << "\" is empty!" << std::endl;
+        std::cout << "Warning: file ''''" << fileName
+                  << "'''' is empty!" << std::endl;
     }
 
     return list;
@@ -684,6 +686,30 @@ std::ifstream file("data/students.csv");
 :::tip
 File paths are **relative to where the program is executed**, not to the location of the `.cpp` file. Make sure you run the program from the correct folder.
 :::
+
+<Exercise client:load
+  id="u6l3-ex1"
+  title="Opening a File for Reading"
+  description="Which C++ class and header are used to open a file for reading?"
+  type="multiple-choice"
+  options={["std::ofstream from &lt;fstream&gt;", "std::ifstream from &lt;fstream&gt;", "std::fstream from &lt;iostream&gt;", "std::readfile from &lt;file&gt;"]}
+  correctIndex={1}
+  hints={["The 'i' in ifstream stands for 'input'", "The 'o' in ofstream stands for 'output'", "File stream classes come from the &lt;fstream&gt; header"]}
+  explanation="`std::ifstream` (input file stream) from `&lt;fstream&gt;` is used to open and read files. `ofstream` is for writing (output). Both require `#include &lt;fstream&gt;`. There is no standard `readfile` class."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u6l3-ex2"
+  title="Checking if a File Opened Successfully"
+  description="After `std::ifstream file(''''data.txt'''');`, which condition correctly checks whether the file failed to open?"
+  type="multiple-choice"
+  options={["if (file == false)", "if (!file.is_open())", "if (file.error())", "if (file == null)"]}
+  correctIndex={1}
+  hints={["ifstream has an is_open() method that returns true if the file was successfully opened", "To check for failure you negate the result with !", "null is a Java/C# concept — C++ uses nullptr or just checks the stream state"]}
+  explanation="`file.is_open()` returns `true` if the file was successfully opened and `false` otherwise. So `if (!file.is_open())` checks for failure. Always check this before reading so your program handles missing files gracefully instead of crashing."
+  lang="en"
+/>
 
 ## Exercises
 

@@ -15,6 +15,8 @@ difficulty: "beginner"
 tags: ["return", "return-value", "predikat", "early-return", "rekursi", "recursion"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Return Values
 
 You already know how to create functions and give them parameters. Now it's time to dive deeper into an equally important part: **return values** — how a function sends its result back to the caller. Imagine you ask your friend to calculate something: you need them to **answer** with the result, not just stay silent!
@@ -581,6 +583,30 @@ std::string getName() {
 :::warning
 The C++ compiler usually gives a warning if there's a code path in a non-void function that doesn't have a `return`. **Don't ignore warnings!** Your program's behavior could be unpredictable.
 :::
+
+<Exercise client:load
+  id="u4l4-ex1"
+  title="What Happens After return?"
+  description="In this function: `int add(int a, int b) { return a + b; std::cout &lt;&lt; ''''Done''''; }` — does `''''Done''''` ever get printed?"
+  type="multiple-choice"
+  options={["Yes, it always prints after the calculation", "No, the return statement stops the function immediately", "It depends on the values of a and b", "Yes, but only when a + b equals 0"]}
+  correctIndex={1}
+  hints={["The return statement does two things: returns a value AND stops the function", "Any code written after return in the same code path is unreachable", "Think of return as an exit door — once you go through it the function is done"]}
+  explanation="The `return` statement immediately stops the function and sends the value back to the caller. Any code written after `return` in the same code path (like the `std::cout` line here) is unreachable and will never execute."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u4l4-ex2"
+  title="Predicate Function Result"
+  description="Given `bool isEven(int n) { return n % 2 == 0; }`, what does `isEven(7)` return?"
+  type="multiple-choice"
+  options={["true", "false", "7", "0"]}
+  correctIndex={1}
+  hints={["The modulo operator % gives the remainder of division", "7 % 2 = ?", "If the remainder is 0 the number is even; if not it is odd"]}
+  explanation="7 % 2 = 1 (remainder when dividing 7 by 2). Since 1 != 0, the expression `n % 2 == 0` evaluates to false. So `isEven(7)` returns false. Predicate functions return bool values and their names typically start with 'is'."
+  lang="en"
+/>
 
 ## Exercises
 

@@ -14,6 +14,8 @@ difficulty: "beginner"
 tags: ["intro", "programming", "compiler", "c++"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # What Is Programming?
 
 Have you ever wondered how a video game knows when your character should jump? Or how Instagram displays your friend's photos in your feed? All of this happens because someone wrote a **program** — a set of instructions that tells a computer what to do.
@@ -108,6 +110,40 @@ Each unit ends with a **project** that applies everything you've learned. So you
 :::note
 You don't need to be great at math to learn programming. All you need is **curiosity** and **patience**. Every skilled programmer was once confused and frustrated at the start — that's completely normal!
 :::
+
+<Exercise client:load
+  id="u0l1-ex1"
+  title="What Does a Compiler Do?"
+  description="Which of the following best describes the role of a compiler in C++ development?"
+  type="multiple-choice"
+  options={[
+    "It runs the program and displays output on the screen",
+    "It translates source code into machine language that the computer can execute",
+    "It writes the code automatically based on your description",
+    "It connects the program to the internet"
+  ]}
+  correctIndex={1}
+  hints={["Think about the analogy: you write in English but the recipient only understands Japanese", "A compiler is like a translator between two languages"]}
+  explanation="A compiler translates the C++ source code you write into binary machine language that the processor can execute. It also checks for errors in your code, acting like a 'spell checker' for programs."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u0l1-ex2"
+  title="C++ Name Origin"
+  description="The name 'C++' is a programmer joke. In C, the `++` operator means 'increment by 1'. What does the name C++ imply about the language?"
+  type="multiple-choice"
+  options={[
+    "C++ is twice as fast as C",
+    "C++ is an improved version of C — 'C plus one'",
+    "C++ adds internet features to C",
+    "C++ was created after C# and Java"
+  ]}
+  correctIndex={1}
+  hints={["++ in C means 'add 1 to the value'", "Think of it as a version increment"]}
+  explanation="C++ was created by Bjarne Stroustrup as an extension of the C language. The name 'C++' uses the C increment operator (++) to imply it is 'C plus one' — an improved, enhanced version of C."
+  lang="en"
+/>
 
 ## Summary
 

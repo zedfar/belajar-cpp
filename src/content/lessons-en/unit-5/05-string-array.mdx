@@ -17,6 +17,8 @@ difficulty: "beginner"
 tags: ["string", "array-karakter", "method-string", "iterasi", "getline", "palindrom"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Strings as Character Arrays
 
 You've known `std::string` since Unit 1 for storing text. But did you know that under the hood, a string is actually a **collection (array) of characters**? Every letter, digit, space, and even punctuation mark in a string has its own **position (index)**.
@@ -291,7 +293,7 @@ int main() {
         }
     }
 
-    std::cout << "Text: \"" << text << "\"" << std::endl;
+    std::cout << "Text: ''''" << text << "''''" << std::endl;
     std::cout << "Vowels: " << vowel_count << std::endl;
     std::cout << "Consonants: " << consonant_count << std::endl;
     std::cout << "Spaces: " << space_count << std::endl;
@@ -572,6 +574,30 @@ std::getline(std::cin, name);
 
 Without `cin.ignore()`, `getline()` will immediately read the empty newline and the name will be empty!
 :::
+
+<Exercise client:load
+  id="u5l5-ex1"
+  title="String Indexing"
+  description="Given `std::string name = ''''Hello'''';`, what is the value of `name[1]`?"
+  type="multiple-choice"
+  options={["H", "e", "l", "o"]}
+  correctIndex={1}
+  hints={["String indices start from 0", "name[0]='H', name[1]=?", "Count from the start: index 0 is H, index 1 is the next character"]}
+  explanation="Strings are zero-indexed just like arrays. `name[0]='H'`, `name[1]='e'`, `name[2]='l'`, `name[3]='l'`, `name[4]='o'`. So `name[1]` is `'e'`."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u5l5-ex2"
+  title="String length() Method"
+  description="What does `std::string s = ''''C++''''; std::cout &lt;&lt; s.length();` print?"
+  type="multiple-choice"
+  options={["2", "3", "4", "0"]}
+  correctIndex={1}
+  hints={["Count the characters in the string ''''C++''''", "C, +, + — how many characters is that?", "length() returns the number of characters in the string"]}
+  explanation="The string `''''C++''''` contains 3 characters: `'C'`, `'+'`, `'+'`. So `s.length()` returns 3. The `length()` method counts all characters including punctuation and spaces."
+  lang="en"
+/>
 
 ## Exercises
 

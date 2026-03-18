@@ -13,6 +13,8 @@ difficulty: "beginner"
 tags: ["const", "constexpr", "auto", "constants", "type-inference"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Constants and Auto
 
 In previous lessons, we learned that variables can have their values changed at any time. But what if there's a value that **shouldn't** change? The value of Pi is always 3.14159..., the number of days in a week is always 7, and the speed of light never changes. For cases like these, C++ provides **constants**.
@@ -233,6 +235,45 @@ Conversion Results:
 ```
 
 Notice how `CONVERSION_FACTOR` and `FAHRENHEIT_OFFSET` are made constants because their values are fixed, while `celsius` is a regular variable because its value comes from user input. `fahrenheit` and `kelvin` are also made `const` because once calculated, they won't be changed again.
+
+<Exercise client:load
+  id="u1l7-ex1"
+  title="Correct Constant Declaration"
+  description="Which is the correct way to declare a constant named PI with value 3.14?"
+  type="multiple-choice"
+  options={[
+    "double PI = 3.14;",
+    "const double PI = 3.14;",
+    "const PI = 3.14;",
+    "auto const PI = 3.14;"
+  ]}
+  correctIndex={1}
+  hints={["The const keyword must appear before the data type", "The data type must still be written even when using const"]}
+  explanation="The correct syntax is: const data_type name = value; So `const double PI = 3.14;` is the proper constant declaration. Without the data type, the compiler cannot allocate the correct amount of memory."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u1l7-ex2"
+  title="Circle Circumference with a Constant"
+  description="Complete the program so it prints the circumference of a circle. Output must be exactly: `Circumference: 62.8`"
+  type="code-output"
+  expectedOutput="Circumference: 62.8"
+  starterCode={`#include <iostream>
+
+int main() {
+    const double PI = 3.14;
+    double radius = 10.0;
+
+    // Calculate circumference = 2 * PI * radius
+    // Print: Circumference: 62.8
+
+    return 0;
+}`}
+  hints={["circumference = 2 * PI * radius", "2 * 3.14 * 10.0 = 62.8", `Use std::cout << "Circumference: " << circumference << std::endl;`]}
+  explanation="The constant PI is used in the calculation: circumference = 2 * PI * r = 2 * 3.14 * 10 = 62.8. Using const ensures PI cannot be accidentally changed."
+  lang="en"
+/>
 
 ## Exercises
 

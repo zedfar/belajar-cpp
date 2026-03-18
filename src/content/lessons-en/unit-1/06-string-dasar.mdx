@@ -13,6 +13,8 @@ difficulty: "beginner"
 tags: ["string", "concatenation", "length", "substr", "text"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # String Basics
 
 We've been using strings since the Hello World lesson — every time you write `"Hello, World!"`, that's a string. But strings in C++ can do much more than just hold static text. You can combine, slice, measure, and compare strings. In this lesson, we'll master the fundamentals of string manipulation.
@@ -331,6 +333,46 @@ Birth year: 2009
 Your username: RinSari09
 Username length: 9 characters
 ```
+
+<Exercise client:load
+  id="u1l6-ex1"
+  title="Concatenate Two Strings"
+  description="Fill in the blanks so that `fullName` contains the first name and last name joined with a space in between."
+  type="fill-blank"
+  template={`#include <iostream>
+#include <string>
+
+int main() {
+    std::string first = "Budi";
+    std::string last = "Santoso";
+    std::string fullName = first {{ BLANK }} " " {{ BLANK }} last;
+    std::cout << fullName << std::endl;
+    return 0;
+}`}
+  blanks={["+", "+"]}
+  hints={["The + operator is used for string concatenation", "You need two + operators to join three parts"]}
+  explanation='String concatenation uses the + operator. The expression first + " " + last joins the first name, a space, and the last name into one string.'
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u1l6-ex2"
+  title="String Length"
+  description="What output does this program produce?"
+  type="code-output"
+  expectedOutput="5"
+  starterCode={`#include <iostream>
+#include <string>
+
+int main() {
+    std::string word = "Hello";
+    std::cout << word.length() << std::endl;
+    return 0;
+}`}
+  hints={["Count the number of characters in the string Hello", "Indices start at 0, but length() counts the total number of characters"]}
+  explanation='The string "Hello" has 5 characters: H, e, l, l, o. The .length() method returns the total character count of the string.'
+  lang="en"
+/>
 
 ## Exercises
 

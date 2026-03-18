@@ -15,6 +15,8 @@ difficulty: "beginner"
 tags: ["array", "loop", "iterasi", "linear-search", "range-based-for"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Array & Loop
 
 In the previous lesson, you accessed array elements one by one: `arr[0]`, `arr[1]`, `arr[2]`... If there are 100 elements, are you going to write 100 lines? Of course not!
@@ -492,6 +494,30 @@ for (int i = 0; i < 5; i++) {
     total += arr[i];
 }
 ```
+
+<Exercise client:load
+  id="u5l2-ex1"
+  title="Correct Loop to Traverse an Array"
+  description="For an array `int arr[5]` with 5 elements, which for loop correctly visits every element exactly once?"
+  type="multiple-choice"
+  options={["for (int i = 1; i <= 5; i++)", "for (int i = 0; i < 5; i++)", "for (int i = 0; i <= 5; i++)", "for (int i = 1; i < 5; i++)"]}
+  correctIndex={1}
+  hints={["Array indices go from 0 to size-1", "With 5 elements, valid indices are 0, 1, 2, 3, 4", "Check: does the loop start at 0 and stop before 5?"]}
+  explanation="For an array of size 5, valid indices are 0 through 4. The loop `for (int i = 0; i < 5; i++)` starts at 0 and stops before 5, visiting indices 0, 1, 2, 3, 4 — exactly all 5 elements. Starting at 1 would miss index 0; going up to <= 5 would access index 5 which is out-of-bounds."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u5l2-ex2"
+  title="Sum of Array Elements"
+  description="What is the output of this program? `int arr[] = {2, 4, 6}; int total = 0; for (int i = 0; i &lt; 3; i++) { total += arr[i]; } std::cout &lt;&lt; total;`"
+  type="multiple-choice"
+  options={["246", "12", "6", "2"]}
+  correctIndex={1}
+  hints={["The loop adds each element to total one by one", "Trace: total starts at 0, then += 2, then += 4, then += 6", "2 + 4 + 6 = ?"]}
+  explanation="The accumulator pattern: total starts at 0. After i=0: total=0+2=2. After i=1: total=2+4=6. After i=2: total=6+6=12. The final output is 12."
+  lang="en"
+/>
 
 ## Exercises
 

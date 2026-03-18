@@ -14,6 +14,8 @@ difficulty: "beginner"
 tags: ["fungsi", "function", "prototype", "forward-declaration", "return-type", "single-responsibility"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Creating Functions
 
 In the previous lesson, you learned **what functions are** and why they're important. Now it's time to learn **how to create your own functions** from scratch! We'll cover the complete syntax, various return types, and how to organize your code neatly.
@@ -613,6 +615,39 @@ The `printInfo` function should call both other functions and display the result
 - `void printAllConversions(double celsius)`
 
 Call `printAllConversions` for temperatures of 0, 37, and 100 degrees Celsius.
+
+<Exercise client:load
+  id="u4l2-ex1"
+  title="Function Return Types"
+  description="Which return type should a function have if it performs an action (like printing to screen) but does NOT need to send any value back to the caller?"
+  type="multiple-choice"
+  options={["int", "double", "void", "bool"]}
+  correctIndex={2}
+  hints={["Think about what 'return type' means — it's the type of value sent back", "If nothing is returned, there's a special keyword for that", "You've seen this in functions like printLine() which only prints"]}
+  explanation="`void` is used as the return type when a function does not return any value. It performs an action (such as printing) but sends nothing back to the caller. You cannot store the result of a void function in a variable."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u4l2-ex2"
+  title="Output of an add Function"
+  description="What does this program print? `int add(int a, int b) { return a + b; } int main() { std::cout &lt;&lt; add(3, 7) &lt;&lt; std::endl; return 0; }`"
+  type="code-output"
+  expectedOutput="10"
+  starterCode={`#include <iostream>
+
+int add(int a, int b) {
+    return a + b;
+}
+
+int main() {
+    std::cout << add(3, 7) << std::endl;
+    return 0;
+}`}
+  hints={["The add function returns a + b", "add(3, 7) means a=3 and b=7", "3 + 7 = ?"]}
+  explanation="The function add(3, 7) calculates 3 + 7 = 10 and returns that value. std::cout then prints 10 followed by a newline. The return statement sends the computed sum back to the caller."
+  lang="en"
+/>
 
 ## Summary
 

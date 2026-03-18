@@ -13,6 +13,8 @@ difficulty: "beginner"
 tags: ["comments", "structure", "basics"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Comments and Program Structure
 
 Imagine you wrote a really complicated recipe. A month later, you open it again and... you're confused. "Why did I use brown sugar instead of white sugar?" If only you had written a small note next to the recipe, it would have been much easier to understand.
@@ -268,22 +270,39 @@ Hobby   : Reading and coding
 
 Notice how the comments provide context without being excessive — just enough to clarify what each section of code does.
 
-## Exercises
+<Exercise client:load
+  id="u1l2-ex1"
+  title="Commented-Out Code Output"
+  description="A program has one line commented out using `//`. What output does it produce?"
+  type="multiple-choice"
+  options={[
+    "Step 1\nStep 2\nStep 3",
+    "Step 1\nStep 3",
+    "Step 2\nStep 3",
+    "No output"
+  ]}
+  correctIndex={1}
+  hints={["Lines starting with // are ignored by the compiler", "Look at which lines are active and which are commented out"]}
+  explanation='The line `// std::cout << "Step 2"` is a comment — the compiler ignores it entirely. Only Step 1 and Step 3 are active statements, so only those two lines are printed.'
+  lang="en"
+/>
 
-**Exercise 1:** Take the Hello World program from the previous lesson and add comments explaining each line:
-
-```cpp
-#include <iostream>
-
-int main() {
-    std::cout << "Hello, World!" << std::endl;
-    return 0;
-}
-```
-
-Add comments above or next to each line. Make sure the comments explain the **purpose** of the line, rather than just restating the code.
-
-**Exercise 2:** Create a program that displays a favorite poem or song lyrics (at least 4 lines). Use a multi-line comment at the beginning to explain what the program displays.
+<Exercise client:load
+  id="u1l2-ex2"
+  title="Identify the Comment Style"
+  description="Which syntax is used to write a multi-line comment in C++?"
+  type="multiple-choice"
+  options={[
+    "// comment starts here ... // comment ends here",
+    "# This is a comment",
+    "/* comment text that spans multiple lines */",
+    "-- this is a comment"
+  ]}
+  correctIndex={2}
+  hints={["Single-line comments use //", "Multi-line comments need a pair of opening and closing markers"]}
+  explanation="Multi-line comments in C++ are enclosed between /* and */. Everything between these markers is ignored by the compiler, no matter how many lines it spans. Single-line comments use // and only cover the rest of that one line."
+  lang="en"
+/>
 
 ## Summary
 

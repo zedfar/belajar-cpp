@@ -14,6 +14,8 @@ difficulty: "beginner"
 tags: ["overloading", "fungsi", "polimorfisme", "parameter"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Function Overloading
 
 Imagine you're at the school cafeteria. You say "Buy a drink." If you only have $1, you get tea. If you have $5, you get juice. If you say "Buy a cold drink", you get iced tea. **One command ("buy a drink"), but the result differs depending on the situation.**
@@ -336,6 +338,30 @@ int main() {
     return 0;
 }
 ```
+
+<Exercise client:load
+  id="u4l6-ex1"
+  title="How the Compiler Picks an Overload"
+  description="Given `double area(int side)` and `double area(int length, int width)`, which version is called by `area(5)`?"
+  type="multiple-choice"
+  options={["area(int side) — because only one argument is provided", "area(int length, int width) — because the compiler defaults to the longer signature", "Neither — overloaded functions must have different types", "Compile error — overloading with the same type is not allowed"]}
+  correctIndex={0}
+  hints={["The compiler matches the number and types of arguments to the parameter list", "area(5) provides exactly one int argument", "Which function signature accepts exactly one int?"]}
+  explanation="The compiler selects the overload whose parameter list matches the provided arguments. `area(5)` supplies one int argument, which matches `area(int side)`. The two-parameter version `area(int length, int width)` requires two ints and would not match."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u4l6-ex2"
+  title="Valid vs Invalid Overloading"
+  description="Which of the following pairs of function signatures represents INVALID overloading in C++?"
+  type="multiple-choice"
+  options={["int add(int a, int b) and double add(double a, double b)", "int divide(int a, int b) and double divide(int a, int b)", "void print(int n) and void print(std::string s)", "int max(int a, int b) and int max(int a, int b, int c)"]}
+  correctIndex={1}
+  hints={["Overloading is resolved based on parameter types and count — NOT on return type", "If two functions differ only in return type, the compiler cannot tell them apart at the call site", "Try calling divide(4, 2) — which version would the compiler pick?"]}
+  explanation="`int divide(int a, int b)` and `double divide(int a, int b)` are invalid overloads because they differ ONLY in return type. When you write `divide(4, 2)` the compiler cannot determine which version to call. Overload resolution is based on argument types and count, not return type."
+  lang="en"
+/>
 
 ## Exercises
 

@@ -14,6 +14,8 @@ difficulty: "beginner"
 tags: ["break", "continue", "loop-control", "nested-loop", "repetition"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Break & Continue
 
 You already know how to make loops that run from start to finish. But sometimes, you need more control:
@@ -478,6 +480,30 @@ if (x > 3) {
 :::tip
 For Exercise 1, you can use `while (true)` with `break` when the user enters 0. Initialize the largest number with a very small value and the smallest with a very large value.
 :::
+
+<Exercise client:load
+  id="u3l4-ex1"
+  title="Effect of Break in a Nested Loop"
+  description="Consider this code: an outer loop runs i=1 to 3, an inner loop runs j=1 to 5, with break when j==3. How many times does the outer loop complete its full execution?"
+  type="multiple-choice"
+  options={["break stops all loops so 0 times", "The outer loop still runs 3 times because break only exits the inner loop", "The outer loop runs 1 time then stops", "The outer loop runs 5 times"]}
+  correctIndex={1}
+  hints={["break only stops the innermost loop it is in", "After the inner loop is stopped, the outer loop continues to its next iteration", "Try tracing: after break at j=3, what is the next value of i?"]}
+  explanation="break only stops the innermost loop where it appears — the inner loop (j). After the inner loop stops at j=3, the outer loop (i) continues to its next iteration. As a result the outer loop still runs all 3 times."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u3l4-ex2"
+  title="Output of Continue in a For Loop"
+  description="What is the output of: `for (int i = 1; i &lt;= 5; i++) { if (i == 3) continue; std::cout &lt;&lt; i &lt;&lt; ' '; }`"
+  type="multiple-choice"
+  options={["1 2 3 4 5", "1 2 4 5", "3", "1 2"]}
+  correctIndex={1}
+  hints={["continue skips the rest of the current iteration and moves to the next one", "When i==3, cout is skipped but i++ in the for loop still runs", "The number 3 is not printed; all other numbers are printed normally"]}
+  explanation="When i==3 the continue statement executes so std::cout is skipped for that iteration. However the update part i++ of the for loop still runs, so i becomes 4 and the loop continues normally. Output: 1 2 4 5 (3 is skipped)."
+  lang="en"
+/>
 
 ## Summary
 

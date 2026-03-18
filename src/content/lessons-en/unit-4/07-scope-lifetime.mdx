@@ -15,6 +15,8 @@ difficulty: "beginner"
 tags: ["scope", "lifetime", "variabel-lokal", "variabel-global", "static", "shadowing"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Scope & Lifetime
 
 Ever played hide and seek? If you hide behind a wall, people on the other side can't see you. But if you stand in the middle of a field, everyone can see you.
@@ -427,6 +429,30 @@ int main() {
     return 0;
 }
 ```
+
+<Exercise client:load
+  id="u4l7-ex1"
+  title="Local Variable Scope"
+  description="Can a variable declared inside a function be accessed from another function?"
+  type="multiple-choice"
+  options={["Yes, all variables in a program are shared", "No, local variables are only visible within the function where they are declared", "Only if the functions are in the same file", "Yes, but only with the global keyword"]}
+  correctIndex={1}
+  hints={["Local scope means the variable is confined to the block it was declared in", "When the function ends, local variables are destroyed", "This is why two functions can each have a variable named 'x' without conflict"]}
+  explanation="Local variables are only visible within the function (or block) where they are declared. Once the function returns the variable is destroyed. This encapsulation is a feature — it prevents unintended interference between functions."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u4l7-ex2"
+  title="Name Shadowing"
+  description="What is the output of: `int x = 10; void show() { int x = 20; std::cout &lt;&lt; x; } int main() { show(); }`?"
+  type="multiple-choice"
+  options={["10 — the global x is used", "20 — the local x shadows the global x", "Compile error — x is declared twice", "30 — both are added"]}
+  correctIndex={1}
+  hints={["When there is a local variable with the same name as a global, the local one takes priority inside that scope", "This is called name shadowing", "Inside show(), which x is closer in scope?"]}
+  explanation="Inside `show()`, the local variable `int x = 20` shadows the global `int x = 10`. The local variable takes priority within its scope. So `std::cout << x` prints 20. This is called name shadowing and is generally something to avoid in real code."
+  lang="en"
+/>
 
 ## Exercises
 

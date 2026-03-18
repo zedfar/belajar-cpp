@@ -13,6 +13,8 @@ difficulty: "beginner"
 tags: ["arithmetic", "operators", "math", "modulo", "precedence"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Arithmetic Operations
 
 Computers are fundamentally very fast calculating machines — the word "computer" itself comes from "to compute" (to calculate). So it's only natural that C++ has strong math capabilities. In this lesson, we'll learn the basic arithmetic operators that you'll use in almost every program.
@@ -341,6 +343,39 @@ Radius        : 7
 Area          : 153.938
 Circumference : 43.9823
 ```
+
+<Exercise client:load
+  id="u1l5-ex1"
+  title="Integer Division Result"
+  description="What is the result of the expression `9 / 2` when both numbers are of type `int`?"
+  type="multiple-choice"
+  options={["4.5", "4", "5", "Error"]}
+  correctIndex={1}
+  hints={["Integer division truncates the decimal part", "The result is not rounded — it is cut off toward zero"]}
+  explanation="When both operands are int, C++ performs integer division — the decimal portion is discarded. So 9 / 2 = 4, not 4.5. To get 4.5, at least one operand must be double: 9.0 / 2 or 9 / 2.0."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u1l5-ex2"
+  title="Calculate Rectangle Area"
+  description="Complete the program to calculate the area of a rectangle. Output must be exactly: `Area: 50`"
+  type="code-output"
+  expectedOutput="Area: 50"
+  starterCode={`#include <iostream>
+
+int main() {
+    int length = 10;
+    int width = 5;
+
+    // Calculate area and display with format: Area: 50
+
+    return 0;
+}`}
+  hints={["area = length * width", `Use std::cout << "Area: " << area << std::endl;`, "Store the result in an int variable called area"]}
+  explanation="The * operator performs multiplication. area = length * width = 10 * 5 = 50. Store the result then print it with cout."
+  lang="en"
+/>
 
 ## Exercises
 

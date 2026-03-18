@@ -14,6 +14,8 @@ difficulty: "beginner"
 tags: ["do-while", "loop", "repetition", "menu", "input-validation"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Do-While Loop
 
 You already know the `while` loop and the `for` loop. Now there's one more member of the loop family: the **do-while loop**. The difference? Do-while **always runs its code at least once**, and only then checks the condition.
@@ -401,6 +403,34 @@ Don't use do-while when:
 :::tip
 For Exercise 2, you can use the `char` type to store the user's answer, and check whether the answer is 'A', 'B', 'C', or 'D'.
 :::
+
+<Exercise client:load
+  id="u3l3-ex1"
+  title="Difference Between While and Do-While"
+  description="If the while condition is immediately false from the start, how many times will the do-while code block execute?"
+  type="multiple-choice"
+  options={["0 times — same as a regular while loop", "1 time — because do-while always runs the block first", "2 times — do once, while once", "Infinitely — it becomes an infinite loop"]}
+  correctIndex={1}
+  hints={["Remember the execution order of do-while: run the block FIRST, then check the condition", "Unlike while which checks the condition before running the block", "Even if the condition is false, the block still runs at least once"]}
+  explanation="A do-while always executes the code block first before checking the condition. So even if the while condition is immediately false, the block will still be executed once. This is what distinguishes do-while from a regular while loop."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u3l3-ex2"
+  title="Correct Do-While Syntax"
+  description="Complete the do-while loop so it prints 1, 2, 3 each on a new line. Fill in `{{ BLANK }}` with the correct condition."
+  type="fill-blank"
+  template={`int i = 1;
+do {
+    std::cout << i << std::endl;
+    i++;
+} while ({{ BLANK }});`}
+  blanks={["i <= 3"]}
+  hints={["The while condition in a do-while determines whether the loop repeats", "The loop must run when i equals 1, 2, and 3", "Don't forget the semicolon after while(condition) in a do-while"]}
+  explanation="The condition `i <= 3` keeps the loop running while i is less than or equal to 3. The loop prints 1, 2, 3 and when i becomes 4 the condition 4 <= 3 is false and the loop stops. The semicolon after while is required in do-while."
+  lang="en"
+/>
 
 ## Summary
 

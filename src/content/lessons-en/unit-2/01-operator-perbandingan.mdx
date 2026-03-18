@@ -14,6 +14,8 @@ difficulty: "beginner"
 tags: ["operator", "perbandingan", "comparison", "bool", "relational"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Comparison Operators
 
 In everyday life, you often compare things, right? "Is my grade above the passing threshold?", "Am I old enough to get a driver's license?", "Is the price of meatballs at cafeteria A the same as cafeteria B?" Well, in C++ we can also compare values -- and the result is always **true** or **false**.
@@ -242,6 +244,40 @@ Comparing `int` with `double` is usually safe for simple numbers. But be careful
 // CORRECT -- use parentheses
 std::cout << (5 > 3) << std::endl;
 ```
+
+<Exercise client:load
+  id="u2l1-ex1"
+  title="Correct Comparison Operator"
+  description="You want to check whether the value of variable `x` is equal to 10. Which operator should you use?"
+  type="multiple-choice"
+  options={["x = 10", "x == 10", "x != 10", "x := 10"]}
+  correctIndex={1}
+  hints={["= is assignment (storing a value), not comparison", "== is used to compare two values"]}
+  explanation="== is the comparison operator that checks whether two values are equal. The = operator (single equals sign) is used for assignment (storing a value), not comparing. This is one of the most common mistakes in C++!"
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u2l1-ex2"
+  title="Comparison Result Output"
+  description="Complete the program so it prints the result of comparing whether `score` is greater than or equal to `passingGrade`. Output must be: `1` (meaning true — 85 is indeed &gt;= 75)."
+  type="code-output"
+  expectedOutput="1"
+  starterCode={`#include <iostream>
+
+int main() {
+    int score = 85;
+    int passingGrade = 75;
+
+    // Print the comparison result: is score >= passingGrade?
+    // Output must be: 1
+
+    return 0;
+}`}
+  hints={["Use the >= operator for comparison", "std::cout << (score >= passingGrade) << std::endl;", "Wrap the comparison in parentheses when used inside cout"]}
+  explanation="The expression (score >= passingGrade) produces a bool. Because 85 >= 75 is true, the result is true which cout displays as 1."
+  lang="en"
+/>
 
 ## Exercises
 

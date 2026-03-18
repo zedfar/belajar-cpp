@@ -15,6 +15,8 @@ difficulty: "beginner"
 tags: ["enum", "enum-class", "typedef", "using", "type-alias"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Enum & Type Alias
 
 Have you ever written code like this?
@@ -455,6 +457,30 @@ Moved South 1 step -> (5, 2)
 | `static_cast<int>` | Convert enum to int | `static_cast<int>(Day::Monday)` |
 | `using` | Modern type alias | `using Score = double;` |
 | `typedef` | Old type alias | `typedef double Score;` |
+
+<Exercise client:load
+  id="u6l5-ex1"
+  title="Enum Class Syntax"
+  description="Given `enum class Direction { North, South, East, West };`, how do you correctly assign the East value to a variable `d`?"
+  type="multiple-choice"
+  options={["Direction d = East;", "Direction d = Direction::East;", "int d = East;", "Direction d = 2;"]}
+  correctIndex={1}
+  hints={["enum class values are scoped — you must qualify them with the enum name", "The scope resolution operator :: separates the enum name from the value", "Unscoped access (just East) only works with old-style enum, not enum class"]}
+  explanation="`enum class` (scoped enum) requires you to prefix values with the enum name: `Direction::East`. This is intentional — it prevents name clashes when two enums have a member with the same name. Plain `East` would be a compile error."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u6l5-ex2"
+  title="Why Use enum Instead of Magic Numbers"
+  description="Which of these is the BEST reason to use `enum class Status { Pending, Processing, Done }` instead of plain integers like 0, 1, 2?"
+  type="multiple-choice"
+  options={["Enum values execute faster than integers at runtime", "The code becomes self-documenting — Status::Done is clearer than the number 2", "Enums use less memory than int", "Enums allow fractions and decimals unlike int"]}
+  correctIndex={1}
+  hints={["Think about readability — what does 'status == 2' mean to someone reading the code?", "Enums give meaningful names to numeric constants", "The main problem being solved is code clarity, not performance"]}
+  explanation="The primary benefit of enums over magic numbers is **readability and self-documentation**. `status == Status::Done` is immediately understandable, while `status == 2` requires knowledge of what each number means. Enums also allow the compiler to catch type errors."
+  lang="en"
+/>
 
 ## Exercises
 

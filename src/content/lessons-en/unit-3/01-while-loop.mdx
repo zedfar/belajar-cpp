@@ -14,6 +14,8 @@ difficulty: "beginner"
 tags: ["while", "loop", "repetition", "iteration", "counter"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # While Loop
 
 Imagine you're asked to write a program that prints "Hello!" 1000 times. Surely you wouldn't write `std::cout << "Hello!"` a thousand lines? Of course not! This is where **loops** come to the rescue.
@@ -384,6 +386,41 @@ while (i <= 5) {
 :::tip
 For Exercise 3, start with a variable `result = 1`, then multiply by a number that keeps decreasing. Remember: 0! = 1 (special case).
 :::
+
+<Exercise client:load
+  id="u3l1-ex1"
+  title="When Does a While Loop Stop?"
+  description="Consider this code: `int i = 1; while (i &lt;= 4) { i++; }`. What is the value of `i` after the loop finishes?"
+  type="multiple-choice"
+  options={["4", "5", "3", "The loop never stops"]}
+  correctIndex={1}
+  hints={["Notice the initial value of i and the stopping condition", "Each iteration i increases by 1", "The loop stops when i <= 4 becomes false"]}
+  explanation="The loop runs while i <= 4. Iterations occur when i=1, 2, 3, 4. After the fourth iteration i becomes 5 and the condition 5 <= 4 is false, so the loop stops. The value of i after the loop is 5."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u3l1-ex2"
+  title="Countdown with While"
+  description="What is the exact output of this program? `int n = 3; while (n &gt; 0) { std::cout &lt;&lt; n &lt;&lt; std::endl; n--; }`"
+  type="code-output"
+  expectedOutput={`3
+2
+1`}
+  starterCode={`#include <iostream>
+
+int main() {
+    int n = 3;
+    while (n > 0) {
+        std::cout << n << std::endl;
+        n--;
+    }
+    return 0;
+}`}
+  hints={["std::cout << n << std::endl prints n then moves to a new line", "n-- decreases n by 1 each iteration", "The loop runs while n > 0, so it prints 3, 2, 1"]}
+  explanation="Each iteration prints the current value of n then decrements it. The loop runs while n > 0: first n=3, then n=2, then n=1. When n becomes 0 the condition is false and the loop ends. Output is 3, 2, 1 each on its own line."
+  lang="en"
+/>
 
 ## Summary
 

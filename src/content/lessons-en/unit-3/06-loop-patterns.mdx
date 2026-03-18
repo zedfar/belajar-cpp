@@ -14,6 +14,8 @@ difficulty: "beginner"
 tags: ["pattern", "nested-loops", "ascii-art", "stars"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Loop Patterns
 
 This is the most FUN lesson in Unit 3! We'll "draw" with code — creating various ASCII patterns using nested loops. This isn't just an ordinary exercise, it's art!
@@ -379,6 +381,30 @@ int main() {
 ```
 
 A number pyramid! Here we use **three inner loops** in one row: spaces, ascending numbers, descending numbers. It looks complex, but when broken down piece by piece, each loop is simple.
+
+<Exercise client:load
+  id="u3l6-ex1"
+  title="Stars Per Row Formula"
+  description="For an upward triangle with height 5 (row 1 has 1 star, row 5 has 5 stars), the correct inner loop bound for row i is?"
+  type="multiple-choice"
+  options={["j <= height - i", "j <= i", "j <= height", "j <= 2 * i - 1"]}
+  correctIndex={1}
+  hints={["On the first row (i=1) there is 1 star, on the fifth row (i=5) there are 5 stars", "Try substituting: for i=1, the bound must produce 1 iteration", "The inner loop bound determines how many characters are printed per row"]}
+  explanation="For an upward triangle, row i has exactly i stars. So the inner loop runs from j=1 through j<=i. When i=1 there is 1 star, when i=5 there are 5 stars. The option 'j <= 2*i-1' is the formula for a centered pyramid, not a plain triangle."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u3l6-ex2"
+  title="How Many Stars on Row Three?"
+  description="For an upward star triangle with `height = 5`, how many stars does row 3 (i=3) print?"
+  type="multiple-choice"
+  options={["1 star", "2 stars", "3 stars", "5 stars"]}
+  correctIndex={2}
+  hints={["The inner loop runs from j=1 up to j<=i", "Substitute i=3 into the inner loop bound: j <= 3", "Count how many iterations the inner loop runs when i=3"]}
+  explanation="The inner loop runs from j=1 through j<=i. When i=3 the inner loop runs for j=1, j=2, j=3 — that is 3 iterations and prints 3 stars. The upward triangle pattern: row i always has exactly i stars."
+  lang="en"
+/>
 
 ## Exercises
 

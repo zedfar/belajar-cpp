@@ -17,6 +17,8 @@ difficulty: "intermediate"
 tags: ["sorting", "searching", "linear-search", "binary-search", "bubble-sort", "selection-sort", "algorithm"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Sorting & Searching
 
 Imagine you have a list of 100 students' scores and need to find who got the highest score, or sort from best to worst for ranking. These are two of the most fundamental operations in programming: **searching** (finding data) and **sorting** (ordering data).
@@ -640,6 +642,30 @@ int main() {
 :::tip
 For school assignments and competitions: **understand** bubble sort and selection sort to learn the concepts, but **use** `std::sort()` to solve problems. `std::sort()` has been optimized by experts and is much faster!
 :::
+
+<Exercise client:load
+  id="u5l6-ex1"
+  title="Linear Search vs Binary Search"
+  description="Which condition MUST be met before binary search can be applied to an array?"
+  type="multiple-choice"
+  options={["The array must contain only integers", "The array must be sorted in order", "The array must have an even number of elements", "The array must be stored in a vector"]}
+  correctIndex={1}
+  hints={["Binary search works by repeatedly halving the search space", "It compares the middle element with the target to decide which half to search next", "This strategy only works when the data is arranged in a predictable order"]}
+  explanation="Binary search requires the array to be **sorted** first. It works by checking the middle element and discarding half of the remaining elements each step. If the data is unsorted, the decision of which half to discard is invalid and the result will be wrong."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u5l6-ex2"
+  title="Bubble Sort Pass"
+  description="After one complete pass of bubble sort over `{5, 3, 8, 1}`, what does the array look like?"
+  type="multiple-choice"
+  options={["1 3 5 8", "3 5 1 8", "3 5 8 1", "1 5 3 8"]}
+  correctIndex={1}
+  hints={["Bubble sort compares adjacent pairs and swaps if out of order", "Pass through: compare positions 0&1, then 1&2, then 2&3", "Trace each comparison: 5&3 → swap → {3,5,8,1}; 5&8 → no swap; 8&1 → swap"]}
+  explanation="Bubble sort makes adjacent comparisons: (5,3)→swap→{3,5,8,1}; (5,8)→no swap→{3,5,8,1}; (8,1)→swap→{3,5,1,8}. After one full pass the largest element (8) has bubbled to the end. Result: {3, 5, 1, 8}."
+  lang="en"
+/>
 
 ## Exercises
 

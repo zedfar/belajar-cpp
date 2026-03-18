@@ -14,6 +14,8 @@ difficulty: "beginner"
 tags: ["reference", "pass-by-value", "pass-by-reference", "const-reference", "fungsi"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Pass by Reference
 
 Up until now, every time you send a variable to a function, what gets sent is a **copy** of it. The function works with that copy, and the original variable outside the function doesn't change at all. This is called **pass by value**.
@@ -295,6 +297,34 @@ You may have heard about **pointers** in C++. Pointers and references have simil
 - **Pointer** (`*`): more flexible, can be empty (null), more complex syntax
 
 For now, references are more than sufficient. Pointers will be covered in more detail in a later unit.
+
+<Exercise client:load
+  id="u4l5-ex1"
+  title="Pass by Value vs Pass by Reference"
+  description="Which syntax correctly declares a pass-by-reference parameter for an int named `x`?"
+  type="multiple-choice"
+  options={["int x", "int& x", "int* x", "ref int x"]}
+  correctIndex={1}
+  hints={["The & symbol is the reference declarator in C++", "int x means pass by value (a copy)", "int* x is a pointer — a different (more complex) mechanism"]}
+  explanation="`int& x` declares `x` as a reference to an int. When called, the function operates on the original variable rather than a copy. Changes made to `x` inside the function will be reflected in the caller's variable."
+  lang="en"
+/>
+
+<Exercise client:load
+  id="u4l5-ex2"
+  title="Swap Function with References"
+  description="Fill in the blank so the swap function correctly exchanges the values of a and b: `void swap(int& a, int& b) { int temp = a; a = {{ BLANK }}; b = temp; }`"
+  type="fill-blank"
+  template={`void swap(int& a, int& b) {
+    int temp = a;
+    a = {{ BLANK }};
+    b = temp;
+}`}
+  blanks={["b"]}
+  hints={["The classic swap uses a temporary variable to hold one value", "After saving a in temp, a should get the value of b", "Then b gets the saved value from temp"]}
+  explanation="The standard three-step swap: save a in temp, assign b to a, assign temp (original a) to b. Using references means these assignments affect the actual variables passed in, not copies."
+  lang="en"
+/>
 
 ## Exercises
 
