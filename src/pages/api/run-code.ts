@@ -2,7 +2,60 @@ import type { APIRoute } from 'astro'
 
 export const prerender = false
 
+// ── Simple in-memory rate limiter ────────────────────────────
+// 10 requests per minute per IP. Resets per sliding window.
+// Note: works per serverless instance — sufficient to prevent accidental
+// loops and casual abuse; for stricter limits use Vercel KV or Edge config.
+const rateLimit = new Map<string, { count: number; resetAt: number }>()
+const RATE_LIMIT_MAX = 10
+const RATE_LIMIT_WINDOW_MS = 60_000
+
+function checkRateLimit(ip: string): { allowed: boolean; retryAfter: number } {
+  const now = Date.now()
+  const entry = rateLimit.get(ip)
+
+  if (!entry || now > entry.resetAt) {
+    rateLimit.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS })
+    return { allowed: true, retryAfter: 0 }
+  }
+
+  if (entry.count >= RATE_LIMIT_MAX) {
+    return { allowed: false, retryAfter: Math.ceil((entry.resetAt - now) / 1000) }
+  }
+
+  entry.count++
+  return { allowed: true, retryAfter: 0 }
+}
+
+// Cleanup stale entries periodically to prevent memory leak
+setInterval(() => {
+  const now = Date.now()
+  for (const [ip, entry] of rateLimit) {
+    if (now > entry.resetAt) rateLimit.delete(ip)
+  }
+}, 5 * 60_000)
+
 export const POST: APIRoute = async ({ request }) => {
+  // Rate limiting
+  const ip =
+    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    request.headers.get('x-real-ip') ||
+    'unknown'
+
+  const { allowed, retryAfter } = checkRateLimit(ip)
+  if (!allowed) {
+    return new Response(
+      JSON.stringify({ error: `Rate limit exceeded. Try again in ${retryAfter}s.` }),
+      {
+        status: 429,
+        headers: {
+          'Content-Type': 'application/json',
+          'Retry-After': String(retryAfter),
+        },
+      }
+    )
+  }
+
   let body: { code?: string; stdin?: string }
   try {
     body = await request.json()

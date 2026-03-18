@@ -15,7 +15,7 @@ const currentPath = Astro.url.pathname
 <BaseLayout title={title} description={description} lang={lang} ogImage={ogImage}>
   <div class="flex flex-col min-h-screen">
     <Header lang={lang} currentPath={currentPath} />
-    <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main id="main-content" class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <slot />
     </main>
     <Footer lang={lang} />
