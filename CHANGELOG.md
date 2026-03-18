@@ -4,6 +4,12 @@ Semua perubahan penting pada proyek belajar-cpp dicatat di file ini. Format meng
 
 ## [Unreleased]
 
+## [2026-03-18] (update 7)
+
+### Changed
+- Bump versi ke `v1.0.0-beta.1` di `package.json` dan footer
+- Update copyright tahun 2025 → 2026 di footer
+
 ## [2026-03-18] (update 6)
 
 ### Added
