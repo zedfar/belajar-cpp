@@ -31,6 +31,9 @@ const ogImg = ogImage || `${siteUrl}/og-default.svg`
     <meta property="og:url" content={siteUrl + Astro.url.pathname} />
     <meta property="og:locale" content={lang === 'id' ? 'id_ID' : 'en_US'} />
 
+    <!-- Canonical URL -->
+    <link rel="canonical" href={siteUrl + Astro.url.pathname} />
+
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />

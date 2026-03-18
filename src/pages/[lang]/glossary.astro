@@ -1,0 +1,129 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro'
+import type { Language } from '@/types/lesson'
+import { GLOSSARY, CATEGORY_LABELS, CATEGORY_ORDER } from '@/data/glossary'
+import type { GlossaryCategory } from '@/data/glossary'
+
+export function getStaticPaths() {
+  return [{ params: { lang: 'id' } }, { params: { lang: 'en' } }]
+}
+
+const { lang } = Astro.params as { lang: Language }
+
+const title = lang === 'id' ? 'Glosarium C++' : 'C++ Glossary'
+const description = lang === 'id'
+  ? 'Kamus istilah C++ — definisi lengkap untuk semua istilah pemrograman yang kamu pelajari, dari variabel hingga fungsi.'
+  : 'C++ glossary — complete definitions for all programming terms you learn, from variables to functions.'
+
+// Group terms by category, in order
+const grouped = CATEGORY_ORDER.map(cat => ({
+  category: cat,
+  label: CATEGORY_LABELS[cat][lang],
+  terms: GLOSSARY.filter(t => t.category === cat).sort((a, b) => a.term.localeCompare(b.term)),
+}))
+
+const totalTerms = GLOSSARY.length
+---
+<PageLayout title={title} description={description} lang={lang}>
+  <div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="mb-10">
+      <h1 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-3">
+        {title}
+      </h1>
+      <p class="text-lg text-slate-600 dark:text-slate-400">
+        {lang === 'id'
+          ? `${totalTerms} istilah penting dalam pemrograman C++`
+          : `${totalTerms} essential terms in C++ programming`}
+      </p>
+    </div>
+
+    <!-- Category quick-nav -->
+    <nav aria-label={lang === 'id' ? 'Navigasi kategori glosarium' : 'Glossary category navigation'} class="mb-10">
+      <div class="flex flex-wrap gap-2">
+        {grouped.map(({ category, label, terms }) => (
+          <a
+            href={`#cat-${category}`}
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-primary-100 dark:hover:bg-primary-900/40 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
+          >
+            {label}
+            <span class="text-xs text-slate-400 dark:text-slate-500">({terms.length})</span>
+          </a>
+        ))}
+      </div>
+    </nav>
+
+    <!-- Terms by category -->
+    <div class="space-y-12">
+      {grouped.map(({ category, label, terms }) => (
+        <section id={`cat-${category}`} aria-labelledby={`heading-${category}`}>
+          <h2
+            id={`heading-${category}`}
+            class="text-xl font-bold text-slate-900 dark:text-white mb-4 pb-2 border-b border-slate-200 dark:border-slate-700 flex items-center gap-2"
+          >
+            {label}
+            <span class="text-sm font-normal text-slate-400 dark:text-slate-500">
+              ({terms.length} {lang === 'id' ? 'istilah' : 'terms'})
+            </span>
+          </h2>
+
+          <dl class="space-y-4">
+            {terms.map(entry => (
+              <div
+                id={`term-${entry.term.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`}
+                class="p-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/50 hover:border-primary-300 dark:hover:border-primary-700 transition-colors"
+              >
+                <dt class="flex items-start gap-3 mb-2">
+                  <span class="font-mono font-semibold text-primary-600 dark:text-primary-400 text-base">
+                    {entry.term}
+                  </span>
+                  {entry.termEn && lang === 'id' && (
+                    <span class="text-sm text-slate-400 dark:text-slate-500 mt-0.5">
+                      / {entry.termEn}
+                    </span>
+                  )}
+                </dt>
+                <dd>
+                  <p class="text-slate-700 dark:text-slate-300 text-sm leading-relaxed mb-2">
+                    {entry.definition[lang]}
+                  </p>
+
+                  {entry.example && (
+                    <pre class="mt-2 text-xs bg-slate-800 text-emerald-300 px-3 py-2 rounded font-mono overflow-x-auto">{entry.example}</pre>
+                  )}
+
+                  {entry.seeAlso && entry.seeAlso.length > 0 && (
+                    <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                      {lang === 'id' ? 'Lihat juga: ' : 'See also: '}
+                      {entry.seeAlso.map((ref, i) => {
+                        const slug = ref.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
+                        return (
+                          <span>
+                            {i > 0 && ', '}
+                            <a
+                              href={`#term-${slug}`}
+                              class="text-primary-600 dark:text-primary-400 hover:underline"
+                            >
+                              {ref}
+                            </a>
+                          </span>
+                        )
+                      })}
+                    </p>
+                  )}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      ))}
+    </div>
+
+    <!-- Footer note -->
+    <div class="mt-12 p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-sm text-blue-800 dark:text-blue-200">
+      {lang === 'id'
+        ? 'Glosarium ini mencakup istilah-istilah yang dipelajari di Unit 0–6. Untuk penjelasan lebih lengkap dengan contoh kode, lihat lesson yang relevan.'
+        : 'This glossary covers terms from Units 0–6. For fuller explanations with code examples, see the relevant lessons.'}
+    </div>
+  </div>
+</PageLayout>

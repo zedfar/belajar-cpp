@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://belajar-cpp.varnimyr.my.id/sitemap-index.xml
