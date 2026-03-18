@@ -33,6 +33,7 @@
     "@codemirror/state": "latest",
     "@codemirror/theme-one-dark": "latest",
     "@codemirror/view": "latest",
+    "@vercel/og": "^0.11.1",
     "astro": "latest",
     "clsx": "latest",
     "codemirror": "^6.0.2",
