@@ -4,6 +4,17 @@ Semua perubahan penting pada proyek belajar-cpp dicatat di file ini. Format meng
 
 ## [Unreleased]
 
+## [2026-03-18] (update 3)
+
+### Added
+- SVG diagram `loop-comparison.svg` — perbandingan while, for, do-while dalam flowchart (dark/light mode)
+- SVG diagram `function-anatomy.svg` — anatomi fungsi C++ + call flow diagram
+- SVG diagram `array-memory.svg` — visualisasi memori array dengan index
+- Referensi semua gambar (compilation-flow, workflow, variabel-boxes, io-flow, operator, if-else) ke semua lesson EN yang sebelumnya tidak punya gambar
+
+### Changed
+- EN content audit: semua lesson EN sudah 97-100% parity dengan ID — tidak ada yang perlu dilengkapi
+
 ## [2026-03-18] (update 2)
 
 ### Added
