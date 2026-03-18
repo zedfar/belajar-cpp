@@ -4,6 +4,19 @@ Semua perubahan penting pada proyek belajar-cpp dicatat di file ini. Format meng
 
 ## [Unreleased]
 
+## [2026-03-18] (update 16)
+
+### Added
+- `/api/og.png`: endpoint dinamis untuk generate OG image PNG 1200x630 menggunakan `@vercel/og` (Satori) — menerima query params `title`, `description`, `lang`; desain dark dengan branding Belajar C++
+- `src/env.d.ts`: referensi `astro/client` dan `.astro/types.d.ts` untuk fix tipe `import.meta.env` dan modul `astro:content` di CI
+
+### Changed
+- `BaseLayout.astro`: OG image default sekarang generated dinamis dari `/api/og.png?title=...&description=...` — setiap halaman otomatis punya OG image unik dengan judul dan deskripsinya sendiri
+- `astro.config.mjs`: tambah `@vercel/og` ke `vite.ssr.noExternal`
+
+### Fixed (CI)
+- `ci.yml`: tambah langkah `astro sync` sebelum typecheck — sebelumnya CI gagal karena tipe `astro:content` belum di-generate
+
 ## [2026-03-18] (update 15)
 
 ### Added (Security)
