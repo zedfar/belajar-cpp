@@ -4,6 +4,16 @@ Semua perubahan penting pada proyek belajar-cpp dicatat di file ini. Format meng
 
 ## [Unreleased]
 
+## [2026-03-18] (update 11)
+
+### Fixed (E2E Tests)
+- `smoke.test.ts`: perbaiki 5 selector Playwright yang gagal strict mode
+  - `[data-unit-toggle]` → `[data-unit-card]` (atribut yang benar di curriculum.astro)
+  - Breadcrumb nav: tambah `.first()` — header nav juga mengandung teks "Kurikulum"
+  - Lesson `h1`: tambah `.first()` — MDX heading `# Hello, World!` merender `<h1>` kedua
+  - Navigation links: scope ke `header` element untuk menghindari duplikat link di footer
+- Semua 17 E2E smoke test kini passing (sebelumnya 12/17)
+
 ## [2026-03-18] (update 10)
 
 ### Fixed
