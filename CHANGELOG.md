@@ -4,6 +4,13 @@ Semua perubahan penting pada proyek belajar-cpp dicatat di file ini. Format meng
 
 ## [Unreleased]
 
+## [2026-03-18] (update 17)
+
+### Fixed
+- `/api/og-image`: rename dari `og.png.ts` → `og-image.ts` — Vercel routing mengira `/api/og.png` adalah static file karena ekstensi `.png`, tidak diteruskan ke serverless function (500 error)
+- `vitest.config.ts`: exclude `e2e/` dari Vitest agar file Playwright tidak dijalankan oleh Vitest (`test.describe() called here` error di CI)
+- `vercel.json`: Cache-Control `immutable` 1 tahun untuk `/images/*.svg` agar browser cache diagram SVG
+
 ## [2026-03-18] (update 16)
 
 ### Added
