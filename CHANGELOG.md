@@ -4,6 +4,17 @@ Semua perubahan penting pada proyek belajar-cpp dicatat di file ini. Format meng
 
 ## [Unreleased]
 
+## [2026-03-18] (update 12)
+
+### Added
+- `ErrorBoundary.tsx`: React class component untuk menangkap render error pada komponen interaktif — menampilkan pesan fallback dengan `role="alert"` alih-alih blank screen
+- Playwright E2E test setup: `playwright.config.ts` + `src/__tests__/e2e/smoke.test.ts` — 17 smoke test mencakup Home, Curriculum, Lesson, Glossary, Playground, Progress, Navigation, SEO
+- `test-results/` dan `playwright-report/` ditambahkan ke `.gitignore`
+
+### Fixed (Accessibility — WCAG 2.1)
+- `Exercise.tsx`: radio `name="mc-option"` → `name="mc-{id}"` (semua Exercise di satu halaman membentuk satu radio group); tambah `role="alert"` pada feedback salah, `role="status"` pada badge Solved, `role="note"` pada penjelasan; wrapped dengan `ErrorBoundary`
+- `QuizCard.tsx`: `aria-hidden` pada dot progress (dekoratif), `aria-live="polite"` pada penghitung soal, `role="note"` pada penjelasan; wrapped dengan `ErrorBoundary`
+
 ## [2026-03-18] (update 11)
 
 ### Fixed (E2E Tests)

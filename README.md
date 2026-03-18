@@ -11,7 +11,8 @@
   [![Astro](https://img.shields.io/badge/Astro-v5-FF5D01?logo=astro&logoColor=white)](https://astro.build)
   [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
   [![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
-  [![Tests](https://img.shields.io/badge/tests-63%20passing-brightgreen?logo=vitest)](./src/__tests__)
+  [![Tests](https://img.shields.io/badge/unit%20tests-63%20passing-brightgreen?logo=vitest)](./src/__tests__)
+  [![E2E](https://img.shields.io/badge/e2e-17%20passing-brightgreen?logo=playwright)](./src/__tests__/e2e)
   [![Deploy](https://img.shields.io/badge/Live-belajar--cpp.varnimyr.my.id-black?logo=vercel)](https://belajar-cpp.varnimyr.my.id)
 
 </div>
@@ -74,7 +75,8 @@ Platform ini mengajarkan **C++ modern (C++17)** dari nol, langsung bisa dicoba d
 | Syntax Highlight | Shiki (one-dark-pro theme) |
 | MDX Directives | remark-directive |
 | C++ Execution | [Judge0 API](https://judge0.com) (server-side proxy) |
-| Testing | Vitest + jsdom (63 unit tests) |
+| Unit Testing | Vitest + jsdom (63 unit tests) |
+| E2E Testing | Playwright (17 smoke tests) |
 | Deployment | Vercel |
 
 ---
@@ -123,7 +125,8 @@ npm run dev        # Development server (localhost:4321)
 npm run build      # Production build
 npm run preview    # Preview production build
 npm run typecheck  # TypeScript type checking
-npm test           # Run tests (vitest)
+npm test           # Unit tests (vitest)
+npm run test:e2e   # E2E tests (playwright) — butuh dev server aktif
 ```
 
 ---
@@ -138,11 +141,12 @@ belajar-cpp/
 │   └── og-default.svg       # Default Open Graph image
 ├── src/
 │   ├── __tests__/
-│   │   └── lib/             # Unit tests — progress.test.ts, i18n.test.ts (63 tests)
+│   │   ├── lib/             # Unit tests — progress.test.ts, i18n.test.ts (63 tests)
+│   │   └── e2e/             # E2E smoke tests — smoke.test.ts (17 tests, Playwright)
 │   ├── components/
 │   │   ├── ui/              # Button, Card, Tabs
 │   │   ├── layout/          # Header, Sidebar, Footer, MobileNav
-│   │   ├── learn/           # CodePlayground, CodeBlock, Exercise, QuizCard, InfoBox
+│   │   ├── learn/           # CodePlayground, CodeBlock, Exercise, QuizCard, InfoBox, ErrorBoundary
 │   │   └── common/          # ThemeToggle, LanguageToggle, TableOfContents
 │   ├── content/
 │   │   ├── lessons-id/      # 45 lesson Bahasa Indonesia (MDX, unit-0 s/d unit-6)
@@ -158,6 +162,7 @@ belajar-cpp/
 │   └── types/               # TypeScript type definitions
 ├── .docs/                   # Dokumentasi internal (tidak di-track git)
 ├── vitest.config.ts         # Konfigurasi Vitest (jsdom + path alias)
+├── playwright.config.ts     # Konfigurasi Playwright E2E
 ├── CHANGELOG.md             # Riwayat perubahan
 └── tailwind.config.ts       # Tailwind design tokens
 ```
