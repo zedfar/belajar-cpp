@@ -3,6 +3,7 @@ import { clsx } from 'clsx'
 import { Button } from '../ui/Button'
 import { Card } from '../ui/Card'
 import { CodePlayground } from './CodePlayground'
+import { ErrorBoundary } from './ErrorBoundary'
 import { saveExerciseResult, getExerciseResult } from '../../lib/progress'
 import type { Language } from '../../types/lesson'
 
@@ -182,6 +183,7 @@ export function Exercise(props: ExerciseProps) {
   }
 
   return (
+    <ErrorBoundary componentName={`Exercise(${id})`}>
     <Card className="my-6" shadow>
       <div className="flex items-start justify-between gap-2 mb-3">
         <div>
@@ -280,5 +282,6 @@ export function Exercise(props: ExerciseProps) {
         </div>
       )}
     </Card>
+    </ErrorBoundary>
   )
 }

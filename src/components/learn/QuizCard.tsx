@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { clsx } from 'clsx'
 import { Button } from '../ui/Button'
 import { Card } from '../ui/Card'
+import { ErrorBoundary } from './ErrorBoundary'
 import { saveQuizResult } from '../../lib/progress'
 import type { Language } from '../../types/lesson'
 
@@ -20,7 +21,7 @@ interface QuizCardProps {
   onComplete?: (score: number) => void
 }
 
-export function QuizCard({ quizId, questions, lang, onComplete }: QuizCardProps) {
+function QuizCardInner({ quizId, questions, lang, onComplete }: QuizCardProps) {
   const [currentQ, setCurrentQ] = useState(0)
   const [selectedAnswers, setSelectedAnswers] = useState<(number | null)[]>(
     Array(questions.length).fill(null)
@@ -206,5 +207,13 @@ export function QuizCard({ quizId, questions, lang, onComplete }: QuizCardProps)
         )}
       </div>
     </Card>
+  )
+}
+
+export function QuizCard(props: QuizCardProps) {
+  return (
+    <ErrorBoundary componentName="QuizCard">
+      <QuizCardInner {...props} />
+    </ErrorBoundary>
   )
 }
