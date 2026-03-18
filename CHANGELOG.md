@@ -4,6 +4,16 @@ Semua perubahan penting pada proyek belajar-cpp dicatat di file ini. Format meng
 
 ## [Unreleased]
 
+## [2026-03-18] (update 4)
+
+### Added
+- Vitest setup (`vitest.config.ts`) dengan jsdom environment dan path alias `@/*`
+- 63 unit tests: `src/__tests__/lib/progress.test.ts` (40 tests) dan `src/__tests__/lib/i18n.test.ts` (23 tests)
+- Coverage: localStorage round-trip, streak logic, badge unlock conditions, unit/overall progress, exercise & quiz results, reset — serta t(), interpolate(), detectLanguage(), getOtherLang(), getLangName()
+
+### Fixed
+- Bug di `loadProgress()`: shallow-copy `DEFAULT_PROGRESS` menyebabkan array (`completedLessons`, `unlockedBadges`) menjadi shared reference — diatasi dengan `freshDefault()` yang selalu return array baru sehingga mutasi satu pemanggilan tidak bocor ke pemanggilan berikutnya
+
 ## [2026-03-18] (update 3)
 
 ### Added
