@@ -78,7 +78,7 @@ export const GLOSSARY: GlossaryTerm[] = [
   },
   {
     term: 'std',
-    term_en: 'std (Standard Library)',
+    termEn: 'std (Standard Library)',
     category: 'dasar',
     definition: {
       id: 'Namespace standar C++ yang berisi semua fungsi dan objek bawaan seperti `cout`, `cin`, `string`, dan lainnya.',

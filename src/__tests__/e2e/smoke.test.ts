@@ -46,9 +46,6 @@ test.describe('Lesson page', () => {
 
   test('mark complete button exists', async ({ page }) => {
     await page.goto('/id/learn/unit-1/01-hello-world')
-    const markComplete = page.locator('[data-lesson-slug]').or(
-      page.getByRole('button', { name: /Tandai Selesai|Mark Complete/i })
-    )
     await expect(page.getByRole('button', { name: /Tandai Selesai/i })).toBeVisible()
   })
 })

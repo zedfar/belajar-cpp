@@ -20,9 +20,9 @@ export default defineConfig({
 
   // Start dev server automatically before tests
   webServer: {
-    command: 'npm run preview -- --port 4321',
+    command: 'npm run dev -- --port 4321',
     url: 'http://localhost:4321',
-    reuseExistingServer: true,
-    timeout: 30_000,
+    reuseExistingServer: !process.env.CI,
+    timeout: 120_000,
   },
 })
