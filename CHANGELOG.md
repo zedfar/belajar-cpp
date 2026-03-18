@@ -4,6 +4,16 @@ Semua perubahan penting pada proyek belajar-cpp dicatat di file ini. Format meng
 
 ## [Unreleased]
 
+## [2026-03-18] (update 6)
+
+### Added
+- Halaman Glosarium C++ (`/id/glossary`, `/en/glossary`) — 42 istilah dalam 7 kategori (Kompilasi, Dasar, Tipe Data, Kontrol Alur, Fungsi, Array & Struct, I/O) dengan definisi bilingual, contoh kode, dan tautan "lihat juga" antar istilah
+- Link Glosarium di Footer navigation
+- `public/robots.txt` — `Allow: /` dengan referensi ke sitemap
+
+### Fixed (SEO)
+- Tambah `<link rel="canonical">` ke `BaseLayout.astro` — semua halaman kini punya canonical URL eksplisit (sebelumnya hanya ada di OG meta)
+
 ## [2026-03-18] (update 5)
 
 ### Fixed (Accessibility — WCAG 2.1)
