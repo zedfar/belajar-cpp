@@ -4,6 +4,11 @@ Semua perubahan penting pada proyek belajar-cpp dicatat di file ini. Format meng
 
 ## [Unreleased]
 
+## [2026-03-18] (update 8)
+
+### Docs
+- README diperbarui secara menyeluruh: badge versi + tests, fitur baru (Exercise, Glosarium, WCAG), Vitest di tech stack, struktur project lengkap (src/data/, src/__tests__/, vitest.config.ts, robots.txt), panduan menulis Exercise interaktif
+
 ## [2026-03-18] (update 7)
 
 ### Changed
