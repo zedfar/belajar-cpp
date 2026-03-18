@@ -440,7 +440,7 @@ if (umur == 20) {
 
 import { Exercise } from '@/components/learn/Exercise'
 
-<Exercise
+<Exercise client:load
   id="u2l2-ex1"
   title="Cek Lulus atau Tidak"
   description="Lengkapi program berikut dengan if-else agar mencetak <code>Lulus</code> jika nilai >= 75, atau <code>Tidak Lulus</code> jika tidak."
@@ -462,7 +462,7 @@ int main() {
   lang="id"
 />
 
-<Exercise
+<Exercise client:load
   id="u2l2-ex2"
   title="Pengecekan Kondisi if-else"
   description="Variabel x bernilai 0. Program mengecek: jika x > 0 cetak Positif, jika x &lt; 0 cetak Negatif, selain itu cetak Nol. Apa output yang dihasilkan?"

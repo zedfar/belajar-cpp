@@ -235,7 +235,7 @@ std::cout << (5 > 3) << std::endl;
 
 import { Exercise } from '@/components/learn/Exercise'
 
-<Exercise
+<Exercise client:load
   id="u2l1-ex1"
   title="Operator Perbandingan yang Benar"
   description="Kamu ingin mengecek apakah nilai variabel <code>x</code> sama dengan 10. Operator mana yang harus digunakan?"
@@ -247,7 +247,7 @@ import { Exercise } from '@/components/learn/Exercise'
   lang="id"
 />
 
-<Exercise
+<Exercise client:load
   id="u2l1-ex2"
   title="Hasil Perbandingan"
   description="Program berikut menggunakan operator perbandingan. Lengkapi agar mencetak output: <code>1</code> (artinya true — nilai 85 memang lebih besar dari 75)."

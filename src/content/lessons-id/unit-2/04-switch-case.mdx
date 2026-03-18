@@ -372,7 +372,7 @@ Case di switch harus selalu berupa **nilai konstan** — angka literal (`1`, `2`
 
 import { Exercise } from '@/components/learn/Exercise'
 
-<Exercise
+<Exercise client:load
   id="u2l4-ex1"
   title="Peran break dalam Switch"
   description="Apa yang terjadi jika sebuah <code>case</code> dalam switch-case tidak memiliki <code>break</code>?"
@@ -389,7 +389,7 @@ import { Exercise } from '@/components/learn/Exercise'
   lang="id"
 />
 
-<Exercise
+<Exercise client:load
   id="u2l4-ex2"
   title="Switch untuk Nama Hari"
   description="Lengkapi switch-case agar mencetak nama hari. Jika <code>hari = 1</code>, output harus: <code>Senin</code>"

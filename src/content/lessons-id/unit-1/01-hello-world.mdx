@@ -204,7 +204,7 @@ Kalau menemui error, jangan panik. Baca pesan errornya — biasanya compiler men
 
 import { Exercise } from '@/components/learn/Exercise'
 
-<Exercise
+<Exercise client:load
   id="u1l1-ex1"
   title="Ubah Output Hello World"
   description="Ubah program Hello World agar menampilkan teks <code>Halo, C++!</code> persis seperti yang diminta."
@@ -222,7 +222,7 @@ int main() {
   lang="id"
 />
 
-<Exercise
+<Exercise client:load
   id="u1l1-ex2"
   title="Identifikasi Elemen Program"
   description="Apa fungsi dari baris <code>return 0;</code> di dalam fungsi <code>main()</code>?"

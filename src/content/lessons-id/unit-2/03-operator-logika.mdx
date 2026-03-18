@@ -424,7 +424,7 @@ if ((a || b) && c) { }   // kalau memang ini yang dimaksud
 
 import { Exercise } from '@/components/learn/Exercise'
 
-<Exercise
+<Exercise client:load
   id="u2l3-ex1"
   title="Hasil Operator AND"
   description="Apa hasil dari ekspresi <code>true &amp;&amp; false</code>?"
@@ -436,7 +436,7 @@ import { Exercise } from '@/components/learn/Exercise'
   lang="id"
 />
 
-<Exercise
+<Exercise client:load
   id="u2l3-ex2"
   title="Cek Syarat Naik Wahana"
   description="Lengkapi kondisi if agar seseorang boleh naik wahana jika umur >= 12 DAN tinggi >= 140. Output harus: <code>Boleh naik!</code>"

@@ -311,7 +311,7 @@ Ternary dirancang untuk **menghasilkan nilai**, bukan untuk menjalankan perintah
 
 import { Exercise } from '@/components/learn/Exercise'
 
-<Exercise
+<Exercise client:load
   id="u2l5-ex1"
   title="Baca Ternary Operator"
   description="Apa hasil dari ekspresi <code>(10 > 5) ? &quot;Besar&quot; : &quot;Kecil&quot;</code>?"
@@ -323,7 +323,7 @@ import { Exercise } from '@/components/learn/Exercise'
   lang="id"
 />
 
-<Exercise
+<Exercise client:load
   id="u2l5-ex2"
   title="Gunakan Ternary untuk Status Kelulusan"
   description="Lengkapi program menggunakan ternary operator agar mencetak <code>Lulus</code> jika nilai >= 75, atau <code>Tidak Lulus</code> jika tidak."

@@ -272,7 +272,7 @@ Perhatikan bagaimana komentar memberikan konteks tanpa berlebihan — cukup jela
 
 import { Exercise } from '@/components/learn/Exercise'
 
-<Exercise
+<Exercise client:load
   id="u1l2-ex1"
   title="Lengkapi Komentar"
   description="Lengkapi kode berikut dengan komentar yang tepat pada bagian <code>{{ BLANK }}</code>."
@@ -290,7 +290,7 @@ int main() {
   lang="id"
 />
 
-<Exercise
+<Exercise client:load
   id="u1l2-ex2"
   title="Output Program dengan Komentar"
   description="Program berikut memiliki komentar yang menonaktifkan satu baris. Apa output yang dihasilkan?"
