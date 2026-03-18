@@ -7,3 +7,5 @@ node_modules/
 .vercel
 .astro/
 .docs
+test-results/
+playwright-report/
