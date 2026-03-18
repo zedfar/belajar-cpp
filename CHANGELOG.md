@@ -4,6 +4,13 @@ Semua perubahan penting pada proyek belajar-cpp dicatat di file ini. Format meng
 
 ## [Unreleased]
 
+## [2026-03-18] (update 14)
+
+### Fixed
+- `/api/run-code`: `JUDGE0_API_KEY` kini opsional — jika tidak dikonfigurasi, request tetap dikirim tanpa auth header (kompatibel dengan public instance `ce.judge0.com` yang gratis tanpa key)
+- Default `JUDGE0_API_URL` diubah dari `judge0-ce.p.rapidapi.com` ke `ce.judge0.com`
+- `.env.example`: diperbarui dengan dokumentasi 3 opsi konfigurasi (public instance, RapidAPI, self-hosted)
+
 ## [2026-03-18] (update 13)
 
 ### Added
