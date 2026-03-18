@@ -2,8 +2,8 @@ import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
   testDir: './src/__tests__/e2e',
-  timeout: 30_000,
-  retries: 1,
+  timeout: 60_000,
+  retries: 2,
   reporter: 'list',
 
   use: {

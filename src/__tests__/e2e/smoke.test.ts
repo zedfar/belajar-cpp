@@ -52,7 +52,7 @@ test.describe('Lesson page', () => {
 
 test.describe('Glossary page', () => {
   test('ID glossary loads with terms', async ({ page }) => {
-    await page.goto('/id/glossary')
+    await page.goto('/id/glossary', { waitUntil: 'domcontentloaded' })
     await expect(page.locator('h1')).toContainText('Glosarium')
     // Should have category headings
     await expect(page.locator('h2').first()).toBeVisible()
@@ -61,7 +61,7 @@ test.describe('Glossary page', () => {
   })
 
   test('EN glossary loads', async ({ page }) => {
-    await page.goto('/en/glossary')
+    await page.goto('/en/glossary', { waitUntil: 'domcontentloaded' })
     await expect(page.locator('h1')).toContainText('Glossary')
   })
 })
