@@ -4,6 +4,16 @@ Semua perubahan penting pada proyek belajar-cpp dicatat di file ini. Format meng
 
 ## [Unreleased]
 
+## [2026-03-18] (update 2)
+
+### Added
+- Exercise interaktif ke semua lesson ID unit-3 (Perulangan), unit-4 (Fungsi), unit-5 (Array), unit-6 (Struct & File I/O) — total 48 exercise baru
+- Exercise interaktif ke semua lesson EN unit-0 sampai unit-6 — total 78 exercise dalam bahasa Inggris
+
+### Fixed
+- Import `{ Exercise }` yang salah posisi di unit-4 ID dipindah ke tepat setelah frontmatter
+- Escaped quotes (`\"`) di dalam JSX attribute string EN files diganti single quotes agar tidak error build
+
 ## [2026-03-18]
 
 ### Added
