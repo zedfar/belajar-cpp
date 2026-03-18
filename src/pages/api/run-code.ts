@@ -83,30 +83,22 @@ export const POST: APIRoute = async ({ request }) => {
     })
   }
 
-  const JUDGE0_URL = (import.meta.env.JUDGE0_API_URL || 'https://judge0-ce.p.rapidapi.com').replace(/\/$/, '')
+  // Default ke public Judge0 instance (tidak butuh API key)
+  const JUDGE0_URL = (import.meta.env.JUDGE0_API_URL || 'https://ce.judge0.com').replace(/\/$/, '')
   const JUDGE0_KEY = import.meta.env.JUDGE0_API_KEY || ''
-  const isSelfHosted = !JUDGE0_URL.includes('rapidapi.com')
-
-  // Validate API key is configured
-  if (!JUDGE0_KEY) {
-    console.error('[run-code] JUDGE0_API_KEY is not set. Set it in environment variables.')
-    return new Response(
-      JSON.stringify({ error: 'Code execution is not configured. JUDGE0_API_KEY missing.' }),
-      { status: 503, headers: { 'Content-Type': 'application/json' } }
-    )
-  }
+  const isRapidAPI = JUDGE0_URL.includes('rapidapi.com')
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
   }
   if (JUDGE0_KEY) {
-    if (isSelfHosted) {
-      // Self-hosted Judge0: gunakan X-Auth-Token
-      headers['X-Auth-Token'] = JUDGE0_KEY
-    } else {
+    if (isRapidAPI) {
       // RapidAPI Judge0
       headers['X-RapidAPI-Key'] = JUDGE0_KEY
       headers['X-RapidAPI-Host'] = 'judge0-ce.p.rapidapi.com'
+    } else {
+      // Self-hosted Judge0: gunakan X-Auth-Token
+      headers['X-Auth-Token'] = JUDGE0_KEY
     }
   }
 
