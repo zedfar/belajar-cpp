@@ -1,0 +1,187 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" width="800" height="320" font-family="'Segoe UI', system-ui, sans-serif">
+  <defs>
+    <style>
+      :root {
+        --bg: #f8fafc;
+        --border: #e2e8f0;
+        --card-bg: #ffffff;
+        --shadow: rgba(0,0,0,0.08);
+        --label: #64748b;
+        --arrow: #94a3b8;
+        --arrow-label: #94a3b8;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0f172a;
+          --border: #1e293b;
+          --card-bg: #1e293b;
+          --shadow: rgba(0,0,0,0.4);
+          --label: #64748b;
+          --arrow: #475569;
+          --arrow-label: #64748b;
+        }
+      }
+    </style>
+    <filter id="fa-shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="var(--shadow)"/>
+    </filter>
+    <!-- Generic grey arrow -->
+    <marker id="fa-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="var(--arrow)"/>
+    </marker>
+    <!-- Blue arrow for main() call -->
+    <marker id="fa-arrow-blue" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#3b82f6"/>
+    </marker>
+    <!-- Purple arrow for add() return -->
+    <marker id="fa-arrow-purple" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#8b5cf6"/>
+    </marker>
+    <!-- Green arrow for result -->
+    <marker id="fa-arrow-green" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#10b981"/>
+    </marker>
+    <!-- Blue gradient for main() boxes -->
+    <linearGradient id="fa-g-blue" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+    <!-- Purple gradient for add() box -->
+    <linearGradient id="fa-g-purple" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <!-- Green gradient for return value -->
+    <linearGradient id="fa-g-green" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ── Background ── -->
+  <rect width="800" height="320" rx="14" fill="var(--bg)" stroke="var(--border)" stroke-width="1.5"/>
+
+  <!-- ══════════════════════════════════════════════
+       LEFT SECTION — Function Definition
+  ══════════════════════════════════════════════ -->
+
+  <!-- Section title -->
+  <text x="195" y="28" text-anchor="middle" fill="var(--label)" font-size="10" font-weight="600" letter-spacing="0.8">FUNCTION DEFINITION</text>
+
+  <!-- Code block background -->
+  <g filter="url(#fa-shadow)">
+    <rect x="18" y="40" width="364" height="80" rx="10" fill="var(--card-bg)" stroke="var(--border)" stroke-width="1.5"/>
+  </g>
+
+  <!-- Code text: return_type -->
+  <text x="38" y="73" font-family="'Cascadia Code','Fira Code','Consolas',monospace" font-size="14" font-weight="600">
+    <tspan fill="#3b82f6">int</tspan>
+    <tspan fill="var(--label)" dx="1"> </tspan>
+    <tspan fill="#10b981">add</tspan>
+    <tspan fill="#94a3b8">(</tspan>
+    <tspan fill="#f59e0b">int a, int b</tspan>
+    <tspan fill="#94a3b8">)</tspan>
+    <tspan fill="var(--label)" dx="2">{</tspan>
+  </text>
+  <text x="58" y="95" font-family="'Cascadia Code','Fira Code','Consolas',monospace" font-size="13" fill="#64748b">    // function body</text>
+  <text x="58" y="112" font-family="'Cascadia Code','Fira Code','Consolas',monospace" font-size="14">
+    <tspan fill="#94a3b8">    </tspan>
+    <tspan fill="#8b5cf6">return</tspan>
+    <tspan fill="var(--label)"> a + b;</tspan>
+  </text>
+  <text x="38" y="112" font-family="'Cascadia Code','Fira Code','Consolas',monospace" font-size="14" fill="var(--label)"> </text>
+
+  <!-- Close brace row -->
+  <text x="38" y="130" font-family="'Cascadia Code','Fira Code','Consolas',monospace" font-size="14" fill="var(--label)">}</text>
+
+  <!-- ── Annotation: Return Type "int" ── -->
+  <!-- underline the "int" token: x≈38, width≈22 -->
+  <line x1="38" y1="76" x2="60" y2="76" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+  <!-- leader line down-left to label -->
+  <polyline points="49,76 49,165 72,165" fill="none" stroke="var(--arrow)" stroke-width="1.5" marker-end="url(#fa-arrow)"/>
+  <text x="76" y="169" fill="#3b82f6" font-size="11" font-weight="700">Return Type</text>
+  <text x="76" y="182" fill="var(--label)" font-size="10">what the function gives back</text>
+
+  <!-- ── Annotation: Function Name "add" ── -->
+  <!-- underline "add": x≈68, width≈26 -->
+  <line x1="68" y1="76" x2="95" y2="76" stroke="#10b981" stroke-width="2" stroke-linecap="round"/>
+  <!-- leader line up to label -->
+  <polyline points="81,60 81,46 108,46" fill="none" stroke="var(--arrow)" stroke-width="1.5" marker-end="url(#fa-arrow)"/>
+  <text x="112" y="42" fill="#10b981" font-size="11" font-weight="700">Function Name</text>
+  <text x="112" y="54" fill="var(--label)" font-size="10">(identifier to call it)</text>
+
+  <!-- ── Annotation: Parameters "int a, int b" ── -->
+  <!-- underline params: x≈100, width≈86 -->
+  <line x1="100" y1="76" x2="188" y2="76" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/>
+  <!-- leader line up to label (further right) -->
+  <polyline points="144,60 144,32 220,32" fill="none" stroke="var(--arrow)" stroke-width="1.5" marker-end="url(#fa-arrow)"/>
+  <text x="224" y="28" fill="#f59e0b" font-size="11" font-weight="700">Parameters</text>
+
+  <!-- ── Annotation: Function Body ── -->
+  <!-- brace indicator on the right edge of code block -->
+  <line x1="385" y1="88" x2="385" y2="125" stroke="var(--arrow)" stroke-width="1.5"/>
+  <line x1="385" y1="106" x2="395" y2="106" stroke="var(--arrow)" stroke-width="1.5" marker-end="url(#fa-arrow)"/>
+  <text x="398" y="102" fill="var(--label)" font-size="11" font-weight="700">Function Body</text>
+  <text x="398" y="114" fill="var(--label)" font-size="10">{ … }</text>
+
+  <!-- ── Annotation: Return Statement ── -->
+  <!-- underline "return": x≈58+32+16 ≈ spans "return" in 3rd line y=112 -->
+  <line x1="58" y1="116" x2="105" y2="116" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round"/>
+  <!-- leader line down to label -->
+  <polyline points="81,116 81,200 100,200" fill="none" stroke="var(--arrow)" stroke-width="1.5" marker-end="url(#fa-arrow)"/>
+  <text x="104" y="197" fill="#8b5cf6" font-size="11" font-weight="700">Return Statement</text>
+  <text x="104" y="210" fill="var(--label)" font-size="10">sends value back to caller</text>
+
+  <!-- ── Parameters label for code line (separate row annotation) ── -->
+  <text x="224" y="40" fill="var(--label)" font-size="10">(inputs to the function)</text>
+
+  <!-- ══════════════════════════════════════════════
+       Divider
+  ══════════════════════════════════════════════ -->
+  <line x1="415" y1="16" x2="415" y2="304" stroke="var(--border)" stroke-width="1.5" stroke-dasharray="5,4"/>
+
+  <!-- ══════════════════════════════════════════════
+       RIGHT SECTION — Call Flow
+  ══════════════════════════════════════════════ -->
+
+  <!-- Section title -->
+  <text x="611" y="28" text-anchor="middle" fill="var(--label)" font-size="10" font-weight="600" letter-spacing="0.8">FUNCTION CALL FLOW</text>
+
+  <!-- Box 1: main() starts -->
+  <g filter="url(#fa-shadow)">
+    <rect x="490" y="40" width="240" height="56" rx="10" fill="url(#fa-g-blue)"/>
+  </g>
+  <text x="610" y="63" text-anchor="middle" fill="white" font-size="13" font-weight="700">main()</text>
+  <text x="610" y="82" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="11" font-family="'Cascadia Code','Fira Code','Consolas',monospace">int result = add(3, 5);</text>
+
+  <!-- Arrow down: calls add(3, 5) -->
+  <line x1="610" y1="98" x2="610" y2="136" stroke="#3b82f6" stroke-width="2" marker-end="url(#fa-arrow-blue)"/>
+  <text x="620" y="121" fill="#3b82f6" font-size="10" font-weight="600">calls add(3, 5)</text>
+
+  <!-- Box 2: add() executes -->
+  <g filter="url(#fa-shadow)">
+    <rect x="490" y="138" width="240" height="56" rx="10" fill="url(#fa-g-purple)"/>
+  </g>
+  <text x="610" y="161" text-anchor="middle" fill="white" font-size="13" font-weight="700">add() executes</text>
+  <text x="610" y="180" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="11" font-family="'Cascadia Code','Fira Code','Consolas',monospace">a=3, b=5 → 3+5=8</text>
+
+  <!-- Arrow down: returns 8 -->
+  <line x1="610" y1="196" x2="610" y2="234" stroke="#10b981" stroke-width="2" marker-end="url(#fa-arrow-green)"/>
+  <text x="620" y="220" fill="#10b981" font-size="10" font-weight="600">returns 8</text>
+
+  <!-- Box 3: main() continues -->
+  <g filter="url(#fa-shadow)">
+    <rect x="490" y="236" width="240" height="56" rx="10" fill="url(#fa-g-blue)"/>
+  </g>
+  <text x="610" y="259" text-anchor="middle" fill="white" font-size="13" font-weight="700">main() continues</text>
+  <text x="610" y="278" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="11" font-family="'Cascadia Code','Fira Code','Consolas',monospace">result = 8  ✓</text>
+
+  <!-- ── Side annotations for call flow ── -->
+  <!-- "caller" label on box 1 -->
+  <text x="484" y="72" text-anchor="end" fill="var(--label)" font-size="10" font-weight="600">caller</text>
+  <!-- "callee" label on box 2 -->
+  <text x="484" y="172" text-anchor="end" fill="var(--label)" font-size="10" font-weight="600">callee</text>
+  <!-- "caller" label on box 3 -->
+  <text x="484" y="272" text-anchor="end" fill="var(--label)" font-size="10" font-weight="600">caller</text>
+
+</svg>

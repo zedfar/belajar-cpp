@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 300" width="700" height="300" font-family="'Segoe UI', system-ui, sans-serif">
+  <defs>
+    <style>
+      :root {
+        --bg: #f8fafc;
+        --border: #e2e8f0;
+        --card-bg: #ffffff;
+        --shadow: rgba(0,0,0,0.08);
+        --label: #64748b;
+        --arrow: #94a3b8;
+        --arrow-label: #94a3b8;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0f172a;
+          --border: #1e293b;
+          --card-bg: #1e293b;
+          --shadow: rgba(0,0,0,0.4);
+          --label: #64748b;
+          --arrow: #475569;
+          --arrow-label: #64748b;
+        }
+      }
+    </style>
+    <filter id="am-shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="var(--shadow)"/>
+    </filter>
+    <marker id="am-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="var(--arrow)"/>
+    </marker>
+    <!-- Blue gradient for normal cells -->
+    <linearGradient id="am-blue" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+    <!-- Amber gradient for highlighted cell [2] -->
+    <linearGradient id="am-amber" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="700" height="300" rx="14" fill="var(--bg)" stroke="var(--border)" stroke-width="1.5"/>
+
+  <!-- ── TOP SECTION ── -->
+
+  <!-- Title / declaration -->
+  <text x="350" y="28" text-anchor="middle" fill="var(--label)" font-size="12" font-weight="700" font-family="'Courier New', Courier, monospace" letter-spacing="0.3">int nilai[5] = {85, 92, 78, 95, 88};</text>
+
+  <!-- Cell geometry: 5 cells × 80px wide, 60px tall, starting x=90, y=50 -->
+  <!-- Cell [0] — blue -->
+  <g filter="url(#am-shadow)">
+    <rect x="90" y="48" width="80" height="60" rx="8" fill="url(#am-blue)"/>
+  </g>
+  <text x="130" y="83" text-anchor="middle" fill="white" font-size="18" font-weight="700">85</text>
+
+  <!-- Cell [1] — blue -->
+  <g filter="url(#am-shadow)">
+    <rect x="170" y="48" width="80" height="60" rx="8" fill="url(#am-blue)"/>
+  </g>
+  <text x="210" y="83" text-anchor="middle" fill="white" font-size="18" font-weight="700">92</text>
+
+  <!-- Cell [2] — amber highlight -->
+  <g filter="url(#am-shadow)">
+    <rect x="250" y="48" width="80" height="60" rx="8" fill="url(#am-amber)"/>
+  </g>
+  <text x="290" y="83" text-anchor="middle" fill="white" font-size="18" font-weight="700">78</text>
+
+  <!-- Cell [3] — blue -->
+  <g filter="url(#am-shadow)">
+    <rect x="330" y="48" width="80" height="60" rx="8" fill="url(#am-blue)"/>
+  </g>
+  <text x="370" y="83" text-anchor="middle" fill="white" font-size="18" font-weight="700">95</text>
+
+  <!-- Cell [4] — blue -->
+  <g filter="url(#am-shadow)">
+    <rect x="410" y="48" width="80" height="60" rx="8" fill="url(#am-blue)"/>
+  </g>
+  <text x="450" y="83" text-anchor="middle" fill="white" font-size="18" font-weight="700">88</text>
+
+  <!-- Index labels below each cell -->
+  <text x="130" y="126" text-anchor="middle" fill="var(--label)" font-size="12" font-weight="600">[0]</text>
+  <text x="210" y="126" text-anchor="middle" fill="var(--label)" font-size="12" font-weight="600">[1]</text>
+  <text x="290" y="126" text-anchor="middle" fill="#d97706"    font-size="12" font-weight="700">[2]</text>
+  <text x="370" y="126" text-anchor="middle" fill="var(--label)" font-size="12" font-weight="600">[3]</text>
+  <text x="450" y="126" text-anchor="middle" fill="var(--label)" font-size="12" font-weight="600">[4]</text>
+
+  <!-- Arrow: "starts at index 0" — from left, pointing up to cell [0] -->
+  <!-- Arrow comes from label below-left, up to bottom-center of cell [0] -->
+  <line x1="50" y1="148" x2="128" y2="112" stroke="var(--arrow)" stroke-width="1.5" marker-end="url(#am-arrow)" stroke-dasharray="4 3"/>
+  <text x="44" y="160" text-anchor="middle" fill="var(--arrow-label)" font-size="10" font-weight="600">starts at</text>
+  <text x="44" y="172" text-anchor="middle" fill="var(--arrow-label)" font-size="10" font-weight="600">index 0</text>
+
+  <!-- Arrow: "last index = size-1" — from right, pointing to cell [4] -->
+  <line x1="648" y1="148" x2="452" y2="112" stroke="var(--arrow)" stroke-width="1.5" marker-end="url(#am-arrow)" stroke-dasharray="4 3"/>
+  <text x="655" y="158" text-anchor="middle" fill="var(--arrow-label)" font-size="10" font-weight="600">last index</text>
+  <text x="655" y="170" text-anchor="middle" fill="var(--arrow-label)" font-size="10" font-weight="600">= size-1</text>
+
+  <!-- Arrow: nilai[2] = 78 — pointing down from above cell [2] -->
+  <line x1="290" y1="36" x2="290" y2="46" stroke="#d97706" stroke-width="1.5" marker-end="url(#am-arrow)"/>
+  <text x="290" y="33" text-anchor="middle" fill="#d97706" font-size="10" font-weight="700" font-family="'Courier New', Courier, monospace">nilai[2] = 78</text>
+
+  <!-- ── BOTTOM SECTION — Key Rules box ── -->
+  <g filter="url(#am-shadow)">
+    <rect x="90" y="146" width="520" height="88" rx="10" fill="var(--card-bg)" stroke="var(--border)" stroke-width="1.5"/>
+  </g>
+
+  <!-- Section label -->
+  <text x="110" y="166" fill="var(--label)" font-size="10" font-weight="700" letter-spacing="0.8">ATURAN PENTING</text>
+
+  <!-- Bullet 1 -->
+  <circle cx="118" cy="182" r="3" fill="#3b82f6"/>
+  <text x="130" y="186" fill="var(--label)" font-size="12">Index starts at <tspan font-weight="700" fill="#3b82f6">0</tspan>, not 1</text>
+
+  <!-- Bullet 2 -->
+  <circle cx="118" cy="202" r="3" fill="#3b82f6"/>
+  <text x="130" y="206" fill="var(--label)" font-size="12">Last index = <tspan font-weight="700" fill="#3b82f6">length - 1</tspan></text>
+
+  <!-- Bullet 3 -->
+  <circle cx="118" cy="222" r="3" fill="#3b82f6"/>
+  <text x="130" y="226" fill="var(--label)" font-size="12">Access: <tspan font-weight="700" fill="#3b82f6" font-family="'Courier New', Courier, monospace">arrayName[index]</tspan></text>
+</svg>
