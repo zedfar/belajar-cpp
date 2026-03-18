@@ -4,6 +4,19 @@ Semua perubahan penting pada proyek belajar-cpp dicatat di file ini. Format meng
 
 ## [Unreleased]
 
+## [2026-03-18] (update 13)
+
+### Added
+- `.github/workflows/ci.yml`: GitHub Actions CI — typecheck + unit tests (vitest) + build + E2E (Playwright) pada setiap push/PR ke main; upload playwright-report sebagai artifact jika E2E gagal
+
+### Fixed
+- TypeScript: 5 error typecheck dibereskan
+  - `ErrorBoundary.tsx`: tambah `override` modifier pada `componentDidCatch` dan `render`
+  - `glossary.ts`: `term_en` → `termEn` (sesuai interface `GlossaryTerm`)
+  - `progress.test.ts`: hapus import `vi` yang tidak dipakai
+  - `smoke.test.ts`: hapus variabel `markComplete` yang tidak dipakai
+- `playwright.config.ts`: ganti `npm run preview` → `npm run dev` (preview tidak bisa jalan dengan Vercel adapter); `reuseExistingServer` dimatikan di CI; timeout naik ke 120s
+
 ## [2026-03-18] (update 12)
 
 ### Added
