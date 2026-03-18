@@ -4,6 +4,22 @@ Semua perubahan penting pada proyek belajar-cpp dicatat di file ini. Format meng
 
 ## [Unreleased]
 
+## [2026-03-18]
+
+### Added
+- SVG diagram workflow programming (`public/images/workflow-diagram.svg`) dengan dark/light mode adaptive
+- CHANGELOG.md untuk mencatat riwayat perubahan proyek
+
+### Fixed
+- Exercise components sekarang fully interactive — tambah `client:load` directive ke semua 24 Exercise di 12 lesson unit-1 dan unit-2 (sebelumnya tombol tidak bereaksi karena React tidak di-hydrate)
+- Hapus teks centang (✓) dari label "Selesai" karena sudah ada SVG icon pada tombol mark complete
+
+### Changed
+- File dokumentasi internal (`PLAN.md`, `JUDGE0_SELF_HOSTED.md`, `judge0-portainer.yml`, `laporan_implementasi.md`) dipindahkan ke folder `.docs` dan di-ignore dari git
+
+### Docs
+- README diperbarui — hapus referensi ke file yang sudah dipindah ke `.docs`, tambah referensi ke `CHANGELOG.md`
+
 ## [2026-03-17] - v1.0.0
 
 ### Added
