@@ -15,6 +15,8 @@ difficulty: "beginner"
 tags: ["array", "loop", "iterasi", "linear-search", "range-based-for"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Array & Loop
 
 Di pelajaran sebelumnya, kamu mengakses elemen array satu per satu: `arr[0]`, `arr[1]`, `arr[2]`... Kalau ada 100 elemen, masa kamu tulis 100 baris? Tentu tidak!
@@ -510,6 +512,39 @@ for (int i = 0; i < 5; i++) {
 :::tip
 Untuk Latihan 1, hitung rata-rata dulu, lalu gunakan loop kedua untuk menghitung berapa hari yang suhunya di atas rata-rata.
 :::
+
+<Exercise client:load
+  id="u5l2-ex1"
+  title="Pola Loop Array"
+  description="Apa kondisi yang benar untuk iterasi array int arr[5] menggunakan for loop agar tidak terjadi out-of-bounds?"
+  type="multiple-choice"
+  options={["for (int i = 0; i <= 5; i++)", "for (int i = 1; i < 5; i++)", "for (int i = 0; i < 5; i++)", "for (int i = 0; i <= 4; i++)"]}
+  correctIndex={2}
+  hints={["Index array dimulai dari 0", "Array berukuran 5 memiliki index 0, 1, 2, 3, 4", "Gunakan < bukan <= untuk menghindari akses di luar batas"]}
+  explanation="for (int i = 0; i < 5; i++) adalah pola yang benar. i dimulai dari 0 (index pertama) dan berhenti saat i mencapai 5 (tidak termasuk), sehingga index terakhir yang diakses adalah 4. Opsi i <= 5 akan akses arr[5] yang di luar batas!"
+  lang="id"
+/>
+
+<Exercise client:load
+  id="u5l2-ex2"
+  title="Hitung Total Array"
+  description="Lengkapi program berikut untuk menjumlahkan semua elemen array. Output harus: 433"
+  type="code-output"
+  expectedOutput="433"
+  starterCode={`#include <iostream>
+
+int main() {
+    int nilai[] = {85, 90, 78, 92, 88};
+    int panjang = sizeof(nilai) / sizeof(nilai[0]);
+    int total = 0;
+    // Tambahkan loop untuk menjumlahkan semua elemen
+    std::cout << total << std::endl;
+    return 0;
+}`}
+  hints={["Gunakan for loop dengan pola: for (int i = 0; i < panjang; i++)", "Di dalam loop, tambahkan: total += nilai[i];", "Loop menelusuri setiap elemen dari index 0 sampai panjang-1"]}
+  explanation="Loop for (int i = 0; i < panjang; i++) dengan total += nilai[i] menjumlahkan semua elemen. 85+90+78+92+88 = 433."
+  lang="id"
+/>
 
 ## Ringkasan
 

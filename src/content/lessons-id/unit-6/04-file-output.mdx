@@ -15,6 +15,8 @@ difficulty: "beginner"
 tags: ["file-output", "ofstream", "write-file", "append", "formatting"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # File Output: Menulis File
 
 Di lesson sebelumnya, kamu sudah bisa **membaca** data dari file. Sekarang kita belajar kebalikannya — **menulis** data ke file! Ini sangat berguna karena hasil program bisa disimpan secara permanen, tidak hilang saat program selesai.
@@ -383,6 +385,36 @@ int main() {
     return 0;
 }
 ```
+
+<Exercise client:load
+  id="u6l4-ex1"
+  title="Mode Overwrite vs Append"
+  description="Kamu ingin membuat program log yang menambahkan catatan baru setiap kali program dijalankan tanpa menghapus catatan lama. Mode mana yang harus digunakan saat membuka file dengan ofstream?"
+  type="multiple-choice"
+  options={["std::ofstream file('log.txt'); (mode default/overwrite)", "std::ofstream file('log.txt', std::ios::app); (mode append)", "std::ofstream file('log.txt', std::ios::in); (mode input)", "std::ofstream file('log.txt', std::ios::trunc); (mode truncate)"]}
+  correctIndex={1}
+  hints={["Mode default ofstream akan menimpa (overwrite) isi file yang sudah ada", "std::ios::app adalah flag untuk mode append — data baru ditambahkan di akhir", "ios::trunc justru menghapus isi file (ini perilaku default)"]}
+  explanation="std::ios::app (append mode) memastikan data baru selalu ditambahkan di akhir file tanpa menghapus konten yang sudah ada. Mode default (tanpa flag) akan menimpa seluruh isi file setiap kali program dijalankan."
+  lang="id"
+/>
+
+<Exercise client:load
+  id="u6l4-ex2"
+  title="Menulis ke File dengan ofstream"
+  description="Lengkapi kode berikut untuk menulis teks ke file output.txt menggunakan ofstream."
+  type="fill-blank"
+  template={`std::{{ BLANK }} fileOut("output.txt");
+if (!fileOut.{{ BLANK }}()) {
+    std::cout << "Gagal membuka file!" << std::endl;
+    return 1;
+}
+fileOut << "Halo dari C++!" << std::endl;
+fileOut.close();`}
+  blanks={["ofstream", "is_open"]}
+  hints={["Class untuk menulis file adalah ofstream (output file stream)", "Method untuk mengecek apakah file berhasil dibuka adalah is_open()", "Operator << digunakan sama persis seperti saat menulis ke cout"]}
+  explanation="std::ofstream digunakan untuk membuat objek output file stream. Method is_open() digunakan untuk memverifikasi bahwa file berhasil dibuka sebelum menulis. Operator << bekerja sama persis seperti pada std::cout."
+  lang="id"
+/>
 
 ## Ringkasan
 

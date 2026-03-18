@@ -14,6 +14,7 @@ prerequisites: ["unit-3/07-project-pola-bintang"]
 difficulty: "beginner"
 tags: ["fungsi", "function", "void", "return", "DRY", "reusable-code"]
 ---
+import { Exercise } from '@/components/learn/Exercise'
 
 # Apa itu Fungsi?
 
@@ -376,32 +377,40 @@ Compiler mungkin tidak selalu memberi error kalau kamu lupa `return` di fungsi n
 
 ## Latihan
 
-**Latihan 1:** Buat fungsi `void cetakBintang(int jumlah)` yang mencetak bintang (`*`) sebanyak `jumlah` dalam satu baris. Lalu panggil fungsi tersebut dari `main` dengan jumlah 5, 10, dan 3.
 
-Contoh output:
-```
-*****
-**********
-***
-```
+<Exercise client:load
+  id="u4l1-ex1"
+  title="Manfaat Fungsi"
+  description="Apa keuntungan utama menggunakan fungsi dibanding menulis kode yang sama berulang kali?"
+  type="multiple-choice"
+  options={["Program menjadi lebih lambat karena ada pemanggilan fungsi", "Kode lebih terorganisir dan bisa digunakan ulang tanpa duplikasi", "Compiler membutuhkan lebih banyak memori untuk menyimpan fungsi", "Fungsi hanya berguna untuk program yang sangat besar"]}
+  correctIndex={1}
+  hints={["Ingat prinsip DRY — Don't Repeat Yourself", "Pikirkan: kalau kamu mau ganti garis pemisah di 10 tempat, apakah lebih mudah dengan atau tanpa fungsi?", "Fungsi ditulis sekali tapi bisa dipanggil berkali-kali"]}
+  explanation="Fungsi membuat kode lebih terorganisir, mudah dibaca, dan bisa digunakan ulang (reusable). Dengan fungsi, perubahan cukup dilakukan di satu tempat — tidak perlu edit di 10 tempat berbeda. Inilah inti dari prinsip DRY (Don't Repeat Yourself)."
+  lang="id"
+/>
 
-**Latihan 2:** Buat fungsi `int kuadrat(int angka)` yang mengembalikan nilai kuadrat dari angka. Gunakan fungsi tersebut untuk menampilkan kuadrat dari 1 sampai 5.
+<Exercise client:load
+  id="u4l1-ex2"
+  title="Panggil Fungsi cetakGaris"
+  description="Lengkapi program agar fungsi cetakGaris() dipanggil dua kali dan menghasilkan output yang benar."
+  type="code-output"
+  expectedOutput="================================
+================================"
+  starterCode={`#include <iostream>
 
-Contoh output:
-```
-1 kuadrat = 1
-2 kuadrat = 4
-3 kuadrat = 9
-4 kuadrat = 16
-5 kuadrat = 25
-```
+void cetakGaris() {
+    std::cout << "================================" << std::endl;
+}
 
-**Latihan 3:** Buat program dengan tiga fungsi:
-- `void cetakGaris()` — cetak garis `--------------------`
-- `void cetakJudul(std::string teks)` — cetak judul di antara dua garis
-- `int hitungTotal(int harga, int jumlah)` — return harga * jumlah
-
-Gunakan ketiga fungsi tersebut untuk menampilkan struk belanja sederhana.
+int main() {
+    // Panggil cetakGaris dua kali di sini
+    return 0;
+}`}
+  hints={["Panggil fungsi dengan menulis namanya diikuti tanda kurung dan titik koma", "cetakGaris();", "Tulis pemanggilan yang sama dua kali secara berurutan"]}
+  explanation="Fungsi dipanggil dengan menuliskan nama fungsi diikuti () dan titik koma: cetakGaris(); Karena dipanggil dua kali, output yang sama muncul dua baris. Ini menunjukkan kekuatan fungsi — tulis sekali, pakai berkali-kali."
+  lang="id"
+/>
 
 ## Ringkasan
 

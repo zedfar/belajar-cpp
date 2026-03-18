@@ -16,6 +16,8 @@ difficulty: "intermediate"
 tags: ["file-io", "ifstream", "getline", "fstream", "membaca-file"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Membaca File (File Input)
 
 Selama ini, setiap kali programmu selesai dijalankan, semua data **hilang begitu saja**. Variabel, array, vector — semuanya lenyap saat program ditutup. Jalankan program lagi, mulai dari nol. Frustasi, bukan?
@@ -683,6 +685,35 @@ std::ifstream file("data/siswa.csv");
 :::tip
 Path file bersifat **relatif terhadap lokasi eksekusi program**, bukan lokasi file `.cpp`. Pastikan kamu menjalankan program dari folder yang benar.
 :::
+
+<Exercise client:load
+  id="u6l3-ex1"
+  title="Header dan Class untuk File Input"
+  description="Kamu ingin membaca sebuah file teks di C++. Header apa yang harus di-include, dan class apa yang digunakan untuk membuka file tersebut?"
+  type="multiple-choice"
+  options={["#include &lt;iostream&gt; dan std::cin", "#include &lt;fstream&gt; dan std::ifstream", "#include &lt;fstream&gt; dan std::ofstream", "#include &lt;string&gt; dan std::getline"]}
+  correctIndex={1}
+  hints={["Header fstream menyediakan kemampuan file I/O", "ifstream = input file stream, untuk membaca file", "ofstream digunakan untuk menulis, bukan membaca"]}
+  explanation="Untuk membaca file di C++, kamu perlu #include &lt;fstream&gt; dan menggunakan std::ifstream (input file stream). ofstream adalah untuk menulis file, cin adalah untuk membaca dari keyboard."
+  lang="id"
+/>
+
+<Exercise client:load
+  id="u6l3-ex2"
+  title="Pola Membaca File Baris per Baris"
+  description="Lengkapi kode berikut untuk membaca file 'data.txt' baris per baris menggunakan getline."
+  type="fill-blank"
+  template={`std::ifstream file("data.txt");
+std::string baris;
+while ({{ BLANK }}(file, baris)) {
+    std::cout << baris << std::endl;
+}
+{{ BLANK }}.close();`}
+  blanks={["std::getline", "file"]}
+  hints={["Fungsi untuk membaca satu baris penuh dari stream adalah std::getline", "Setelah selesai membaca, objek ifstream harus ditutup dengan method close()", "Pola standar: while (std::getline(namaFile, variabelBaris))"]}
+  explanation="std::getline(file, baris) membaca satu baris dari file ke variabel baris, dan mengembalikan false saat mencapai akhir file sehingga loop berhenti otomatis. Setelah selesai, file.close() menutup file."
+  lang="id"
+/>
 
 ## Latihan
 

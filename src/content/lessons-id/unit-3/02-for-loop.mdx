@@ -14,6 +14,8 @@ difficulty: "beginner"
 tags: ["for", "loop", "perulangan", "iterasi", "range-based"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # For Loop
 
 Di pelajaran sebelumnya, kamu sudah belajar while loop. Sekarang bayangkan kamu mau mencetak angka 1 sampai 10. Dengan while loop, kamu perlu menulis inisialisasi, kondisi, dan update di tiga tempat berbeda. **For loop** menggabungkan ketiganya dalam satu baris yang rapi!
@@ -451,6 +453,30 @@ std::cout << "Nilai i sekarang: " << i;  // OK: i = 5
 :::tip
 Untuk Latihan 3, gunakan variabel `bool isPrima = true` dan set ke `false` kalau ditemukan pembagi. Loop dalam cukup mengecek dari 2 sampai `i / 2`.
 :::
+
+<Exercise client:load
+  id="u3l2-ex1"
+  title="Tiga Komponen For Loop"
+  description="Dalam sintaks `for (init; kondisi; update)`, bagian manakah yang dijalankan tepat sekali di awal sebelum loop mulai berjalan?"
+  type="multiple-choice"
+  options={["kondisi", "update", "init", "Ketiganya dijalankan sekali"]}
+  correctIndex={2}
+  hints={["Pikirkan urutan eksekusi saat for loop pertama kali dimasuki", "Kondisi dicek sebelum setiap iterasi termasuk yang pertama", "Update dijalankan setelah setiap iterasi selesai"]}
+  explanation="Bagian inisialisasi (init) hanya dijalankan satu kali di awal sebelum loop dimulai. Kondisi dicek sebelum setiap iterasi (termasuk yang pertama), dan update dijalankan setelah setiap iterasi selesai."
+  lang="id"
+/>
+
+<Exercise client:load
+  id="u3l2-ex2"
+  title="Output For Loop dengan Step 3"
+  description="Apa output dari program berikut? `for (int i = 0; i &lt;= 9; i += 3) { std::cout &lt;&lt; i &lt;&lt; ' '; }`"
+  type="multiple-choice"
+  options={["0 3 6 9", "0 3 6", "3 6 9", "0 1 2 3 4 5 6 7 8 9"]}
+  correctIndex={0}
+  hints={["Loop mulai dari i=0 dengan step +3 setiap iterasi", "Cek kapan kondisi i <= 9 menjadi false", "Setelah i=9, nilai berikutnya adalah i=12 yang sudah > 9"]}
+  explanation="Loop dimulai dari i=0 dengan kondisi i <= 9 dan step i += 3. Nilai i yang muncul: 0 (0<=9 true), 3 (3<=9 true), 6 (6<=9 true), 9 (9<=9 true), 12 (12<=9 false, berhenti). Output: '0 3 6 9 '."
+  lang="id"
+/>
 
 ## Ringkasan
 

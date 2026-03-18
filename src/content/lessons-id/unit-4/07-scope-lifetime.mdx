@@ -14,6 +14,7 @@ prerequisites: ["unit-4/06-overloading"]
 difficulty: "beginner"
 tags: ["scope", "lifetime", "variabel-lokal", "variabel-global", "static", "shadowing"]
 ---
+import { Exercise } from '@/components/learn/Exercise'
 
 # Scope & Lifetime
 
@@ -430,44 +431,44 @@ int main() {
 
 ## Latihan
 
-**Latihan 1:** Apa output dari kode ini? Jawab tanpa menjalankan program, lalu verifikasi:
 
-```cpp
-#include <iostream>
+<Exercise client:load
+  id="u4l7-ex1"
+  title="Name Shadowing"
+  description="Apa yang dicetak oleh program berikut? int x = 100; void fungsi() { int x = 50; std::cout &lt;&lt; x &lt;&lt; std::endl; } — saat fungsi() dipanggil dari main."
+  type="multiple-choice"
+  options={["100, karena variabel global diakses", "50, karena variabel lokal menutupi variabel global", "Error kompilasi karena nama variabel sama", "Hasilnya tidak terdefinisi"]}
+  correctIndex={1}
+  hints={["Name shadowing: variabel yang lebih dekat selalu menang", "Di dalam fungsi(), ada deklarasi int x = 50; yang bersifat lokal", "Variabel lokal menutupi (shadow) variabel global dengan nama sama"]}
+  explanation="Ini adalah name shadowing. Di dalam fungsi(), deklarasi int x = 50 membuat variabel lokal x yang menutupi variabel global x = 100. Saat std::cout << x dieksekusi di dalam fungsi, variabel lokal yang digunakan, sehingga mencetak 50. Variabel global tetap 100 dan tidak terpengaruh."
+  lang="id"
+/>
+
+<Exercise client:load
+  id="u4l7-ex2"
+  title="Static Local Variable"
+  description="Lengkapi program agar fungsi hitungPanggilan menggunakan static variable untuk menghitung berapa kali dipanggil."
+  type="code-output"
+  expectedOutput="Dipanggil: 1
+Dipanggil: 2
+Dipanggil: 3"
+  starterCode={`#include <iostream>
+
+void hitungPanggilan() {
+    static int counter = 0;
+    counter++;
+    std::cout << "Dipanggil: " << counter << std::endl;
+}
 
 int main() {
-    int x = 1;
-    {
-        int x = 2;
-        {
-            int x = 3;
-            std::cout << x << std::endl;
-        }
-        std::cout << x << std::endl;
-    }
-    std::cout << x << std::endl;
+    hitungPanggilan();
+    hitungPanggilan();
+    hitungPanggilan();
     return 0;
-}
-```
-
-**Latihan 2:** Buat fungsi `void cetakPesan()` yang menggunakan `static` variable untuk mencetak pesan berbeda setiap kali dipanggil: "Pertama", "Kedua", "Ketiga", dan setelahnya selalu "Lanjutan".
-
-**Latihan 3:** Ubah kode berikut agar TIDAK menggunakan global variable (pakai parameter dan return value):
-
-```cpp
-int total = 0;
-int jumlah_data = 0;
-
-void tambahData(int nilai) {
-    total += nilai;
-    jumlah_data++;
-}
-
-double rataRata() {
-    return (double)total / jumlah_data;
-}
-```
-
-**Latihan 4:** Buat fungsi `int generateNomorUrut()` yang setiap dipanggil mengembalikan nomor urut berikutnya (1, 2, 3, ...). Gunakan `static` variable.
+}`}
+  hints={["static int counter = 0 hanya diinisialisasi sekali", "Setiap kali fungsi dipanggil, counter bertambah 1", "Nilai counter bertahan di antara pemanggilan karena keyword static"]}
+  explanation="Variabel static local counter diinisialisasi hanya sekali (nilai 0) saat fungsi pertama kali dipanggil. Pada pemanggilan berikutnya, baris static int counter = 0 dilewati dan counter menggunakan nilai terakhirnya. Hasilnya counter bertambah terus: 1, 2, 3."
+  lang="id"
+/>
 
 Bagus! Kamu sudah memahami scope dan lifetime. Sekarang saatnya menggabungkan SEMUA yang sudah dipelajari di Unit 4 dalam sebuah project seru — **Game Batu Gunting Kertas**!

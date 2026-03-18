@@ -15,6 +15,8 @@ difficulty: "beginner"
 tags: ["array", "indexing", "data", "koleksi", "sizeof"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Array Dasar
 
 Sampai sekarang, setiap kali kamu mau menyimpan data, kamu bikin satu variabel. Mau simpan 5 nilai ujian? Bikin 5 variabel: `nilai1`, `nilai2`, `nilai3`... Capek, kan? Bagaimana kalau ada 100 siswa? Masa bikin 100 variabel?
@@ -392,6 +394,36 @@ int arr[5] = {1, 2, 3, 4, 5};  // Pas 5 elemen
 :::tip
 Untuk Latihan 2, jangan lupa validasi input user! Kalau user memasukkan nomor di luar jangkauan 1-5, tampilkan pesan error. Ingat, user memasukkan nomor 1-5 tapi array index-nya 0-4.
 :::
+
+<Exercise client:load
+  id="u5l1-ex1"
+  title="Index Array"
+  description="Diberikan array: int nilai[5] = {85, 90, 78, 92, 88}. Apa nilai dari nilai[2]?"
+  type="multiple-choice"
+  options={["85", "90", "78", "92"]}
+  correctIndex={2}
+  hints={["Index array dimulai dari 0, bukan 1", "nilai[0]=85, nilai[1]=90, nilai[2]=?", "Hitung mundur dari awal: indeks 0 adalah elemen pertama"]}
+  explanation="Index array dimulai dari 0. nilai[0]=85, nilai[1]=90, nilai[2]=78. Jadi nilai[2] adalah 78."
+  lang="id"
+/>
+
+<Exercise client:load
+  id="u5l1-ex2"
+  title="Akses Elemen Array"
+  description="Lengkapi program berikut agar mencetak elemen pertama dari array suhu. Output harus: 30"
+  type="code-output"
+  expectedOutput="30"
+  starterCode={`#include <iostream>
+
+int main() {
+    int suhu[5] = {30, 32, 28, 35, 31};
+    // Cetak elemen pertama array
+    return 0;
+}`}
+  hints={["Elemen pertama ada di index 0", "Gunakan std::cout << suhu[0]", "Ingat: index array dimulai dari 0, bukan 1"]}
+  explanation="suhu[0] mengakses elemen pertama array, yaitu 30. Index 0 selalu menunjuk ke elemen pertama dalam array C++."
+  lang="id"
+/>
 
 ## Ringkasan
 

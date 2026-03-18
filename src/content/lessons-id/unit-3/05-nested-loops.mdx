@@ -14,6 +14,8 @@ difficulty: "beginner"
 tags: ["nested-loops", "loop-bersarang", "grid", "tabel", "perulangan"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Nested Loops (Loop Bersarang)
 
 Bayangkan kamu lagi mengisi absen kelas. Kamu buka setiap baris (setiap murid), lalu di setiap baris itu kamu isi kolom-kolom: nama, tanggal lahir, alamat... Itu **loop di dalam loop** — atau istilah kerennya, **nested loop**!
@@ -337,6 +339,30 @@ for (int i = 0; i < 10 && !selesai; i++) {
 }
 ```
 :::
+
+<Exercise client:load
+  id="u3l5-ex1"
+  title="Jumlah Eksekusi Inner Loop"
+  description="Jika outer loop berjalan 4 kali dan inner loop berjalan 3 kali per iterasi outer, berapa total kali badan inner loop dieksekusi?"
+  type="multiple-choice"
+  options={["4 kali", "3 kali", "12 kali", "7 kali"]}
+  correctIndex={2}
+  hints={["Untuk setiap satu iterasi outer loop, inner loop jalan berapa kali?", "Total = jumlah iterasi outer dikali jumlah iterasi inner", "Ini disebut kompleksitas O(n*m) atau O(n^2) jika keduanya sama"]}
+  explanation="Setiap kali outer loop berjalan satu iterasi, inner loop menjalankan seluruh iterasinya (3 kali). Karena outer loop berjalan 4 kali, total eksekusi inner loop adalah 4 x 3 = 12 kali."
+  lang="id"
+/>
+
+<Exercise client:load
+  id="u3l5-ex2"
+  title="Trace Nested Loop Koordinat"
+  description="Pada nested loop dengan outer i=1..2 dan inner j=1..2, pasangan (i,j) mana yang dicetak tepat setelah (1,2)?"
+  type="multiple-choice"
+  options={["(1,3) — j naik terus", "(2,1) — i naik dan j reset ke 1", "(2,3) — keduanya naik", "(1,1) — loop mengulang dari awal"]}
+  correctIndex={1}
+  hints={["Setelah inner loop selesai (j sudah mencapai batas), outer loop maju satu langkah", "Ketika outer loop maju ke i=2, inner loop mulai dari awal lagi (j=1)", "Ini adalah kunci nested loop: inner loop selalu reset setiap kali outer loop maju"]}
+  explanation="Setelah (1,2), inner loop (j) sudah mencapai batasnya (j<=2). Maka outer loop maju ke i=2, dan inner loop mulai ulang dari j=1. Sehingga pasangan berikutnya adalah (2,1). Inner loop selalu reset ke nilai awal setiap kali outer loop maju satu iterasi."
+  lang="id"
+/>
 
 ## Ringkasan
 

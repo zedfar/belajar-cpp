@@ -14,6 +14,8 @@ difficulty: "beginner"
 tags: ["while", "loop", "perulangan", "iterasi", "counter"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # While Loop
 
 Bayangkan kamu diminta menulis program yang mencetak "Halo!" sebanyak 1000 kali. Masa kamu harus menulis `std::cout << "Halo!"` seribu baris? Tentu tidak! Di sinilah **loop** (perulangan) hadir untuk menyelamatkanmu.
@@ -384,6 +386,41 @@ while (i <= 5) {
 :::tip
 Untuk Latihan 3, mulai dengan variabel `hasil = 1`, lalu kalikan dengan angka yang terus berkurang. Ingat: 0! = 1 (kasus khusus).
 :::
+
+<Exercise client:load
+  id="u3l1-ex1"
+  title="Kapan While Loop Berhenti?"
+  description="Perhatikan kode berikut: `int i = 1; while (i &lt;= 4) { i++; }`. Berapa nilai `i` setelah loop selesai?"
+  type="multiple-choice"
+  options={["4", "5", "3", "Loop tidak pernah berhenti"]}
+  correctIndex={1}
+  hints={["Perhatikan nilai awal i dan kondisi berhenti", "Setiap iterasi i bertambah 1", "Loop berhenti saat kondisi i <= 4 menjadi false"]}
+  explanation="Loop berjalan selama i <= 4. Iterasi berlangsung saat i=1, 2, 3, 4. Setelah iterasi keempat, i menjadi 5 dan kondisi 5 <= 4 menjadi false sehingga loop berhenti. Nilai i setelah loop adalah 5."
+  lang="id"
+/>
+
+<Exercise client:load
+  id="u3l1-ex2"
+  title="Hitung Mundur dengan While"
+  description="Program berikut dimaksudkan untuk mencetak hitung mundur 3, 2, 1 tiap angka di baris baru. Lengkapi bagian yang belum ada agar output persis: 3 lalu 2 lalu 1."
+  type="code-output"
+  expectedOutput="3
+2
+1"
+  starterCode={`#include <iostream>
+
+int main() {
+    int n = 3;
+    while (n > 0) {
+        std::cout << n << std::endl;
+        n--;
+    }
+    return 0;
+}`}
+  hints={["std::cout << n << std::endl; mencetak n lalu pindah baris", "n-- mengurangi n sebesar 1 setiap iterasi", "Loop berjalan selama n > 0, sehingga mencetak 3, 2, 1"]}
+  explanation="Setiap iterasi mencetak nilai n lalu n dikurangi 1. Loop berjalan selama n > 0: iterasi pertama n=3, kedua n=2, ketiga n=1. Saat n menjadi 0, kondisi while menjadi false dan loop berhenti."
+  lang="id"
+/>
 
 ## Ringkasan
 

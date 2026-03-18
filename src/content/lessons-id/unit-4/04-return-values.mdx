@@ -14,6 +14,7 @@ prerequisites: ["unit-4/03-parameter-argumen"]
 difficulty: "beginner"
 tags: ["return", "return-value", "predikat", "early-return", "rekursi", "recursion"]
 ---
+import { Exercise } from '@/components/learn/Exercise'
 
 # Return Values
 
@@ -584,22 +585,41 @@ Compiler C++ biasanya memberi warning kalau ada jalur kode di fungsi non-void ya
 
 ## Latihan
 
-**Latihan 1:** Buat fungsi `int getMax(int a, int b)` dan `int getMin(int a, int b)`, lalu buat fungsi `int getRange(int a, int b, int c)` yang mengembalikan selisih antara nilai terbesar dan terkecil dari tiga angka. Contoh: `getRange(3, 9, 1)` mengembalikan `8` (karena 9 - 1 = 8).
 
-**Latihan 2:** Buat tiga fungsi predikat:
-- `bool isDivisibleBy(int angka, int pembagi)` — cek apakah `angka` habis dibagi `pembagi`
-- `bool isVowel(char huruf)` — cek apakah huruf adalah vokal (a, i, u, e, o)
-- `bool isInRange(int angka, int min, int max)` — cek apakah `angka` berada di antara `min` dan `max` (inklusif)
+<Exercise client:load
+  id="u4l4-ex1"
+  title="Fungsi Predikat"
+  description="Fungsi yang mengembalikan bool disebut fungsi predikat. Apa output dari kode berikut? bool isPositive(int n) { return n &gt; 0; } std::cout &lt;&lt; isPositive(10) &lt;&lt; std::endl;"
+  type="multiple-choice"
+  options={["true", "false", "1", "0"]}
+  correctIndex={2}
+  hints={["C++ mencetak bool sebagai 1 (true) atau 0 (false) secara default", "10 > 0 bernilai true", "true dicetak sebagai angka 1"]}
+  explanation="Fungsi isPositive(10) mengembalikan true karena 10 > 0. Namun, std::cout mencetak nilai bool sebagai angka secara default: true menjadi 1, false menjadi 0. Jadi outputnya adalah 1."
+  lang="id"
+/>
 
-Panggil ketiga fungsi dengan beberapa contoh dan tampilkan hasilnya.
+<Exercise client:load
+  id="u4l4-ex2"
+  title="Gunakan Return Value"
+  description="Lengkapi program agar mencetak kuadrat dari angka 7."
+  type="code-output"
+  expectedOutput="Kuadrat 7 = 49"
+  starterCode={`#include <iostream>
 
-**Latihan 3:** Buat program "Kalkulator Nilai Sekolah" dengan fungsi-fungsi:
-- `double hitungRataRata(int n1, int n2, int n3)` — rata-rata 3 nilai
-- `std::string tentukanGrade(double rataRata)` — konversi ke grade
-- `bool adalahLulus(double rataRata, double kkm)` — cek kelulusan
-- `void cetakRapor(std::string nama, int n1, int n2, int n3)` — cetak rapor lengkap
+int kuadrat(int n) {
+    return n * n;
+}
 
-Gunakan semua fungsi untuk mencetak rapor 2-3 siswa.
+int main() {
+    // Simpan return value ke variabel hasil, lalu cetak
+    int hasil = kuadrat(7);
+    std::cout << "Kuadrat 7 = " << hasil << std::endl;
+    return 0;
+}`}
+  hints={["Fungsi kuadrat sudah ada, tinggal simpan return value-nya", "int hasil = kuadrat(7);", "7 * 7 = 49"]}
+  explanation="Fungsi kuadrat(7) mengembalikan 7 * 7 = 49. Return value disimpan di variabel hasil, lalu dicetak. Ini adalah cara paling umum menggunakan return value: simpan di variabel dulu, lalu gunakan."
+  lang="id"
+/>
 
 ## Ringkasan
 

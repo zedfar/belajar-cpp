@@ -17,6 +17,8 @@ difficulty: "intermediate"
 tags: ["sorting", "searching", "linear-search", "binary-search", "bubble-sort", "selection-sort", "algorithm"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Sorting & Searching
 
 Bayangkan kamu punya daftar nilai 100 siswa dan perlu mencari siapa yang dapat nilai tertinggi, atau mengurutkan dari yang terbaik ke terburuk untuk ranking. Inilah dua operasi paling fundamental dalam pemrograman: **searching** (mencari data) dan **sorting** (mengurutkan data).
@@ -658,3 +660,44 @@ Untuk tugas sekolah dan kompetisi: **pahami** bubble sort dan selection sort unt
 **Latihan 4:** Buat comparator untuk `std::sort()` yang mengurutkan string berdasarkan huruf terakhirnya. Jika huruf terakhir sama, urutkan secara alfabetis.
 
 **Latihan 5:** Implementasikan selection sort versi **descending** (besar ke kecil) — cari **maksimum** dan taruh di depan, bukan minimum.
+
+<Exercise client:load
+  id="u5l6-ex1"
+  title="Linear vs Binary Search"
+  description="Manakah pernyataan yang BENAR tentang binary search?"
+  type="multiple-choice"
+  options={["Binary search bisa dipakai pada data yang belum terurut", "Binary search selalu lebih lambat dari linear search", "Binary search memerlukan data yang sudah terurut terlebih dahulu", "Binary search hanya bekerja pada array of int"]}
+  correctIndex={2}
+  hints={["Binary search membandingkan dengan elemen tengah dan membuang setengah data", "Apa syarat utama untuk bisa menerapkan binary search?", "Tanpa urutan yang jelas, kita tidak tahu harus ke kiri atau ke kanan"]}
+  explanation="Binary search memerlukan data yang sudah terurut karena algoritma ini bekerja dengan membagi data menjadi dua dan menentukan target ada di bagian kiri atau kanan. Tanpa urutan yang konsisten, perbandingan ini tidak bermakna."
+  lang="id"
+/>
+
+<Exercise client:load
+  id="u5l6-ex2"
+  title="Bubble Sort Output"
+  description="Program berikut menjalankan satu pass bubble sort pada array {5, 3, 8, 1}. Cetak hasil akhir setelah satu pass lengkap. Output harus: 3 5 1 8"
+  type="code-output"
+  expectedOutput="3 5 1 8"
+  starterCode={`#include <iostream>
+#include <vector>
+
+int main() {
+    std::vector<int> data = {5, 3, 8, 1};
+    int n = data.size();
+    // Lakukan satu pass bubble sort
+    for (int j = 0; j < n - 1; j++) {
+        if (data[j] > data[j + 1]) {
+            int temp = data[j];
+            data[j] = data[j + 1];
+            data[j + 1] = temp;
+        }
+    }
+    for (int x : data) std::cout << x << " ";
+    std::cout << std::endl;
+    return 0;
+}`}
+  hints={["Satu pass bubble sort membandingkan setiap pasang elemen bersebelahan", "5>3 → tukar jadi {3,5,8,1}, lalu 5 vs 8 tidak tukar, lalu 8>1 → tukar", "Elemen terbesar 'menggelembung' ke akhir setelah satu pass"]  }
+  explanation="Satu pass bubble sort pada {5,3,8,1}: pertama 5>3 ditukar jadi {3,5,8,1}, lalu 5&lt;8 tidak ditukar, lalu 8>1 ditukar jadi {3,5,1,8}. Output: '3 5 1 8 '."
+  lang="id"
+/>

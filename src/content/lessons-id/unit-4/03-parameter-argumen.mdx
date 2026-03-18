@@ -14,6 +14,7 @@ prerequisites: ["unit-4/02-membuat-fungsi"]
 difficulty: "beginner"
 tags: ["parameter", "argumen", "argument", "default-parameter", "pass-by-value", "overloading"]
 ---
+import { Exercise } from '@/components/learn/Exercise'
 
 # Parameter & Argumen
 
@@ -468,21 +469,41 @@ void sapa(std::string nama) {
 
 ## Latihan
 
-**Latihan 1:** Buat fungsi `double hitungDiskon(double harga, double persen = 10)` yang mengembalikan harga setelah diskon. Panggil dengan:
-- `hitungDiskon(50000)` — diskon default 10%
-- `hitungDiskon(50000, 25)` — diskon 25%
-- `hitungDiskon(200000, 50)` — diskon 50%
 
-**Latihan 2:** Buat program dengan fungsi-fungsi berikut:
-- `double hitungLuasSegitiga(double alas, double tinggi)`
-- `double hitungLuasTrapesium(double sisiAtas, double sisiBawah, double tinggi)`
-- `void cetakBangunDatar(std::string nama, double luas)`
+<Exercise client:load
+  id="u4l3-ex1"
+  title="Parameter vs Argumen"
+  description="Pada kode berikut: void sapa(std::string nama) { ... } — dan pemanggilan sapa('Andi'); — manakah yang disebut parameter dan mana yang disebut argumen?"
+  type="multiple-choice"
+  options={["nama adalah argumen, 'Andi' adalah parameter", "nama adalah parameter, 'Andi' adalah argumen", "Keduanya adalah parameter", "Keduanya adalah argumen"]}
+  correctIndex={1}
+  hints={["Parameter ada di definisi fungsi", "Argumen ada saat pemanggilan fungsi", "P = Parameter = Pembuatan fungsi. A = Argumen = Aksi pemanggilan"]}
+  explanation="Parameter (nama) adalah variabel placeholder yang ditulis saat membuat fungsi di definisinya. Argumen ('Andi') adalah nilai aktual yang diberikan saat fungsi dipanggil. Cara mudah mengingatnya: Parameter ada di Pembuatan, Argumen ada di Aksi pemanggilan."
+  lang="id"
+/>
 
-Panggil masing-masing fungsi dan tampilkan hasilnya dengan format yang rapi.
+<Exercise client:load
+  id="u4l3-ex2"
+  title="Default Parameter"
+  description="Lengkapi program agar menggunakan default parameter dan mencetak output yang benar."
+  type="code-output"
+  expectedOutput="Halo, Teman! Selamat datang!"
+  starterCode={`#include <iostream>
+#include <string>
 
-**Latihan 3:** Buat fungsi `void cetakTabel(int mulai, int selesai, int kelipatan = 1)` yang mencetak bilangan dari `mulai` sampai `selesai` dengan jarak `kelipatan`. Contoh:
-- `cetakTabel(1, 10)` mencetak: 1 2 3 4 5 6 7 8 9 10
-- `cetakTabel(0, 20, 5)` mencetak: 0 5 10 15 20
+void sapa(std::string nama = "Teman") {
+    std::cout << "Halo, " << nama << "! Selamat datang!" << std::endl;
+}
+
+int main() {
+    // Panggil sapa() tanpa argumen untuk menggunakan default
+    sapa();
+    return 0;
+}`}
+  hints={["Panggil sapa() tanpa memberikan argumen apapun", "Kalau tidak ada argumen, nilai default 'Teman' akan digunakan", "sapa(); — cukup tanda kurung kosong"]}
+  explanation="Ketika fungsi sapa() dipanggil tanpa argumen, C++ menggunakan nilai default yang sudah ditentukan di definisi fungsi, yaitu 'Teman'. Hasilnya: 'Halo, Teman! Selamat datang!'"
+  lang="id"
+/>
 
 ## Ringkasan
 

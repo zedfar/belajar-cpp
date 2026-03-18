@@ -17,6 +17,8 @@ difficulty: "beginner"
 tags: ["string", "array-karakter", "method-string", "iterasi", "getline", "palindrom"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # String sebagai Array Karakter
 
 Kamu sudah kenal `std::string` sejak Unit 1 untuk menyimpan teks. Tapi tahukah kamu bahwa di balik layar, string sebenarnya adalah **kumpulan (array) karakter**? Setiap huruf, angka, spasi, bahkan tanda baca dalam string punya **posisi (indeks)** masing-masing.
@@ -584,3 +586,34 @@ Tanpa `cin.ignore()`, `getline()` akan langsung membaca newline kosong dan nama 
 **Latihan 4:** Buat program yang menyimpan 5 nama teman dalam `std::vector<std::string>`, lalu tampilkan semua nama yang panjangnya lebih dari 4 huruf.
 
 **Latihan 5:** Buat program **password strength checker** yang mengecek apakah password memenuhi syarat: minimal 8 karakter, mengandung huruf besar, huruf kecil, dan angka. Gunakan `std::isdigit()`, `std::isupper()`, `std::islower()` dari `<cctype>`.
+
+<Exercise client:load
+  id="u5l5-ex1"
+  title="Akses Karakter String"
+  description="Diberikan std::string nama = 'Budi'. Apa output dari: std::cout &lt;&lt; nama[0] &lt;&lt; nama[3];"
+  type="multiple-choice"
+  options={["Bu", "Bi", "ud", "di"]}
+  correctIndex={1}
+  hints={["Index string dimulai dari 0", "nama[0] adalah karakter pertama string 'Budi'", "nama[3] adalah karakter keempat (index 3) string 'Budi'"]}
+  explanation="String 'Budi' memiliki karakter di index: [0]='B', [1]='u', [2]='d', [3]='i'. Jadi nama[0] adalah 'B' dan nama[3] adalah 'i', sehingga outputnya adalah 'Bi'."
+  lang="id"
+/>
+
+<Exercise client:load
+  id="u5l5-ex2"
+  title="length() dan Iterasi String"
+  description="Lengkapi program berikut agar mencetak panjang string 'Halo'. Output harus: 4"
+  type="code-output"
+  expectedOutput="4"
+  starterCode={`#include <iostream>
+#include <string>
+
+int main() {
+    std::string kata = "Halo";
+    // Cetak panjang string kata
+    return 0;
+}`}
+  hints={["Gunakan method length() pada string", "std::cout << kata.length()", "length() mengembalikan jumlah karakter dalam string"]}
+  explanation="kata.length() mengembalikan jumlah karakter dalam string. String 'Halo' terdiri dari 4 karakter (H, a, l, o), sehingga outputnya adalah 4."
+  lang="id"
+/>

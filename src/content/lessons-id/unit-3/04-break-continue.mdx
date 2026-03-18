@@ -14,6 +14,8 @@ difficulty: "beginner"
 tags: ["break", "continue", "loop-control", "nested-loop", "perulangan"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Break & Continue
 
 Kamu sudah bisa membuat loop yang berjalan dari awal sampai akhir. Tapi kadang, kamu butuh kontrol lebih:
@@ -478,6 +480,30 @@ if (x > 3) {
 :::tip
 Untuk Latihan 1, kamu bisa menggunakan `while (true)` dengan `break` ketika user memasukkan 0. Inisialisasikan angka terbesar dengan nilai sangat kecil dan terkecil dengan nilai sangat besar.
 :::
+
+<Exercise client:load
+  id="u3l4-ex1"
+  title="Efek Break pada Nested Loop"
+  description="Perhatikan kode ini: loop luar berjalan i=1 sampai 3, loop dalam berjalan j=1 sampai 5, dengan break saat j==3. Berapa total baris output yang dicetak oleh loop luar (berapa kali outer loop selesai penuh)?"
+  type="multiple-choice"
+  options={["Break menghentikan semua loop, jadi 0 baris", "Loop luar tetap jalan 3 kali karena break hanya keluar dari inner loop", "Loop luar jalan 1 kali lalu berhenti", "Loop luar jalan 5 kali"]}
+  correctIndex={1}
+  hints={["Break hanya menghentikan loop yang paling dalam (terdalam)", "Setelah inner loop dihentikan, outer loop melanjutkan iterasinya", "Coba trace: setelah break di j=3, nilai i berikutnya adalah apa?"]}
+  explanation="Break hanya menghentikan loop terdalam tempat ia berada — yaitu inner loop (j). Setelah inner loop berhenti di j=3, outer loop (i) tetap melanjutkan ke iterasi berikutnya. Hasilnya outer loop tetap berjalan 3 kali penuh."
+  lang="id"
+/>
+
+<Exercise client:load
+  id="u3l4-ex2"
+  title="Output Continue di For Loop"
+  description="Apa output dari kode berikut? `for (int i = 1; i &lt;= 5; i++) { if (i == 3) continue; std::cout &lt;&lt; i &lt;&lt; ' '; }`"
+  type="multiple-choice"
+  options={["1 2 3 4 5", "1 2 4 5", "3", "1 2"]}
+  correctIndex={1}
+  hints={["continue melewati sisa iterasi saat ini dan lanjut ke iterasi berikutnya", "Saat i==3, cout dilewati tapi i++ tetap dijalankan", "Angka 3 tidak dicetak, angka lainnya dicetak normal"]}
+  explanation="Saat i==3, statement continue dieksekusi sehingga std::cout dilewati untuk iterasi itu. Namun bagian update i++ pada for loop tetap berjalan, jadi i menjadi 4 dan loop lanjut normal. Output: '1 2 4 5 ' (angka 3 di-skip)."
+  lang="id"
+/>
 
 ## Ringkasan
 

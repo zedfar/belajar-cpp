@@ -15,6 +15,8 @@ difficulty: "beginner"
 tags: ["enum", "enum-class", "typedef", "using", "type-alias"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Enum & Type Alias
 
 Pernahkah kamu menulis kode seperti ini?
@@ -455,6 +457,40 @@ Bergerak ke Selatan 1 langkah -> (5, 2)
 | `static_cast<int>` | Konversi enum ke int | `static_cast<int>(Hari::Senin)` |
 | `using` | Type alias modern | `using Skor = double;` |
 | `typedef` | Type alias lama | `typedef double Skor;` |
+
+<Exercise client:load
+  id="u6l5-ex1"
+  title="Sintaks Akses Nilai Enum Class"
+  description="Kamu mendeklarasikan enum class StatusPesanan dengan nilai Pending, Diproses, Selesai. Bagaimana cara yang benar untuk membuat variabel StatusPesanan dengan nilai Selesai?"
+  type="multiple-choice"
+  options={["StatusPesanan status = Selesai;", "StatusPesanan status = StatusPesanan.Selesai;", "StatusPesanan status = StatusPesanan::Selesai;", "status = StatusPesanan(Selesai);"]}
+  correctIndex={2}
+  hints={["enum class bersifat scoped — nilai enum terisolasi di dalam scope namanya", "Sintaks untuk mengakses nilai enum class menggunakan :: (scope resolution operator)", "Berbeda dengan enum biasa, enum class tidak 'bocor' ke scope luar"]}
+  explanation="Nilai enum class diakses dengan operator :: (scope resolution). Jadi sintaksnya adalah NamaEnum::NilaiEnum. Ini memastikan tidak ada konflik nama antar enum yang berbeda."
+  lang="id"
+/>
+
+<Exercise client:load
+  id="u6l5-ex2"
+  title="Enum dengan Switch-Case"
+  description="Lengkapi fungsi getLabel di bawah agar mengembalikan label teks yang sesuai untuk setiap nilai enum class Arah."
+  type="fill-blank"
+  template={`enum class Arah { Utara, Selatan, Timur, Barat };
+
+std::string getLabel(Arah a) {
+    {{ BLANK }} (a) {
+        case Arah::Utara:   return "Utara";
+        case Arah::Selatan: return "Selatan";
+        case Arah::Timur:   return "Timur";
+        case Arah::{{ BLANK }}: return "Barat";
+        default:            return "Tidak diketahui";
+    }
+}`}
+  blanks={["switch", "Barat"]}
+  hints={["Enum dan switch-case adalah pasangan yang sempurna", "Setiap case menggunakan format NamaEnum::NilaiEnum", "Jangan lupa default case untuk nilai yang tidak terduga"]}
+  explanation="switch digunakan untuk memilih case berdasarkan nilai enum. Setiap case harus menggunakan sintaks NamaEnum::NilaiEnum (misalnya Arah::Barat) karena enum class bersifat scoped."
+  lang="id"
+/>
 
 ## Latihan
 

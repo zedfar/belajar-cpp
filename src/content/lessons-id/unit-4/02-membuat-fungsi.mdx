@@ -13,6 +13,7 @@ prerequisites: ["unit-4/01-apa-itu-fungsi"]
 difficulty: "beginner"
 tags: ["fungsi", "function", "prototype", "forward-declaration", "return-type", "single-responsibility"]
 ---
+import { Exercise } from '@/components/learn/Exercise'
 
 # Membuat Fungsi
 
@@ -598,21 +599,40 @@ cetakMenu();
 
 ## Latihan
 
-**Latihan 1:** Buat fungsi `double hitungBMI(double beratKg, double tinggiM)` yang menghitung Body Mass Index dengan rumus: berat / (tinggi * tinggi). Panggil fungsi ini dengan beberapa contoh data dan tampilkan hasilnya.
 
-**Latihan 2:** Buat program dengan prototype di atas `main` dan definisi di bawah `main` yang memiliki fungsi-fungsi berikut:
-- `int luasPersegiPanjang(int panjang, int lebar)`
-- `int kelilingPersegiPanjang(int panjang, int lebar)`
-- `void cetakInfo(int panjang, int lebar)`
+<Exercise client:load
+  id="u4l2-ex1"
+  title="Return Type bool"
+  description="Perhatikan fungsi ini: bool adalahGenap(int angka) { return angka % 2 == 0; } Apa yang dicetak oleh std::cout &lt;&lt; adalahGenap(4) &lt;&lt; std::endl; ?"
+  type="multiple-choice"
+  options={["true", "false", "1", "0"]}
+  correctIndex={2}
+  hints={["C++ mencetak bool sebagai angka secara default", "true dicetak sebagai 1, false dicetak sebagai 0", "4 % 2 == 0 bernilai true, dan true dicetak sebagai 1"]}
+  explanation="Dalam C++, std::cout mencetak nilai bool sebagai angka secara default: true dicetak sebagai 1 dan false dicetak sebagai 0. Karena 4 adalah genap (4 % 2 == 0 adalah true), fungsi mengembalikan true, dan std::cout mencetak 1."
+  lang="id"
+/>
 
-Fungsi `cetakInfo` harus memanggil kedua fungsi lainnya dan menampilkan hasilnya.
+<Exercise client:load
+  id="u4l2-ex2"
+  title="Fungsi Keliling Persegi"
+  description="Lengkapi fungsi hitungKelilingPersegi agar mencetak output yang benar."
+  type="code-output"
+  expectedOutput="Keliling persegi sisi 5: 20"
+  starterCode={`#include <iostream>
 
-**Latihan 3:** Buat program "Konverter Suhu" dengan fungsi-fungsi:
-- `double celsiusKeFahrenheit(double c)`
-- `double celsiusKeKelvin(double c)`
-- `void cetakSemuaKonversi(double celsius)`
+int hitungKelilingPersegi(int sisi) {
+    // Rumus keliling persegi: sisi * 4
+    return sisi * 4;
+}
 
-Panggil `cetakSemuaKonversi` untuk suhu 0, 37, dan 100 derajat Celsius.
+int main() {
+    std::cout << "Keliling persegi sisi 5: " << hitungKelilingPersegi(5) << std::endl;
+    return 0;
+}`}
+  hints={["Keliling persegi = sisi x 4", "Fungsi sudah ditulis dengan benar, coba jalankan", "5 * 4 = 20"]}
+  explanation="Fungsi hitungKelilingPersegi menerima sisi sebagai parameter dan mengembalikan sisi * 4. Saat dipanggil dengan argumen 5, fungsi mengembalikan 20, dan hasilnya langsung ditampilkan di cout."
+  lang="id"
+/>
 
 ## Ringkasan
 

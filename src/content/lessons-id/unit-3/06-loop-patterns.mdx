@@ -14,6 +14,8 @@ difficulty: "beginner"
 tags: ["pola", "pattern", "nested-loops", "ascii-art", "bintang"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Loop Patterns (Pola dengan Loop)
 
 Ini dia lesson yang paling FUN di Unit 3! Kita akan "menggambar" dengan kode — membuat berbagai pola ASCII menggunakan nested loops. Ini bukan cuma latihan biasa, ini seni!
@@ -379,6 +381,30 @@ int main() {
 ```
 
 Piramida angka! Di sini kita pakai **tiga inner loop** dalam satu baris: spasi, angka naik, angka turun. Kelihatan rumit, tapi kalau dipecah per bagian, setiap loop sederhana.
+
+<Exercise client:load
+  id="u3l6-ex1"
+  title="Rumus Bintang per Baris"
+  description="Untuk mencetak pola segitiga ke atas dengan tinggi 5 (baris 1 punya 1 bintang, baris 5 punya 5 bintang), batas inner loop yang benar untuk baris ke-i adalah?"
+  type="multiple-choice"
+  options={["j <= tinggi - i", "j <= i", "j <= tinggi", "j <= 2 * i - 1"]}
+  correctIndex={1}
+  hints={["Di baris pertama (i=1) ada 1 bintang, di baris kelima (i=5) ada 5 bintang", "Coba substitusi: untuk i=1, batas harus menghasilkan 1 iterasi", "Batas inner loop menentukan jumlah karakter yang dicetak per baris"]}
+  explanation="Untuk segitiga ke atas, baris ke-i memiliki tepat i bintang. Sehingga inner loop berjalan dari j=1 hingga j<=i. Saat i=1 ada 1 bintang, saat i=5 ada 5 bintang. Pilihan 'j <= 2*i-1' adalah rumus untuk piramida tengah, bukan segitiga biasa."
+  lang="id"
+/>
+
+<Exercise client:load
+  id="u3l6-ex2"
+  title="Berapa Bintang di Baris Ketiga?"
+  description="Untuk program segitiga ke atas dengan `tinggi = 5`, baris ketiga (i=3) mencetak berapa bintang?"
+  type="multiple-choice"
+  options={["1 bintang", "2 bintang", "3 bintang", "5 bintang"]}
+  correctIndex={2}
+  hints={["Inner loop berjalan dari j=1 sampai j<=i", "Substitusi i=3 ke batas inner loop: j <= 3", "Hitung berapa iterasi inner loop saat i=3"]}
+  explanation="Inner loop berjalan dari j=1 sampai j<=i. Saat i=3, inner loop berjalan untuk j=1, j=2, j=3 — yaitu 3 iterasi dan mencetak 3 bintang. Pola segitiga ke atas: baris ke-i selalu memiliki tepat i bintang."
+  lang="id"
+/>
 
 ## Latihan
 

@@ -14,6 +14,8 @@ difficulty: "beginner"
 tags: ["do-while", "loop", "perulangan", "menu", "validasi-input"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Do-While Loop
 
 Kamu sudah kenal `while` loop dan `for` loop. Sekarang ada satu lagi anggota keluarga loop: **do-while loop**. Bedanya? Do-while **selalu menjalankan kodenya minimal satu kali**, baru kemudian mengecek kondisi.
@@ -401,6 +403,34 @@ Jangan pakai do-while ketika:
 :::tip
 Untuk Latihan 2, kamu bisa pakai tipe `char` untuk menyimpan jawaban user, dan cek apakah jawabannya termasuk 'A', 'B', 'C', atau 'D'.
 :::
+
+<Exercise client:load
+  id="u3l3-ex1"
+  title="Perbedaan While vs Do-While"
+  description="Jika kondisi while langsung bernilai false sejak awal, berapa kali blok kode do-while akan dieksekusi?"
+  type="multiple-choice"
+  options={["0 kali — sama seperti while biasa", "1 kali — karena do-while selalu jalankan blok dulu", "2 kali — do sekali, while sekali", "Tidak terbatas — infinite loop"]}
+  correctIndex={1}
+  hints={["Ingat urutan eksekusi do-while: jalankan blok DULU, baru cek kondisi", "Berbeda dengan while yang cek kondisi sebelum menjalankan blok", "Meski kondisi false, blok tetap dijalankan minimal sekali"]}
+  explanation="Do-while selalu menjalankan blok kode terlebih dahulu sebelum mengecek kondisi. Jadi meski kondisi while langsung false, blok akan tetap dieksekusi 1 kali. Ini yang membedakan do-while dari while biasa."
+  lang="id"
+/>
+
+<Exercise client:load
+  id="u3l3-ex2"
+  title="Sintaks Do-While yang Benar"
+  description="Lengkapi do-while loop berikut agar mencetak angka 1, 2, 3 masing-masing di baris baru. Isi bagian `{{ BLANK }}` dengan kondisi yang tepat."
+  type="fill-blank"
+  template={`int i = 1;
+do {
+    std::cout << i << std::endl;
+    i++;
+} while ({{ BLANK }});`}
+  blanks={["i <= 3"]}
+  hints={["Kondisi while pada do-while menentukan apakah loop akan diulang", "Loop harus berjalan saat i bernilai 1, 2, dan 3", "Jangan lupa titik koma setelah while(kondisi) pada do-while"]}
+  explanation="Kondisi `i <= 3` membuat loop terus berjalan selama i masih kurang dari atau sama dengan 3. Loop mencetak 1, 2, 3 lalu saat i menjadi 4, kondisi 4 <= 3 menjadi false dan loop berhenti. Titik koma setelah while wajib ada pada do-while."
+  lang="id"
+/>
 
 ## Ringkasan
 

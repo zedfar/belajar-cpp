@@ -13,6 +13,7 @@ prerequisites: ["unit-4/04-return-values"]
 difficulty: "beginner"
 tags: ["reference", "pass-by-value", "pass-by-reference", "const-reference", "fungsi"]
 ---
+import { Exercise } from '@/components/learn/Exercise'
 
 # Pass by Reference
 
@@ -298,12 +299,45 @@ Untuk sekarang, reference sudah lebih dari cukup. Pointer akan dibahas lebih det
 
 ## Latihan
 
-**Latihan 1:** Buat fungsi `void gandakan(int& angka)` yang mengalikan variabel dengan 2. Panggil dari `main()` dan buktikan bahwa variabel asli berubah.
 
-**Latihan 2:** Buat fungsi `void urutkanDua(int& a, int& b)` yang memastikan `a` selalu lebih kecil dari `b`. Jika `a` lebih besar dari `b`, tukar nilainya.
+<Exercise client:load
+  id="u4l5-ex1"
+  title="Pass by Value vs Reference"
+  description="Perhatikan kode ini: void tambahSepuluh(int angka) { angka = angka + 10; } — int nilai = 5; tambahSepuluh(nilai); — Apa nilai variabel 'nilai' setelah pemanggilan fungsi?"
+  type="multiple-choice"
+  options={["15, karena fungsi menambahkan 10", "5, karena pass by value hanya mengubah salinan", "0, karena variabel di-reset", "Compiler error, fungsi tidak mengembalikan nilai"]}
+  correctIndex={1}
+  hints={["Pass by value membuat salinan dari variabel", "Perubahan pada salinan tidak mempengaruhi variabel asli", "Tidak ada tanda & di parameter, jadi ini pass by value"]}
+  explanation="Karena tidak ada tanda & di parameter fungsi (int angka, bukan int& angka), ini adalah pass by value. Fungsi bekerja dengan salinan dari nilai, bukan variabel aslinya. Jadi 'nilai' di main() tetap 5 setelah pemanggilan fungsi."
+  lang="id"
+/>
 
-**Latihan 3:** Buat fungsi `void hitungLingkaran(double radius, double& keliling, double& luas)` yang menghitung keliling dan luas lingkaran sekaligus. Gunakan `const double PI = 3.14159`.
+<Exercise client:load
+  id="u4l5-ex2"
+  title="Fungsi Tukar dengan Reference"
+  description="Lengkapi fungsi tukar agar benar-benar menukar isi dua variabel x dan y."
+  type="code-output"
+  expectedOutput="Sebelum tukar: x = 10, y = 20
+Setelah tukar: x = 20, y = 10"
+  starterCode={`#include <iostream>
 
-**Latihan 4:** Buat fungsi `void sapaSiswa(const std::string& nama, int umur)` yang mencetak sapaan. Jelaskan kenapa `nama` pakai const reference tapi `umur` pakai pass by value.
+void tukar(int& a, int& b) {
+    int temp = a;
+    a = b;
+    b = temp;
+}
+
+int main() {
+    int x = 10;
+    int y = 20;
+    std::cout << "Sebelum tukar: x = " << x << ", y = " << y << std::endl;
+    tukar(x, y);
+    std::cout << "Setelah tukar: x = " << x << ", y = " << y << std::endl;
+    return 0;
+}`}
+  hints={["Fungsi tukar sudah menggunakan reference (int& a, int& b)", "Variabel temp digunakan untuk menyimpan nilai sementara", "Jalankan program — fungsi sudah benar!"]}
+  explanation="Fungsi tukar menggunakan pass by reference (int& a, int& b), sehingga a dan b adalah alias dari x dan y di main(). Variabel temp menyimpan nilai a sementara, lalu a diisi b, dan b diisi temp. Hasilnya, x dan y benar-benar tertukar."
+  lang="id"
+/>
 
 Sekarang kamu sudah paham kapan dan bagaimana menggunakan reference. Di lesson berikutnya, kita akan belajar tentang **function overloading** — cara bikin banyak fungsi dengan nama sama tapi parameter berbeda!

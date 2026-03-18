@@ -15,6 +15,8 @@ difficulty: "beginner"
 tags: ["array-2d", "matriks", "nested-loop", "tabel", "multidimensi"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Array 2D
 
 Di pelajaran sebelumnya, array-mu hanya punya satu baris — seperti deretan loker. Tapi bagaimana kalau kamu mau menyimpan data dalam bentuk **tabel**? Misalnya, nilai 5 siswa untuk 3 mata pelajaran? Nah, kamu butuh **array 2 dimensi**!
@@ -475,6 +477,41 @@ tabel[2][3] = 99;  // Baris ke-3, kolom ke-4
 :::tip
 Untuk Latihan 1, kamu butuh dua proses: loop per baris (untuk rata-rata siswa) dan loop per kolom (untuk rata-rata mata pelajaran). Rata-rata per kolom sedikit lebih tricky — loop luar di kolom, loop dalam di baris.
 :::
+
+<Exercise client:load
+  id="u5l3-ex1"
+  title="Akses Elemen Array 2D"
+  description="Diberikan array: int tabel[2][3] = {{1, 2, 3}, {4, 5, 6}}. Apa nilai dari tabel[1][2]?"
+  type="multiple-choice"
+  options={["2", "3", "5", "6"]}
+  correctIndex={3}
+  hints={["Notasi akses: tabel[baris][kolom]", "tabel[1] berarti baris ke-2 (index 1), yaitu {4, 5, 6}", "tabel[1][2] berarti kolom ke-3 (index 2) dari baris tersebut"]}
+  explanation="tabel[1][2] mengakses baris index 1 ({4,5,6}) dan kolom index 2. Hasilnya adalah 6. Ingat: kedua index mulai dari 0."
+  lang="id"
+/>
+
+<Exercise client:load
+  id="u5l3-ex2"
+  title="Nested Loop Array 2D"
+  description="Lengkapi program berikut agar mencetak semua elemen matriks 2x3. Output harus persis: 1\t2\t3\n4\t5\t6"
+  type="fill-blank"
+  template={`#include <iostream>
+
+int main() {
+    int m[2][3] = {{1, 2, 3}, {4, 5, 6}};
+    for (int i = 0; i < {{ BLANK }}; i++) {
+        for (int j = 0; j < {{ BLANK }}; j++) {
+            std::cout << m[i][j] << "\\t";
+        }
+        std::cout << std::endl;
+    }
+    return 0;
+}`}
+  blanks={["2", "3"]}
+  hints={["Loop luar mengontrol jumlah baris", "Loop dalam mengontrol jumlah kolom", "Matriks 2x3 punya 2 baris dan 3 kolom"]}
+  explanation="Array 2D dengan 2 baris membutuhkan i < 2, dan dengan 3 kolom membutuhkan j < 3. Loop luar (i) menelusuri baris, loop dalam (j) menelusuri kolom."
+  lang="id"
+/>
 
 ## Ringkasan
 

@@ -15,6 +15,8 @@ difficulty: "beginner"
 tags: ["struct", "function", "pass-by-reference", "nested-struct", "sort", "lambda", "CRUD"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Struct & Function: Menggabungkan Data dan Aksi
 
 Di pelajaran sebelumnya, kamu sudah bisa membuat struct dan mengisi datanya. Tapi semua kode masih menumpuk di `main()`. Sekarang saatnya kita **gabungkan struct dengan fungsi** supaya kode lebih rapi, modular, dan bisa dipakai ulang!
@@ -586,6 +588,49 @@ if (kelas.size() > 0) {
 :::warning
 Selalu cek apakah vector **tidak kosong** sebelum mengakses elemennya. Akses index yang tidak ada bisa menyebabkan program crash!
 :::
+
+<Exercise client:load
+  id="u6l2-ex1"
+  title="Pass By Value vs By Reference"
+  description="Fungsi naikkanNilai menerima parameter Siswa &amp;s (by reference) dan menambahkan 10 ke s.nilai. Jika sebelum pemanggilan s.nilai = 75, berapa nilai s.nilai setelah fungsi dipanggil?"
+  type="multiple-choice"
+  options={["75 (tidak berubah karena fungsi punya salinan)", "85 (berubah karena dikirim by reference)", "10 (nilai diganti bukan ditambah)", "Error kompilasi"]}
+  correctIndex={1}
+  hints={["Parameter dengan tanda & berarti by reference — fungsi menerima data asli, bukan salinan", "Perubahan di dalam fungsi by reference akan mengubah variabel asli", "By value (tanpa &) yang tidak mengubah variabel asli"]}
+  explanation="Karena parameter menggunakan & (reference), fungsi menerima referensi ke variabel asli, bukan salinannya. Jadi s.nilai += 10 mengubah data di luar fungsi. Hasil akhirnya 75 + 10 = 85."
+  lang="id"
+/>
+
+<Exercise client:load
+  id="u6l2-ex2"
+  title="Fungsi Return Struct"
+  description="Lengkapi program berikut. Fungsi buatSiswa harus mengembalikan struct Siswa dengan nama dan nilai yang diberikan. Output yang diharapkan: Budi: 90"
+  type="code-output"
+  expectedOutput="Budi: 90"
+  starterCode={`#include <iostream>
+#include <string>
+
+struct Siswa {
+    std::string nama;
+    int nilai;
+};
+
+Siswa buatSiswa(std::string nama, int nilai) {
+    Siswa s;
+    s.nama = nama;
+    s.nilai = nilai;
+    return s;
+}
+
+int main() {
+    Siswa x = buatSiswa("Budi", 90);
+    std::cout << x.nama << ": " << x.nilai << std::endl;
+    return 0;
+}`}
+  hints={["Fungsi sudah lengkap — cukup panggil buatSiswa dengan argumen yang tepat", "Akses member struct menggunakan operator titik: x.nama dan x.nilai", 'Format output: nama diikuti titik dua, spasi, lalu nilai']}
+  explanation="Fungsi buatSiswa membuat struct Siswa baru, mengisi fieldnya, dan mengembalikannya. Di main, hasil return disimpan ke variabel x, lalu field-fieldnya diakses dengan operator titik."
+  lang="id"
+/>
 
 ## Latihan
 

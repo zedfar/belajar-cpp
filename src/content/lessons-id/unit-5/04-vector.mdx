@@ -15,6 +15,8 @@ difficulty: "intermediate"
 tags: ["vector", "dynamic-array", "STL", "push_back", "collections"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # std::vector — Array Dinamis
 
 Array biasa punya satu kelemahan besar: **ukurannya tetap**. Kalau kamu buat `int nilai[30]`, artinya kamu sudah memblok 30 tempat — tidak bisa lebih, tidak bisa kurang.
@@ -342,6 +344,38 @@ Output:
 **Latihan 2:** Buat program daftar belanja. User bisa menambahkan item (push_back), menghapus item terakhir (pop_back), atau melihat semua item. Gunakan menu pilihan sederhana.
 
 **Latihan 3:** Buat program yang menerima n angka dari user, simpan di vector, lalu hapus semua angka yang bernilai negatif menggunakan loop dan erase. Tampilkan vector sebelum dan sesudah penghapusan.
+
+<Exercise client:load
+  id="u5l4-ex1"
+  title="push_back dan size()"
+  description="Setelah kode berikut dijalankan: std::vector&lt;int&gt; v; v.push_back(10); v.push_back(20); v.push_back(30); Berapa nilai dari v.size()?"
+  type="multiple-choice"
+  options={["0", "1", "2", "3"]}
+  correctIndex={3}
+  hints={["Vector awalnya kosong (size = 0)", "Setiap push_back menambah 1 elemen", "Berapa kali push_back dipanggil?"]}
+  explanation="Vector dimulai kosong (size=0). Setelah tiga kali push_back (10, 20, 30), vector memiliki 3 elemen, sehingga size() mengembalikan 3."
+  lang="id"
+/>
+
+<Exercise client:load
+  id="u5l4-ex2"
+  title="Menggunakan push_back"
+  description="Lengkapi program berikut agar menambahkan angka 5, 10, 15 ke vector lalu mencetak ukurannya. Output harus: 3"
+  type="code-output"
+  expectedOutput="3"
+  starterCode={`#include <iostream>
+#include <vector>
+
+int main() {
+    std::vector<int> angka;
+    // Tambahkan 5, 10, 15 ke vector menggunakan push_back
+    std::cout << angka.size() << std::endl;
+    return 0;
+}`}
+  hints={["Gunakan angka.push_back(5); untuk menambah angka 5", "Panggil push_back tiga kali untuk tiga angka berbeda", "size() mengembalikan jumlah elemen dalam vector"]}
+  explanation="Tiga kali push_back (5, 10, 15) menambah 3 elemen ke vector. size() kemudian mengembalikan 3 sebagai jumlah elemen."
+  lang="id"
+/>
 
 ## Ringkasan
 

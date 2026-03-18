@@ -13,6 +13,7 @@ prerequisites: ["unit-4/05-pass-by-reference"]
 difficulty: "beginner"
 tags: ["overloading", "fungsi", "polimorfisme", "parameter"]
 ---
+import { Exercise } from '@/components/learn/Exercise'
 
 # Function Overloading
 
@@ -339,22 +340,33 @@ int main() {
 
 ## Latihan
 
-**Latihan 1:** Buat fungsi `nilai_maksimum` yang di-overload untuk menerima 2 int, 3 int, dan 2 double. Masing-masing mengembalikan nilai terbesar.
 
-**Latihan 2:** Buat fungsi `tampilkan` yang di-overload:
-- `tampilkan(int angka)` — cetak angka
-- `tampilkan(int angka, int kali)` — cetak angka sebanyak `kali` kali
-- `tampilkan(const std::string& teks, char pembatas)` — cetak teks dengan pembatas di kiri dan kanan (misal `*Halo*`)
+<Exercise client:load
+  id="u4l6-ex1"
+  title="Aturan Overloading"
+  description="Kenapa kode berikut menyebabkan ERROR saat dikompilasi? int hitung(int x); double hitung(int x);"
+  type="multiple-choice"
+  options={["Nama fungsi tidak boleh sama dalam satu program", "Overloading hanya diperbolehkan untuk 3 fungsi atau lebih", "Perbedaan return type saja tidak cukup untuk overloading — parameter harus berbeda", "Fungsi dengan return type berbeda harus ditulis di file terpisah"]}
+  correctIndex={2}
+  hints={["Compiler memilih fungsi berdasarkan argumen yang diberikan saat pemanggilan", "Saat kamu panggil hitung(5), compiler tidak bisa tahu kamu mau yang return int atau double", "Overloading harus berbeda di jumlah atau tipe parameter"]}
+  explanation="Overloading hanya valid jika fungsi-fungsi berbeda di jumlah atau tipe parameter. Perbedaan return type saja tidak cukup karena saat pemanggilan hitung(5), compiler tidak bisa menentukan versi mana yang dimaksud — apakah yang return int atau double. Ini menyebabkan ambiguitas."
+  lang="id"
+/>
 
-**Latihan 3:** Buat fungsi `konversi` yang di-overload:
-- `konversi(double celsius)` — return Fahrenheit
-- `konversi(double nilai, const std::string& dari)` — bisa konversi dari "km" ke meter, atau "kg" ke gram
+<Exercise client:load
+  id="u4l6-ex2"
+  title="Overloading Fungsi Luas"
+  description="Program ini menggunakan function overloading untuk menghitung luas. Apa output dari luas(5)?"
+  type="fill-blank"
+  template={`double luas(int sisi) { return sisi * sisi; }
+double luas(int p, int l) { return p * l; }
+double luas(double r) { return 3.14159 * r * r; }
 
-**Latihan 4:** Jelaskan kenapa kode ini ERROR:
-
-```cpp
-int bagi(int a, int b);
-double bagi(int a, int b);
-```
+// luas(5) memanggil versi {{ BLANK }} dan mengembalikan {{ BLANK }}`}
+  blanks={["luas(int sisi)", "25"]}
+  hints={["Compiler memilih fungsi berdasarkan tipe dan jumlah argumen", "5 adalah int, dan hanya ada satu parameter — cocok dengan versi pertama", "5 * 5 = 25"]}
+  explanation="luas(5) memanggil versi luas(int sisi) karena argumen 5 adalah int dan hanya ada satu argumen. Fungsi mengembalikan 5 * 5 = 25. Jika dipanggil dengan luas(5.0), compiler akan memilih versi luas(double r) karena 5.0 adalah double."
+  lang="id"
+/>
 
 Sekarang kamu tahu cara bikin banyak fungsi dengan nama sama! Di lesson berikutnya, kita akan belajar tentang **scope dan lifetime** — di mana variabel "hidup" dan kapan mereka "mati".

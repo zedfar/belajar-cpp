@@ -15,6 +15,8 @@ difficulty: "beginner"
 tags: ["struct", "custom-type", "data-grouping", "record", "vector-of-struct"]
 ---
 
+import { Exercise } from '@/components/learn/Exercise'
+
 # Struct: Membuat Tipe Data Sendiri
 
 Kamu sudah belajar pakai array dan vector untuk menyimpan banyak data. Tapi ada masalah besar: **array hanya bisa menyimpan satu tipe data**. Bagaimana kalau kamu mau menyimpan nama siswa (string), umur (int), dan nilai (double) **bersama-sama** sebagai satu kesatuan?
@@ -527,6 +529,44 @@ int main() {
 :::warning
 Selalu definisikan struct **di luar fungsi `main()`** (biasanya di atas `main` atau di file header). Ini memastikan struct bisa dipakai di mana saja dalam programmu.
 :::
+
+<Exercise client:load
+  id="u6l1-ex1"
+  title="Operator Akses Member Struct"
+  description="Sebuah struct Produk memiliki member nama (string) dan harga (int). Variabel bernama p sudah dibuat. Bagaimana cara yang benar untuk mengakses member harga dari variabel p?"
+  type="multiple-choice"
+  options={["p->harga", "p::harga", "p.harga", "harga(p)"]}
+  correctIndex={2}
+  hints={["Operator dot (.) digunakan untuk variabel struct biasa (bukan pointer)", "Operator -> digunakan khusus untuk pointer ke struct", "Polanya: variabel.fieldName"]}
+  explanation="Operator titik (.) digunakan untuk mengakses member struct dari variabel biasa. Jadi p.harga adalah cara yang benar. Operator -> hanya digunakan jika p adalah pointer ke struct."
+  lang="id"
+/>
+
+<Exercise client:load
+  id="u6l1-ex2"
+  title="Cetak Member Struct"
+  description="Lengkapi program berikut untuk mencetak nama dari struct Buku. Output yang diharapkan adalah: Judul: Laskar Pelangi"
+  type="code-output"
+  expectedOutput="Judul: Laskar Pelangi"
+  starterCode={`#include <iostream>
+#include <string>
+
+struct Buku {
+    std::string judul;
+    int tahun;
+};
+
+int main() {
+    Buku b;
+    b.judul = "Laskar Pelangi";
+    b.tahun = 2005;
+    // Cetak: Judul: Laskar Pelangi
+    return 0;
+}`}
+  hints={["Gunakan operator titik untuk akses member: b.judul", 'std::cout << "Judul: " << b.judul << std::endl;']}
+  explanation="Member struct diakses dengan operator titik (.). b.judul mengakses field judul dari variabel struct b, lalu dicetak dengan std::cout."
+  lang="id"
+/>
 
 ## Latihan
 
