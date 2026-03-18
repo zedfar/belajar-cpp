@@ -4,6 +4,16 @@ Semua perubahan penting pada proyek belajar-cpp dicatat di file ini. Format meng
 
 ## [Unreleased]
 
+## [2026-03-18] (update 15)
+
+### Added (Security)
+- `vercel.json`: security headers untuk semua route
+  - `X-Content-Type-Options: nosniff` — cegah MIME sniffing
+  - `X-Frame-Options: DENY` — cegah clickjacking
+  - `Referrer-Policy: strict-origin-when-cross-origin` — batasi info referrer
+  - `Permissions-Policy` — matikan akses kamera, mikrofon, geolokasi, dan FLoC
+  - `Content-Security-Policy` — batasi sumber script/style/font ke origin yang dikenal; `frame-ancestors 'none'`, `object-src 'none'`, `base-uri 'self'`
+
 ## [2026-03-18] (update 14)
 
 ### Fixed
