@@ -4,6 +4,12 @@ Semua perubahan penting pada proyek belajar-cpp dicatat di file ini. Format meng
 
 ## [Unreleased]
 
+## [2026-03-18] (update 9)
+
+### Fixed
+- `PageLayout`: tambah `id="main-content"` ke `<main>` — skip link "Langsung ke konten" dari BaseLayout sebelumnya tidak berfungsi di halaman non-lesson (curriculum, glossary, about, progress, playground)
+- `/api/run-code`: tambah rate limiter 10 request/menit per IP (sliding window) — response `429` dengan header `Retry-After` jika limit terlewat, mencegah accidental loop dan abuse
+
 ## [2026-03-18] (update 8)
 
 ### Docs
