@@ -4,6 +4,11 @@ Semua perubahan penting pada proyek belajar-cpp dicatat di file ini. Format meng
 
 ## [Unreleased]
 
+## [2026-06-30] (update 18)
+
+### Changed
+- `package.json`: pin semua dependency `"latest"` ke versi exact yang terinstall — cegah versi berbeda antar environment dan konflik peer deps saat install ulang
+
 ## [2026-03-18] (update 17)
 
 ### Fixed
