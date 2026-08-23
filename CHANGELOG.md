@@ -4,6 +4,13 @@ Semua perubahan penting pada proyek belajar-cpp dicatat di file ini. Format meng
 
 ## [Unreleased]
 
+## [2026-08-24] (update 19) — Security & Build Fixes
+
+### Fixed
+- `npm audit` (24 vulnerabilities, termasuk 1 critical): `astro` 6.0.4 → 6.4.8 menutup 4 CVE XSS/SSRF nyata di Astro core (`define:vars` script sanitization, unescaped slot name, Host header SSRF di error page prerendered, server-island replay) — masih di major version yang sama, bukan migrasi besar. `@vercel/og` 0.11.1 → 1.0.1 (patch `sharp`/libvips) dan `vitest`/`@vitest/ui` 4.1.0 → 4.1.11 (patch `flatted` prototype pollution). Turun jadi 7 finding, semua build-time/dev-tooling only (Vite dev-server path traversal, `esbuild` Windows-only, `path-to-regexp` lewat `@vercel/routing-utils`, dan advisory ISR `@astrojs/vercel` yang dead code karena `vercel()` di sini tidak mengaktifkan ISR).
+- 3 XSS lain (spread attribute name edge case, `transition:*` directive, View Transition animation properties) butuh Astro 7 — migrasi major version sungguhan karena repo ini masih pakai API content collection lama yang sudah ditinggalkan belajar-python/sql/golang. Belum dikerjakan, didokumentasikan sebagai proyek terpisah.
+- **Vercel production build berisiko gagal** ("no longer installed by default now that Sätteri is the default Markdown processor") — `@astrojs/markdown-remark` cuma ke-resolve transitif (via `@astrojs/mdx` dan `astro` di versi berbeda, tidak ter-hoist ke top-level) padahal `astro.config.mjs` butuh itu untuk config `markdown.remarkPlugins`. Dipasang sebagai dependency langsung sebelum sempat benar-benar gagal di production (ditemukan proaktif setelah belajar-python mengalaminya).
+
 ## [2026-06-30] (update 18)
 
 ### Changed
