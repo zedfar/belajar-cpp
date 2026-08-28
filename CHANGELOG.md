@@ -8,6 +8,10 @@ Semua perubahan penting pada proyek belajar-cpp dicatat di file ini. Format meng
 - Migrasi organisasi GitHub dari akun personal `zedfar` ke org [`disinauni`](https://github.com/disinauni) (`github.com/disinauni/belajar-cpp`), termasuk migrasi domain production dari `varnimyr.my.id` ke `disinauni.my.id`.
 - Favicon & og-image diganti dari desain generik `</>` (sebelumnya identik persis dengan belajar-python dan belajar-golang) menjadi desain khas C++: huruf "C" melengkung dengan aksen dua tanda `+`.
 - README diseragamkan strukturnya dengan keluarga situs belajar-* lainnya: badge CI/Deploy/Tests/E2E lengkap, paragraf keanggotaan [ekosistem disinauni](https://disinauni.my.id), wording section Deployment & footer konsisten lintas repo.
+- Sistem warna `primary` di seluruh UI situs diganti dari biru generik (`#3b82f6`, identik dengan belajar-python/sql/golang) ke scale indigo-biru custom yang dibangun dari dua titik gradient favicon (`#3b5fe2`/`#1e3a9e`) — mencakup `tailwind.config.ts`, `theme-color` meta tag, state tombol snippet aktif di playground, warna inline-code di prosa lesson, dan gradient/grid/pills di og-image. Warna `accent` (ungu) dan diagram SVG di dalam materi lesson sengaja dipertahankan (scope disepakati UI situs dulu).
+
+### Fixed
+- `/api/og-image.ts` (dan dependency `@vercel/og`) dihapus — ternyata dead code, `BaseLayout.astro` tidak pernah memanggilnya sama sekali (og:image selalu fallback ke `og-default.png` statis), padahal CHANGELOG lama repo ini mencatat route ini seharusnya dipakai dinamis. Kasus yang sama seperti yang sudah diperbaiki di belajar-golang.
 
 ## [2026-08-24] (update 19) — Security & Build Fixes
 
