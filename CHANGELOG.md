@@ -4,6 +4,11 @@ Semua perubahan penting pada proyek belajar-cpp dicatat di file ini. Format meng
 
 ## [Unreleased]
 
+### Changed
+- Migrasi organisasi GitHub dari akun personal `zedfar` ke org [`disinauni`](https://github.com/disinauni) (`github.com/disinauni/belajar-cpp`), termasuk migrasi domain production dari `varnimyr.my.id` ke `disinauni.my.id`.
+- Favicon & og-image diganti dari desain generik `</>` (sebelumnya identik persis dengan belajar-python dan belajar-golang) menjadi desain khas C++: huruf "C" melengkung dengan aksen dua tanda `+`.
+- README diseragamkan strukturnya dengan keluarga situs belajar-* lainnya: badge CI/Deploy/Tests/E2E lengkap, paragraf keanggotaan [ekosistem disinauni](https://disinauni.my.id), wording section Deployment & footer konsisten lintas repo.
+
 ## [2026-08-24] (update 19) — Security & Build Fixes
 
 ### Fixed
