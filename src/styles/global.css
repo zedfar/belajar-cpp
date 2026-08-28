@@ -33,7 +33,7 @@
 .prose code {
   @apply !font-mono !text-sm;
   background: rgb(241 245 249) !important;
-  color: #1d4ed8 !important;
+  color: #2c4cc0 !important;
   padding: 0.15em 0.45em !important;
   border-radius: 0.3rem !important;
   font-weight: 500 !important;
@@ -41,7 +41,7 @@
 
 .dark .prose code {
   background: rgb(30 41 59) !important;
-  color: #93c5fd !important;
+  color: #9aa8fa !important;
 }
 
 /* Strip backtick pseudo-elements from prose inline code */
