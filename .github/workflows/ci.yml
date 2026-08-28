@@ -34,7 +34,7 @@ jobs:
         env:
           JUDGE0_API_URL: ${{ secrets.JUDGE0_API_URL }}
           JUDGE0_API_KEY: ${{ secrets.JUDGE0_API_KEY }}
-          PUBLIC_SITE_URL: https://belajar-cpp.varnimyr.my.id
+          PUBLIC_SITE_URL: https://belajar-cpp.disinauni.my.id
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
@@ -44,7 +44,7 @@ jobs:
         env:
           JUDGE0_API_URL: ${{ secrets.JUDGE0_API_URL }}
           JUDGE0_API_KEY: ${{ secrets.JUDGE0_API_KEY }}
-          PUBLIC_SITE_URL: https://belajar-cpp.varnimyr.my.id
+          PUBLIC_SITE_URL: https://belajar-cpp.disinauni.my.id
 
       - name: Upload E2E report on failure
         if: failure()

@@ -44,7 +44,7 @@ export const GET: APIRoute = async ({ url }) => {
         }, 'C+'),
         h('span', {
           style: { color: '#94a3b8', fontSize: '20px' },
-        }, 'belajar-cpp.varnimyr.my.id'),
+        }, 'belajar-cpp.disinauni.my.id'),
       ),
 
       // Middle: title + description
