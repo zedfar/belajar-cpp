@@ -92,7 +92,7 @@ Platform ini mengajarkan **C++ modern (C++17)** dari nol, langsung bisa dicoba d
 
 ```bash
 # Clone repository
-git clone https://github.com/zedfar/belajar-cpp.git
+git clone https://github.com/disinauni/belajar-cpp.git
 cd belajar-cpp
 
 # Install dependencies
@@ -173,10 +173,10 @@ belajar-cpp/
 
 Kontribusi sangat welcome! Beberapa cara untuk berkontribusi:
 
-- 🐛 **Laporkan bug** — [Buka issue](https://github.com/zedfar/belajar-cpp/issues)
+- 🐛 **Laporkan bug** — [Buka issue](https://github.com/disinauni/belajar-cpp/issues)
 - ✍️ **Tulis lesson** — Tambah atau perbaiki konten di `src/content/lessons-id/`
 - 🌐 **Terjemahan** — Bantu terjemahkan lesson ke English di `src/content/lessons-en/`
-- 💡 **Saran fitur** — Diskusikan di [Issues](https://github.com/zedfar/belajar-cpp/issues)
+- 💡 **Saran fitur** — Diskusikan di [Issues](https://github.com/disinauni/belajar-cpp/issues)
 
 ### Menulis Lesson Baru
 

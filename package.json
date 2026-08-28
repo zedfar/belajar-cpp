@@ -6,10 +6,10 @@
   "homepage": "https://belajar-cpp.varnimyr.my.id",
   "repository": {
     "type": "git",
-    "url": "https://github.com/zedfar/belajar-cpp.git"
+    "url": "https://github.com/disinauni/belajar-cpp.git"
   },
   "bugs": {
-    "url": "https://github.com/zedfar/belajar-cpp/issues"
+    "url": "https://github.com/disinauni/belajar-cpp/issues"
   },
   "type": "module",
   "scripts": {
