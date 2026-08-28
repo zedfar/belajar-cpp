@@ -90,7 +90,15 @@
   <!-- Left side: branding -->
   <!-- Logo / icon -->
   <rect x="80" y="160" width="72" height="72" rx="16" fill="url(#accent)" opacity="0.9"/>
-  <text x="116" y="208" font-family="monospace" font-weight="bold" font-size="32" fill="white" text-anchor="middle">&lt;/&gt;</text>
+  <g transform="translate(80,160) scale(2.25)">
+    <path d="M17 8 C12 8 9 11.3 9 16 C9 20.7 12 24 17 24" stroke="white" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+    <g stroke="white" stroke-width="2.2" stroke-linecap="round">
+      <line x1="21.5" y1="10.5" x2="21.5" y2="16"/>
+      <line x1="18.75" y1="13.25" x2="24.25" y2="13.25"/>
+      <line x1="21.5" y1="18.5" x2="21.5" y2="24"/>
+      <line x1="18.75" y1="21.25" x2="24.25" y2="21.25"/>
+    </g>
+  </g>
 
   <!-- Title -->
   <text x="80" y="290" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="56" fill="white">Belajar</text>
